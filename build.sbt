@@ -1,5 +1,9 @@
 name := "the_gardener"
 
+val pom = xml.XML.load("pom.xml")
+
+version := { pom \  "version" text}
+
 val jdkVersion = "1.8"
 scalaVersion := "2.12.4"
 
@@ -31,6 +35,7 @@ libraryDependencies ++= Seq(
   guice,
   //jdbc,
   //ehcache,
+  "com.kelkoo.common" %% "playScalaCommon" % "2.1.2",
   "ch.qos.logback"%"logback-access"%"1.2.3",
   "net.logstash.logback"%"logstash-logback-encoder"%"4.11",
   "io.cucumber" %% "cucumber-scala" % "2.0.1" % Test,
