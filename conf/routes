@@ -1,0 +1,17 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET     /                           controllers.Application.index()
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file               controllers.Assets.at(path="/public", file)
+
+#IsAlive
+GET     /HealthCheck/isAlive        com.kelkoo.play.controllers.IsAlive.isAlive(status: Option[String])
+
+# Some examples
+GET     /example                    controllers.Application.example()
+GET     /helloJson                  controllers.Application.helloJson()
+GET     /dataJson                   controllers.Application.dataJson()
