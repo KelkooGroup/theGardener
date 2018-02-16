@@ -1,10 +1,8 @@
 name := "the_gardener"
 
-val pom = xml.XML.load("pom.xml")
+version := "1.0.0-SNAPSHOT"
 
-version := { pom \  "version" text}
-
-lazy val jdkVersion = ((pom \\ "properties")\ "jdk.version").text
+val jdkVersion = "1.8"
 scalaVersion := "2.12.4"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
