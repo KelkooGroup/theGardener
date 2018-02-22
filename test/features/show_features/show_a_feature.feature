@@ -18,9 +18,8 @@ Feature: As a user,
     When a user access to this feature in theGardener
     Then this feature is displayed properly
 
-
   @level_1_specification @nominal_case @draft
-  Scenario: show a simple feature with one scenario with all required tags and meta data
+  Scenario: show a feature with one simple scenario with all required tags and meta data
     Given the file "data/git/kk-gitlab/suggestionsWS/master/test/features/provide_book_suggestions.feature"
     """
 #Feature_name: Provide some book suggestions
@@ -39,12 +38,12 @@ Scenario: providing several book suggestions
       | suggestionsWS/provide_book_suggestions.feature | Provide some book suggestions | As a user, I want some book suggestions so that I can do some discovery | Suggestions WebServices |
     And the following scenarios are displayed
       | id | scenario                           | abstraction_level | case_type    | workflow_step |
-      | 1  | providing several book suggestions | level_0           | nominal_case | valid         |
-    And the scenario "1" is displayed
-      | step  | type   | value                                                                          |
-      | given | simple | a user                                                                         |
-      | when  | simple | we ask for suggestions                                                         |
-      | then  | simple | the suggestions are popular and available books adapted to the age of the user |
+      | 0  | providing several book suggestions | level_0           | nominal_case | valid         |
+    And the scenario "0" is displayed
+      | id | step  | type   | value                                                                          |
+      | 0  | given | simple | a user                                                                         |
+      | 1  | when  | simple | we ask for suggestions                                                         |
+      | 2  | then  | simple | the suggestions are popular and available books adapted to the age of the user |
 
   @level_1_specification @nominal_case @draft
   Scenario Outline: show the different possible values of the annotation considered by theGardener
@@ -62,7 +61,7 @@ Scenario: providing several book suggestions
     When a user access to the feature "provide_book_suggestions.feature" of the project "suggestionsWS"
     Then the following scenarios are displayed
       | id | abstraction_level              | case_type              | workflow_step              |
-      | 1  | <considered_abstraction_level> | <considered_case_type> | <considered_workflow_step> |
+      | 0  | <considered_abstraction_level> | <considered_case_type> | <considered_workflow_step> |
 
     Examples:
       | annotation1                | annotation2 | annotation3 | considered_abstraction_level | considered_case_type | considered_workflow_step |
@@ -97,7 +96,7 @@ Scenario: providing several book suggestions
     When a user access to the feature "provide_book_suggestions.feature" of the project "suggestionsWS"
     Then the following scenarios are displayed
       | id | abstraction_level              | case_type              | workflow_step              |
-      | 1  | <considered_abstraction_level> | <considered_case_type> | <considered_workflow_step> |
+      | 0  | <considered_abstraction_level> | <considered_case_type> | <considered_workflow_step> |
 
     Examples:
       | annotation1        | considered_abstraction_level | considered_case_type | considered_workflow_step |
@@ -126,7 +125,7 @@ Scenario: providing several book suggestions
       | @Draft             | level_1                      | nominal_case         | draft                    |
 
   @level_1_specification @nominal_case @draft
-  Scenario Outline: show a simple feature with one scenario - show the default name of the scenario
+  Scenario Outline: show a feature with one simple scenario - show the default name of the scenario
     Given the file "data/git/kk-gitlab/suggestionsWS/master/test/features/<file_name>"
     """
 <first_line>
@@ -151,7 +150,7 @@ Scenario: providing several book suggestions
       | #Feature_name: Provide some book suggestions | provide_book_suggestions.feature | Provide some book suggestions |
 
   @level_1_specification @limit_case @draft
-  Scenario Outline: show a simple feature with one scenario - show the default name of the scenario
+  Scenario Outline: show a feature with one simple scenario - show the default name of the scenario
     Given the file "data/git/kk-gitlab/suggestionsWS/master/test/features/<file_name>"
     """
 <first_line>
@@ -189,3 +188,64 @@ Scenar: providing several book suggestions
     """
     When a user access to the feature "provide_book_suggestions.feature" of the project "suggestionsWS"
     Then no feature is display
+
+
+  @level_1_specification @nominal_case @draft
+  Scenario: show a feature with one scenario with some parameters
+    Given the file "data/git/kk-gitlab/suggestionsWS/master/test/features/provide_book_suggestions.feature"
+    """
+Feature: As a user, I want some book suggestions so that I can do some discovery
+
+@level_1_specification @error_case @valid
+Scenario: one service on which the suggestion system depends on is down
+    Given the user "Tim"
+    And impossible to get information on the user
+    When we ask for "3" suggestions from "2" different categories
+    Then the system is temporary not available
+
+    """
+    When a user access to the feature "provide_book_suggestions.feature" of the project "suggestionsWS"
+    Then the scenario "0" is displayed
+      | id | step  | type   | value                                                                | parameters          |
+      | 0  | given | simple | the user <param_1>                                                   | param_1:Tim         |
+      | 1  | given | simple | impossible to get information on the user                            |                     |
+      | 2  | when  | simple | we ask for <param_1> suggestions from <param_2> different categories | param_1:3,param_2:2 |
+      | 3  | then  | simple | the system is temporary not available                                |                     |
+
+
+  @level_1_specification @nominal_case @draft
+  Scenario: show a feature with one scenario with a multi lines step
+    Given the file "data/git/kk-gitlab/suggestionsWS/master/test/features/provide_book_suggestions.feature"
+    """
+Feature: As a user, I want some book suggestions so that I can do some discovery
+
+  Scenario: suggestions of popular and available books adapted to the age of the user
+    Given the user "Tim"
+    And he is "4" years old
+    And the popular categories for this age are
+      | categoryId | categoryName    |
+      | cat1       | Walt Disney     |
+      | cat2       | Picture books   |
+      | cat3       | Bedtime stories |
+    When we ask for "3" suggestions from "2" different categories
+    Then the suggestions are popular and available books adapted to the age of the user
+
+    """
+    When a user access to the feature "provide_book_suggestions.feature" of the project "suggestionsWS"
+    Then the scenario "0" is displayed
+      | id | step  | type       | value                                                                          | parameters          |
+      | 0  | given | simple     | the user <param_1>                                                             | param_1:Tim         |
+      | 1  | given | simple     | he is <param_1> years old                                                      | param_1:4           |
+      | 2  | given | multilines | the popular categories for this age are                                        |                     |
+      | 3  | when  | simple     | we ask for <param_1> suggestions from <param_2> different categories           | param_1:3,param_2:2 |
+      | 4  | then  | simple     | the suggestions are popular and available books adapted to the age of the user |                     |
+    Then the scenario "0" is displayed with the multi lines step "2"
+      | column0    | column1         |
+      | categoryId | categoryName    |
+      | cat1       | Walt Disney     |
+      | cat2       | Picture books   |
+      | cat3       | Bedtime stories |
+
+
+
+
