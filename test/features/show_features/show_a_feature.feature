@@ -4,7 +4,7 @@ Feature: As a user,
   So that my project feature is shared with all users
 
   Background:
-    Given the projects host settings
+    Given the projects server settings
       | id        | type | root_path                       | local_copy_root_path |
       | kk-gitlab | git  | git@gitlab.corp.kelkoogroup.net | data/git/kk-gitlab   |
     And the project settings
