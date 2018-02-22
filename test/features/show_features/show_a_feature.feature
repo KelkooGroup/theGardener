@@ -189,7 +189,6 @@ Scenar: providing several book suggestions
     When a user access to the feature "provide_book_suggestions.feature" of the project "suggestionsWS"
     Then no feature is display
 
-
   @level_1_specification @nominal_case @draft
   Scenario: show a feature with one scenario with some parameters
     Given the file "data/git/kk-gitlab/suggestionsWS/master/test/features/provide_book_suggestions.feature"
@@ -211,7 +210,6 @@ Scenario: one service on which the suggestion system depends on is down
       | 1  | given | simple | impossible to get information on the user                            |                     |
       | 2  | when  | simple | we ask for <param_0> suggestions from <param_1> different categories | param_0:3,param_1:2 |
       | 3  | then  | simple | the system is temporary not available                                |                     |
-
 
   @level_1_specification @nominal_case @draft
   Scenario: show a feature with one scenario with a multi lines step
@@ -245,7 +243,6 @@ Feature: As a user, I want some book suggestions so that I can do some discovery
       | cat1       | Walt Disney     |
       | cat2       | Picture books   |
       | cat3       | Bedtime stories |
-
 
   @level_1_specification @nominal_case @draft
   Scenario: show a feature with one outline scenario
