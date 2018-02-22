@@ -40,13 +40,6 @@ libraryDependencies ++= Seq(
   "org.mockito" % "mockito-all" % "1.10.19" % Test
 )
 
-val akkaVersion = "2.5.8"
-dependencyOverrides ++= Seq(
-  "com.typesafe.akka" %% "akka-actor" % akkaVersion,
-  "com.typesafe.akka" %% "akka-stream" % akkaVersion,
-  "com.google.guava" % "guava" % "23.0",
-  "org.codehaus.plexus" % "plexus-utils" % "3.0.17",
-  "org.webjars" % "webjars-locator-core" % "0.33"
-)
+evictionWarningOptions in update := EvictionWarningOptions.default.withWarnTransitiveEvictions(false).withWarnDirectEvictions(false).withWarnScalaVersionEviction(false)
 
 routesGenerator := InjectedRoutesGenerator
