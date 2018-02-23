@@ -1,5 +1,5 @@
-#Feature_name: Show a feature
-Feature: As a user,
+Feature: Show a feature
+  As a user,
   I want to see my feature in theGardener
   So that my project feature is shared with all users
 
@@ -22,8 +22,10 @@ Feature: As a user,
   Scenario: show a feature with one simple scenario with all required tags and meta data
     Given the file "data/git/kk-gitlab/suggestionsWS/master/test/features/provide_book_suggestions.feature"
     """
-#Feature_name: Provide some book suggestions
-Feature: As a user, I want some book suggestions so that I can do some discovery
+Feature: Provide some book suggestions
+  As a user,
+  I want some book suggestions
+  So that I can do some discovery
 
 @level_0_high_level @nominal_case @ready
 Scenario: providing several book suggestions
@@ -123,56 +125,6 @@ Scenario: providing several book suggestions
       | @valid             | level_1                      | nominal_case         | valid                    |
       | @Nominal           | level_1                      | nominal_case         | valid                    |
       | @Draft             | level_1                      | nominal_case         | draft                    |
-
-  @level_1_specification @nominal_case @draft
-  Scenario Outline: show a feature with one simple scenario - show the default name of the scenario
-    Given the file "data/git/kk-gitlab/suggestionsWS/master/test/features/<file_name>"
-    """
-<first_line>
-Feature: As a user, I want some book suggestions so that I can do some discovery
-
-Scenario: providing several book suggestions
-  Given a user
-  When we ask for suggestions
-  Then the suggestions are popular and available books adapted to the age of the user
-
-    """
-    When a user access to the feature "provide_book_suggestions.feature" of the project "suggestionsWS"
-    Then the following feature is displayed
-      | id                                             | name                       |
-      | suggestionsWS/provide_book_suggestions.feature | <considered_scenario_name> |
-
-
-    Examples:
-      | first_line                                   | file_name                        | considered_scenario_name      |
-      |                                              | provide_book_suggestions.feature | Provide book suggestions      |
-      |                                              | provideBookSuggestions.feature   | Provide book suggestions      |
-      | #Feature_name: Provide some book suggestions | provide_book_suggestions.feature | Provide some book suggestions |
-
-  @level_1_specification @limit_case @draft
-  Scenario Outline: show a feature with one simple scenario - show the default name of the scenario
-    Given the file "data/git/kk-gitlab/suggestionsWS/master/test/features/<file_name>"
-    """
-<first_line>
-Feature: As a user, I want some book suggestions so that I can do some discovery
-
-Scenario: providing several book suggestions
-  Given a user
-  When we ask for suggestions
-  Then the suggestions are popular and available books adapted to the age of the user
-
-    """
-    When a user access to the feature "provide_book_suggestions.feature" of the project "suggestionsWS"
-    Then the following feature is displayed
-      | id                                             | name                       |
-      | suggestionsWS/provide_book_suggestions.feature | <considered_scenario_name> |
-
-
-    Examples:
-      | first_line                                   | file_name                        | considered_scenario_name      |
-      | #Feature_name: Provide some book suggestions | provide_book_suggestions.feature | Provide some book suggestions |
-      | #feature_name: Provide some book suggestions | provide_book_suggestions.feature | Provide book suggestions      |
-      | #featureName: Provide some book suggestions  | provide_book_suggestions.feature | Provide book suggestions      |
 
   @level_1_specification @error_case @draft
   Scenario: try to show a feature based on an incorrect feature file
