@@ -4,23 +4,19 @@ Feature: Show a feature
   So that my project feature is shared with all users
 
   Background:
-    Given the projects server settings
-      | id        | type | root_path                       | local_copy_root_path |
-      | kk-gitlab | git  | git@gitlab.corp.kelkoogroup.net | data/git/kk-gitlab   |
-    And the project settings
-      | id            | name                    | id_host   | project_path          | stable_branch | features_root_path |
-      | suggestionsWS | Suggestions WebServices | kk-gitlab | library/suggestionsWS | master        | test/features      |
+    Given the project settings are setup in theGardener
+      | id            | name                    | repository_url                                       | stable_branch | features_root_path |
+      | suggestionsWS | Suggestions WebServices | git@gitlab.corp.kelkoo.net:library/suggestionsWS.git | master        | test/features      |
 
   @level_0_high_level @nominal_case @draft
   Scenario: show a simple feature
-    Given my project is setup in theGardener
-    And a simple feature is available in my project
+    Given a simple feature is available in my project
     When a user access to this feature in theGardener
     Then this feature is displayed properly
 
-  @level_1_specification @nominal_case @draft
+  @level_1_specification @nominal_case @ongoing
   Scenario: show a feature with one simple scenario with all required tags and meta data
-    Given the file "data/git/kk-gitlab/suggestionsWS/master/test/features/provide_book_suggestions.feature"
+    Given the file "data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature"
     """
 Feature: Provide some book suggestions
   As a user,

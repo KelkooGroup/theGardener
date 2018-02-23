@@ -1,30 +1,35 @@
 package models
 
-import models.Feature.Example
-import play.api.libs.json.Json
+import julienrf.json.derived
+import play.api.libs.json._
 
-case class Feature(name: String, description: String, background: Background, scenarios: Seq[Scenario], scenarioOutlines: Seq[ScenarioOutline], branch: String)
+case class Feature(id: String, branch: String, tags: Seq[String], language: String, keyword: String, name: String, description: String, scenarios: Seq[ScenarioDefinition], comments: Seq[String] = Seq())
 
-case class Background(givenSteps: Seq[Given])
+sealed trait ScenarioDefinition {
+  val id: Int
+  val keyword: String
+  val name: String
+  val description: String
+  val steps: Seq[Step]
+}
 
-case class Scenario(tags: Seq[String], name: String, givenSteps: Seq[Given], whenSteps: Seq[When], thenSteps: Seq[Then])
-case class ScenarioOutline(tags: Seq[String], name: String, givenSteps: Seq[Given], whenSteps: Seq[When], thenSteps: Seq[Then], examples: Seq[Example])
+case class Background(id: Int, keyword: String, name: String, description: String, steps: Seq[Step]) extends ScenarioDefinition
 
-sealed trait Step
-case class Given(name: String) extends Step
-case class When(name: String) extends Step
-case class Then(name: String) extends Step
+case class Scenario(id: Int, tags: Seq[String], abstractionLevel: String, caseType: String, workflowStep: String, keyword: String, name: String, description: String, steps: Seq[Step]) extends ScenarioDefinition
+
+case class ScenarioOutline(id: Int, tags: Seq[String], abstractionLevel: String, caseType: String, workflowStep: String, keyword: String, name: String, description: String, steps: Seq[Step], examples: Seq[Examples]) extends ScenarioDefinition
+
+case class Examples(id: Int, tags: Seq[String], keyword: String, description: String, tableHeader: Seq[String], tableBody: Seq[Seq[String]])
+
+case class Step(id: Int, keyword: String, text: String, argument: Seq[Seq[String]])
 
 object Feature {
-  type Example = Map[String, String]
-
-  implicit val givenFormat = Json.format[Given]
-  implicit val whenFormat = Json.format[When]
-  implicit val thenFormat = Json.format[Then]
-
-  implicit val backgroundFormat = Json.format[Background]
-  implicit val scenarioFormat = Json.format[Scenario]
-  implicit val scenarioOutlineFormat = Json.format[ScenarioOutline]
-
+  implicit val stepFormat = Json.format[Step]
+  implicit val examplesFormat = Json.format[Examples]
+  implicit val scenarioFormat = derived.flat.oformat[ScenarioDefinition]((__ \ "keyword").format[String])
   implicit val featureFormat = Json.format[Feature]
+
+  val abstractionLevels = Set("level_0_high_level", "level_1_specification", "level_2_technical_details")
+  val caseTypes = Set("nominal_case", "limit_case", "error_case")
+  val workflowSteps = Set("draft", "ready", "ongoing", "valid")
 }

@@ -18,21 +18,24 @@ unmanagedClasspath in Runtime += baseDirectory.value / "local-conf"
 
 //*** dist packaging
 // do not generage API documentation when using dist task
-sources in (Compile, doc) := Seq.empty
-publishArtifact in (Compile, packageDoc) := false
+sources in(Compile, doc) := Seq.empty
+publishArtifact in(Compile, packageDoc) := false
 
 
 //Removing the top level directory
 topLevelDirectory := None
 
-libraryDependencies ++= Seq( 
+libraryDependencies ++= Seq(
   ws,
   filters,
   guice,
   //jdbc,
   //ehcache,
-  "ch.qos.logback"%"logback-access"%"1.2.3",
-  "net.logstash.logback"%"logstash-logback-encoder"%"4.11",
+  "ch.qos.logback" % "logback-access" % "1.2.3",
+  "net.logstash.logback" % "logstash-logback-encoder" % "4.11",
+  "com.typesafe.play" %% "play-json" % "2.6.8",
+  "org.julienrf" %% "play-json-derived-codecs" % "4.0.0",
+  "io.cucumber" % "gherkin" % "5.0.0",
   "io.cucumber" %% "cucumber-scala" % "2.0.1" % Test,
   "io.cucumber" % "cucumber-junit" % "2.0.1" % Test,
   "io.cucumber" % "cucumber-picocontainer" % "2.0.1" % Test,
