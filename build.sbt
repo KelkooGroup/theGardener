@@ -40,6 +40,6 @@ libraryDependencies ++= Seq(
   "org.mockito" % "mockito-all" % "1.10.19" % Test
 )
 
-evictionWarningOptions in update := EvictionWarningOptions.default.withWarnTransitiveEvictions(false).withWarnDirectEvictions(false).withWarnScalaVersionEviction(false)
+evictionWarningOptions in update := EvictionWarningOptions.empty
 
 routesGenerator := InjectedRoutesGenerator
