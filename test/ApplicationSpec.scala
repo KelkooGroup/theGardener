@@ -22,7 +22,7 @@ class ApplicationSpec extends PlaySpec with GuiceOneAppPerSuite {
 
       status(home) mustBe OK
       contentType(home) mustBe Some("text/html")
-      contentAsString(home) must include ("Some random string")
+      contentAsString(home) must include ("Hello, the Gardener")
     }
   }
 }
