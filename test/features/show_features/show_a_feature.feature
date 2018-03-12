@@ -36,12 +36,12 @@ Scenario: providing several book suggestions
       | suggestionsWS/provide_book_suggestions.feature | Provide some book suggestions | As a user, I want some book suggestions so that I can do some discovery | Suggestions WebServices |
     And the following scenarios are displayed
       | id | scenario                           | scenario_type | abstraction_level | case_type    | workflow_step |
-      | 0  | providing several book suggestions | scenario      | level_0           | nominal_case | valid         |
+      | 0  | providing several book suggestions | Scenario      | level_0           | nominal_case | valid         |
     And the scenario "0" is displayed
       | id | step  | type   | value                                                                          |
-      | 0  | given | simple | a user                                                                         |
-      | 1  | when  | simple | we ask for suggestions                                                         |
-      | 2  | then  | simple | the suggestions are popular and available books adapted to the age of the user |
+      | 0  | Given | simple | a user                                                                         |
+      | 1  | When  | simple | we ask for suggestions                                                         |
+      | 2  | Then  | simple | the suggestions are popular and available books adapted to the age of the user |
 
   @level_1_specification @nominal_case @draft
   Scenario Outline: show the different possible values of the annotation considered by theGardener

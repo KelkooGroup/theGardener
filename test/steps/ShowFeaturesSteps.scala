@@ -1,17 +1,13 @@
 package steps
 
-import java.io.{File, PrintWriter}
 import java.nio.file.{Files, Paths}
 
+import cucumber.api.DataTable
 import cucumber.api.scala.{EN, ScalaDsl}
-import cucumber.api.{DataTable, PendingException}
 import org.scalatest.MustMatchers
 import org.scalatest.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import org.scalatestplus.play.{HtmlUnitFactory, OneBrowserPerSuite, PlaySpec}
-import play.api.test.FakeRequest
-import play.api.test.Helpers._
-import steps.CommonSteps._
 
 
 class ShowFeaturesSteps extends PlaySpec with GuiceOneServerPerSuite with OneBrowserPerSuite with HtmlUnitFactory with ScalaDsl with EN with MustMatchers with MockitoSugar {

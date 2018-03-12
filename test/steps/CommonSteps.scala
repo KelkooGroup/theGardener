@@ -5,25 +5,27 @@ import cucumber.api.scala.{EN, ScalaDsl}
 import models._
 import org.scalatest.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.inject._
-import play.api.inject.guice.GuiceApplicationBuilder
+import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.mvc.Result
-import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import play.api.test._
 
-import scala.collection.JavaConverters._
-import scala.collection.mutable
 import scala.concurrent.Future
 
-object CommonSteps extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar {
+object CommonSteps extends PlaySpec with GuiceOneServerPerSuite with ScalaDsl with MockitoSugar with Injecting {
 
   var response: Future[Result] = _
 
   var components: Map[String, Project] = _
 
-  implicit class DataTableAsScala(dataTable: DataTable) {
-    def asScala: Seq[Map[String, String]] = dataTable.asMaps(classOf[String], classOf[String]).asScala.map(_.asScala.toMap)
+  val server = TestServer(port, app)
+
+  Before() { _ =>
+    server.start()
+  }
+
+  After() { _ =>
+    server.stop()
   }
 }
 
