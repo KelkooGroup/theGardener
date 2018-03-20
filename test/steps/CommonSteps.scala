@@ -9,6 +9,8 @@ import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import play.api.test._
+import org.scalatest._
+import Matchers._
 
 import scala.concurrent.Future
 
@@ -51,4 +53,15 @@ class CommonSteps extends PlaySpec with ScalaDsl with EN with MockitoSugar {
   Then("""^I get the following json response body$""") { (expectedJson: DataTable) =>
     contentAsString(response) mustBe expectedJson.asScala.head.get("json")
   }
+
+  Then("""^the page contains$"""){ (expectedPageContentPart:String) =>
+    val content : String = contentAsString(response)
+
+    // Maybe we need to remove all blank / tabs / \n\r before comparing Strings
+    // Maybe we need to make sure that 2 different calls get sub string in order
+
+    content  should include (expectedPageContentPart)
+  }
+
+
 }

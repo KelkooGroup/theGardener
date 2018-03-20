@@ -10,7 +10,7 @@ class Api @Inject()(componentService: ComponentService) extends InjectedControll
   def feature(project: String, feature: String) = Action {
 
 
-    Ok(Json.toJson(componentService.parseFeatureFile("test", "test/features/show_features/show_a_feature.feature")))
+    Ok(Json.toJson(componentService.parseFeatureFile("test", "target/data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature")))
   }
 
 }

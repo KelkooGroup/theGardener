@@ -14,7 +14,7 @@ Feature: Show a feature
     When a user access to this feature in theGardener
     Then this feature is displayed properly
 
-  @level_1_specification @nominal_case @ongoing
+  @level_1_specification @nominal_case @draft
   Scenario: show a feature with one simple scenario with all required tags and meta data
     Given the file "data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature"
     """
@@ -32,8 +32,8 @@ Scenario: providing several book suggestions
     """
     When a user access to the feature "provide_book_suggestions.feature" of the project "suggestionsWS"
     Then the following feature is displayed
-      | id                                             | name                          | description                                                             | project                 |
-      | suggestionsWS/provide_book_suggestions.feature | Provide some book suggestions | As a user, I want some book suggestions so that I can do some discovery | Suggestions WebServices |
+      | id                                                    | name                          | description                                                             | project                 |
+      | suggestionsWS/master/provide_book_suggestions.feature | Provide some book suggestions | As a user, I want some book suggestions so that I can do some discovery | Suggestions WebServices |
     And the following scenarios are displayed
       | id | scenario                           | scenario_type | abstraction_level | case_type    | workflow_step |
       | 0  | providing several book suggestions | Scenario      | level_0           | nominal_case | valid         |
@@ -42,6 +42,139 @@ Scenario: providing several book suggestions
       | 0  | Given | simple | a user                                                                         |
       | 1  | When  | simple | we ask for suggestions                                                         |
       | 2  | Then  | simple | the suggestions are popular and available books adapted to the age of the user |
+
+  @level_2_technical_details @nominal_case @ongoing
+  Scenario: show a feature with one simple scenario with all required tags and meta data - html output
+    Given the file "data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature"
+    """
+Feature: Provide some book suggestions
+  As a user,
+  I want some book suggestions
+  So that I can do some discovery
+
+@level_0_high_level @nominal_case @ready
+Scenario: providing several book suggestions
+  Given a user
+  When we ask for suggestions
+  Then the suggestions are popular and available books adapted to the age of the user
+
+    """
+    When I perform a GET on following URL "http://localhost:9000/feature/suggestionsWS/provide_book_suggestions.feature"
+    Then the page contains
+"""
+    <div id="Feature_suggestionsWS/master/provide_book_suggestions.feature">
+        Project: Suggestions WebServices<br/>
+        Branch: master<br/>
+"""
+    And the page contains
+"""
+        <strong>Feature</strong>: Provide some book suggestions<br/>
+        As a user,<br/>I want some book suggestions<br/>So that I can do some discovery<br/>
+"""
+    And the page contains
+"""
+            <div id="Scenario_0">
+                Abstraction level: level_0_high_level, case: nominal_case, step: ready <br/>
+            <strong>Scenario:</strong>
+                providing several book suggestions <br/>
+"""
+    And the page contains
+"""
+                    <div id="Step_0">
+                        <strong>Given:</strong>
+                        a user
+
+                    </div>
+"""
+    And the page contains
+"""
+                    <div id="Step_1">
+                        <strong>When:</strong>
+                        we ask for suggestions
+
+                    </div>
+"""
+    And the page contains
+"""
+                    <div id="Step_2">
+                    <strong>Then:</strong>
+                    the suggestions are popular and available books adapted to the age of the user
+
+                    </div>
+"""
+
+
+  @level_2_technical_details @nominal_case @draft
+  Scenario: show a feature with one simple scenario with all required tags and meta data - json output
+    Given the file "data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature"
+    """
+Feature: Provide some book suggestions
+  As a user,
+  I want some book suggestions
+  So that I can do some discovery
+
+@level_0_high_level @nominal_case @ready
+Scenario: providing several book suggestions
+  Given a user
+  When we ask for suggestions
+  Then the suggestions are popular and available books adapted to the age of the user
+
+    """
+    When I perform a GET on following URL "http://localhost:9000/api/feature/suggestionsWS/provide_book_suggestions.feature"
+    Then the json contains
+"""
+  {
+    "id": "suggestionsWS/master/provide_book_suggestions.feature",
+    "branch": "master",
+    "name": "Provide some book suggestions",
+    "description": "As a user,\nI want some book suggestions\nSo that I can do some discovery",
+    "tags": [],
+    "language": "en",
+    "keyword": "Feature",
+    "scenarios":
+        [
+          {
+            "id": 0,
+            "name": "providing several book suggestions",
+            "abstractionLevel": "level_0_high_level",
+            "caseType": "nominal_case",
+            "workflowStep": "ready",
+
+            "keyword": "Scenario",
+            "description": "",
+            "tags": [
+                "level_0_high_level",
+                "nominal_case",
+                "ready"
+            ],
+
+            "steps": [
+                        {
+                        "id": 0,
+                        "keyword": "Given",
+                        "text": "a user",
+                        "argument": []
+                        },
+                        {
+                        "id": 1,
+                        "keyword": "When",
+                        "text": "we ask for suggestions",
+                        "argument": []
+                        },
+                        {
+                        "id": 2,
+                        "keyword": "Then",
+                        "text": "the suggestions are popular and available books adapted to the age of the user",
+                        "argument": []
+                        }
+                      ]
+
+          }
+        ],
+    "comments": []
+  }
+"""
+
 
   @level_1_specification @nominal_case @draft
   Scenario Outline: show the different possible values of the annotation considered by theGardener
