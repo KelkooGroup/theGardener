@@ -43,7 +43,7 @@ Scenario: providing several book suggestions
       | 1  | When  | simple | we ask for suggestions                                                         |
       | 2  | Then  | simple | the suggestions are popular and available books adapted to the age of the user |
 
-  @level_2_technical_details @nominal_case @ongoing
+  @level_2_technical_details @nominal_case @valid
   Scenario: show a feature with one simple scenario with all required tags and meta data - html output
     Given the file "data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature"
     """
@@ -59,7 +59,7 @@ Scenario: providing several book suggestions
   Then the suggestions are popular and available books adapted to the age of the user
 
     """
-    When I perform a GET on following URL "http://localhost:9000/feature/suggestionsWS/provide_book_suggestions.feature"
+    When I perform a GET on following URL "/feature/suggestionsWS/provide_book_suggestions.feature"
     Then the page contains
 """
     <div id="Feature_suggestionsWS/master/provide_book_suggestions.feature">
@@ -104,7 +104,7 @@ Scenario: providing several book suggestions
 """
 
 
-  @level_2_technical_details @nominal_case @draft
+  @level_2_technical_details @nominal_case @valid
   Scenario: show a feature with one simple scenario with all required tags and meta data - json output
     Given the file "data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature"
     """
@@ -120,8 +120,8 @@ Scenario: providing several book suggestions
   Then the suggestions are popular and available books adapted to the age of the user
 
     """
-    When I perform a GET on following URL "http://localhost:9000/api/feature/suggestionsWS/provide_book_suggestions.feature"
-    Then the json contains
+    When I perform a GET on following URL "/api/feature/suggestionsWS/provide_book_suggestions.feature"
+    Then I get the following json response body
 """
   {
     "id": "suggestionsWS/master/provide_book_suggestions.feature",

@@ -8,17 +8,20 @@ import gherkin.{AstBuilder, Parser, ast}
 import models._
 
 import scala.collection.JavaConverters._
+import scala.collection.mutable
 import scala.io.Source
 
 class ComponentService {
 
+  val projects = mutable.Map[String, Project]()
+
   def parseFeatureFile(projectId: String, filePath: String): Feature = {
     val featureFile = new File(filePath)
 
-    val id = s"$projectId/${featureFile.getName}"
-
     var branch = filePath.substring(filePath.indexOf(projectId + "/") + projectId.length + 1)
     branch = branch.substring(0, branch.indexOf("/"))
+
+    val id = s"$projectId/$branch/${featureFile.getName}"
 
     val parser = new Parser[GherkinDocument](new AstBuilder())
     val gherkinDocument = parser.parse(Source.fromFile(featureFile).mkString)

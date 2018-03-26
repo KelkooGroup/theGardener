@@ -1,9 +1,7 @@
 package controllers
 
 import javax.inject.Inject
-import models.Feature
 import play.api.Configuration
-import play.api.libs.json._
 import play.api.mvc._
 import services.ComponentService
 import views._
@@ -17,9 +15,9 @@ class Application @Inject()(componentService: ComponentService, configuration: C
   }
 
   def feature(project: String, feature: String) = Action {
+    val projectName = componentService.projects.get(project).map(_.name).getOrElse(project)
 
-
-    Ok(html.feature(project, componentService.parseFeatureFile(project, s"$projectsRootDirectory/$project/master/test/features/$feature")))
+    Ok(html.feature(projectName, componentService.parseFeatureFile(project, s"$projectsRootDirectory/$project/master/test/features/$feature")))
   }
 
 }

@@ -19,13 +19,6 @@
                         case s: ScenarioOutline => s"Abstraction level: ${s.abstractionLevel}, case: ${s.caseType}, step: ${s.workflowStep}"
                     }
                 } <br/>
-                @{
-                    scenario match {
-                        case _: Background =>
-                        case s: Scenario => s.tags.map("@" + _).mkString(" ")
-                        case s: ScenarioOutline => s.tags.map("@" + _).mkString(" ")
-                    }
-                } <br/>
             <strong>@scenario.keyword:</strong>
                 @scenario.name <br/>
                 @Html(scenario.description.replace("\n", "<br/>")) <br/>
