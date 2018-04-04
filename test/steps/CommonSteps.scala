@@ -1,8 +1,11 @@
 package steps
 
+import java.nio.file.{Files, Paths}
+
 import cucumber.api.DataTable
 import cucumber.api.scala.{EN, ScalaDsl}
 import models._
+import net.ruippeixotog.scalascraper.browser.HtmlUnitBrowser
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
@@ -32,12 +35,16 @@ object CommonSteps extends PlaySpec with GuiceOneServerPerSuite with BeforeAndAf
 
   val server = TestServer(port, app)
 
+  val browser = HtmlUnitBrowser.typed()
+
   override def beforeAll() = server.start()
 
   override def afterAll() = server.stop()
+
+  def cleanHtmlWhitespaces(content: String): String = content.replace("\t", " ").replace("\n", " ").replace("<br/>", " ").trim().replaceAll(" +", " ")
 }
 
-class CommonSteps extends PlaySpec with ScalaDsl with EN with MockitoSugar {
+class CommonSteps extends ScalaDsl with EN with MockitoSugar {
 
   import CommonSteps._
 
@@ -48,6 +55,33 @@ class CommonSteps extends PlaySpec with ScalaDsl with EN with MockitoSugar {
     }.toMap
 
     componentService.projects ++= components
+  }
+
+  Given("""^a simple feature is available in my project$""") { () =>
+    val fullPath = Paths.get("target/data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature")
+    Files.createDirectories(fullPath.getParent)
+
+    val content =
+      """
+Feature: Provide some book suggestions
+  As a user,
+  I want some book suggestions
+  So that I can do some discovery
+
+@level_0_high_level @nominal_case @ready
+Scenario: providing several book suggestions
+  Given a user
+  When we ask for suggestions
+  Then the suggestions are popular and available books adapted to the age of the user
+    """
+
+    Files.write(fullPath, content.getBytes())
+  }
+
+  Given("""^the file "([^"]*)"$""") { (path: String, content: String) =>
+    val fullPath = Paths.get("target/" + path)
+    Files.createDirectories(fullPath.getParent)
+    Files.write(fullPath, content.getBytes())
   }
 
   When("""^I perform a GET on following URL "([^"]*)"$""") { (url: String) =>
@@ -66,10 +100,6 @@ class CommonSteps extends PlaySpec with ScalaDsl with EN with MockitoSugar {
   Then("""^the page contains$""") { (expectedPageContentPart: String) =>
     val content = contentAsString(response)
 
-
     cleanHtmlWhitespaces(content) must include(cleanHtmlWhitespaces(expectedPageContentPart))
   }
-
-  def cleanHtmlWhitespaces(content: String): String = content.replace("\t", " ").replace("\n", " ").replace("<br/>", " ").trim().replaceAll(" +", " ")
-
 }

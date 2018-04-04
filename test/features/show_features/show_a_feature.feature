@@ -8,13 +8,13 @@ Feature: Show a feature
       | id            | name                    | repository_url                                       | stable_branch | features_root_path |
       | suggestionsWS | Suggestions WebServices | git@gitlab.corp.kelkoo.net:library/suggestionsWS.git | master        | test/features      |
 
-  @level_0_high_level @nominal_case @draft
+  @level_0_high_level @nominal_case @valid
   Scenario: show a simple feature
     Given a simple feature is available in my project
     When a user access to this feature in theGardener
     Then this feature is displayed properly
 
-  @level_1_specification @nominal_case @draft
+  @level_1_specification @nominal_case @valid
   Scenario: show a feature with one simple scenario with all required tags and meta data
     Given the file "data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature"
     """
@@ -33,15 +33,15 @@ Scenario: providing several book suggestions
     When a user access to the feature "provide_book_suggestions.feature" of the project "suggestionsWS"
     Then the following feature is displayed
       | id                                                    | name                          | description                                                             | project                 |
-      | suggestionsWS/master/provide_book_suggestions.feature | Provide some book suggestions | As a user, I want some book suggestions so that I can do some discovery | Suggestions WebServices |
+      | suggestionsWS/master/provide_book_suggestions.feature | Provide some book suggestions | As a user, I want some book suggestions So that I can do some discovery | Suggestions WebServices |
     And the following scenarios are displayed
       | id | scenario                           | scenario_type | abstraction_level | case_type    | workflow_step |
-      | 0  | providing several book suggestions | Scenario      | level_0           | nominal_case | valid         |
+      | 0  | providing several book suggestions | Scenario      | level_0           | nominal_case | ready         |
     And the scenario "0" is displayed
-      | id | step  | type   | value                                                                          |
-      | 0  | Given | simple | a user                                                                         |
-      | 1  | When  | simple | we ask for suggestions                                                         |
-      | 2  | Then  | simple | the suggestions are popular and available books adapted to the age of the user |
+      | id | step  | value                                                                          |
+      | 0  | Given | a user                                                                         |
+      | 1  | When  | we ask for suggestions                                                         |
+      | 2  | Then  | the suggestions are popular and available books adapted to the age of the user |
 
   @level_2_technical_details @nominal_case @valid
   Scenario: show a feature with one simple scenario with all required tags and meta data - html output
@@ -62,7 +62,7 @@ Scenario: providing several book suggestions
     When I perform a GET on following URL "/feature/suggestionsWS/provide_book_suggestions.feature"
     Then the page contains
 """
-    <div id="Feature_suggestionsWS/master/provide_book_suggestions.feature">
+    <div id="suggestionsWS_master_provide_book_suggestions_feature">
         Project: Suggestions WebServices<br/>
         Branch: master<br/>
 """
@@ -286,11 +286,11 @@ Scenario: one service on which the suggestion system depends on is down
     """
     When a user access to the feature "provide_book_suggestions.feature" of the project "suggestionsWS"
     Then the scenario "0" is displayed
-      | id | step  | type   | value                                                                | parameters          |
-      | 0  | given | simple | the user <param_0>                                                   | param_0:Tim         |
-      | 1  | given | simple | impossible to get information on the user                            |                     |
-      | 2  | when  | simple | we ask for <param_0> suggestions from <param_1> different categories | param_0:3,param_1:2 |
-      | 3  | then  | simple | the system is temporary not available                                |                     |
+      | id | step  | value                                                                | parameters          |
+      | 0  | given | the user <param_0>                                                   | param_0:Tim         |
+      | 1  | given | impossible to get information on the user                            |                     |
+      | 2  | when  | we ask for <param_0> suggestions from <param_1> different categories | param_0:3,param_1:2 |
+      | 3  | then  | the system is temporary not available                                |                     |
 
   @level_1_specification @nominal_case @draft
   Scenario: show a feature with one scenario with a multi lines step
@@ -312,13 +312,13 @@ Feature: As a user, I want some book suggestions so that I can do some discovery
     """
     When a user access to the feature "provide_book_suggestions.feature" of the project "suggestionsWS"
     Then the scenario "0" is displayed
-      | id | step  | type       | value                                                                          | parameters          |
-      | 0  | given | simple     | the user <param_0>                                                             | param_0:Tim         |
-      | 1  | given | simple     | he is <param_0> years old                                                      | param_0:4           |
-      | 2  | given | multilines | the popular categories for this age are                                        |                     |
-      | 3  | when  | simple     | we ask for <param_0> suggestions from <param_1> different categories           | param_0:3,param_1:2 |
-      | 4  | then  | simple     | the suggestions are popular and available books adapted to the age of the user |                     |
-    Then the scenario "0" is displayed with the multi lines step "2"
+      | id | step  | value                                                                          | parameters          |
+      | 0  | given | the user <param_0>                                                             | param_0:Tim         |
+      | 1  | given | he is <param_0> years old                                                      | param_0:4           |
+      | 2  | given | the popular categories for this age are                                        |                     |
+      | 3  | when  | we ask for <param_0> suggestions from <param_1> different categories           | param_0:3,param_1:2 |
+      | 4  | then  | the suggestions are popular and available books adapted to the age of the user |                     |
+    Then the step "2" of scenario "0" is displayed with the arguments
       | column0    | column1         |
       | categoryId | categoryName    |
       | cat1       | Walt Disney     |

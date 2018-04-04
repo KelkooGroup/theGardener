@@ -1,7 +1,7 @@
 @(project: String, feature: Feature)
 
 @main("Feature") {
-    <div id="Feature_@feature.id">
+    <div id="@{feature.id.replace("/", "_").replace(".", "_")}">
         Project: @project<br/>
         Branch: @feature.branch<br/>
 

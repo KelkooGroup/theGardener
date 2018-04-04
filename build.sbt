@@ -36,6 +36,7 @@ libraryDependencies ++= Seq(
   "com.typesafe.play" %% "play-json" % "2.6.8",
   "org.julienrf" %% "play-json-derived-codecs" % "4.0.0",
   "io.cucumber" % "gherkin" % "5.0.0",
+  "net.ruippeixotog" %% "scala-scraper" % "2.1.0" % Test,
   "io.cucumber" %% "cucumber-scala" % "2.0.1" % Test,
   "io.cucumber" % "cucumber-junit" % "2.0.1" % Test,
   "io.cucumber" % "cucumber-picocontainer" % "2.0.1" % Test,
