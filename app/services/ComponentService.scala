@@ -68,9 +68,15 @@ class ComponentService {
 
   private def mapGherkinTags(gherkinTags: JList[ast.Tag]): (Seq[String], String, String, String) = {
     val tags = gherkinTags.asScala.map(_.getName.replace("@", ""))
-    val abstractionLevel = Feature.abstractionLevels.intersect(tags.toSet).headOption.getOrElse("level_1")
-    val caseType = Feature.caseTypes.intersect(tags.toSet).headOption.getOrElse("nominal_case")
-    val workflowStep = Feature.workflowSteps.intersect(tags.toSet).headOption.getOrElse("valid")
+    val cleanTags = tags.map(_.replace("_", "")).map(_.toLowerCase).toSet
+
+    val abstractionLevel = Feature.abstractionLevels.flatMap(level => cleanTags.map(tag => (level._1, tag) -> level._2))
+      .find(level => level._2.exists(level._1._2.startsWith))
+      .map(_._1._1)
+      .getOrElse("level_1_specification")
+
+    val caseType = Feature.caseTypes.find(caseType => tags.exists(_.startsWith(caseType._2))).map(_._1).getOrElse("nominal_case")
+    val workflowStep = Feature.workflowSteps.intersect(cleanTags).headOption.getOrElse("valid")
 
     (tags, abstractionLevel, caseType, workflowStep)
   }

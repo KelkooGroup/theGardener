@@ -53,8 +53,8 @@ class ShowFeaturesSteps extends ScalaDsl with EN with MockitoSugar {
     dataTable.asScala.map { scenario =>
       val scenarioText = browser.parseString(contentAsString(response)) >> text("#Scenario_" + scenario("id"))
 
-      scenarioText must include(scenario("scenario"))
-      scenarioText must include(scenario("scenario_type"))
+      if (scenario.contains("scenario")) scenarioText must include(scenario("scenario"))
+      if (scenario.contains("scenario_type")) scenarioText must include(scenario("scenario_type"))
       scenarioText must include(scenario("abstraction_level"))
       scenarioText must include(scenario("case_type"))
       scenarioText must include(scenario("workflow_step"))
@@ -69,5 +69,4 @@ class ShowFeaturesSteps extends ScalaDsl with EN with MockitoSugar {
       stepText must include(step("value"))
     }
   }
-
 }

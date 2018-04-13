@@ -176,9 +176,9 @@ Scenario: providing several book suggestions
 """
 
 
-  @level_1_specification @nominal_case @draft
+  @level_1_specification @nominal_case @valid
   Scenario Outline: show the different possible values of the annotation considered by theGardener
-    Given the file "data/git/kk-gitlab/suggestionsWS/master/test/features/provide_book_suggestions.feature"
+    Given the file "data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature"
     """
 Feature: As a user, I want some book suggestions so that I can do some discovery
 
@@ -208,12 +208,12 @@ Scenario: providing several book suggestions
       | @ongoing                   |             |             | level_1                      | nominal_case         | ongoing                  |
       | @valid                     |             |             | level_1                      | nominal_case         | valid                    |
       | @level_0_high_level        | @draft      |             | level_0                      | nominal_case         | draft                    |
-      | @level_0_high_level        | @limit_case |             | level_1                      | limit_case           | valid                    |
-      | @level_0_high_level        | @limit_case | @ongoing    | level_1                      | limit_case           | ongoing                  |
+      | @level_0_high_level        | @limit_case |             | level_0                      | limit_case           | valid                    |
+      | @level_0_high_level        | @limit_case | @ongoing    | level_0                      | limit_case           | ongoing                  |
 
-  @level_1_specification @limit_case @draft
+  @level_1_specification @limit_case @valid
   Scenario Outline: show the different possible values of the annotation considered by theGardener
-    Given the file "data/git/kk-gitlab/suggestionsWS/master/test/features/provide_book_suggestions.feature"
+    Given the file "data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature"
     """
 Feature: As a user, I want some book suggestions so that I can do some discovery
 
@@ -257,7 +257,7 @@ Scenario: providing several book suggestions
 
   @level_1_specification @error_case @draft
   Scenario: try to show a feature based on an incorrect feature file
-    Given the file "data/git/kk-gitlab/suggestionsWS/master/test/features/provide_book_suggestions.feature"
+    Given the file "data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature"
     """
 Feature: As a user, I want some book suggestions so that I can do some discovery
 
@@ -272,7 +272,7 @@ Scenar: providing several book suggestions
 
   @level_1_specification @nominal_case @draft
   Scenario: show a feature with one scenario with some parameters
-    Given the file "data/git/kk-gitlab/suggestionsWS/master/test/features/provide_book_suggestions.feature"
+    Given the file "data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature"
     """
 Feature: As a user, I want some book suggestions so that I can do some discovery
 
@@ -294,7 +294,7 @@ Scenario: one service on which the suggestion system depends on is down
 
   @level_1_specification @nominal_case @draft
   Scenario: show a feature with one scenario with a multi lines step
-    Given the file "data/git/kk-gitlab/suggestionsWS/master/test/features/provide_book_suggestions.feature"
+    Given the file "data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature"
     """
 Feature: As a user, I want some book suggestions so that I can do some discovery
 
@@ -327,7 +327,7 @@ Feature: As a user, I want some book suggestions so that I can do some discovery
 
   @level_1_specification @nominal_case @draft
   Scenario: show a feature with one outline scenario
-    Given the file "data/git/kk-gitlab/suggestionsWS/master/test/features/provide_book_suggestions.feature"
+    Given the file "data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature"
     """
 Feature: As a user, I want some book suggestions so that I can do some discovery
 

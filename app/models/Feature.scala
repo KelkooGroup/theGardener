@@ -29,7 +29,7 @@ object Feature {
   implicit val scenarioFormat = derived.flat.oformat[ScenarioDefinition]((__ \ "keyword").format[String])
   implicit val featureFormat = Json.format[Feature]
 
-  val abstractionLevels = Set("level_0_high_level", "level_1_specification", "level_2_technical_details")
-  val caseTypes = Set("nominal_case", "limit_case", "error_case")
+  val abstractionLevels = Map("level_0_high_level" -> Set("level0", "l0"), "level_1_specification" -> Set("level1", "l1"), "level_2_technical_details" -> Set("level2", "l2"))
+  val caseTypes = Map("nominal_case" -> "nominal", "limit_case" -> "limit", "error_case" -> "error")
   val workflowSteps = Set("draft", "ready", "ongoing", "valid")
 }
