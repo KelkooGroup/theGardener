@@ -255,22 +255,23 @@ Scenario: providing several book suggestions
       | @Nominal           | level_1                      | nominal_case         | valid                    |
       | @Draft             | level_1                      | nominal_case         | draft                    |
 
-  @level_1_specification @error_case @draft
+  @level_1_specification @error_case @valid
   Scenario: try to show a feature based on an incorrect feature file
     Given the file "data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature"
     """
 Feature: As a user, I want some book suggestions so that I can do some discovery
 
-Scenar: providing several book suggestions
+Scenario: providing several book suggestions
   Given a user
   When we ask for suggestions
   Then the suggestions are popular and available books adapted to the age of the user
 
+""
     """
     When a user access to the feature "provide_book_suggestions.feature" of the project "suggestionsWS"
-    Then no feature is display
+    Then no feature is displayed
 
-  @level_1_specification @nominal_case @draft
+  @level_1_specification @nominal_case @valid
   Scenario: show a feature with one scenario with some parameters
     Given the file "data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature"
     """
@@ -287,12 +288,12 @@ Scenario: one service on which the suggestion system depends on is down
     When a user access to the feature "provide_book_suggestions.feature" of the project "suggestionsWS"
     Then the scenario "0" is displayed
       | id | step  | value                                                                | parameters          |
-      | 0  | given | the user <param_0>                                                   | param_0:Tim         |
-      | 1  | given | impossible to get information on the user                            |                     |
-      | 2  | when  | we ask for <param_0> suggestions from <param_1> different categories | param_0:3,param_1:2 |
-      | 3  | then  | the system is temporary not available                                |                     |
+      | 0  | Given | the user <param_0>                                                   | param_0:Tim         |
+      | 1  | And   | impossible to get information on the user                            |                     |
+      | 2  | When  | we ask for <param_0> suggestions from <param_1> different categories | param_0:3,param_1:2 |
+      | 3  | Then  | the system is temporary not available                                |                     |
 
-  @level_1_specification @nominal_case @draft
+  @level_1_specification @nominal_case @valid
   Scenario: show a feature with one scenario with a multi lines step
     Given the file "data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature"
     """
@@ -313,11 +314,11 @@ Feature: As a user, I want some book suggestions so that I can do some discovery
     When a user access to the feature "provide_book_suggestions.feature" of the project "suggestionsWS"
     Then the scenario "0" is displayed
       | id | step  | value                                                                          | parameters          |
-      | 0  | given | the user <param_0>                                                             | param_0:Tim         |
-      | 1  | given | he is <param_0> years old                                                      | param_0:4           |
-      | 2  | given | the popular categories for this age are                                        |                     |
-      | 3  | when  | we ask for <param_0> suggestions from <param_1> different categories           | param_0:3,param_1:2 |
-      | 4  | then  | the suggestions are popular and available books adapted to the age of the user |                     |
+      | 0  | Given | the user <param_0>                                                             | param_0:Tim         |
+      | 1  | And   | he is <param_0> years old                                                      | param_0:4           |
+      | 2  | And   | the popular categories for this age are                                        |                     |
+      | 3  | When  | we ask for <param_0> suggestions from <param_1> different categories           | param_0:3,param_1:2 |
+      | 4  | Then  | the suggestions are popular and available books adapted to the age of the user |                     |
     Then the step "2" of scenario "0" is displayed with the arguments
       | column0    | column1         |
       | categoryId | categoryName    |
@@ -325,7 +326,7 @@ Feature: As a user, I want some book suggestions so that I can do some discovery
       | cat2       | Picture books   |
       | cat3       | Bedtime stories |
 
-  @level_1_specification @nominal_case @draft
+  @level_1_specification @nominal_case @valid
   Scenario: show a feature with one outline scenario
     Given the file "data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature"
     """
@@ -347,13 +348,13 @@ Examples:
     When a user access to the feature "provide_book_suggestions.feature" of the project "suggestionsWS"
     Then the following scenarios are displayed
       | id | scenario                    | scenario_type    | abstraction_level | case_type  | workflow_step |
-      | 0  | unknown user, no suggestion | scenario_outline | level_1           | error_case | valid         |
+      | 0  | unknown user, no suggestion | Scenario Outline | level_1           | error_case | valid         |
     And the scenario "0" is displayed
-      | id | step  | type   | value                                      | parameters                         |
-      | 0  | given | simple | the user "<outline_param_0>"               | outline_param_0:user_name          |
-      | 1  | given | simple | he is unknown                              |                                    |
-      | 2  | when  | simple | we ask for "<outline_param_0>" suggestions | outline_param_0:number_suggestions |
-      | 3  | then  | simple | there is no suggestions                    |                                    |
+      | id | step  | value                                    | parameters                           |
+      | 0  | Given | the user <outline_param_0>               | outline_param_0:<user_name>          |
+      | 1  | And   | he is unknown                            |                                      |
+      | 2  | When  | we ask for <outline_param_0> suggestions | outline_param_0:<number_suggestions> |
+      | 3  | Then  | there is no suggestions                  |                                      |
     And the scenario "0" examples are displayed
       | column0   | column1            |
       | user_name | number_suggestions |

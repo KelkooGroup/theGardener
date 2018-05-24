@@ -2,8 +2,10 @@ package steps
 
 import cucumber.api.DataTable
 import cucumber.api.scala.{EN, ScalaDsl}
+import gherkin.ParserException
 import net.ruippeixotog.scalascraper.dsl.DSL.Extract._
 import net.ruippeixotog.scalascraper.dsl.DSL._
+import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
 import play.api.test.Helpers._
 import play.api.test._
@@ -66,7 +68,47 @@ class ShowFeaturesSteps extends ScalaDsl with EN with MockitoSugar {
       val stepText = browser.parseString(contentAsString(response)) >> "#Scenario_" + id >> text("#Step_" + step("id"))
 
       stepText must include(step("step"))
-      stepText must include(step("value"))
+
+      if (step.getOrElse("parameters", "").nonEmpty) {
+        val parameters = step("parameters").split(",").map { p =>
+          val param = p.split(":")
+          param(0) -> param(1)
+        }.toMap
+
+        var value = step("value")
+        for ((k, v) <- parameters) {
+          value = value.replace(s"<$k>", s""""$v"""")
+        }
+
+        stepText must include(value)
+
+      } else {
+        stepText must include(step("value"))
+      }
+
+
+    }
+  }
+
+  Then("""^no feature is displayed$""") { () =>
+    ScalaFutures.whenReady(response.failed) {
+      _ mustBe a[ParserException]
+    }
+  }
+
+  Then("""^the step "([^"]*)" of scenario "([^"]*)" is displayed with the arguments$""") { (step: String, scenario: String, dataTable: DataTable) =>
+    dataTable.asScala.map { columns =>
+      val stepText = browser.parseString(contentAsString(response)) >> "#Scenario_" + scenario >> text("#Step_" + step)
+      stepText must include(columns("column0"))
+      stepText must include(columns("column1"))
+    }
+  }
+
+  Then("""^the scenario "([^"]*)" examples are displayed$""") { (scenario: String, dataTable: DataTable) =>
+    dataTable.asScala.map { columns =>
+      val stepText = browser.parseString(contentAsString(response)) >> "#Scenario_" + scenario >> text("#Example_0")
+      stepText must include(columns("column0"))
+      stepText must include(columns("column1"))
     }
   }
 }
