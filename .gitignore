@@ -4,3 +4,4 @@
 *.iml
 target
 logs
+test/OnGoingBDDTest.scala
