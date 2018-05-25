@@ -3,15 +3,15 @@
 # ~~~~
 
 # Home page
-GET     /                           controllers.Application.index()
+GET        /                                     controllers.Application.index()
+
+GET        /feature/:project/:feature            controllers.Application.feature(project: String, feature: String)
+
+GET        /api/feature/:project/:feature        controllers.Api.feature(project: String, feature: String)
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.at(path="/public", file)
+GET        /assets/*file                         controllers.Assets.at(path="/public", file)
 
 #IsAlive
 GET     /HealthCheck/isAlive        com.kelkoo.play.controllers.IsAlive.isAlive(status: Option[String])
 
-# Some examples
-GET     /example                    controllers.Application.example()
-GET     /helloJson                  controllers.Application.helloJson()
-GET     /dataJson                   controllers.Application.dataJson()

@@ -1,41 +1,23 @@
 package controllers
 
 import javax.inject.Inject
-
-import models.MyModel
-import play.api.libs.json._
+import play.api.Configuration
 import play.api.mvc._
+import services.ComponentService
 import views._
 
-class Application @Inject()(dataSource: MyDataSource) extends InjectedController {
+class Application @Inject()(componentService: ComponentService, configuration: Configuration) extends InjectedController {
 
-  val HelloWorldMessage = "Hello, world"
+  val projectsRootDirectory = configuration.get[String]("projects.root.directory")
 
   def index = Action {
-    Ok(html.index(dataSource.someString))
+    Ok(html.index("Hello, the Gardener"))
   }
 
-  def example = Action {
-    Ok(html.example(dataSource.someString))
+  def feature(project: String, feature: String) = Action {
+    val projectName = componentService.projects.get(project).map(_.name).getOrElse(project)
+
+    Ok(html.feature(projectName, componentService.parseFeatureFile(project, s"$projectsRootDirectory/$project/master/test/features/$feature")))
   }
-
-  def helloJson = Action {
-    Ok(Json.obj("message" -> HelloWorldMessage))
-  }
-
-  def dataJson = Action {
-    Ok(Json.toJson(dataSource.someData))
-  }
-
-}
-
-class MyDataSource {
-
-  def someString: String = "Some random string"
-
-  def someData: Seq[MyModel] = Seq(
-    MyModel("The universal answer", 42),
-    MyModel("Emergency number", 911)
-  )
 
 }
