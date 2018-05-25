@@ -1,0 +1,9 @@
+<%=value("application_logs")%>/*.log {
+  <%= value("the_gardener_logrotate_frequency") %>
+  rotate <%= value("the_gardener_logrotate_count") %>
+  copytruncate
+  compress
+  missingok
+  notifempty
+  sharedscripts
+}
