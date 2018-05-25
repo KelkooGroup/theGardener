@@ -1,0 +1,58 @@
+Feature: Get BDD features from a project
+  As a user,
+  I want theGardener to retrieve all features related to BDD of my project
+  So that I can access to those features through theGardener
+
+  @level_0_high_level @nominal_case @draft
+  Scenario: get bdd features from a project
+    Given a registered project in theGardener hosted on a remote server
+    When BDD features synchronization action is triggered
+    Then the project BDD features of this project are retrieved from the remote server
+
+  @level_1_specification @nominal_case @draft
+  Scenario: get bdd features from a project
+    Given the projects settings are
+      | id            | name                    | repository_url                                       | stable_branch | features_root_path | local_copy_root_path        |
+      | suggestionsWS | Suggestions WebServices | git@gitlab.corp.kelkoo.net:library/suggestionsWS.git | master        | test/features      | data/projects/suggestionsWS |
+    And the server "gitlab.corp.kelkoo.net" host under the project "library/suggestionsWS" on the branch "master" the file "test/features/provide_book_suggestions.feature"
+    """
+Feature: As a user, I want some book suggestions so that I can do some discovery
+
+@level_0_high_level @nominal_case @ready
+Scenario: providing several book suggestions
+  Given a user
+  When we ask for suggestions
+  Then the suggestions are popular and available books adapted to the age of the user
+    """
+    When BDD features synchronization action is triggered
+    Then the file system store the file "data/projects/suggestionsWS/master/test/features/provide_book_suggestions.feature"
+    """
+Feature: As a user, I want some book suggestions so that I can do some discovery
+
+@level_0_high_level @nominal_case @ready
+Scenario: providing several book suggestions
+  Given a user
+  When we ask for suggestions
+  Then the suggestions are popular and available books adapted to the age of the user
+    """
+
+  @level_1_specification @nominal_case @draft
+  Scenario: get bdd features from a project with a complex structure of feature files
+    Given the projects settings are
+      | id            | name                    | repository_url                                       | stable_branch | features_root_path | local_copy_root_path        |
+      | suggestionsWS | Suggestions WebServices | git@gitlab.corp.kelkoo.net:library/suggestionsWS.git | master        | test/features      | data/projects/suggestionsWS |
+    And the server "gitlab.corp.kelkoo.net" host under the project "library/suggestionsWS" on the branch "master" the files
+      | file                                                       | content                           |
+      | test/features/suggestions/provide_book_suggestions.feature | Feature: Provide book suggestions |
+      | test/features/setup/setup_suggestions.feature              | Feature: Setup book suggestions   |
+    When BDD features synchronization action is triggered
+    Then the file system store the files
+      | files                                                                                         | content                           |
+      | data/projects/suggestionsWS/master/test/features/suggestions/provide_book_suggestions.feature | Feature: Provide book suggestions |
+      | data/projects/suggestionsWS/master/test/features/setup/setup_suggestions.feature              | Feature: Setup book suggestions   |
+
+
+## [PULL] One implementation can be a scheduler that pull from time to time all the remote server.
+## [PUSH] Another implementation, in addition to the first one, is to define a resource on theGardener that can be triggered by a webHook when some code is pushed on the remote server.
+
+
