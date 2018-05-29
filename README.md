@@ -1,4 +1,6 @@
-# theGardener [![Travis](https://travis-ci.org/KelkooGroup/theGardener.svg?branch=master)](https://travis-ci.org/KelkooGroup/theGardener)
+![the Gardener](https://raw.githubusercontent.com/KelkooGroup/theGardener/master/public/images/logo.png) 
+
+[![Travis](https://travis-ci.org/KelkooGroup/theGardener.svg?branch=master)](https://travis-ci.org/KelkooGroup/theGardener)
 
 
 ## How to develop locally ?
