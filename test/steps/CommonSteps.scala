@@ -11,8 +11,6 @@ import org.scalatest.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.Application
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.mvc.Result
 import play.api.test.Helpers._
@@ -20,6 +18,19 @@ import play.api.test._
 import services.ComponentService
 
 import scala.concurrent.Future
+import play.api.Mode
+import play.api.db.Database
+import play.api.inject._
+import play.api.inject.guice.GuiceApplicationBuilder
+
+import scala.reflect.ClassTag
+
+object Injector {
+  lazy val injector = (new GuiceApplicationBuilder).injector()
+
+  def inject[T: ClassTag]: T = injector.instanceOf[T]
+}
+
 
 object CommonSteps extends PlaySpec with GuiceOneServerPerSuite with BeforeAndAfterAll with MockitoSugar with Injecting {
 
@@ -29,8 +40,11 @@ object CommonSteps extends PlaySpec with GuiceOneServerPerSuite with BeforeAndAf
 
   val componentService = new ComponentService()
 
+  implicit val db = Injector.inject[Database]
+
   override def fakeApplication(): Application = new GuiceApplicationBuilder()
     .overrides(bind[ComponentService].toInstance(componentService))
+    .in(Mode.Test)
     .build()
 
   val server = TestServer(port, app)
@@ -51,7 +65,7 @@ class CommonSteps extends ScalaDsl with EN with MockitoSugar {
   Given("""^the project settings are setup in theGardener$""") { (dataTable: DataTable) =>
     components = dataTable.asScala.map { line =>
       val id = line("id")
-      (id, Project(id, line.getOrElse("group", ""), line.getOrElse("system", ""), line("name"), line("repository_url"), line("stable_branch"), line("features_root_path")))
+      (id, Project(id, line("name"), line("repository_url"), line("stable_branch"), line("features_root_path")))
     }.toMap
 
     componentService.projects ++= components
@@ -86,6 +100,11 @@ Scenario: providing several book suggestions
 
   When("""^I perform a GET on following URL "([^"]*)"$""") { (url: String) =>
     response = route(app, FakeRequest(GET, url)).get
+  }
+
+  When("""^I perform a POST on following URL "([^"]*)"$"""){ (url: String, body:String) =>
+    response = route(app, FakeRequest(POST, url).withJsonBody(Json.parse(body))).get
+
   }
 
   Then("""^I get a response with status "([^"]*)"$""") { (expectedStatus: String) =>
