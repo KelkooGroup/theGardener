@@ -5,7 +5,7 @@ DROP TABLE project;
 
 # --- !Ups
 create table project(
-    id  varchar(255) not null,
+    id varchar(255) not null,
     name varchar(255) not null,
     repositoryUrl varchar(255) not null,
     stableBranch varchar(255) not null,

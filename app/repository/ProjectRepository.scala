@@ -4,13 +4,13 @@ import javax.inject.Inject
 import models.Project
 import play.api.db.Database
 import anorm._
-import anorm.SqlParser._
+import anorm.SqlParser.{get}
 
 
 class ProjectRepository @Inject()(db: Database) {
 
   val parser: RowParser[Project] = {
-    get[String]("id") ~
+      get[String]("id") ~
       get[String]("name") ~
       get[String]("repositoryUrl") ~
       get[String]("stableBranch") ~
@@ -42,5 +42,9 @@ class ProjectRepository @Inject()(db: Database) {
     }
   }
 
-
+  def getAll()(implicit db: Database): List[Project] = {
+    db.withConnection { implicit connection =>
+      SQL("SELECT * FROM Project").as(parser *)
+    }
+  }
 }

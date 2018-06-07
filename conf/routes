@@ -9,7 +9,9 @@ GET        /feature/:project/:feature            controllers.Application.feature
 
 GET        /api/feature/:project/:feature        controllers.Api.feature(project: String, feature: String)
 
-POST       /api/project                          controllers.Api.project()
+POST       /api/project                          controllers.Api.registerProject()
+
+GET       /api/project/:id                       controllers.Api.getProject(id : String)
 
 # Map static resources from the /public folder to the /assets URL path
 GET        /assets/*file                         controllers.Assets.at(path="/public", file)

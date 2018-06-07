@@ -4,8 +4,8 @@ Feature: Show a feature
   So that my project feature is shared with all users
 
   Background:
-    Given the project settings are setup in theGardener
-      | id            | name                    | repository_url                                       | stable_branch | features_root_path |
+    Given we have the following projects
+      | id            | name                    | repositoryUrl                                       | stableBranch | featuresRootPath |
       | suggestionsWS | Suggestions WebServices | git@gitlab.corp.kelkoo.net:library/suggestionsWS.git | master        | test/features      |
 
   @level_0_high_level @nominal_case @valid
