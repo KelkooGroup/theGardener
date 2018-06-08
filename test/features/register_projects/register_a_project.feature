@@ -3,7 +3,7 @@ Feature: Register a project
   I want to register my project into theGardener
   So that my project BDD features will be shared with all users
 
-  @level_0_high_level @nominal_case @valid
+  @level_0_high_level @nominal_case @draft
   Scenario: register a project
     Given a git server that host a project
     When a user register this project in theGardener
@@ -45,7 +45,7 @@ Feature: Register a project
 	"featuresRootPath": "test/features"
 }
      """
-    Then the projects settings are now
+    Then we have the following projects
       | id            | name                    | repositoryUrl                                        | stableBranch | featuresRootPath |
       | suggestionsWS | Suggestions WebServices | git@gitlab.corp.kelkoo.net:library/suggestionsWS.git | master       | test/features    |
 
@@ -65,9 +65,14 @@ Feature: Register a project
      "repositoryUrl": "git@gitlab.corp.kelkoo.net:library/suggestionsWS.git",
      "stableBranch": "master",
      "featuresRootPath": "test/features"
-
 }
-   """
+  """
 
-
+#see what happened if the project exists already : an update instead of a insert
+  @level_2_technical_details @nominal_case @draft
+  Scenario: Update a project
+    Given: We have the following projects
+      | id            | name                    | repositoryUrl                                        | stableBranch | featuresRootPath |
+      | suggestionsWS | Suggestions WebServices | git@gitlab.corp.kelkoo.net:library/suggestionsWS.git | master       | test/features    |
+    When
 

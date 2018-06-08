@@ -3,10 +3,10 @@ package controllers
 import javax.inject.Inject
 import play.api.Configuration
 import play.api.mvc._
-import services.ComponentService
+import services.ProjectService
 import views._
 
-class Application @Inject()(componentService: ComponentService, configuration: Configuration) extends InjectedController {
+class Application @Inject()(componentService: ProjectService, configuration: Configuration) extends InjectedController {
 
   val projectsRootDirectory = configuration.get[String]("projects.root.directory")
 

@@ -27,23 +27,35 @@ class RegisterProjectSteps extends ScalaDsl with EN with MockitoSugar {
 
 
   Then("""^the projects settings are now$""") { (data: DataTable) =>
-    val expectedProject = data.asList(classOf[Project]).asScala.toList
-    val actualProject = projectRepository.getAll()
-    actualProject mustBe expectedProject
+    val expectedProjects = data.asList(classOf[Project]).asScala
+    val actualProjects = projectRepository.getAll()
+    actualProjects mustBe expectedProjects
+  }
+
+  When("""^a user register a new project with$""") { (data: DataTable) =>
+    cleanDatabase()
+
+    val projects = data.asList(classOf[Project]).asScala.map(project => Project(project.id, project.name, project.repositoryUrl, project.stableBranch, project.featuresRootPath))
+
+    projects.foreach(projectRepository.insertOne)
+
+    CommonSteps.projects = projects.map(p => (p.id, p)).toMap
+
+    projectService.projects ++= CommonSteps.projects
   }
 
 
   Given("""^a git server that host a project$""") { () =>
     cleanDatabase()
-    projectRepository.getAll()
-
   }
 
   When("""^a user register this project in theGardener$""") { () =>
+
   }
 
 
   Then("""^those project settings are stored in theGardener system$""") { () =>
+
   }
 
 

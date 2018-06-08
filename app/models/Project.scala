@@ -8,8 +8,6 @@ object Project {
 
   implicit val projectFormat = Json.format[Project]
 
-
-
 }
 
 

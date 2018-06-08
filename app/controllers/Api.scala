@@ -7,9 +7,9 @@ import play.api.{Configuration, Logger, http}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, InjectedController}
 import repository.ProjectRepository
-import services.ComponentService
+import services.ProjectService
 
-class Api @Inject()(implicit val db: Database, componentService: ComponentService, projectRepository: ProjectRepository, configuration: Configuration) extends InjectedController {
+class Api @Inject()(implicit val db: Database, componentService: ProjectService, projectRepository: ProjectRepository, configuration: Configuration) extends InjectedController {
 
   val projectsRootDirectory = configuration.get[String]("projects.root.directory")
 
@@ -19,7 +19,7 @@ class Api @Inject()(implicit val db: Database, componentService: ComponentServic
 
   def registerProject() = Action { implicit request =>
     val project = request.body.asJson.map(_.as[Project])
-   project match {
+    project match {
       case Some(p) => projectRepository.insertOne(p)
         Created(Json.toJson(projectRepository.getOneById(p.id)))
       case _ => BadRequest
@@ -31,7 +31,7 @@ class Api @Inject()(implicit val db: Database, componentService: ComponentServic
     Logger.debug(s"Project.getProject $id")
     projectRepository.getOneById(id) match {
       case Some(project) => Ok(Json.toJson(project))
-      case _ => Status(http.Status.NOT_FOUND)(s"No project  $id")
+      case _ => Status(http.Status.NOT_FOUND)(s"No project $id")
     }
   }
 

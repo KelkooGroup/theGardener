@@ -11,7 +11,7 @@ import play.api.libs.json.Json
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import play.api.test._
-import services.ComponentService
+import services.ProjectService
 import play.api.Mode
 import play.api.db.Database
 import play.api.inject._
@@ -38,18 +38,16 @@ object Injector {
 
 object CommonSteps extends PlaySpec with GuiceOneServerPerSuite with BeforeAndAfterAll with MockitoSugar with Injecting {
 
-  case class ProjectBean(id: String, name: String, repositoryUrl: String, stableBranch: String, featuresRootPath: String)
-
 
   var response: Future[Result] = _
 
   var projects: Map[String, Project] = _
 
-  val projectService = new ComponentService()
+  val projectService = Injector.inject[ProjectService]
 
   implicit val db = Injector.inject[Database]
 
-  override def fakeApplication(): Application = new GuiceApplicationBuilder().overrides(bind[ComponentService].toInstance(projectService)).in(Mode.Test).build()
+  override def fakeApplication(): Application = new GuiceApplicationBuilder().overrides(bind[ProjectService].toInstance(projectService)).in(Mode.Test).build()
 
   val projectRepository = Injector.inject[ProjectRepository]
 
@@ -116,26 +114,12 @@ Scenario: providing several book suggestions
   Given("""^we have the following projects$""") { (data: DataTable) =>
     cleanDatabase()
 
-    val projects = data.asList(classOf[ProjectBean]).asScala.map(project => Project(project.id, project.name, project.repositoryUrl, project.stableBranch, project.featuresRootPath))
+    val projects = data.asList(classOf[Project]).asScala.map(project => Project(project.id, project.name, project.repositoryUrl, project.stableBranch, project.featuresRootPath))
 
     projects.foreach(projectRepository.insertOne)
 
     CommonSteps.projects = projects.map(p => (p.id, p)).toMap
 
-    projectService.projects ++= CommonSteps.projects
-  }
-
-
-  When("""^a user register a new project with$""") { (data: DataTable) =>
-    cleanDatabase()
-
-    val projects = data.asList(classOf[ProjectBean]).asScala.map(project => Project(project.id, project.name, project.repositoryUrl, project.stableBranch, project.featuresRootPath))
-
-    projects.foreach(projectRepository.insertOne)
-
-    CommonSteps.projects = projects.map(p => (p.id, p)).toMap
-
-    projectService.projects ++= CommonSteps.projects
   }
 
 
