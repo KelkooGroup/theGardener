@@ -2,14 +2,13 @@ package controllers
 
 import javax.inject.Inject
 import models.Project
-import play.api.db.Database
 import play.api.{Configuration, Logger, http}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, InjectedController}
 import repository.ProjectRepository
 import services.ProjectService
 
-class Api @Inject()(implicit val db: Database, componentService: ProjectService, projectRepository: ProjectRepository, configuration: Configuration) extends InjectedController {
+class Api @Inject()(componentService: ProjectService, projectRepository: ProjectRepository, configuration: Configuration) extends InjectedController {
 
   val projectsRootDirectory = configuration.get[String]("projects.root.directory")
 

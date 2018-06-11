@@ -10,14 +10,23 @@ import anorm.SqlParser.get
 class ProjectRepository @Inject()(db: Database) {
 
   val parser: RowParser[Project] = {
-    get[String]("id") ~ get[String]("name") ~ get[String]("repositoryUrl") ~ get[String]("stableBranch") ~ get[String]("featuresRootPath") map { case id ~ name ~ repositoryUrl ~ stableBranch ~ featuresRootPath => Project(id, name, repositoryUrl, stableBranch, featuresRootPath)
+    get[String]("id") ~
+      get[String]("name") ~
+      get[String]("repositoryUrl") ~
+      get[String]("stableBranch") ~
+      get[String]("featuresRootPath") map {
+
+      case id ~ name ~ repositoryUrl ~ stableBranch ~ featuresRootPath => Project(id, name, repositoryUrl, stableBranch, featuresRootPath)
     }
   }
 
-  def insertOne(project: Project)(implicit db: Database): Unit = {
+  def insertOne(project: Project): Unit = {
     db.withConnection { implicit connection =>
       SQL(
-        s"""INSERT INTO project (id, name, repositoryUrl, stableBranch,featuresRootPath) VALUES ({id}, {name}, {repositoryUrl},{stableBranch}, {featuresRootPath})""").on('id -> project.id, 'name -> project.name, 'repositoryUrl -> project.repositoryUrl, 'stableBranch -> project.stableBranch, 'featuresRootPath -> project.featuresRootPath).executeInsert()
+        s"""INSERT INTO project (id, name, repositoryUrl, stableBranch,featuresRootPath)
+           |VALUES ({id}, {name}, {repositoryUrl},{stableBranch}, {featuresRootPath})""".stripMargin)
+        .on('id -> project.id, 'name -> project.name, 'repositoryUrl -> project.repositoryUrl, 'stableBranch -> project.stableBranch, 'featuresRootPath -> project.featuresRootPath)
+        .executeInsert()
     }
   }
 

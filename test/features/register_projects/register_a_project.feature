@@ -3,11 +3,15 @@ Feature: Register a project
   I want to register my project into theGardener
   So that my project BDD features will be shared with all users
 
-  @level_0_high_level @nominal_case @draft
+  @level_0_high_level @nominal_case @valid
   Scenario: register a project
     Given a git server that host a project
-    When a user register this project in theGardener
-    Then those project settings are stored in theGardener system
+    When a user register a new project in theGardener
+      | id            | name                    | repositoryUrl                                        | stableBranch | featuresRootPath |
+      | suggestionsWS | Suggestions WebServices | git@gitlab.corp.kelkoo.net:library/suggestionsWS.git | master       | test/features    |
+    Then we have the following projects
+      | id            | name                    | repositoryUrl                                        | stableBranch | featuresRootPath |
+      | suggestionsWS | Suggestions WebServices | git@gitlab.corp.kelkoo.net:library/suggestionsWS.git | master       | test/features    |
 
 
   @level_1_specification @nominal_case @valid
@@ -68,11 +72,30 @@ Feature: Register a project
 }
   """
 
-#see what happened if the project exists already : an update instead of a insert
-  @level_2_technical_details @nominal_case @draft
+  @level_2_technical_details @nominal_case @Ongoing
   Scenario: Update a project
     Given: We have the following projects
       | id            | name                    | repositoryUrl                                        | stableBranch | featuresRootPath |
       | suggestionsWS | Suggestions WebServices | git@gitlab.corp.kelkoo.net:library/suggestionsWS.git | master       | test/features    |
-    When
+    When I perform a "PATCH" http method on following URL "/api/project/suggestionsWS" with
+    """
+{
+    	"id": "suggestionsWS1",
+        "name": "Suggestions WebServices1"
+}
+   """
+    Then response has status "200"
+    And  I get the following json response body
+       """
+{
+     "id": "suggestionsWS1",
+     "name": "Suggestions WebServices1",
+     "repositoryUrl": "git@gitlab.corp.kelkoo.net:library/suggestionsWS.git",
+     "stableBranch": "master",
+     "featuresRootPath": "test/features"
+}
+  """
+    And  we have now the projects
+      | id             | name                      | repositoryUrl                                        | stableBranch | featuresRootPath |
+      | suggestionsWS1 | Suggestions WebServices1  | git@gitlab.corp.kelkoo.net:library/suggestionsWS.git | master       | test/features    |
 
