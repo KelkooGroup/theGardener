@@ -1,60 +1,86 @@
 package repository
 
 import javax.inject.Inject
+
+import anorm.SqlParser._
+import anorm._
 import models.Project
 import play.api.db.Database
-import anorm._
-import anorm.SqlParser.get
+
 import scala.language.postfixOps
 
 
 class ProjectRepository @Inject()(db: Database) {
 
   val parser: RowParser[Project] = {
-    get[String]("id") ~
-      get[String]("name") ~
-      get[String]("repositoryUrl") ~
-      get[String]("stableBranch") ~
-      get[String]("featuresRootPath") map {
-
+    str("id") ~ str("name") ~ str("repositoryUrl") ~ str("stableBranch") ~ str("featuresRootPath") map {
       case id ~ name ~ repositoryUrl ~ stableBranch ~ featuresRootPath => Project(id, name, repositoryUrl, stableBranch, featuresRootPath)
     }
   }
 
-  def insertOne(project: Project): Unit = {
+  def count(): Long = {
     db.withConnection { implicit connection =>
-      SQL(
-        s"""INSERT INTO project (id, name, repositoryUrl, stableBranch,featuresRootPath)
-           |VALUES ({id}, {name}, {repositoryUrl},{stableBranch}, {featuresRootPath})""".stripMargin)
-        .on('id -> project.id, 'name -> project.name, 'repositoryUrl -> project.repositoryUrl, 'stableBranch -> project.stableBranch, 'featuresRootPath -> project.featuresRootPath)
-        .executeInsert()
+      SQL"SELECT COUNT(*) FROM project".as(scalar[Long].single)
     }
   }
 
-  def update(project: Project) : Unit = {
+  def delete(project: Project): Unit = {
+    deleteById(project.id)
+  }
+
+  def deleteAll(): Unit = {
     db.withConnection { implicit connection =>
-      SQL(
-        s"""REPLACE INTO project (id, name, repositoryUrl, stableBranch,featuresRootPath) VALUES ({id}, {name}, {repositoryUrl},{stableBranch}, {featuresRootPath})""")
-        .on(
-          'id ->project.id,
-          'name -> project.name,
-          'repositoryUrl -> project.repositoryUrl,
-          'stableBranch -> project.stableBranch,
-          'featuresRootPath -> project.featuresRootPath)
-        .executeUpdate()
+      SQL"TRUNCATE TABLE project".executeUpdate()
     }
   }
 
-
-  def getOneById(id: String): Option[Project] = {
+  def deleteAll(projects: Seq[Project]): Unit = {
     db.withConnection { implicit connection =>
-      SQL("SELECT * FROM project WHERE id = {id}").on('id -> id).as(parser.singleOpt)
+      SQL"DELETE * FROM project WHERE id = IN (${projects.map(_.id)})".executeUpdate()
     }
   }
 
-  def getAll()(implicit db: Database): Seq[Project] = {
+  def deleteById(id: String): Unit = {
     db.withConnection { implicit connection =>
-      SQL("SELECT * FROM project").as(parser *)
+      SQL"DELETE FROM project WHERE id = $id".executeUpdate()
     }
+  }
+
+  def existsById(id: String): Boolean = {
+    db.withConnection { implicit connection =>
+      SQL"SELECT COUNT(*) FROM project WHERE id = $id".as(scalar[Long].single) > 0
+    }
+  }
+
+  def findAll(): Seq[Project] = {
+    db.withConnection { implicit connection =>
+      SQL"SELECT * FROM project".as(parser *)
+    }
+  }
+
+  def findAllById(ids: Seq[String]): Seq[Project] = {
+    db.withConnection { implicit connection =>
+      SQL"SELECT * FROM project WHERE id = IN ($ids)".as(parser *)
+    }
+  }
+
+  def findById(id: String): Option[Project] = {
+    db.withConnection { implicit connection =>
+      SQL"SELECT * FROM project WHERE id = $id".as(parser.singleOpt)
+    }
+  }
+
+  def save(project: Project): Project = {
+    db.withConnection { implicit connection =>
+      SQL"""REPLACE INTO project (id, name, repositoryUrl, stableBranch,featuresRootPath)
+           VALUES (${project.id}, ${project.name}, ${project.repositoryUrl},${project.stableBranch}, ${project.featuresRootPath})"""
+         .executeUpdate()
+
+      SQL"SELECT * FROM project WHERE id = ${project.id}".as(parser.single)
+    }
+  }
+
+  def saveAll(projects: Seq[Project]): Seq[Project] = {
+    projects.map(save)
   }
 }

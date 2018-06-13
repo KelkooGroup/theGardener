@@ -1,7 +1,8 @@
 package controllers
 
-import io.swagger.annotations._
 import javax.inject.Inject
+
+import io.swagger.annotations._
 import models._
 import play.api.Configuration
 import play.api.libs.json.Json
@@ -24,35 +25,30 @@ class FeatureController @Inject()(featureService: FeatureService, configuration:
 class ProjectController @Inject()(projectRepository: ProjectRepository) extends InjectedController {
 
   @ApiOperation(value = "Register a new project", code = 201, response = classOf[Project])
-  @ApiImplicitParams(Array(
-    new ApiImplicitParam(
-      value = "The project to register",
-      required = true,
-      dataType = "models.Project",
-      paramType = "body"
-    )
-  ))
-  @ApiResponses(Array(
-    new ApiResponse(code = 400, message = "Incorrect json"))
-  )
+  @ApiImplicitParams(Array(new ApiImplicitParam(value = "The project to register", required = true, dataType = "models.Project", paramType = "body")))
+  @ApiResponses(Array(new ApiResponse(code = 400, message = "Incorrect json")))
   def registerProject() = Action { implicit request =>
 
     request.body.asJson.map(_.as[Project]) match {
-      case Some(project) => projectRepository.insertOne(project)
+      case Some(project) => require(!projectRepository.existsById(project.id))
 
-        Created(Json.toJson(projectRepository.getOneById(project.id)))
+        val savedProject = projectRepository.save(project)
+        Created(Json.toJson(savedProject))
 
       case _ => BadRequest
     }
   }
 
+  @ApiOperation(value = "Get all projects", response = classOf[Project])
+  def getAllProjects() = Action {
+    Ok(Json.toJson(projectRepository.findAll()))
+  }
+
   @ApiOperation(value = "Get a project", response = classOf[Project])
-  @ApiResponses(Array(
-    new ApiResponse(code = 404, message = "Project not found"))
-  )
+  @ApiResponses(Array(new ApiResponse(code = 404, message = "Project not found")))
   def getProject(@ApiParam("Project id") id: String) = Action {
 
-    projectRepository.getOneById(id) match {
+    projectRepository.findById(id) match {
       case Some(project) => Ok(Json.toJson(project))
 
       case _ => NotFound(s"No project $id")
@@ -60,14 +56,7 @@ class ProjectController @Inject()(projectRepository: ProjectRepository) extends 
   }
 
   @ApiOperation(value = "Update a project", response = classOf[Project])
-  @ApiImplicitParams(Array(
-    new ApiImplicitParam(
-      value = "The project to update",
-      required = true,
-      dataType = "models.Project",
-      paramType = "body"
-    )
-  ))
+  @ApiImplicitParams(Array(new ApiImplicitParam(value = "The project to update", required = true, dataType = "models.Project", paramType = "body")))
   @ApiResponses(Array(
     new ApiResponse(code = 400, message = "Incorrect json"),
     new ApiResponse(code = 404, message = "Project not found"))
@@ -77,11 +66,14 @@ class ProjectController @Inject()(projectRepository: ProjectRepository) extends 
     request.body.asJson.map(_.as[Project]) match {
       case Some(project) => require(id == project.id)
 
-        if (projectRepository.getOneById(id).isEmpty) NotFound(s"No project $id")
+        if (projectRepository.findById(id).isDefined) {
+          projectRepository.save(project)
 
-        projectRepository.update(project)
+          Ok(Json.toJson(projectRepository.findById(id)))
 
-        Ok(Json.toJson(projectRepository.getOneById(id)))
+        } else {
+          NotFound(s"No project $id")
+        }
 
       case _ => BadRequest
     }

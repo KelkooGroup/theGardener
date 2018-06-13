@@ -6,16 +6,15 @@
 # Views
 GET         /                                     controllers.Application.index()
 
-GET         /feature/:project/:feature            controllers.Application.feature(project: String, feature: String)
+GET         /features/:project/:feature            controllers.Application.feature(project: String, feature: String)
 
 # API
-GET         /api/feature/:project/:feature        controllers.FeatureController.feature(project: String, feature: String)
+GET         /api/features/:project/:feature        controllers.FeatureController.feature(project: String, feature: String)
 
-POST        /api/project                          controllers.ProjectController.registerProject()
-
-GET         /api/project/:id                      controllers.ProjectController.getProject(id : String)
-
-PUT         /api/project/:id                      controllers.ProjectController.updateProject(id :String)
+POST        /api/projects                          controllers.ProjectController.registerProject()
+GET         /api/projects                          controllers.ProjectController.getAllProjects()
+GET         /api/projects/:id                      controllers.ProjectController.getProject(id : String)
+PUT         /api/projects/:id                      controllers.ProjectController.updateProject(id :String)
 
 # Swagger API
 GET         /api/docs/                            controllers.Assets.at(path="/public/swagger-ui",file="index.html")

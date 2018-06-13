@@ -16,11 +16,11 @@ class ShowFeaturesSteps extends ScalaDsl with EN with MockitoSugar {
   import CommonSteps._
 
   When("""^a user access to this feature in theGardener$""") { () =>
-    response = route(app, FakeRequest(GET, s"/feature/suggestionsWS/provide_book_suggestions.feature")).get
+    response = route(app, FakeRequest(GET, "/features/suggestionsWS/provide_book_suggestions.feature")).get
   }
 
   When("""^a user access to the feature "([^"]*)" of the project "([^"]*)"$""") { (feature: String, project: String) =>
-    response = route(app, FakeRequest(GET, s"/feature/$project/$feature")).get
+    response = route(app, FakeRequest(GET, s"/features/$project/$feature")).get
   }
 
   Then("""^this feature is displayed properly$""") { () =>
@@ -85,8 +85,6 @@ class ShowFeaturesSteps extends ScalaDsl with EN with MockitoSugar {
       } else {
         stepText must include(step("value"))
       }
-
-
     }
   }
 
