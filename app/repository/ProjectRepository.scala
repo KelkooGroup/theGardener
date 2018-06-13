@@ -5,6 +5,7 @@ import models.Project
 import play.api.db.Database
 import anorm._
 import anorm.SqlParser.get
+import scala.language.postfixOps
 
 
 class ProjectRepository @Inject()(db: Database) {
@@ -27,6 +28,20 @@ class ProjectRepository @Inject()(db: Database) {
            |VALUES ({id}, {name}, {repositoryUrl},{stableBranch}, {featuresRootPath})""".stripMargin)
         .on('id -> project.id, 'name -> project.name, 'repositoryUrl -> project.repositoryUrl, 'stableBranch -> project.stableBranch, 'featuresRootPath -> project.featuresRootPath)
         .executeInsert()
+    }
+  }
+
+  def update(project: Project) : Unit = {
+    db.withConnection { implicit connection =>
+      SQL(
+        s"""REPLACE INTO project (id, name, repositoryUrl, stableBranch,featuresRootPath) VALUES ({id}, {name}, {repositoryUrl},{stableBranch}, {featuresRootPath})""")
+        .on(
+          'id ->project.id,
+          'name -> project.name,
+          'repositoryUrl -> project.repositoryUrl,
+          'stableBranch -> project.stableBranch,
+          'featuresRootPath -> project.featuresRootPath)
+        .executeUpdate()
     }
   }
 

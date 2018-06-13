@@ -59,7 +59,7 @@ Scenario: providing several book suggestions
   Then the suggestions are popular and available books adapted to the age of the user
 
     """
-    When I perform a GET on following URL "/feature/suggestionsWS/provide_book_suggestions.feature"
+    When I perform a "GET" on following URL "/feature/suggestionsWS/provide_book_suggestions.feature"
     Then the page contains
 """
     <div id="suggestionsWS_master_provide_book_suggestions_feature">
@@ -120,7 +120,7 @@ Scenario: providing several book suggestions
   Then the suggestions are popular and available books adapted to the age of the user
 
     """
-    When I perform a GET on following URL "/api/feature/suggestionsWS/provide_book_suggestions.feature"
+    When I perform a "GET" on following URL "/api/feature/suggestionsWS/provide_book_suggestions.feature"
     Then I get the following json response body
 """
   {

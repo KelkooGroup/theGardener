@@ -3,10 +3,11 @@ package controllers
 import javax.inject.Inject
 import play.api.Configuration
 import play.api.mvc._
-import services.ProjectService
+import repository.ProjectRepository
+import services.FeatureService
 import views._
 
-class Application @Inject()(componentService: ProjectService, configuration: Configuration) extends InjectedController {
+class Application @Inject()(featureService: FeatureService, projectRepository: ProjectRepository, configuration: Configuration) extends InjectedController {
 
   val projectsRootDirectory = configuration.get[String]("projects.root.directory")
 
@@ -15,9 +16,9 @@ class Application @Inject()(componentService: ProjectService, configuration: Con
   }
 
   def feature(project: String, feature: String) = Action {
-    val projectName = componentService.projects.get(project).map(_.name).getOrElse(project)
+    val projectName = projectRepository.getOneById(project).map(_.name).getOrElse(project)
 
-    Ok(html.feature(projectName, componentService.parseFeatureFile(project, s"$projectsRootDirectory/$project/master/test/features/$feature")))
+    Ok(html.feature(projectName, featureService.parseFeatureFile(project, s"$projectsRootDirectory/$project/master/test/features/$feature")))
   }
 
 }

@@ -11,7 +11,7 @@ import play.api.libs.json.Json
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import play.api.test._
-import services.ProjectService
+import services.FeatureService
 import play.api.Mode
 import play.api.db.Database
 import play.api.inject._
@@ -43,11 +43,11 @@ object CommonSteps extends PlaySpec with GuiceOneServerPerSuite with BeforeAndAf
 
   var projects: Map[String, Project] = _
 
-  val projectService = Injector.inject[ProjectService]
+  val projectService = Injector.inject[FeatureService]
 
   implicit val db = Injector.inject[Database]
 
-  override def fakeApplication(): Application = new GuiceApplicationBuilder().overrides(bind[ProjectService].toInstance(projectService)).in(Mode.Test).build()
+  override def fakeApplication(): Application = new GuiceApplicationBuilder().overrides(bind[FeatureService].toInstance(projectService)).in(Mode.Test).build()
 
   val projectRepository = Injector.inject[ProjectRepository]
 
@@ -79,8 +79,6 @@ class CommonSteps extends ScalaDsl with EN with MockitoSugar {
       val id = line("id")
       (id, Project(id, line("name"), line("repository_url"), line("stable_branch"), line("features_root_path")))
     }.toMap
-
-    projectService.projects ++= projects
   }
 
   Given("""^a simple feature is available in my project$""") { () =>
@@ -123,19 +121,17 @@ Scenario: providing several book suggestions
   }
 
 
-  When("^we got in a browser to url \"([^\"]*)\"$") { () =>
-    response = route(app, FakeRequest(GET, s"""/feature/suggestionsWS/provide_book_suggestions.feature""")).get
-  }
-
-  When("""^I perform a POST on following URL "([^"]*)"$""") { (url: String, body: String) =>
-    response = route(app, FakeRequest(POST, url).withJsonBody(Json.parse(body))).get
-  }
-
-
-  When("""^I perform a GET on following URL "([^"]*)"$""") { (url: String) =>
+  When("^we got in a browser to url \"([^\"]*)\"$") { (url: String) =>
     response = route(app, FakeRequest(GET, url)).get
   }
 
+  When("""^I perform a "([^"]*)" on following URL "([^"]*)"$""") { (method: String, url: String) =>
+    response = route(app, FakeRequest(method, url)).get
+  }
+
+  When("""^I perform a "([^"]*)" on following URL "([^"]*)" with json body$""") { (method: String, url: String, body: String) =>
+    response = route(app, FakeRequest(method, url).withJsonBody(Json.parse(body))).get
+  }
 
   Then("""^I get a response with status "([^"]*)"$""") { (expectedStatus: String) =>
     status(response) mustBe expectedStatus.toInt

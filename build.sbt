@@ -10,7 +10,7 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala)
 javacOptions ++= Seq("-source", jdkVersion, "-target", jdkVersion)
 
 // specify the target jdk for Scala compiler
-//scalacOptions += s"-target:jvm-$jdkVersion"
+scalacOptions += s"-feature"
 
 // add directory for test configuration files
 unmanagedClasspath in Test += baseDirectory.value / "local-conf"

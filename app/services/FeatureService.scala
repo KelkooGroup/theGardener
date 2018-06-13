@@ -8,12 +8,9 @@ import gherkin.{AstBuilder, Parser, ast}
 import models._
 
 import scala.collection.JavaConverters._
-import scala.collection.mutable
 import scala.io.Source
 
-class ProjectService {
-
-  val projects = mutable.Map[String, Project]()
+class FeatureService {
 
   def parseFeatureFile(projectId: String, filePath: String): Feature = {
     val featureFile = new File(filePath)
