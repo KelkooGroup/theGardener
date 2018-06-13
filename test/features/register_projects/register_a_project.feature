@@ -88,7 +88,7 @@ Feature: Register a project
         "featuresRootPath": "test/features"
 }
    """
-    Then I get a response with status "201"
+    Then I get a response with status "200"
     And  I get the following json response body
        """
 {

@@ -40,6 +40,7 @@ libraryDependencies ++= Seq(
   "com.typesafe.play" %% "anorm" % "2.5.3",
   "mysql" % "mysql-connector-java" % "5.1.30",
   "com.h2database" % "h2" % "1.4.193",
+  "io.swagger" %% "swagger-play2" % "1.6.0",
   "net.ruippeixotog" %% "scala-scraper" % "2.1.0" % Test,
   "io.cucumber" %% "cucumber-scala" % "2.0.1" % Test,
   "io.cucumber" % "cucumber-junit" % "2.0.1" % Test,

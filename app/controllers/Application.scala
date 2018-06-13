@@ -20,5 +20,4 @@ class Application @Inject()(featureService: FeatureService, projectRepository: P
 
     Ok(html.feature(projectName, featureService.parseFeatureFile(project, s"$projectsRootDirectory/$project/master/test/features/$feature")))
   }
-
 }
