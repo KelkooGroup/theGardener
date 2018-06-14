@@ -95,7 +95,7 @@ Scenario: providing several book suggestions
     Files.write(fullPath, content.getBytes())
   }
 
-  Given("""^we have the following projects$""") { (data: DataTable) =>
+  Given("""^we have the following projects$""") { data: DataTable =>
     val projects = data.asList(classOf[Project]).asScala
 
     projectRepository.saveAll(projects)
@@ -103,28 +103,30 @@ Scenario: providing several book suggestions
     CommonSteps.projects = projects.map(p => (p.id, p)).toMap
   }
 
-  When("^we go in a browser to url \"([^\"]*)\"$") { (url: String) =>
+  When("^we go in a browser to url \"([^\"]*)\"$") { url: String =>
     page = browser.get(url).toHtml
   }
 
   When("""^I perform a "([^"]*)" on following URL "([^"]*)"$""") { (method: String, url: String) =>
     response = route(app, FakeRequest(method, url)).get
+    await(response)
   }
 
   When("""^I perform a "([^"]*)" on following URL "([^"]*)" with json body$""") { (method: String, url: String, body: String) =>
     response = route(app, FakeRequest(method, url).withJsonBody(Json.parse(body))).get
+    await(response)
   }
 
-  Then("""^I get a response with status "([^"]*)"$""") { (expectedStatus: String) =>
+  Then("""^I get a response with status "([^"]*)"$""") { expectedStatus: String =>
     status(response) mustBe expectedStatus.toInt
   }
 
-  Then("""^I get the following json response body$""") { (expectedJson: String) =>
+  Then("""^I get the following json response body$""") { expectedJson: String =>
     contentType(response) mustBe Some(JSON)
     contentAsJson(response) mustBe Json.parse(expectedJson)
   }
 
-  Then("""^the page contains$""") { (expectedPageContentPart: String) =>
+  Then("""^the page contains$""") { expectedPageContentPart: String =>
     val content = contentAsString(response)
     cleanHtmlWhitespaces(content) must include(cleanHtmlWhitespaces(expectedPageContentPart))
   }

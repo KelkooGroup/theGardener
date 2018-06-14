@@ -36,7 +36,7 @@ class ProjectRepository @Inject()(db: Database) {
 
   def deleteAll(projects: Seq[Project]): Unit = {
     db.withConnection { implicit connection =>
-      SQL"DELETE * FROM project WHERE id = IN (${projects.map(_.id)})".executeUpdate()
+      SQL"DELETE FROM project WHERE id IN (${projects.map(_.id)})".executeUpdate()
     }
   }
 
@@ -60,7 +60,7 @@ class ProjectRepository @Inject()(db: Database) {
 
   def findAllById(ids: Seq[String]): Seq[Project] = {
     db.withConnection { implicit connection =>
-      SQL"SELECT * FROM project WHERE id = IN ($ids)".as(parser *)
+      SQL"SELECT * FROM project WHERE id IN ($ids)".as(parser *)
     }
   }
 

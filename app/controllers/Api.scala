@@ -66,7 +66,7 @@ class ProjectController @Inject()(projectRepository: ProjectRepository) extends 
     request.body.asJson.map(_.as[Project]) match {
       case Some(project) => require(id == project.id)
 
-        if (projectRepository.findById(id).isDefined) {
+        if (projectRepository.existsById(id)) {
           projectRepository.save(project)
 
           Ok(Json.toJson(projectRepository.findById(id)))

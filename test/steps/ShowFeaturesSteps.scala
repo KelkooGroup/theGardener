@@ -37,7 +37,7 @@ class ShowFeaturesSteps extends ScalaDsl with EN with MockitoSugar {
     featureText must include("Project: Suggestions WebServices")
   }
 
-  Then("""^the following feature is displayed$""") { (dataTable: DataTable) =>
+  Then("""^the following feature is displayed$""") { dataTable: DataTable =>
     dataTable.asScala.map { feature =>
       val id = feature("id").replace("/", "_").replace(".", "_")
 
@@ -51,7 +51,7 @@ class ShowFeaturesSteps extends ScalaDsl with EN with MockitoSugar {
     }
   }
 
-  Then("""^the following scenarios are displayed$""") { (dataTable: DataTable) =>
+  Then("""^the following scenarios are displayed$""") { dataTable: DataTable =>
     dataTable.asScala.map { scenario =>
       val scenarioText = browser.parseString(contentAsString(response)) >> text("#Scenario_" + scenario("id"))
 

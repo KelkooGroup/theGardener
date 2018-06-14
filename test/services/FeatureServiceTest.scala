@@ -2,9 +2,9 @@ package services
 
 import org.scalatest.{MustMatchers, WordSpec}
 
-class ProjectServiceTest extends WordSpec with MustMatchers {
+class FeatureServiceTest extends WordSpec with MustMatchers {
 
-  "ComponentService" should {
+  "FeatureService" should {
     "parse a feature file" in {
       val feature = new FeatureService().parseFeatureFile("test", "test/features/show_features/show_a_feature.feature")
 
