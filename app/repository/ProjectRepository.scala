@@ -1,22 +1,20 @@
 package repository
 
-import javax.inject.Inject
-
 import anorm.SqlParser._
 import anorm._
+import javax.inject.Inject
 import models.Project
 import play.api.db.Database
 
-import scala.language.postfixOps
-
-
 class ProjectRepository @Inject()(db: Database) {
 
-  val parser: RowParser[Project] = {
-    str("id") ~ str("name") ~ str("repositoryUrl") ~ str("stableBranch") ~ str("featuresRootPath") map {
-      case id ~ name ~ repositoryUrl ~ stableBranch ~ featuresRootPath => Project(id, name, repositoryUrl, stableBranch, featuresRootPath)
-    }
-  }
+  private val parser = for {
+    id <- str("id")
+    name <- str("name")
+    repositoryUrl <- str("repositoryUrl")
+    stableBranch <- str("stableBranch")
+    featuresRootPath <- str("featuresRootPath")
+  } yield Project(id, name, repositoryUrl, stableBranch, featuresRootPath)
 
   def count(): Long = {
     db.withConnection { implicit connection =>
@@ -54,13 +52,13 @@ class ProjectRepository @Inject()(db: Database) {
 
   def findAll(): Seq[Project] = {
     db.withConnection { implicit connection =>
-      SQL"SELECT * FROM project".as(parser *)
+      SQL"SELECT * FROM project".as(parser.*)
     }
   }
 
   def findAllById(ids: Seq[String]): Seq[Project] = {
     db.withConnection { implicit connection =>
-      SQL"SELECT * FROM project WHERE id IN ($ids)".as(parser *)
+      SQL"SELECT * FROM project WHERE id IN ($ids)".as(parser.*)
     }
   }
 
@@ -74,7 +72,7 @@ class ProjectRepository @Inject()(db: Database) {
     db.withConnection { implicit connection =>
       SQL"""REPLACE INTO project (id, name, repositoryUrl, stableBranch,featuresRootPath)
            VALUES (${project.id}, ${project.name}, ${project.repositoryUrl},${project.stableBranch}, ${project.featuresRootPath})"""
-         .executeUpdate()
+        .executeUpdate()
 
       SQL"SELECT * FROM project WHERE id = ${project.id}".as(parser.single)
     }
