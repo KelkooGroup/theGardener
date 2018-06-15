@@ -1,8 +1,7 @@
 package controllers
 
-import javax.inject.Inject
-
 import io.swagger.annotations._
+import javax.inject.Inject
 import models._
 import play.api.Configuration
 import play.api.libs.json.Json
@@ -10,7 +9,7 @@ import play.api.mvc._
 import repository.ProjectRepository
 import services.FeatureService
 
-@Api(value = "Feature Service", produces = "application/json")
+@Api(value = "FeatureController", produces = "application/json")
 class FeatureController @Inject()(featureService: FeatureService, configuration: Configuration) extends InjectedController {
 
   val projectsRootDirectory = configuration.get[String]("projects.root.directory")
@@ -21,7 +20,7 @@ class FeatureController @Inject()(featureService: FeatureService, configuration:
   }
 }
 
-@Api(value = "Project Service", produces = "application/json")
+@Api(value = "ProjectController", produces = "application/json")
 class ProjectController @Inject()(projectRepository: ProjectRepository) extends InjectedController {
 
   @ApiOperation(value = "Register a new project", code = 201, response = classOf[Project])
@@ -30,7 +29,7 @@ class ProjectController @Inject()(projectRepository: ProjectRepository) extends 
   def registerProject() = Action { implicit request =>
 
     request.body.asJson.map(_.as[Project]) match {
-      case Some(project) => require(!projectRepository.existsById(project.id))
+      case Some(project) if !projectRepository.existsById(project.id) =>
 
         val savedProject = projectRepository.save(project)
         Created(Json.toJson(savedProject))
@@ -64,7 +63,7 @@ class ProjectController @Inject()(projectRepository: ProjectRepository) extends 
   def updateProject(@ApiParam("Project id") id: String) = Action { implicit request =>
 
     request.body.asJson.map(_.as[Project]) match {
-      case Some(project) => require(id == project.id)
+      case Some(project) if id == project.id =>
 
         if (projectRepository.existsById(id)) {
           projectRepository.save(project)
