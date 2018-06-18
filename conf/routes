@@ -2,19 +2,26 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-# Home page
-GET        /                                     controllers.Application.index()
 
-GET        /feature/:project/:feature            controllers.Application.feature(project: String, feature: String)
+# Views
+GET         /                                     controllers.Application.index()
 
-GET        /api/feature/:project/:feature        controllers.Api.feature(project: String, feature: String)
+GET         /features/:project/:feature            controllers.Application.feature(project: String, feature: String)
 
-POST       /api/project                          controllers.Api.registerProject()
+# API
+GET         /api/features/:project/:feature        controllers.FeatureController.feature(project: String, feature: String)
 
-GET       /api/project/:id                       controllers.Api.getProject(id : String)
+POST        /api/projects                          controllers.ProjectController.registerProject()
+GET         /api/projects                          controllers.ProjectController.getAllProjects()
+GET         /api/projects/:id                      controllers.ProjectController.getProject(id : String)
+PUT         /api/projects/:id                      controllers.ProjectController.updateProject(id :String)
 
-PUT       /api/project/:id                         controllers.Api.updateProject(id :String)
+# Swagger API
+GET         /api/docs/                            controllers.Assets.at(path="/public/swagger-ui",file="index.html")
+GET         /api/docs/swagger.json                controllers.ApiHelpController.getResources
+GET         /api/docs/*file                       controllers.Assets.at(path="/public/swagger-ui",file)
 
 # Map static resources from the /public folder to the /assets URL path
-GET        /assets/*file                         controllers.Assets.at(path="/public", file)
+GET         /assets/*file                         controllers.Assets.versioned(path="/public", file: Asset)
+
 

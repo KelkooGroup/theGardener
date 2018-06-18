@@ -1,32 +1,30 @@
 package steps
 
 
+import java.nio.file.{Files, Paths}
+
 import anorm.SQL
+import cucumber.api.DataTable
+import cucumber.api.scala.{EN, ScalaDsl}
+import models._
 import net.ruippeixotog.scalascraper.browser.HtmlUnitBrowser
 import org.scalatest.BeforeAndAfterAll
+import org.scalatest.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
-import play.api.Application
+import play.api.db.Database
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import play.api.test._
+import play.api.{Application, Mode}
+import repository.ProjectRepository
 import services.FeatureService
-import play.api.Mode
-import play.api.db.Database
-import play.api.inject._
-import play.api.inject.guice.GuiceApplicationBuilder
-
-import scala.reflect.ClassTag
-import org.scalatest.mockito.MockitoSugar
-import cucumber.api.DataTable
-import cucumber.api.scala.{EN, ScalaDsl}
-import models._
 
 import scala.collection.JavaConverters._
 import scala.concurrent.Future
-import java.nio.file.{Files, Paths}
-import repository.ProjectRepository
+import scala.reflect.ClassTag
 
 
 object Injector {
@@ -38,18 +36,16 @@ object Injector {
 
 object CommonSteps extends PlaySpec with GuiceOneServerPerSuite with BeforeAndAfterAll with MockitoSugar with Injecting {
 
-
   var response: Future[Result] = _
+  var page: String = _
 
   var projects: Map[String, Project] = _
 
-  val projectService = Injector.inject[FeatureService]
+  override def fakeApplication(): Application = new GuiceApplicationBuilder().in(Mode.Test).build()
 
-  implicit val db = Injector.inject[Database]
-
-  override def fakeApplication(): Application = new GuiceApplicationBuilder().overrides(bind[FeatureService].toInstance(projectService)).in(Mode.Test).build()
-
+  val db = Injector.inject[Database]
   val projectRepository = Injector.inject[ProjectRepository]
+  val featureService = Injector.inject[FeatureService]
 
   val server = TestServer(port, app)
 
@@ -59,27 +55,18 @@ object CommonSteps extends PlaySpec with GuiceOneServerPerSuite with BeforeAndAf
 
   override def afterAll() = server.stop()
 
-  def cleanHtmlWhitespaces(content: String): String = content.replace("\t", " ").replace("\n", " ").replace("<br/>", " ").trim().replaceAll(" +", " ")
+  def cleanHtmlWhitespaces(content: String): String = content.split('\n').map(_.trim.filter(_ >= ' ')).mkString.replaceAll(" +", " ")
 
   def cleanDatabase(): Unit = {
     db.withConnection { implicit connection =>
       SQL("TRUNCATE TABLE project").executeUpdate()
     }
   }
-
 }
 
 class CommonSteps extends ScalaDsl with EN with MockitoSugar {
 
-
   import CommonSteps._
-
-  Given("""^the project settings are setup in theGardener$""") { (dataTable: DataTable) =>
-    projects = dataTable.asScala.map { line =>
-      val id = line("id")
-      (id, Project(id, line("name"), line("repository_url"), line("stable_branch"), line("features_root_path")))
-    }.toMap
-  }
 
   Given("""^a simple feature is available in my project$""") { () =>
     val fullPath = Paths.get("target/data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature")
@@ -102,47 +89,44 @@ Scenario: providing several book suggestions
     Files.write(fullPath, content.getBytes())
   }
 
-
   Given("""^the file "([^"]*)"$""") { (path: String, content: String) =>
     val fullPath = Paths.get("target/" + path)
     Files.createDirectories(fullPath.getParent)
     Files.write(fullPath, content.getBytes())
   }
 
-  Given("""^we have the following projects$""") { (data: DataTable) =>
-    cleanDatabase()
+  Given("""^we have the following projects$""") { data: DataTable =>
+    val projects = data.asList(classOf[Project]).asScala
 
-    val projects = data.asList(classOf[Project]).asScala.map(project => Project(project.id, project.name, project.repositoryUrl, project.stableBranch, project.featuresRootPath))
-
-    projects.foreach(projectRepository.insertOne)
+    projectRepository.saveAll(projects)
 
     CommonSteps.projects = projects.map(p => (p.id, p)).toMap
-
   }
 
-
-  When("^we got in a browser to url \"([^\"]*)\"$") { (url: String) =>
-    response = route(app, FakeRequest(GET, url)).get
+  When("^we go in a browser to url \"([^\"]*)\"$") { url: String =>
+    page = browser.get(url).toHtml
   }
 
   When("""^I perform a "([^"]*)" on following URL "([^"]*)"$""") { (method: String, url: String) =>
     response = route(app, FakeRequest(method, url)).get
+    await(response)
   }
 
   When("""^I perform a "([^"]*)" on following URL "([^"]*)" with json body$""") { (method: String, url: String, body: String) =>
     response = route(app, FakeRequest(method, url).withJsonBody(Json.parse(body))).get
+    await(response)
   }
 
-  Then("""^I get a response with status "([^"]*)"$""") { (expectedStatus: String) =>
+  Then("""^I get a response with status "([^"]*)"$""") { expectedStatus: String =>
     status(response) mustBe expectedStatus.toInt
   }
 
-  Then("""^I get the following json response body$""") { (expectedJson: String) =>
+  Then("""^I get the following json response body$""") { expectedJson: String =>
     contentType(response) mustBe Some(JSON)
     contentAsJson(response) mustBe Json.parse(expectedJson)
   }
 
-  Then("""^the page contains$""") { (expectedPageContentPart: String) =>
+  Then("""^the page contains$""") { expectedPageContentPart: String =>
     val content = contentAsString(response)
     cleanHtmlWhitespaces(content) must include(cleanHtmlWhitespaces(expectedPageContentPart))
   }

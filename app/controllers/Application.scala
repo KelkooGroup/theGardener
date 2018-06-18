@@ -1,6 +1,7 @@
 package controllers
 
 import javax.inject.Inject
+
 import play.api.Configuration
 import play.api.mvc._
 import repository.ProjectRepository
@@ -16,9 +17,8 @@ class Application @Inject()(featureService: FeatureService, projectRepository: P
   }
 
   def feature(project: String, feature: String) = Action {
-    val projectName = projectRepository.getOneById(project).map(_.name).getOrElse(project)
+    val projectName = projectRepository.findById(project).map(_.name).getOrElse(project)
 
     Ok(html.feature(projectName, featureService.parseFeatureFile(project, s"$projectsRootDirectory/$project/master/test/features/$feature")))
   }
-
 }
