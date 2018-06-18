@@ -1,3 +1,12 @@
+dist: trusty
+sudo: required
+
+addons:
+  sonarcloud:
+    organization: "kelkoo"
+    token:
+      secure: "6c199a8887e5909a63eb3d6ffcd70c1ca33d6757"
+
 language: scala
 jdk:
   - oraclejdk8
@@ -8,5 +17,9 @@ cache:
   - $HOME/.m2
   - $HOME/.ivy2
   - $HOME/.sbt
+  - '$HOME/.sonar/cache'
 script:
-   - sbt ++$TRAVIS_SCALA_VERSION clean +test
+   - sbt ++$TRAVIS_SCALA_VERSION clean +testscript:
+   - sonar-scanner
+   
+   
