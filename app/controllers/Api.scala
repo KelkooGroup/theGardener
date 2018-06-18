@@ -3,9 +3,10 @@ package controllers
 
 import io.swagger.annotations._
 import javax.inject.Inject
+import julienrf.json.derived
 import models._
 import play.api.Configuration
-import play.api.libs.json.Json
+import play.api.libs.json._
 import play.api.mvc._
 import repository.ProjectRepository
 import services.FeatureService
@@ -15,6 +16,11 @@ class FeatureController @Inject()(featureService: FeatureService, configuration:
 
   val projectsRootDirectory = configuration.get[String]("projects.root.directory")
 
+  implicit val stepFormat = Json.format[Step]
+  implicit val examplesFormat = Json.format[Examples]
+  implicit val scenarioFormat = derived.flat.oformat[ScenarioDefinition]((__ \ "keyword").format[String])
+  implicit val featureFormat = Json.format[Feature]
+
   @ApiOperation(value = "Get a feature", response = classOf[Feature])
   def feature(@ApiParam("Project id") project: String, @ApiParam("Feature file name") feature: String) = Action {
     Ok(Json.toJson(featureService.parseFeatureFile(project, s"$projectsRootDirectory/$project/master/test/features/$feature")))
@@ -23,6 +29,8 @@ class FeatureController @Inject()(featureService: FeatureService, configuration:
 
 @Api(value = "ProjectController", produces = "application/json")
 class ProjectController @Inject()(projectRepository: ProjectRepository) extends InjectedController {
+
+  implicit val projectFormat = Json.format[Project]
 
   @ApiOperation(value = "Register a new project", code = 201, response = classOf[Project])
   @ApiImplicitParams(Array(new ApiImplicitParam(value = "The project to register", required = true, dataType = "models.Project", paramType = "body")))
