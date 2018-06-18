@@ -18,19 +18,14 @@ class RegisterProjectSteps extends ScalaDsl with EN with MockitoSugar {
 
   import CommonSteps._
 
-  Given("""^a git server that host a project$""") { () =>
-    cleanDatabase()
+  private def registerProject(project: Project) = {
+    response = route(app, FakeRequest("POST", "/api/projects").withJsonBody(Json.toJson(project))).get
+    await(response)
   }
 
-  When("""^a user register a new project in theGardener$""") { () =>
-    val project = Project("id = String ", "name = String ", "repositoryUrl = String ", "stableBranch = String", "featuresRootPath = String")
-    projectRepository save project
-  }
-
-  Then("""^those projects settings are setup in theGardener$""") { () =>
-    val projects = List(Project("id = String ", "name = String ", "repositoryUrl = String ", "stableBranch = String", "featuresRootPath = String"))
+  private def checkProjectsInDb(expectedProjects: Seq[Project]) = {
     val actualProjects = projectRepository.findAll()
-    actualProjects mustBe projects
+    actualProjects mustBe expectedProjects
   }
 
   Given("""^no project settings are setup in theGardener$""") { () =>
@@ -42,28 +37,25 @@ class RegisterProjectSteps extends ScalaDsl with EN with MockitoSugar {
     Files.createDirectories(fullPath.getParent)
   }
 
+  When("""^a user register a new project in theGardener$""") { () =>
+    val project = Project("suggestionsWS ", "Suggestions WebServices", "git@gitlab.corp.kelkoo.net:library/suggestionsWS.git ", "master", "test/features")
+
+    registerProject(project)
+  }
+
+  Then("""^those projects settings are setup in theGardener$""") { () =>
+    val expectedProjects = Seq(Project("suggestionsWS ", "Suggestions WebServices", "git@gitlab.corp.kelkoo.net:library/suggestionsWS.git ", "master", "test/features"))
+    checkProjectsInDb(expectedProjects)
+  }
+
+
   When("""^a user register a new project with$""") { data: DataTable =>
     val project = data.asList(classOf[Project]).asScala.head
-    response = route(app, FakeRequest("POST", "/api/projects").withJsonBody(Json.toJson(project))).get
-    await(response)
+    registerProject(project)
   }
 
   Then("""^the projects settings are now$""") { data: DataTable =>
     val expectedProjects = data.asList(classOf[Project]).asScala
-    val actualProjects = projectRepository.findAll()
-    actualProjects mustBe expectedProjects
-
-
-    When("""^a user register a new project with$""") { data: DataTable =>
-      cleanDatabase()
-
-      val projects = data.asList(classOf[Project]).asScala.map(project => Project(project.id, project.name, project.repositoryUrl, project.stableBranch, project.featuresRootPath))
-
-      projects.foreach(projectRepository.save)
-
-      CommonSteps.projects = projects.map(p => (p.id, p)).toMap
-
-    }
-
+    checkProjectsInDb(expectedProjects)
   }
 }

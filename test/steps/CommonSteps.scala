@@ -68,6 +68,10 @@ class CommonSteps extends ScalaDsl with EN with MockitoSugar {
 
   import CommonSteps._
 
+  Given("""^a git server that host a project$""") { () =>
+    // nothing to do here
+  }
+
   Given("""^a simple feature is available in my project$""") { () =>
     val fullPath = Paths.get("target/data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature")
     Files.createDirectories(fullPath.getParent)

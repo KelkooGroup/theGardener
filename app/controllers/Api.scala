@@ -1,14 +1,14 @@
 package controllers
 
 
+import io.swagger.annotations._
 import javax.inject.Inject
 import models._
-import play.api.{Configuration, Logger}
+import play.api.Configuration
 import play.api.libs.json.Json
 import play.api.mvc._
 import repository.ProjectRepository
 import services.FeatureService
-import io.swagger.annotations._
 
 @Api(value = "FeatureController", produces = "application/json")
 class FeatureController @Inject()(featureService: FeatureService, configuration: Configuration) extends InjectedController {
@@ -79,21 +79,17 @@ class ProjectController @Inject()(projectRepository: ProjectRepository) extends 
     }
   }
 
-  @ApiOperation(value = "Delete a project", response = classOf[Project])
-  def deleteProject(@ApiParam("Project id") id : String) = Action {
-    projectRepository.findById(id) match {
-      case Some(project) if id == project.id =>
-        if (projectRepository.existsById(id)) {
-            projectRepository.delete(project)
-        }
-          Status(200)
+  @ApiOperation(value = "Delete a project")
+  @ApiResponses(Array(new ApiResponse(code = 404, message = "Project not found")))
+  def deleteProject(@ApiParam("Project id") id: String) = Action {
 
-      case _ => BadRequest
+    if (projectRepository.existsById(id)) {
+      projectRepository.deleteById(id)
 
+      Ok
+
+    } else {
+      NotFound(s"No project $id")
     }
-
   }
-
-
-
 }

@@ -13,9 +13,9 @@ GET         /api/features/:project/:feature        controllers.FeatureController
 
 POST        /api/projects                          controllers.ProjectController.registerProject()
 GET         /api/projects                          controllers.ProjectController.getAllProjects()
-GET         /api/projects/:id                      controllers.ProjectController.getProject(id : String)
-PUT         /api/projects/:id                      controllers.ProjectController.updateProject(id :String)
-DELETE      /api/projects/:id                      controllers.ProjectController.deleteProject(id :String)
+GET         /api/projects/:id                      controllers.ProjectController.getProject(id: String)
+PUT         /api/projects/:id                      controllers.ProjectController.updateProject(id: String)
+DELETE      /api/projects/:id                      controllers.ProjectController.deleteProject(id: String)
 
 # Swagger API
 GET         /api/docs/                            controllers.Assets.at(path="/public/swagger-ui",file="index.html")

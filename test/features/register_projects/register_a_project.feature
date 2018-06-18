@@ -131,13 +131,12 @@ Feature: Register a project
       | id            | name                     | repositoryUrl                                        | stableBranch | featuresRootPath |
       | suggestionsWS | Suggestions WebServices1 | git@gitlab.corp.kelkoo.net:library/suggestionsWS.git | master       | test/features    |
 
-  @level_2_technical_details @nominal_case @Ongoing
+  @level_2_technical_details @nominal_case @valid
   Scenario: Delete a project
-    Given: We have the following projects
+    Given we have the following projects
       | id            | name                    | repositoryUrl                                        | stableBranch | featuresRootPath |
       | suggestionsWS | Suggestions WebServices | git@gitlab.corp.kelkoo.net:library/suggestionsWS.git | master       | test/features    |
-    When: I perform a "DELETE" on following URL "/api/project/suggestionsWS"
-    Then: I get a response with status "200"
-     And: the following projects are deleted
+    When I perform a "DELETE" on following URL "/api/projects/suggestionsWS"
+    Then I get a response with status "200"
+     And the projects settings are now
       | id            | name                    | repositoryUrl                                        | stableBranch | featuresRootPath |
-      | suggestionsWS | Suggestions WebServices | git@gitlab.corp.kelkoo.net:library/suggestionsWS.git | master       | test/features    |
