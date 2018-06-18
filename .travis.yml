@@ -1,5 +1,4 @@
-dist: trusty
-sudo: required
+language: scala
 
 addons:
   sonarcloud:
@@ -7,7 +6,7 @@ addons:
     token:
       secure: "6c199a8887e5909a63eb3d6ffcd70c1ca33d6757"
 
-language: scala
+
 jdk:
   - oraclejdk8
 scala:
