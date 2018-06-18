@@ -18,7 +18,7 @@ cache:
   - $HOME/.sbt
   - '$HOME/.sonar/cache'
 script:
-   - sbt ++$TRAVIS_SCALA_VERSION clean +testscript:
+   - sbt ++$TRAVIS_SCALA_VERSION clean +test
    - sonar-scanner
    
    
