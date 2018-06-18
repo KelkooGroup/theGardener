@@ -17,15 +17,20 @@ import scala.collection.JavaConverters._
 class RegisterProjectSteps extends ScalaDsl with EN with MockitoSugar {
 
   import CommonSteps._
-  //level_0
-  Given("""^a git server that host a project$""") { () =>
 
+  Given("""^a git server that host a project$""") { () =>
+    cleanDatabase()
   }
 
   When("""^a user register a new project in theGardener$""") { () =>
+    val project = Project("id = String ", "name = String ", "repositoryUrl = String ", "stableBranch = String", "featuresRootPath = String")
+    projectRepository save project
   }
 
   Then("""^those projects settings are setup in theGardener$""") { () =>
+    val projects = List(Project("id = String ", "name = String ", "repositoryUrl = String ", "stableBranch = String", "featuresRootPath = String"))
+    val actualProjects = projectRepository.findAll()
+    actualProjects mustBe projects
   }
 
   Given("""^no project settings are setup in theGardener$""") { () =>
@@ -39,7 +44,6 @@ class RegisterProjectSteps extends ScalaDsl with EN with MockitoSugar {
 
   When("""^a user register a new project with$""") { data: DataTable =>
     val project = data.asList(classOf[Project]).asScala.head
-
     response = route(app, FakeRequest("POST", "/api/projects").withJsonBody(Json.toJson(project))).get
     await(response)
   }
@@ -48,5 +52,18 @@ class RegisterProjectSteps extends ScalaDsl with EN with MockitoSugar {
     val expectedProjects = data.asList(classOf[Project]).asScala
     val actualProjects = projectRepository.findAll()
     actualProjects mustBe expectedProjects
+
+
+    When("""^a user register a new project with$""") { data: DataTable =>
+      cleanDatabase()
+
+      val projects = data.asList(classOf[Project]).asScala.map(project => Project(project.id, project.name, project.repositoryUrl, project.stableBranch, project.featuresRootPath))
+
+      projects.foreach(projectRepository.save)
+
+      CommonSteps.projects = projects.map(p => (p.id, p)).toMap
+
+    }
+
   }
 }

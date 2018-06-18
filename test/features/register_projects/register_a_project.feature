@@ -7,7 +7,8 @@ Feature: Register a project
     Given no project settings are setup in theGardener
 
 
-  @level_0_high_level @nominal_case @draft
+
+  @level_0_high_level @nominal_case @valid
   Scenario: register a project
     Given a git server that host a project
     When a user register a new project in theGardener
@@ -130,3 +131,13 @@ Feature: Register a project
       | id            | name                     | repositoryUrl                                        | stableBranch | featuresRootPath |
       | suggestionsWS | Suggestions WebServices1 | git@gitlab.corp.kelkoo.net:library/suggestionsWS.git | master       | test/features    |
 
+  @level_2_technical_details @nominal_case @Ongoing
+  Scenario: Delete a project
+    Given: We have the following projects
+      | id            | name                    | repositoryUrl                                        | stableBranch | featuresRootPath |
+      | suggestionsWS | Suggestions WebServices | git@gitlab.corp.kelkoo.net:library/suggestionsWS.git | master       | test/features    |
+    When: I perform a "DELETE" on following URL "/api/project/suggestionsWS"
+    Then: I get a response with status "200"
+     And: the following projects are deleted
+      | id            | name                    | repositoryUrl                                        | stableBranch | featuresRootPath |
+      | suggestionsWS | Suggestions WebServices | git@gitlab.corp.kelkoo.net:library/suggestionsWS.git | master       | test/features    |
