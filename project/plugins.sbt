@@ -2,7 +2,9 @@
 logLevel := Level.Warn
 
 // Use the Play sbt plugin for Play projects
-addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.6.11")
+addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.6.15")
+
+evictionWarningOptions in update := EvictionWarningOptions.empty
 
 // WEB PLUGINS -- uncomment if needed
 // addSbtPlugin("org.irundaia.sbt" % "sbt-sassify" % "1.4.8")

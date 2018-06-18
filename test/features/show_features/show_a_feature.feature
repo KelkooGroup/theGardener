@@ -4,9 +4,9 @@ Feature: Show a feature
   So that my project feature is shared with all users
 
   Background:
-    Given the project settings are setup in theGardener
-      | id            | name                    | repository_url                                       | stable_branch | features_root_path |
-      | suggestionsWS | Suggestions WebServices | git@gitlab.corp.kelkoo.net:library/suggestionsWS.git | master        | test/features      |
+    Given we have the following projects
+      | id            | name                    | repositoryUrl                                        | stableBranch | featuresRootPath |
+      | suggestionsWS | Suggestions WebServices | git@gitlab.corp.kelkoo.net:library/suggestionsWS.git | master       | test/features    |
 
   @level_0_high_level @nominal_case @valid
   Scenario: show a simple feature
@@ -59,7 +59,7 @@ Scenario: providing several book suggestions
   Then the suggestions are popular and available books adapted to the age of the user
 
     """
-    When I perform a GET on following URL "/feature/suggestionsWS/provide_book_suggestions.feature"
+    When I perform a "GET" on following URL "/features/suggestionsWS/provide_book_suggestions.feature"
     Then the page contains
 """
     <div id="suggestionsWS_master_provide_book_suggestions_feature">
@@ -120,7 +120,7 @@ Scenario: providing several book suggestions
   Then the suggestions are popular and available books adapted to the age of the user
 
     """
-    When I perform a GET on following URL "/api/feature/suggestionsWS/provide_book_suggestions.feature"
+    When I perform a "GET" on following URL "/api/features/suggestionsWS/provide_book_suggestions.feature"
     Then I get the following json response body
 """
   {
