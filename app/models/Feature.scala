@@ -1,8 +1,5 @@
 package models
 
-import julienrf.json.derived
-import play.api.libs.json._
-
 case class Feature(id: String, branch: String, tags: Seq[String], language: String, keyword: String, name: String, description: String, scenarios: Seq[ScenarioDefinition], comments: Seq[String] = Seq())
 
 sealed trait ScenarioDefinition {
@@ -24,11 +21,6 @@ case class Examples(id: Int, tags: Seq[String], keyword: String, description: St
 case class Step(id: Int, keyword: String, text: String, argument: Seq[Seq[String]])
 
 object Feature {
-  implicit val stepFormat = Json.format[Step]
-  implicit val examplesFormat = Json.format[Examples]
-  implicit val scenarioFormat = derived.flat.oformat[ScenarioDefinition]((__ \ "keyword").format[String])
-  implicit val featureFormat = Json.format[Feature]
-
   val abstractionLevels = Map("level_0_high_level" -> Set("level0", "l0"), "level_1_specification" -> Set("level1", "l1"), "level_2_technical_details" -> Set("level2", "l2"))
   val caseTypes = Map("nominal_case" -> "nominal", "limit_case" -> "limit", "error_case" -> "error")
   val workflowSteps = Set("draft", "ready", "ongoing", "valid")
