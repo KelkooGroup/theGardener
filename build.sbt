@@ -46,7 +46,8 @@ libraryDependencies ++= Seq(
   "io.cucumber" % "cucumber-junit" % "2.0.1" % Test,
   "io.cucumber" % "cucumber-picocontainer" % "2.0.1" % Test,
   "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.1" % Test,
-  "org.mockito" % "mockito-all" % "1.10.19" % Test
+  "org.mockito" % "mockito-all" % "1.10.19" % Test,
+  "org.eclipse.jgit" % "org.eclipse.jgit" % "4.9.1.201712030800-r"
 )
 
 evictionWarningOptions in update := EvictionWarningOptions.empty

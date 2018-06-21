@@ -59,7 +59,7 @@ Scenario: providing several book suggestions
       | data/projects/suggestionsWS/master/test/features/setup/setup_suggestions.feature              | Feature: Setup book suggestions   |
 
 
-  @level_1_specification @nominal_case @draft
+  @level_2_technical_details @nominal_case @draft
   Scenario: update bdd features from a project
     Given we have the following projects
       | id            | name                    | repositoryUrl                                        | stableBranch | featuresRootPath |
@@ -89,6 +89,9 @@ Scenario: providing several book suggestions
   When we ask for suggestions
   Then the suggestions are popular and available books adapted to the age of the user
     """
+
+
+
 ## [PULL] One implementation can be a scheduler that pull from time to time all the remote server.
 ## [PUSH] Another implementation, in addition to the first one, is to define a resource on theGardener that can be triggered by a webHook when some code is pushed on the remote server.
 
