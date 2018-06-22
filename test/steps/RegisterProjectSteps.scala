@@ -2,8 +2,8 @@ package steps
 
 
 import java.nio.file.{Files, Paths}
+import java.util
 
-import cucumber.api.DataTable
 import cucumber.api.scala.{EN, ScalaDsl}
 import models._
 import org.scalatest.mockito.MockitoSugar
@@ -49,13 +49,11 @@ class RegisterProjectSteps extends ScalaDsl with EN with MockitoSugar {
   }
 
 
-  When("""^a user register a new project with$""") { data: DataTable =>
-    val project = data.asList(classOf[Project]).asScala.head
-    registerProject(project)
+  When("""^a user register a new project with$""") { projects: util.List[Project] =>
+    registerProject(projects.get(0))
   }
 
-  Then("""^the projects settings are now$""") { data: DataTable =>
-    val expectedProjects = data.asList(classOf[Project]).asScala
-    checkProjectsInDb(expectedProjects)
+  Then("""^the projects settings are now$""") { projects: util.List[Project] =>
+    checkProjectsInDb(projects.asScala)
   }
 }
