@@ -2,9 +2,9 @@ package steps
 
 
 import java.nio.file.{Files, Paths}
+import java.util
 
 import anorm.SQL
-import cucumber.api.DataTable
 import cucumber.api.scala.{EN, ScalaDsl}
 import models._
 import net.ruippeixotog.scalascraper.browser.HtmlUnitBrowser
@@ -101,12 +101,10 @@ Scenario: providing several book suggestions
     Files.write(fullPath, content.getBytes())
   }
 
-  Given("""^we have the following projects$""") { data: DataTable =>
-    val projects = data.asList(classOf[Project]).asScala
+  Given("""^we have the following projects$""") { projects: util.List[Project] =>
+    projectRepository.saveAll(projects.asScala)
 
-    projectRepository.saveAll(projects)
-
-    CommonSteps.projects = projects.map(p => (p.id, p)).toMap
+    CommonSteps.projects = projects.asScala.map(p => (p.id, p)).toMap
   }
 
   When("^we go in a browser to url \"([^\"]*)\"$") { url: String =>
@@ -136,6 +134,4 @@ Scenario: providing several book suggestions
     val content = contentAsString(response)
     cleanHtmlWhitespaces(content) must include(cleanHtmlWhitespaces(expectedPageContentPart))
   }
-
-
 }
