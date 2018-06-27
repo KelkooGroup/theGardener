@@ -3,11 +3,11 @@ package services
 import java.io.File
 
 import javax.inject.Inject
+import org.eclipse.jgit.api.CreateBranchCommand.SetupUpstreamMode
 import org.eclipse.jgit.api.Git
-import org.eclipse.jgit.internal.storage.file.FileRepository
 import play.api.Logger
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent._
 
 
 class GitService @Inject()(implicit ec: ExecutionContext) {
@@ -19,22 +19,30 @@ class GitService @Inject()(implicit ec: ExecutionContext) {
     }
   }
 
-
-  def checkout(branch: String, localRepository: String): Future[Unit] = Future {
+  def checkout(branch: String, localRepository: String, create: Boolean = false): Future[Unit] = {
     Future {
-      val git = new Git(new FileRepository(localRepository))
-      git.checkout().setName(branch).setCreateBranch(true).addPath("target/data/gitService/local/test").call()
-      Logger.info(s"checkout a $branch to $localRepository")
+      val git = Git.open(new File(localRepository))
+      if (create) {
+        git.checkout()
+          .setCreateBranch(true)
+          .setName(branch)
+          .setUpstreamMode(SetupUpstreamMode.SET_UPSTREAM)
+          .setStartPoint(s"origin/$branch")
+          .call()
+
+      } else {
+        git.checkout.setName(branch).call()
+      }
+
+      Logger.info(s"checkout $localRepository to branch $branch")
     }
   }
 
   def pull(localRepository: String): Future[Unit] = {
     Future {
-      val git = new Git(new FileRepository(localRepository))
-      git.pull().call()
-      Logger.info(s"pull to $localRepository")
+      Git.open(new File(localRepository)).pull().call()
+
+      Logger.info(s"pull in $localRepository")
     }
   }
-
-
 }
