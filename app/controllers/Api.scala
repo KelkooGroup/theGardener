@@ -35,26 +35,26 @@ class ProjectController @Inject()(projectRepository: ProjectRepository) extends 
   @ApiOperation(value = "Register a new project", code = 201, response = classOf[Project])
   @ApiImplicitParams(Array(new ApiImplicitParam(value = "The project to register", required = true, dataType = "models.Project", paramType = "body")))
   @ApiResponses(Array(new ApiResponse(code = 400, message = "Incorrect json")))
-  def registerProject() = Action { implicit request =>
+  def registerProject(): Action[Project] = Action(parse.json[Project]) { implicit request =>
+    val project = request.body
 
-    request.body.asJson.map(_.as[Project]) match {
-      case Some(project) if !projectRepository.existsById(project.id) =>
+    if (projectRepository.existsById(project.id)) {
+      BadRequest
 
-        val savedProject = projectRepository.save(project)
-        Created(Json.toJson(savedProject))
-
-      case _ => BadRequest
+    } else {
+      val savedProject = projectRepository.save(project)
+      Created(Json.toJson(savedProject))
     }
   }
 
   @ApiOperation(value = "Get all projects", response = classOf[Project])
-  def getAllProjects() = Action {
+  def getAllProjects(): Action[AnyContent] = Action {
     Ok(Json.toJson(projectRepository.findAll()))
   }
 
   @ApiOperation(value = "Get a project", response = classOf[Project])
   @ApiResponses(Array(new ApiResponse(code = 404, message = "Project not found")))
-  def getProject(@ApiParam("Project id") id: String) = Action {
+  def getProject(@ApiParam("Project id") id: String): Action[AnyContent] = Action {
 
     projectRepository.findById(id) match {
       case Some(project) => Ok(Json.toJson(project))
@@ -69,27 +69,27 @@ class ProjectController @Inject()(projectRepository: ProjectRepository) extends 
     new ApiResponse(code = 400, message = "Incorrect json"),
     new ApiResponse(code = 404, message = "Project not found"))
   )
-  def updateProject(@ApiParam("Project id") id: String) = Action { implicit request =>
+  def updateProject(@ApiParam("Project id") id: String): Action[Project] = Action(parse.json[Project]) { implicit request =>
+    val project = request.body
 
-    request.body.asJson.map(_.as[Project]) match {
-      case Some(project) if id == project.id =>
+    if (id != project.id) {
+      BadRequest
 
-        if (projectRepository.existsById(id)) {
-          projectRepository.save(project)
+    } else {
+      if (projectRepository.existsById(id)) {
+        projectRepository.save(project)
 
-          Ok(Json.toJson(projectRepository.findById(id)))
+        Ok(Json.toJson(projectRepository.findById(id)))
 
-        } else {
-          NotFound(s"No project $id")
-        }
-
-      case _ => BadRequest
+      } else {
+        NotFound(s"No project $id")
+      }
     }
   }
 
   @ApiOperation(value = "Delete a project")
   @ApiResponses(Array(new ApiResponse(code = 404, message = "Project not found")))
-  def deleteProject(@ApiParam("Project id") id: String) = Action {
+  def deleteProject(@ApiParam("Project id") id: String): Action[AnyContent] = Action {
 
     if (projectRepository.existsById(id)) {
       projectRepository.deleteById(id)
