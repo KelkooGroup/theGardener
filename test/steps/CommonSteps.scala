@@ -71,7 +71,7 @@ class CommonSteps extends ScalaDsl with EN with MockitoSugar {
   import CommonSteps._
 
   Given("""^a git server that host a project$""") { () =>
-    // nothing to do here
+    //nothing to do here
   }
 
   Given("""^a simple feature is available in my project$""") { () =>
