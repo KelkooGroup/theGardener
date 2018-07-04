@@ -33,7 +33,7 @@ class GitServiceTest extends WordSpec with MustMatchers with BeforeAndAfter with
     deleteDirectory(new File(localRepositoryDirectory))
   }
 
-  def addFileToRemote(git: Git, file: File, message: String) : Unit = {
+  def addFileToRemote(git: Git, file: File, message: String): Unit = {
     forceMkdirParent(file)
     write(file, "test", encoding)
 
@@ -53,18 +53,17 @@ class GitServiceTest extends WordSpec with MustMatchers with BeforeAndAfter with
 
     "checkout a branch" in {
       val branchName = "newbranch"
+      val fileName = "test1.txt"
+      val remoteFile1 = new File(remoteRepositoryDirectory, fileName)
 
-      remoteGit.checkout().setCreateBranch(true).setName(branchName).call()
-
-      val remoteFile1 = new File(remoteRepositoryDirectory, "test1.txt")
-      addFileToRemote(remoteGit, remoteFile1, " commit test1.txt")
+      createBranch(branchName, remoteFile1)
 
       Git.cloneRepository().setURI(remoteRepositoryDirectory.toURI.toString).setDirectory(new File(localRepositoryDirectory)).call()
 
       val future = new GitService().checkout(branchName, localRepositoryDirectory)
 
       whenReady(future, timeout(30.seconds)) { _ =>
-        readFileToString(remoteFile1, encoding) mustBe readFileToString(new File(localRepositoryDirectory, "test1.txt"), encoding)
+        readFileToString(remoteFile1, encoding) mustBe readFileToString(new File(localRepositoryDirectory, fileName), encoding)
       }
     }
 
@@ -80,5 +79,23 @@ class GitServiceTest extends WordSpec with MustMatchers with BeforeAndAfter with
         readFileToString(remoteFile2, encoding) mustBe readFileToString(new File(localRepositoryDirectory, "test2.txt"), encoding)
       }
     }
+
+    "list the branch of remote" in {
+      val branchName = "newbranch3"
+      val fileName = "test3.txt"
+      val remoteFile3 = new File(remoteRepositoryDirectory, fileName)
+
+      createBranch(branchName, remoteFile3)
+      val future = new GitService().getRemoteBranches(remoteRepositoryDirectory.toURI.toString)
+
+      whenReady(future, timeout(30.seconds)) { branches =>
+        branches must contain theSameElementsAs Seq(branchName, "master")
+      }
+    }
+  }
+
+  private def createBranch(branchName: String, remoteFile: File) = {
+    remoteGit.checkout().setCreateBranch(true).setName(branchName).call()
+    addFileToRemote(remoteGit, remoteFile, "commit " + remoteFile.getName)
   }
 }

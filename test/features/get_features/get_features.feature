@@ -43,13 +43,12 @@ Scenario: providing several book suggestions
   Then the suggestions are popular and available books adapted to the age of the user
     """
 
-  @level_1_specification @nominal_case @Ongoing
+  @level_1_specification @nominal_case @draft
   Scenario: get bdd features from a project with a complex structure of feature files
     Given we have the following projects
       | id            | name                    | repositoryUrl                                        | stableBranch | featuresRootPath |
       | suggestionsWS | Suggestions WebServices | git@gitlab.corp.kelkoo.net:library/suggestionsWS.git | master       | test/features    |
-    And the server "gitlab.corp.kelkoo.net" host under the project "library/suggestionsWS" on the branch "master" the
-  files
+    And the server "gitlab.corp.kelkoo.net" host under the project "library/suggestionsWS" on the branch "master" the files
       | file                                                       | content                           |
       | test/features/suggestions/provide_book_suggestions.feature | Feature: Provide book suggestions |
       | test/features/setup/setup_suggestions.feature              | Feature: Setup book suggestions   |
@@ -60,7 +59,7 @@ Scenario: providing several book suggestions
       | data/projects/suggestionsWS/master/test/features/setup/setup_suggestions.feature              | Feature: Setup book suggestions   |
 
 
-  @level_2_technical_details @nominal_case @valid
+  @level_2_technical_details @nominal_case @Ongoing
   Scenario: update bdd features from a project
     Given we have the following projects
       | id            | name                    | repositoryUrl                                        | stableBranch | featuresRootPath |
