@@ -6,7 +6,7 @@ Feature: Define hierarchy
   Background:
     Given no hierarchy is setup in theGardener
 
-  @level_2_technical_details @nominal_case @valid
+  @level_2_technical_details @nominal_case @draft
   Scenario: Add a hierarchy node
     Given no hierarchy nodes is setup in theGardener
     When I perform a "POST" on following URL "/api/hierarchy" with json body
@@ -30,7 +30,7 @@ Feature: Define hierarchy
       | id | slugName | name           |
       | .  | root     | Hierarchy root |
 
-  @level_2_technical_details @nominal_case @valid
+  @level_2_technical_details @nominal_case @draft
   Scenario: Get all hierarchy
     Given the hierarchy nodes are
       | id         | slugName   | name                 |
@@ -90,7 +90,7 @@ Feature: Define hierarchy
 ]
   """
 
-  @level_2_technical_details @nominal_case @valid
+  @level_2_technical_details @nominal_case @draft
   Scenario: Update a hierarchy node
     Given the hierarchy nodes are
       | id         | slugName   | name                 |
@@ -130,7 +130,7 @@ Feature: Define hierarchy
       | .01.02.    | bakery     | Bakery system group  |
       | .01.03.    | another    | Another system group |
 
-  @level_2_technical_details @nominal_case @valid
+  @level_2_technical_details @nominal_case @draft
   Scenario: Delete a hierarchy node
     Given the hierarchy nodes are
       | id         | slugName   | name                 |
