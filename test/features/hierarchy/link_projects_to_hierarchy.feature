@@ -6,13 +6,13 @@ Feature: Link a project to the hierarchy
 # TODO :
 #    - Switch to ongoing one scenario, run OnGoingBDDTest, and solve the errors until you got a success
 #    - By following Project example, you will have at some point to :
-#       - Create theGardener/test/steps/DefineHierarchySteps.scala
-#       - Update theGardener/conf/evolutions/default/1.sql to create hierarchy table
+#       - Create theGardener/test/steps/LinkProjectsHierarchySteps.scala
+#       - Update theGardener/conf/evolutions/default/1.sql to create belongsTo table
 #       - Update theGardener/test/steps/CommonSteps.scala  CommonSteps.cleanDatabase
 #       - Update theGardener/conf/routes
-#       - Create theGardener/app/repository/HierarchyRepository.scala
-#       - Create theGardener/app/models/Hierarchy.scala
-#       - Update theGardener/app/controllers/Api.scala to create HierarchyController
+#       - Update theGardener/app/repository/HierarchyRepository.scala
+#       - Create theGardener/app/models/LinkProjectsHierarchy.scala
+#       - Update theGardener/app/controllers/Api.scala to update HierarchyController
 
   Background:
     Given the hierarchy nodes are
