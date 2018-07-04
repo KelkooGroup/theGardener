@@ -3,6 +3,17 @@ Feature: Define hierarchy
   I want to define the projects hierarchy into theGardener
   So that BDD features can be well organized
 
+# TODO :
+#    - Switch to ongoing one scenario, run OnGoingBDDTest, and solve the errors until you got a success
+#    - By following Project example, you will have at some point to :
+#       - Create theGardener/test/steps/DefineHierarchySteps.scala
+#       - Create theGardener/conf/evolutions/default/2.sql to create hierarchy table
+#       - Update theGardener/test/steps/CommonSteps.scala  CommonSteps.cleanDatabase
+#       - Update theGardener/conf/routes
+#       - Create theGardener/app/repository/HierarchyRepository.scala
+#       - Create theGardener/app/models/Hierarchy.scala
+#       - Update theGardener/app/controllers/Api.scala to create HierarchyController
+
   Background:
     Given no hierarchy is setup in theGardener
 
