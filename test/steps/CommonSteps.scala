@@ -45,6 +45,7 @@ object CommonSteps extends PlaySpec with GuiceOneServerPerSuite with BeforeAndAf
   var page: String = _
 
   var projects: Map[String, Project] = _
+  var hierarchies : Map[String, Hierarchy] = _
 
   override def fakeApplication(): Application = new GuiceApplicationBuilder().in(Mode.Test).build()
 

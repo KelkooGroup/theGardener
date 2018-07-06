@@ -122,4 +122,47 @@ class HierarchyController @Inject()(hierarchyRepository: HierarchyRepository) ex
     }
   }
 
+  @ApiOperation(value = "Get all hierarchies", response = classOf[Hierarchy])
+  def getAllHierarchies(): Action[AnyContent] = Action {
+    Ok(Json.toJson(hierarchyRepository.findAll()))
+  }
+
+  @ApiOperation(value = "Update an hierarchy", response = classOf[Hierarchy])
+  @ApiImplicitParams(Array(new ApiImplicitParam(value = "The hierarchy to update", required = true, dataType = "models.Hierarchy", paramType = "body")))
+  @ApiResponses(Array(
+    new ApiResponse(code = 400, message = "Incorrect json"),
+    new ApiResponse(code = 404, message = "Hierarchy not found"))
+  )
+  def updateHierarchy(@ApiParam("Hierarchy id") id: String): Action[Hierarchy] = Action(parse.json[Hierarchy]) { implicit request =>
+    val hierarchy = request.body
+
+    if (id != hierarchy.id) {
+      BadRequest
+
+    } else {
+      if (hierarchyRepository.existsById(id)) {
+        hierarchyRepository.save(hierarchy)
+
+        Ok(Json.toJson(hierarchyRepository.findById(id)))
+
+      } else {
+        NotFound(s"No hierarchy $id")
+      }
+    }
+  }
+
+  @ApiOperation(value = "Delete an hierarchy")
+  @ApiResponses(Array(new ApiResponse(code = 404, message = "Hierarchy not found")))
+  def deleteHierarchy(@ApiParam("Hierarchy id") id: String): Action[AnyContent] = Action {
+
+    if (hierarchyRepository.existsById(id)) {
+      hierarchyRepository.deleteById(id)
+
+      Ok
+
+    } else {
+      NotFound(s"No hierarchy $id")
+    }
+  }
+
 }

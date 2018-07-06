@@ -41,7 +41,7 @@ Feature: Define hierarchy
       | id | slugName | name           |
       | .  | root     | Hierarchy root |
 
-  @level_2_technical_details @nominal_case @draft
+  @level_2_technical_details @nominal_case @valid
   Scenario: Get all hierarchy
     Given the hierarchy nodes are
       | id         | slugName   | name                 |
@@ -101,7 +101,7 @@ Feature: Define hierarchy
 ]
   """
 
-  @level_2_technical_details @nominal_case @draft
+  @level_2_technical_details @nominal_case @valid
   Scenario: Update a hierarchy node
     Given the hierarchy nodes are
       | id         | slugName   | name                 |
@@ -141,7 +141,7 @@ Feature: Define hierarchy
       | .01.02.    | bakery     | Bakery system group  |
       | .01.03.    | another    | Another system group |
 
-  @level_2_technical_details @nominal_case @draft
+  @level_2_technical_details @nominal_case @valid
   Scenario: Delete a hierarchy node
     Given the hierarchy nodes are
       | id         | slugName   | name                 |

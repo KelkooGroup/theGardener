@@ -40,6 +40,21 @@ class HierarchyRepository @Inject()(db: Database) {
     }
   }
 
+  def saveAll(hierarchies: Seq[Hierarchy]): Seq[Hierarchy] = {
+    hierarchies.map(save)
+  }
+
+  def findById(id: String): Option[Hierarchy] = {
+    db.withConnection { implicit connection =>
+      SQL"SELECT * FROM hierarchy WHERE id = $id".as(parser.singleOpt)
+    }
+  }
+
+  def deleteById(id: String): Unit = {
+    db.withConnection { implicit connection =>
+      SQL"DELETE FROM hierarchy WHERE id = $id".executeUpdate()
+    }
+  }
 }
 
 

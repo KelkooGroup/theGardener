@@ -2,9 +2,11 @@ package steps
 
 import java.util
 
+import cucumber.api.DataTable
 import cucumber.api.scala.{EN, ScalaDsl}
 import models._
 import org.scalatest.mockito.MockitoSugar
+
 import scala.collection.JavaConverters._
 
 class DefineHierarchySteps extends ScalaDsl with EN with MockitoSugar {
@@ -19,11 +21,21 @@ class DefineHierarchySteps extends ScalaDsl with EN with MockitoSugar {
     hierarchyRepository.deleteAll()
   }
 
-  Then("""^the hierarchy nodes are now$""") { hierarchies: util.List[Hierarchy] =>
-    checkHierarchiesInDb(hierarchies.asScala)}
+  Given("""^the hierarchy nodes are$""") { hierarchies: util.List[Hierarchy] =>
+    hierarchyRepository.saveAll(hierarchies.asScala)
 
-  private def checkHierarchiesInDb(expectedHierarchies: Seq[Hierarchy]) = {
-    val actualProjects = hierarchyRepository.findAll()
-    actualProjects mustBe expectedHierarchies
+    CommonSteps.hierarchies = hierarchies.asScala.map(p => (p.id, p)).toMap
   }
+
+  Then("""^the hierarchy nodes are now$""") { (hierarchy: DataTable) =>
+    checkHierarchies(hierarchy, hierarchyRepository.findAll())
+  }
+
+  def checkHierarchies(hierarchy: DataTable, actualHierarchies: Seq[Hierarchy]): Unit = {
+    val exceptedHierarchies = hierarchy.asMaps(classOf[String], classOf[String]).asScala.map(_.asScala).map { hierarchy =>
+      Hierarchy(hierarchy("id").toString, hierarchy("slugName").toString, hierarchy("name").toString)
+    }
+    actualHierarchies.size mustBe exceptedHierarchies.size
+  }
+
 }
