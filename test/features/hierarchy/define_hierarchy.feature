@@ -17,7 +17,7 @@ Feature: Define hierarchy
   Background:
     Given no hierarchy is setup in theGardener
 
-  @level_2_technical_details @nominal_case @draft
+  @level_2_technical_details @nominal_case @valid
   Scenario: Add a hierarchy node
     Given no hierarchy nodes is setup in theGardener
     When I perform a "POST" on following URL "/api/hierarchy" with json body

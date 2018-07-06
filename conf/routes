@@ -17,6 +17,9 @@ GET         /api/projects/:id                      controllers.ProjectController
 PUT         /api/projects/:id                      controllers.ProjectController.updateProject(id: String)
 DELETE      /api/projects/:id                      controllers.ProjectController.deleteProject(id: String)
 
+# HIERARCHY
+
+POST        /api/hierarchy                         controllers.HierarchyController.addHierarchy()
 # Swagger API
 GET         /api/docs/                            controllers.Assets.at(path="/public/swagger-ui",file="index.html")
 GET         /api/docs/swagger.json                controllers.ApiHelpController.getResources

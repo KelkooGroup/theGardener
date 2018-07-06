@@ -8,7 +8,7 @@ import models._
 import play.api.Configuration
 import play.api.libs.json._
 import play.api.mvc._
-import repository.ProjectRepository
+import repository._
 import services.FeatureService
 
 @Api(value = "FeatureController", produces = "application/json")
@@ -100,4 +100,26 @@ class ProjectController @Inject()(projectRepository: ProjectRepository) extends 
       NotFound(s"No project $id")
     }
   }
+}
+
+@Api(value = "HierarchyController", produces = "application/json")
+class HierarchyController @Inject()(hierarchyRepository: HierarchyRepository) extends InjectedController {
+
+  implicit val hierarchyFormat = Json.format[Hierarchy]
+
+  @ApiOperation(value = "Add a  new Hierarchy", code = 201, response = classOf[Hierarchy])
+  @ApiImplicitParams(Array(new ApiImplicitParam(value = "The hierarchy to add", required = true, dataType = "models.Hierarchy", paramType = "body")))
+  @ApiResponses(Array(new ApiResponse(code = 400, message = "Incorrect json")))
+  def addHierarchy(): Action[Hierarchy] = Action(parse.json[Hierarchy]) { implicit request =>
+    val hierarchy = request.body
+
+    if (hierarchyRepository.existsById(hierarchy.id)) {
+      BadRequest
+
+    } else {
+      val addHierarchy = hierarchyRepository.save(hierarchy)
+      Created(Json.toJson(addHierarchy))
+    }
+  }
+
 }
