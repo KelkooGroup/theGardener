@@ -5,13 +5,15 @@ import java.io.File
 import org.apache.commons.io.FileUtils._
 import org.eclipse.jgit.api.Git
 import org.scalatest._
-import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.concurrent._
+import scala.concurrent.duration._
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.duration._
 
 
 class GitServiceTest extends WordSpec with MustMatchers with BeforeAndAfter with ScalaFutures {
+  override implicit val patienceConfig = PatienceConfig(timeout = scaled(30.seconds))
+
   val encoding = "UTF-8"
 
   val remoteRepositoryDirectory = new File("target/data/gitService/remote")
@@ -45,7 +47,7 @@ class GitServiceTest extends WordSpec with MustMatchers with BeforeAndAfter with
     "clone a remote repository" in {
       val future = new GitService().clone(remoteRepositoryDirectory.toURI.toString, localRepositoryDirectory)
 
-      whenReady(future, timeout(30.seconds)) { _ =>
+      whenReady(future) { _ =>
         readFileToString(localFile, encoding) mustBe readFileToString(remoteFile, encoding)
       }
     }
@@ -61,7 +63,7 @@ class GitServiceTest extends WordSpec with MustMatchers with BeforeAndAfter with
 
       val future = new GitService().checkout(branchName, localRepositoryDirectory)
 
-      whenReady(future, timeout(30.seconds)) { _ =>
+      whenReady(future) { _ =>
         readFileToString(remoteFile1, encoding) mustBe readFileToString(new File(localRepositoryDirectory, fileName), encoding)
       }
     }
@@ -74,7 +76,7 @@ class GitServiceTest extends WordSpec with MustMatchers with BeforeAndAfter with
 
       val future = new GitService().pull(localRepositoryDirectory)
 
-      whenReady(future, timeout(30.seconds)) { _ =>
+      whenReady(future) { _ =>
         readFileToString(remoteFile2, encoding) mustBe readFileToString(new File(localRepositoryDirectory, "test2.txt"), encoding)
       }
     }
@@ -87,7 +89,7 @@ class GitServiceTest extends WordSpec with MustMatchers with BeforeAndAfter with
       createBranch(branchName, remoteFile3)
       val future = new GitService().getRemoteBranches(remoteRepositoryDirectory.toURI.toString)
 
-      whenReady(future, timeout(30.seconds)) { branches =>
+      whenReady(future) { branches =>
         branches must contain theSameElementsAs Seq(branchName, "master")
       }
     }

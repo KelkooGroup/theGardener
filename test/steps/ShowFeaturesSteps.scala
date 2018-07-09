@@ -11,7 +11,7 @@ import play.api.test.Helpers._
 import play.api.test._
 
 
-class ShowFeaturesSteps extends ScalaDsl with EN with MockitoSugar {
+class ShowFeaturesSteps extends ScalaDsl with EN with MockitoSugar with ScalaFutures {
 
   import CommonSteps._
 
@@ -89,7 +89,7 @@ class ShowFeaturesSteps extends ScalaDsl with EN with MockitoSugar {
   }
 
   Then("""^no feature is displayed$""") { () =>
-    ScalaFutures.whenReady(response.failed) {
+    whenReady(response.failed) {
       _ mustBe a[ParserException]
     }
   }

@@ -1,13 +1,16 @@
 package services
 
+import java.io.File
+
 import com.typesafe.config.ConfigFactory
 import models.Project
+import org.apache.commons.io.FileUtils._
 import org.mockito.Matchers._
 import org.mockito.Mockito
 import org.mockito.Mockito._
+import org.scalatest._
 import org.scalatest.concurrent._
 import org.scalatest.mockito._
-import org.scalatest.{BeforeAndAfter, MustMatchers, WordSpec}
 import repository.ProjectRepository
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -15,10 +18,12 @@ import scala.concurrent._
 import scala.concurrent.duration._
 
 class ProjectServiceTest extends WordSpec with MustMatchers with BeforeAndAfter with MockitoSugar with ScalaFutures {
+  override implicit val patienceConfig = PatienceConfig(timeout = scaled(30.seconds))
+
   val encoding = "UTF-8"
 
-  val featureBranch = "feature/add-suggestions"
-  val bugfixBranch = "bugfix/fix-suggestions-engine"
+  val featureBranch = "add-suggestions"
+  val bugfixBranch = "fix-suggestions-engine"
 
   val gitService = mock[GitService]
   val projectRepository = mock[ProjectRepository]
@@ -34,7 +39,6 @@ class ProjectServiceTest extends WordSpec with MustMatchers with BeforeAndAfter 
   before {
     Mockito.reset(gitService, projectRepository)
   }
-
 
   "ProjectService" should {
     "create a project" in {
@@ -54,9 +58,10 @@ class ProjectServiceTest extends WordSpec with MustMatchers with BeforeAndAfter 
 
       when(projectRepository.save(project)).thenReturn(project)
 
+
       val result = projectService.create(project)
 
-      whenReady(result, timeout(30.seconds)) { _ =>
+      whenReady(result) { _ =>
         verify(gitService, times(1)).getRemoteBranches(project.repositoryUrl)
 
         verify(gitService, times(1)).clone(project.repositoryUrl, masterDirectory)
@@ -67,9 +72,40 @@ class ProjectServiceTest extends WordSpec with MustMatchers with BeforeAndAfter 
       }
     }
 
-    "synchronize all exiting projects" ignore {
+    "synchronize all exiting projects" in {
+      forceMkdir(new File(masterDirectory))
+      forceMkdir(new File(bugfixBranchDirectory))
 
+      Mockito.reset(gitService, projectRepository)
+
+      when(projectRepository.findAll()).thenReturn(Seq(project))
+
+      when(gitService.getRemoteBranches(project.repositoryUrl)).thenReturn(Future.successful(Seq(project.stableBranch, featureBranch)))
+
+      when(gitService.pull(anyString())).thenReturn(Future.failed(new Exception()))
+      when(gitService.pull(masterDirectory)).thenReturn(Future.successful(()))
+
+      when(gitService.clone(anyString(), anyString())).thenReturn(Future.failed(new Exception()))
+      when(gitService.checkout(anyString(), anyString(), anyBoolean())).thenReturn(Future.failed(new Exception()))
+
+      when(gitService.clone(project.repositoryUrl, featureBranchDirectory)).thenReturn(Future.successful(()))
+      when(gitService.checkout(featureBranch, featureBranchDirectory)).thenReturn(Future.successful(()))
+
+
+      val result = projectService.synchronizeAll()
+
+      whenReady(result) { _ =>
+        verify(projectRepository, times(1)).findAll()
+
+        verify(gitService, times(1)).getRemoteBranches(project.repositoryUrl)
+
+        verify(gitService, times(1)).pull(masterDirectory)
+
+        verify(gitService, times(1)).clone(project.repositoryUrl, featureBranchDirectory)
+//        verify(gitService, times(1)).checkout(featureBranch, featureBranchDirectory)
+
+        new File(bugfixBranchDirectory).exists() mustBe false
+      }
     }
   }
-
 }
