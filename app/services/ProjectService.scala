@@ -1,18 +1,36 @@
 package services
 
+import com.typesafe.config.Config
 import javax.inject.Inject
+import models.Project
 import repository.ProjectRepository
 
 import scala.concurrent._
 
-class ProjectService @Inject()(projectRepository: ProjectRepository, gitService: GitService)(implicit ec: ExecutionContext) {
+class ProjectService @Inject()(projectRepository: ProjectRepository, gitService: GitService, config: Config)(implicit ec: ExecutionContext) {
+  val projectsRootDirectory = config.getString("projects.root.directory")
 
-  def create(url: String): Future[Unit] = {
-    ???
+  def getLocalRepository(projectId: String, branch: String) = s"$projectsRootDirectory/$projectId/$branch"
+
+  def create(project: Project): Future[Unit] = {
+    for {
+      remoteBranches <- gitService.getRemoteBranches(project.repositoryUrl)
+      _ <- checkoutBranches(project, remoteBranches)
+
+    } yield projectRepository.save(project)
   }
 
-  def update(localRepo: String, newBranch: String): Future[Unit] = {
-    ???
+  private def checkoutBranches(project: Project, branches: Seq[String]) = {
+    Future.sequence(
+      branches.map { branch =>
+        val localRepository = getLocalRepository(project.id, branch)
+
+        for {
+          _ <- gitService.clone(project.repositoryUrl, localRepository)
+          res <- gitService.checkout(branch, localRepository)
+        } yield res
+      }
+    )
   }
 
   def synchronizeAll(): Future[Unit] = {
