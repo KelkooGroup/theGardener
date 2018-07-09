@@ -24,6 +24,7 @@ import services.FeatureService
 
 import scala.collection.JavaConverters._
 import scala.concurrent.Future
+import scala.io.Source
 import scala.reflect.ClassTag
 
 
@@ -133,5 +134,9 @@ Scenario: providing several book suggestions
   Then("""^the page contains$""") { expectedPageContentPart: String =>
     val content = contentAsString(response)
     cleanHtmlWhitespaces(content) must include(cleanHtmlWhitespaces(expectedPageContentPart))
+  }
+
+  Then("""^the file system store now the file "([^"]*)"$""") { (path: String, content: String) =>
+    Source.fromFile(path).mkString mustBe content
   }
 }

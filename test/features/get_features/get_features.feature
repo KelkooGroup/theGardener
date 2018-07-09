@@ -59,12 +59,12 @@ Scenario: providing several book suggestions
       | data/projects/suggestionsWS/master/test/features/setup/setup_suggestions.feature              | Feature: Setup book suggestions   |
 
 
-  @level_2_technical_details @nominal_case @Ongoing
+  @level_2_technical_details @nominal_case @ready
   Scenario: update bdd features from a project
     Given we have the following projects
       | id            | name                    | repositoryUrl                                        | stableBranch | featuresRootPath |
       | suggestionsWS | Suggestions WebServices | git@gitlab.corp.kelkoo.net:library/suggestionsWS.git | master       | test/features    |
-    And the file system store the file "data/projects/suggestionsWS/master/test/features/provide_book_suggestions.feature"
+    And the file "data/projects/suggestionsWS/master/test/features/provide_book_suggestions.feature"
     """
 Feature: As a user, I want some book suggestions so that I can do some discovery
     """
