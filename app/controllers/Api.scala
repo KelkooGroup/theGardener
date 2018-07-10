@@ -105,12 +105,12 @@ class ProjectController @Inject()(projectRepository: ProjectRepository) extends 
 @Api(value = "HierarchyController", produces = "application/json")
 class HierarchyController @Inject()(hierarchyRepository: HierarchyRepository) extends InjectedController {
 
-  implicit val hierarchyFormat = Json.format[Hierarchy]
+  implicit val hierarchyFormat = Json.format[HierarchyNode]
 
-  @ApiOperation(value = "Add a  new Hierarchy", code = 201, response = classOf[Hierarchy])
+  @ApiOperation(value = "Add a  new Hierarchy", code = 201, response = classOf[HierarchyNode])
   @ApiImplicitParams(Array(new ApiImplicitParam(value = "The hierarchy to add", required = true, dataType = "models.Hierarchy", paramType = "body")))
   @ApiResponses(Array(new ApiResponse(code = 400, message = "Incorrect json")))
-  def addHierarchy(): Action[Hierarchy] = Action(parse.json[Hierarchy]) { implicit request =>
+  def addHierarchy(): Action[HierarchyNode] = Action(parse.json[HierarchyNode]) { implicit request =>
     val hierarchy = request.body
 
     if (hierarchyRepository.existsById(hierarchy.id)) {
@@ -122,18 +122,18 @@ class HierarchyController @Inject()(hierarchyRepository: HierarchyRepository) ex
     }
   }
 
-  @ApiOperation(value = "Get all hierarchies", response = classOf[Hierarchy])
+  @ApiOperation(value = "Get all hierarchies", response = classOf[HierarchyNode])
   def getAllHierarchies(): Action[AnyContent] = Action {
     Ok(Json.toJson(hierarchyRepository.findAll()))
   }
 
-  @ApiOperation(value = "Update an hierarchy", response = classOf[Hierarchy])
+  @ApiOperation(value = "Update an hierarchy", response = classOf[HierarchyNode])
   @ApiImplicitParams(Array(new ApiImplicitParam(value = "The hierarchy to update", required = true, dataType = "models.Hierarchy", paramType = "body")))
   @ApiResponses(Array(
     new ApiResponse(code = 400, message = "Incorrect json"),
     new ApiResponse(code = 404, message = "Hierarchy not found"))
   )
-  def updateHierarchy(@ApiParam("Hierarchy id") id: String): Action[Hierarchy] = Action(parse.json[Hierarchy]) { implicit request =>
+  def updateHierarchy(@ApiParam("Hierarchy id") id: String): Action[HierarchyNode] = Action(parse.json[HierarchyNode]) { implicit request =>
     val hierarchy = request.body
 
     if (id != hierarchy.id) {
