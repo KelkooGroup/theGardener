@@ -40,12 +40,11 @@ object CommonSteps extends PlaySpec with GuiceOneServerPerSuite with BeforeAndAf
   implicit val hierarchyFormat = Json.format[HierarchyNode]
 
 
-
   var response: Future[Result] = _
   var page: String = _
 
   var projects: Map[String, Project] = _
-  var hierarchies : Map[String, HierarchyNode] = _
+
   override def fakeApplication(): Application = new GuiceApplicationBuilder().in(Mode.Test).build()
 
   val db = Injector.inject[Database]

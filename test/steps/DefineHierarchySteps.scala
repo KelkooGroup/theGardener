@@ -12,16 +12,12 @@ class DefineHierarchySteps extends ScalaDsl with EN with MockitoSugar {
 
   import CommonSteps._
 
-  Given("""^no hierarchy is setup in theGardener$""") { () =>
-  }
-
   Given("""^no hierarchy nodes is setup in theGardener$""") { () =>
     hierarchyRepository.deleteAll()
   }
 
   Given("""^the hierarchy nodes are$""") { hierarchies: util.List[HierarchyNode] =>
     hierarchyRepository.saveAll(hierarchies.asScala)
-    CommonSteps.hierarchies = hierarchies.asScala.map(p => (p.id, p)).toMap
   }
 
   Then("""^the hierarchy nodes are now$""") { (hierarchy: util.List[HierarchyNode]) =>
