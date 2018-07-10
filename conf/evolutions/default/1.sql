@@ -1,6 +1,7 @@
 set ignorecase true;
 
 # --- !Downs
+# --- !DROP TABLE belongsTo;
 DROP TABLE hierarchy;
 DROP TABLE project;
 
@@ -20,3 +21,4 @@ create table hierarchy(
   name varchar (255) not null,
   constraint pk_hierarchy primary key(id)
  );
+
