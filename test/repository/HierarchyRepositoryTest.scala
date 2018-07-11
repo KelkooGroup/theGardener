@@ -20,7 +20,8 @@ class HierarchyRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with 
   override def beforeEach(): Unit = {
     db.withConnection { implicit connection =>
       hierarchyNodes.foreach { hierarchyNode =>
-        SQL"""INSERT INTO hierarchyNode (id, slugName, name)           VALUES (${hierarchyNode.id}, ${hierarchyNode.slugName}, ${hierarchyNode.name})""".executeInsert()
+        SQL"""INSERT INTO hierarchyNode (id, slugName, name)
+             VALUES (${hierarchyNode.id}, ${hierarchyNode.slugName}, ${hierarchyNode.name})""".executeInsert()
       }
     }
   }
@@ -31,44 +32,48 @@ class HierarchyRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with 
     }
   }
 
-  "find all hierarchyNodes" in {
-    hierarchyRepository.findAll() must contain theSameElementsAs hierarchyNodes
-  }
+  "HierarchyRepository" should {
+    "find all hierarchyNodes" in {
+      hierarchyRepository.findAll() must contain theSameElementsAs hierarchyNodes
+    }
 
-  "find an hierarchyNode by id" in {
-    hierarchyRepository.findById(hierarchyNode1.id) mustBe Some(hierarchyNode1)
-  }
+    "find an hierarchyNode by id" in {
+      hierarchyRepository.findById(hierarchyNode1.id) mustBe Some(hierarchyNode1)
+    }
 
-  "delete all hierarchyNodes" in {
-    hierarchyRepository.deleteAll()
+    "delete all hierarchyNodes" in {
+      hierarchyRepository.deleteAll()
 
-    db.withConnection { implicit connection =>
-      SQL"SELECT COUNT(*) FROM hierarchyNode".as(scalar[Long].single) mustBe 0
+      db.withConnection { implicit connection =>
+        SQL"SELECT COUNT(*) FROM hierarchyNode".as(scalar[Long].single) mustBe 0
+      }
+    }
+
+    "delete an hierarchyNode" in {
+      hierarchyRepository.deleteById(hierarchyNode1.id)
+
+      db.withConnection { implicit connection =>
+        SQL"SELECT COUNT(*) FROM hierarchyNode WHERE id = ${hierarchyNode1.id}".as(scalar[Long].single) mustBe 0
+      }
+    }
+
+    "check if an hierarchyNode exist by id" in {
+      hierarchyRepository.existsById(hierarchyNode1.id) mustBe true
+    }
+
+    "save an hierarchyNode" in {
+      val hierarchyNode5 = HierarchyNode("id5", "slugName5", "name5")
+      hierarchyRepository.save(hierarchyNode5)
+      hierarchyRepository.findById(hierarchyNode5.id) mustBe Some(hierarchyNode5)
+    }
+
+    "save all hierarchyNodes" in {
+      val newHierarchyNodes = Seq(HierarchyNode("id3", "slugName3", "name3"), HierarchyNode("id4", "slugName4", "name4"))
+      hierarchyRepository.saveAll(newHierarchyNodes)
+      hierarchyRepository.findAll() must contain theSameElementsAs (newHierarchyNodes :+ hierarchyNode1 :+ hierarchyNode2)
     }
   }
 
-  "delete an hierarchyNode" in {
-    hierarchyRepository.deleteById(hierarchyNode1.id)
 
-    db.withConnection { implicit connection =>
-      SQL"SELECT COUNT(*) FROM hierarchyNode WHERE id = ${hierarchyNode1.id}".as(scalar[Long].single) mustBe 0
-    }
-  }
-
-  "check if an hierarchyNode exist by id" in {
-    hierarchyRepository.existsById(hierarchyNode1.id) mustBe true
-  }
-
-  "save an hierarchyNode" in {
-    val hierarchyNode5 = HierarchyNode("id5", "slugName5", "name5")
-    hierarchyRepository.save(hierarchyNode5)
-    hierarchyRepository.findById(hierarchyNode5.id) mustBe Some(hierarchyNode5)
-  }
-
-  "save all hierarchyNodes" in {
-    val newHierarchyNodes = Seq(HierarchyNode("id3", "slugName3", "name3"), HierarchyNode("id4", "slugName4", "name4"))
-    hierarchyRepository.saveAll(newHierarchyNodes)
-    hierarchyRepository.findAll() must contain theSameElementsAs (newHierarchyNodes :+ hierarchyNode1 :+ hierarchyNode2)
-  }
 }
 
