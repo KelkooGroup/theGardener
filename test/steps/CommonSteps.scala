@@ -19,7 +19,7 @@ import play.api.mvc.Result
 import play.api.test.Helpers._
 import play.api.test._
 import play.api.{Application, Mode}
-import repository.ProjectRepository
+import repository.{HierarchyRepository, ProjectRepository}
 import services.FeatureService
 
 import scala.collection.JavaConverters._
@@ -37,6 +37,8 @@ object Injector {
 object CommonSteps extends PlaySpec with GuiceOneServerPerSuite with BeforeAndAfterAll with MockitoSugar with Injecting {
 
   implicit val projectFormat = Json.format[Project]
+  implicit val hierarchyFormat = Json.format[HierarchyNode]
+
 
   var response: Future[Result] = _
   var page: String = _
@@ -46,6 +48,7 @@ object CommonSteps extends PlaySpec with GuiceOneServerPerSuite with BeforeAndAf
   override def fakeApplication(): Application = new GuiceApplicationBuilder().in(Mode.Test).build()
 
   val db = Injector.inject[Database]
+  val hierarchyRepository = Injector.inject[HierarchyRepository]
   val projectRepository = Injector.inject[ProjectRepository]
   val featureService = Injector.inject[FeatureService]
 
