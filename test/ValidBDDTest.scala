@@ -6,7 +6,7 @@ import org.junit.runner.RunWith
 @CucumberOptions(
   features = Array("test/features"),
   glue = Array("steps"),
-  tags = Array("@Ongoing"),
+  tags = Array("@valid"),
   plugin = Array("pretty", "html:target/cucumber-report", "json:target/cucumber-bdd.json")
 )
 class ValidBDDTest {
