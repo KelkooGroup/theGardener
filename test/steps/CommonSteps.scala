@@ -36,8 +36,8 @@ object Injector {
 
 object CommonSteps extends PlaySpec with GuiceOneServerPerSuite with BeforeAndAfterAll with MockitoSugar with Injecting {
 
-  implicit val projectFormat = Json.format[Project]
   implicit val hierarchyFormat = Json.format[HierarchyNode]
+  implicit val projectFormat = Json.format[Project]
 
 
   var response: Future[Result] = _

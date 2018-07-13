@@ -28,8 +28,9 @@ class FeatureController @Inject()(featureService: FeatureService, configuration:
 }
 
 @Api(value = "ProjectController", produces = "application/json")
-class ProjectController @Inject()(projectRepository: ProjectRepository) extends InjectedController {
+class ProjectController @Inject()(projectRepository: ProjectRepository, hierarchyRepository: HierarchyRepository) extends InjectedController {
 
+  implicit val hierarchyFormat = Json.format[HierarchyNode]
   implicit val projectFormat = Json.format[Project]
 
   @ApiOperation(value = "Register a new project", code = 201, response = classOf[Project])
@@ -100,6 +101,23 @@ class ProjectController @Inject()(projectRepository: ProjectRepository) extends 
       NotFound(s"No project $id")
     }
   }
+
+  @ApiOperation(value = "Link a Project to hierarchy", code = 201, response = classOf[HierarchyNode])
+  @ApiResponses(Array(new ApiResponse(code = 400, message = "Incorrect json"),new ApiResponse(code = 404, message = "Project or hierarchy not found")))
+  def linkProjectToHierarchy(@ApiParam("Project Id") id: String, @ApiParam("Hierarchy Id") hierarchyId : String): Action[AnyContent] = Action {
+    if (projectRepository.existsById(id)) {
+      if(hierarchyRepository.existsById(hierarchyId)){
+        projectRepository.linkHierarchy(id, hierarchyId)
+        val hierarchy = hierarchyRepository.findAllByProjectId(id)
+        Created(Json.toJson(hierarchy))
+
+      } else {
+        NotFound (s"No hierarchy node $hierarchyId")
+      }
+    }else {
+      NotFound (s"No project $id")
+    }
+  }
 }
 
 @Api(value = "HierarchyController", produces = "application/json")
@@ -108,7 +126,7 @@ class HierarchyController @Inject()(hierarchyRepository: HierarchyRepository) ex
   implicit val hierarchyFormat = Json.format[HierarchyNode]
 
   @ApiOperation(value = "Add a  new Hierarchy", code = 201, response = classOf[HierarchyNode])
-  @ApiImplicitParams(Array(new ApiImplicitParam(value = "The hierarchy to add", required = true, dataType = "models.Hierarchy", paramType = "body")))
+  @ApiImplicitParams(Array(new ApiImplicitParam(value = "The hierarchy to add", required = true, dataType = "models.HierarchyNode", paramType = "body")))
   @ApiResponses(Array(new ApiResponse(code = 400, message = "Incorrect json")))
   def addHierarchy(): Action[HierarchyNode] = Action(parse.json[HierarchyNode]) { implicit request =>
     val hierarchy = request.body
@@ -128,7 +146,7 @@ class HierarchyController @Inject()(hierarchyRepository: HierarchyRepository) ex
   }
 
   @ApiOperation(value = "Update an hierarchy", response = classOf[HierarchyNode])
-  @ApiImplicitParams(Array(new ApiImplicitParam(value = "The hierarchy to update", required = true, dataType = "models.Hierarchy", paramType = "body")))
+  @ApiImplicitParams(Array(new ApiImplicitParam(value = "The hierarchy to update", required = true, dataType = "models.HierarchyNode", paramType = "body")))
   @ApiResponses(Array(
     new ApiResponse(code = 400, message = "Incorrect json"),
     new ApiResponse(code = 404, message = "Hierarchy not found"))
@@ -164,5 +182,4 @@ class HierarchyController @Inject()(hierarchyRepository: HierarchyRepository) ex
       NotFound(s"No hierarchy $id")
     }
   }
-
 }

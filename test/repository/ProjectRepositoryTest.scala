@@ -2,7 +2,7 @@ package repository
 
 import anorm.SqlParser.scalar
 import anorm._
-import models.Project
+import models.{HierarchyNode, Project}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
@@ -34,6 +34,8 @@ class ProjectRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with In
   override def afterEach() {
     db.withConnection { implicit connection =>
       SQL"TRUNCATE TABLE project".executeUpdate()
+      SQL"TRUNCATE TABLE hierarchyNode".executeUpdate()
+      SQL"TRUNCATE TABLE project_hierarchyNode".executeUpdate()
     }
   }
 
@@ -112,6 +114,21 @@ class ProjectRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with In
       projectRepository.saveAll(newProjects)
 
       projectRepository.findAll() must contain theSameElementsAs (newProjects :+ project1 :+ project3)
+    }
+
+    "find projects by hierarchyId" in {
+      db.withConnection { implicit connection =>
+        SQL"INSERT INTO hierarchyNode (id, slugName, name) VALUES ('id1', 'slugName1', 'name')".executeInsert()
+        SQL"INSERT INTO project_hierarchyNode (projectId, hierarchyId) VALUES ('id1', 'id1')".executeInsert()
+        SQL"INSERT INTO project_hierarchyNode (projectId, hierarchyId) VALUES ('id1', 'id2')".executeInsert()
+      }
+      projectRepository.findAllByHierarchyId("id1") must contain theSameElementsAs Seq(project1)
+    }
+    "link a project to a hierarchy" in {
+      db.withConnection { implicit connection =>
+        SQL"INSERT INTO hierarchyNode (id, slugName, name) VALUES ('id1', 'slugName1', 'name')".executeInsert()
+      }
+      projectRepository.linkHierarchy("id1", "id1") mustBe ("id1")
     }
   }
 }

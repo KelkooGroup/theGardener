@@ -16,12 +16,16 @@ GET         /api/projects                          controllers.ProjectController
 GET         /api/projects/:id                      controllers.ProjectController.getProject(id: String)
 PUT         /api/projects/:id                      controllers.ProjectController.updateProject(id: String)
 DELETE      /api/projects/:id                      controllers.ProjectController.deleteProject(id: String)
+POST        /api/projects/:id/hierarchy/:hierarchyId controllers.ProjectController.linkProjectToHierarchy(id: String, hierarchyId : String)
 
 # HIERARCHY
 POST        /api/hierarchy                         controllers.HierarchyController.addHierarchy()
 GET         /api/hierarchy                         controllers.HierarchyController.getAllHierarchies()
 PUT         /api/hierarchy/:id                     controllers.HierarchyController.updateHierarchy(id: String)
 DELETE      /api/hierarchy/:id                     controllers.HierarchyController.deleteHierarchy(id: String)
+
+
+
 
 # Swagger API
 GET         /api/docs/                            controllers.Assets.at(path="/public/swagger-ui",file="index.html")

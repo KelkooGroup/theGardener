@@ -3,7 +3,7 @@ package repository
 
 import anorm.SqlParser.scalar
 import anorm._
-import models.HierarchyNode
+import models._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
@@ -15,6 +15,7 @@ class HierarchyRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with 
   val hierarchyRepository = inject[HierarchyRepository]
   val hierarchyNode1 = HierarchyNode("id1", "slugName1", "name1")
   val hierarchyNode2 = HierarchyNode("id2", "slugName2", "name2")
+
   val hierarchyNodes = Seq(hierarchyNode1, hierarchyNode2)
 
   override def beforeEach(): Unit = {
@@ -29,6 +30,8 @@ class HierarchyRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with 
   override def afterEach() {
     db.withConnection { implicit connection =>
       SQL"TRUNCATE TABLE hierarchyNode".executeUpdate()
+      SQL"TRUNCATE TABLE project_hierarchyNode".executeUpdate()
+      SQL"TRUNCATE TABLE project".executeUpdate()
     }
   }
 
@@ -72,8 +75,15 @@ class HierarchyRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with 
       hierarchyRepository.saveAll(newHierarchyNodes)
       hierarchyRepository.findAll() must contain theSameElementsAs (newHierarchyNodes :+ hierarchyNode1 :+ hierarchyNode2)
     }
+
+    "find hierarchyNodes by projectId" in {
+      db.withConnection { implicit connection =>
+        SQL"INSERT INTO project (id, name, repositoryUrl, stableBranch,featuresRootPath) VALUES ('id1', 'name1', 'repositoryUrl1', 'stableBranch1', 'featuresRootPath1')".executeInsert()
+        SQL"INSERT INTO project_hierarchyNode (projectId, hierarchyId) VALUES ('id1', 'id1')".executeInsert()
+        SQL"INSERT INTO project_hierarchyNode (projectId, hierarchyId) VALUES ('id1', 'id2')".executeInsert()
+      }
+      hierarchyRepository.findAllByProjectId("id1") must contain theSameElementsAs Seq(hierarchyNode1, hierarchyNode2)
+    }
   }
-
-
 }
 

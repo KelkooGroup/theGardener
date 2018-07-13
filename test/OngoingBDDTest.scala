@@ -9,5 +9,5 @@ import org.junit.runner.RunWith
   tags = Array("@Ongoing"),
   plugin = Array("pretty", "html:target/cucumber-report", "json:target/cucumber-bdd.json")
 )
-class ValidBDDTest {
+class OngoingBDDTest {
 }
