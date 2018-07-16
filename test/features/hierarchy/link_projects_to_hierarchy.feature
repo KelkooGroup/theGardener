@@ -72,6 +72,36 @@ Feature: Link a project to the hierarchy
       | projectId     | hierarchyId |
       | suggestionsWS | .01.01.01.  |
       | suggestionsWS | .02.        |
+    When I perform a "GET" on following URL "/api/projects/suggestionsWS"
+    Then I get a response with status "200"
+    And I get the following json response body
+   """
+{
+	"id": "suggestionsWS",
+	"name": "Suggestions WebServices",
+	"repositoryUrl": "git@gitlab.corp.kelkoo.net:library/suggestionsWS.git",
+	"stableBranch": "master",
+	"featuresRootPath": "test/features",
+	"hierarchy": [{
+			"id": ".01.01.01.",
+			"slugName": "suggestion",
+			"name": "Suggestion system"
+		},
+		{
+			"id": ".02.",
+			"slugName": "product",
+			"name": "Product view"
+		}
+	]
+}
+  """
+
+  @level_2_technical_details @nominal_case @valid
+  Scenario: Get hierarchy nodes related to a project
+    Given the links between hierarchy nodes are
+      | projectId     | hierarchyId |
+      | suggestionsWS | .01.01.01.  |
+      | suggestionsWS | .02.        |
     When I perform a "GET" on following URL "/api/projects/suggestionsWS/hierarchy"
     Then I get a response with status "200"
     And I get the following json response body
@@ -91,7 +121,7 @@ Feature: Link a project to the hierarchy
   """
 
 
-  @level_2_technical_details @nominal_case @Valid
+  @level_2_technical_details @nominal_case @valid
   Scenario: Delete a link between a project and a hierarchy node
     Given the links between hierarchy nodes are
       | projectId     | hierarchyId |

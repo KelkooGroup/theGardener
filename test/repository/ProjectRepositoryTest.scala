@@ -2,7 +2,7 @@ package repository
 
 import anorm.SqlParser.scalar
 import anorm._
-import models.{HierarchyNode, Project}
+import models.Project
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
@@ -124,11 +124,30 @@ class ProjectRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with In
       }
       projectRepository.findAllByHierarchyId("id1") must contain theSameElementsAs Seq(project1)
     }
+
     "link a project to a hierarchy" in {
       db.withConnection { implicit connection =>
         SQL"INSERT INTO hierarchyNode (id, slugName, name) VALUES ('id1', 'slugName1', 'name')".executeInsert()
       }
       projectRepository.linkHierarchy("id1", "id1") mustBe ("id1")
+    }
+
+    "unlink a project to a hierarchy" in {
+
+      db.withConnection { implicit connection =>
+        SQL"INSERT INTO hierarchyNode (id, slugName, name) VALUES ('id1', 'slugName1', 'name')".executeInsert()
+        SQL"INSERT INTO project_hierarchyNode (projectId, hierarchyId) VALUES ('id1', 'id1')".executeInsert()
+        projectRepository.unlinkHierarchy("id1", "id1")
+        SQL"SELECT COUNT(*) FROM project_hierarchyNode where projectId = ${"id1"} AND hierarchyId = ${"id1"} ".as(scalar[Long].single) mustBe 0
+      }
+    }
+
+    "check if a link exist by ids" in {
+      db.withConnection { implicit connection =>
+        SQL"INSERT INTO hierarchyNode (id, slugName, name) VALUES ('id1', 'slugName1', 'name')".executeInsert()
+        SQL"INSERT INTO project_hierarchyNode (projectId, hierarchyId) VALUES ('id1', 'id1')".executeInsert()
+        projectRepository.existsLinkByIds("id1", "id1") mustBe true
+      }
     }
   }
 }

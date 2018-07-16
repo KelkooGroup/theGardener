@@ -55,12 +55,6 @@ class HierarchyRepository @Inject()(db: Database) {
     }
   }
 
-  def existsLinkHierarchyProjectByProjectId(id: String, hierarchyId: String): Boolean = {
-    db.withConnection { implicit connection =>
-      SQL"SELECT COUNT(*) FROM project_hierarchyNode WHERE projectId = $id and hierarchyId = $hierarchyId".as(scalar[Long].single) > 0
-    }
-  }
-
   def findAllByProjectId(projectId: String): Seq[HierarchyNode] = {
     db.withConnection { implicit connection =>
       SQL"SELECT * FROM project_hierarchyNode LEFT OUTER JOIN hierarchyNode on (hierarchyId = id) WHERE projectId = $projectId".as(parser.*)

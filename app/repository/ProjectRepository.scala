@@ -3,7 +3,7 @@ package repository
 import anorm.SqlParser._
 import anorm._
 import javax.inject.Inject
-import models.Project
+import models._
 import play.api.db.Database
 
 class ProjectRepository @Inject()(db: Database) {
@@ -42,12 +42,6 @@ class ProjectRepository @Inject()(db: Database) {
   def deleteById(id: String): Unit = {
     db.withConnection { implicit connection =>
       SQL"DELETE FROM project WHERE id = $id".executeUpdate()
-    }
-  }
-
-  def deleteLinkHierarchyProjectByHierarchyId(hierarchyId: String): Unit = {
-    db.withConnection { implicit connection =>
-      SQL"DELETE FROM project_hierarchyNode WHERE hierarchyId = $hierarchyId".executeUpdate()
     }
   }
 
@@ -91,7 +85,7 @@ class ProjectRepository @Inject()(db: Database) {
 
   def findAllByHierarchyId(hierarchyId: String): Seq[Project] = {
     db.withConnection { implicit connection =>
-      SQL"SELECT * FROM project_hierarchyNode LEFT OUTER JOIN project on (projectId = id) WHERE hierarchyId = $hierarchyId".as(parser.*)
+      SQL"SELECT * FROM project_hierarchyNode LEFT OUTER JOIN project ON (projectId = id) WHERE hierarchyId = $hierarchyId".as(parser.*)
     }
   }
 
@@ -100,5 +94,17 @@ class ProjectRepository @Inject()(db: Database) {
       SQL"INSERT INTO project_hierarchyNode (projectId, hierarchyId) VALUES ($projectId, $hierarchyId)".executeInsert()
     }
     hierarchyId
+  }
+
+  def unlinkHierarchy(projectId: String, hierarchyId: String): Unit = {
+    db.withConnection { implicit connection =>
+      SQL"DELETE FROM project_hierarchyNode WHERE projectId = $projectId AND hierarchyId = $hierarchyId".executeUpdate()
+    }
+  }
+
+  def existsLinkByIds(projectId: String, hierarchyId: String): Boolean = {
+    db.withConnection { implicit connection =>
+      SQL"SELECT COUNT(*) FROM project_hierarchyNode WHERE projectId = $projectId AND hierarchyId = $hierarchyId".as(scalar[Long].single) > 0
+    }
   }
 }
