@@ -103,25 +103,25 @@ class ProjectController @Inject()(projectRepository: ProjectRepository, hierarch
   }
 
   @ApiOperation(value = "Link a Project to hierarchy", code = 201, response = classOf[HierarchyNode])
-  @ApiResponses(Array(new ApiResponse(code = 400, message = "Incorrect json"),new ApiResponse(code = 404, message = "Project or hierarchy not found")))
-  def linkProjectToHierarchy(@ApiParam("Project Id") id: String, @ApiParam("Hierarchy Id") hierarchyId : String): Action[AnyContent] = Action {
+  @ApiResponses(Array(new ApiResponse(code = 400, message = "Incorrect json"), new ApiResponse(code = 404, message = "Project or hierarchy not found")))
+  def linkProjectToHierarchy(@ApiParam("Project Id") id: String, @ApiParam("Hierarchy Id") hierarchyId: String): Action[AnyContent] = Action {
     if (projectRepository.existsById(id)) {
-      if(hierarchyRepository.existsById(hierarchyId)){
+      if (hierarchyRepository.existsById(hierarchyId)) {
         projectRepository.linkHierarchy(id, hierarchyId)
         val hierarchy = hierarchyRepository.findAllByProjectId(id)
         Created(Json.toJson(hierarchy))
 
       } else {
-        NotFound (s"No hierarchy node $hierarchyId")
+        NotFound(s"No hierarchy node $hierarchyId")
       }
-    }else {
-      NotFound (s"No project $id")
+    } else {
+      NotFound(s"No project $id")
     }
   }
 }
 
 @Api(value = "HierarchyController", produces = "application/json")
-class HierarchyController @Inject()(hierarchyRepository: HierarchyRepository) extends InjectedController {
+class HierarchyController @Inject()(hierarchyRepository: HierarchyRepository, projectRepository: ProjectRepository) extends InjectedController {
 
   implicit val hierarchyFormat = Json.format[HierarchyNode]
 
@@ -180,6 +180,26 @@ class HierarchyController @Inject()(hierarchyRepository: HierarchyRepository) ex
 
     } else {
       NotFound(s"No hierarchy $id")
+    }
+  }
+
+  @ApiOperation(value = "get Hierarchy Node related to a project", response = classOf[HierarchyNode])
+  @ApiResponses(Array(new ApiResponse(code = 404, message = "Link hierarchy Nodes to project not found")))
+  def getLinkProjectToHierarchy(@ApiParam("Project id") id: String): Action[AnyContent] = Action {
+    Ok(Json.toJson(hierarchyRepository.findAllByProjectId(id)))
+  }
+
+  @ApiOperation(value = "Delete a Link hierarchy to a project")
+  @ApiResponses(Array(new ApiResponse(code = 404, message = "Link hierarchy project not found")))
+  def deleteLinkProjectToHierarchy(@ApiParam("Project id") id: String, @ApiParam("Hierarchy Id") hierarchyId: String): Action[AnyContent] = Action {
+
+    if (hierarchyRepository.existsLinkHierarchyProjectByProjectId(id, hierarchyId)) {
+      projectRepository.deleteLinkHierarchyProjectByHierarchyId(hierarchyId)
+
+      Ok(Json.toJson(hierarchyRepository.findAllByProjectId(id)))
+
+    } else {
+      NotFound(s"No link hierarchy $hierarchyId to a project $id")
     }
   }
 }

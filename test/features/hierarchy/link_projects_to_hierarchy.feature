@@ -3,17 +3,6 @@ Feature: Link a project to the hierarchy
   I want to define at which node of the hierarchy a project belongs
   So that BDD features can be well organized
 
-# TODO :
-#    - Switch to ongoing one scenario, run OnGoingBDDTest, and solve the errors until you got a success
-#    - By following Project example, you will have at some point to :
-#       - Create theGardener/test/steps/DefineHierarchySteps.scala
-#       - Update theGardener/conf/evolutions/default/1.sql to create hierarchy table
-#       - Update theGardener/test/steps/CommonSteps.scala  CommonSteps.cleanDatabase
-#       - Update theGardener/conf/routes
-#       - Create theGardener/app/repository/HierarchyRepository.scala
-#       - Create theGardener/app/models/Hierarchy.scala
-#       - Update theGardener/app/controllers/Api.scala to create HierarchyController
-
   Background:
     Given the hierarchy nodes are
       | id         | slugName   | name                 |
@@ -50,7 +39,7 @@ Feature: Link a project to the hierarchy
       | projectId     | hierarchyId |
       | suggestionsWS | .01.01.01.  |
 
-  @level_2_technical_details @nominal_case @draft
+  @level_2_technical_details @nominal_case @valid
   Scenario: Link a project to several hierarchy nodes
     Given the links between hierarchy nodes are
       | projectId     | hierarchyId |
@@ -77,7 +66,7 @@ Feature: Link a project to the hierarchy
       | suggestionsWS | .01.01.01.  |
       | suggestionsWS | .02.        |
 
-  @level_2_technical_details @nominal_case @draft
+  @level_2_technical_details @nominal_case @valid
   Scenario: Get hierarchy nodes related to a project
     Given the links between hierarchy nodes are
       | projectId     | hierarchyId |
@@ -102,7 +91,7 @@ Feature: Link a project to the hierarchy
   """
 
 
-  @level_2_technical_details @nominal_case @draft
+  @level_2_technical_details @nominal_case @Valid
   Scenario: Delete a link between a project and a hierarchy node
     Given the links between hierarchy nodes are
       | projectId     | hierarchyId |

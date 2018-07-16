@@ -3,11 +3,10 @@ package repository
 import anorm.SqlParser._
 import anorm._
 import javax.inject.Inject
-import models.{HierarchyNode, Project}
+import models.Project
 import play.api.db.Database
 
 class ProjectRepository @Inject()(db: Database) {
-
 
 
   private val parser = for {
@@ -43,6 +42,12 @@ class ProjectRepository @Inject()(db: Database) {
   def deleteById(id: String): Unit = {
     db.withConnection { implicit connection =>
       SQL"DELETE FROM project WHERE id = $id".executeUpdate()
+    }
+  }
+
+  def deleteLinkHierarchyProjectByHierarchyId(hierarchyId: String): Unit = {
+    db.withConnection { implicit connection =>
+      SQL"DELETE FROM project_hierarchyNode WHERE hierarchyId = $hierarchyId".executeUpdate()
     }
   }
 
@@ -89,7 +94,8 @@ class ProjectRepository @Inject()(db: Database) {
       SQL"SELECT * FROM project_hierarchyNode LEFT OUTER JOIN project on (projectId = id) WHERE hierarchyId = $hierarchyId".as(parser.*)
     }
   }
-  def linkHierarchy(projectId : String, hierarchyId : String) : String = {
+
+  def linkHierarchy(projectId: String, hierarchyId: String): String = {
     db.withConnection { implicit connection =>
       SQL"INSERT INTO project_hierarchyNode (projectId, hierarchyId) VALUES ($projectId, $hierarchyId)".executeInsert()
     }
