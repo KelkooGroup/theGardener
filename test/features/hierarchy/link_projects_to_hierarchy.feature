@@ -4,7 +4,8 @@ Feature: Link a project to the hierarchy
   So that BDD features can be well organized
 
   Background:
-    Given the hierarchy nodes are
+    Given the database is empty
+    And the hierarchy nodes are
       | id         | slugName   | name                 |
       | .          | root       | Hierarchy root       |
       | .01.       | eng        | Engineering view     |

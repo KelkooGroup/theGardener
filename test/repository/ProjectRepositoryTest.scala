@@ -133,7 +133,6 @@ class ProjectRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with In
     }
 
     "unlink a project to a hierarchy" in {
-
       db.withConnection { implicit connection =>
         SQL"INSERT INTO hierarchyNode (id, slugName, name) VALUES ('id1', 'slugName1', 'name')".executeInsert()
         SQL"INSERT INTO project_hierarchyNode (projectId, hierarchyId) VALUES ('id1', 'id1')".executeInsert()

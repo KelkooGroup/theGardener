@@ -4,7 +4,8 @@ Feature: Define hierarchy
   So that BDD features can be well organized
 
   Background:
-    Given no hierarchy nodes is setup in theGardener
+    Given the database is empty
+
 
   @level_2_technical_details @nominal_case @valid
   Scenario: Add a hierarchy node
@@ -107,6 +108,7 @@ Feature: Define hierarchy
 {
 	"id": ".01.02.",
 	"slugName": "bakery",
+
 	"name": "Bakery system group"
 }
         """

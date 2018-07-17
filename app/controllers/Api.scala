@@ -56,15 +56,12 @@ class ProjectController @Inject()(projectRepository: ProjectRepository, hierarch
   @ApiOperation(value = "Get a project", response = classOf[Project])
   @ApiResponses(Array(new ApiResponse(code = 404, message = "Project not found")))
   def getProject(@ApiParam("Project id") id: String): Action[AnyContent] = Action {
-    val hierarchy = hierarchyRepository.findAllByProjectId(id)
     projectRepository.findById(id) match {
-      case Some(project) =>
-        if (projectRepository.existsLinkByIds(id, hierarchy.map(_.id).toString())) {
-          Ok(Json.toJson(project.copy(hierarchy = Some(hierarchyRepository.findAllByProjectId(project.id)))))
 
-        } else {
-          Ok(Json.toJson((project.copy(hierarchy = None))))
-        }
+      case Some(project) =>
+        val hierarchy = hierarchyRepository.findAllByProjectId(project.id)
+
+        Ok(Json.toJson(project.copy(hierarchy = if (hierarchy.nonEmpty) Some(hierarchy) else None)))
 
       case _ => NotFound(s"No project $id")
     }

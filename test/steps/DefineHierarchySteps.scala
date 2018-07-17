@@ -38,7 +38,7 @@ class DefineHierarchySteps extends ScalaDsl with EN with MockitoSugar {
     }
   }
 
-  Then("""^the links between hierarchy nodes are now$""") { table: DataTable  =>
+  Then("""^the links between hierarchy nodes are now$""") { table: DataTable =>
     table.asMaps(classOf[String], classOf[String]).asScala.map(_.asScala).foreach { projectHierarchy =>
       hierarchyRepository.findAllByProjectId(projectHierarchy("projectId")).map(_.id) must contain(projectHierarchy("hierarchyId"))
     }
@@ -48,6 +48,6 @@ class DefineHierarchySteps extends ScalaDsl with EN with MockitoSugar {
   Then("""^the hierarchy nodes are now$""") { hierarchy: util.List[HierarchyNode] =>
     val exceptedHierarchies = hierarchy.asScala
     val actualHierarchies = hierarchyRepository.findAll()
-    actualHierarchies must contain theSameElementsAs(exceptedHierarchies)
+    actualHierarchies must contain theSameElementsAs (exceptedHierarchies)
   }
 }

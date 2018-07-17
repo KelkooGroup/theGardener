@@ -4,9 +4,7 @@ Feature: Register a project
   So that my project BDD features will be shared with all users
 
   Background:
-    Given no project settings are setup in theGardener
-
-
+    Given the database is empty
 
   @level_0_high_level @nominal_case @valid
   Scenario: register a project
