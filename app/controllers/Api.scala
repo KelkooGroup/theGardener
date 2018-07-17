@@ -58,6 +58,7 @@ class ProjectController @Inject()(projectRepository: ProjectRepository, hierarch
   def getProject(@ApiParam("Project id") id: String): Action[AnyContent] = Action {
 
     projectRepository.findById(id) match {
+
       case Some(project) => Ok(Json.toJson(project.copy(hierarchy = Some(hierarchyRepository.findAllByProjectId(project.id)))))
 
       case _ => NotFound(s"No project $id")
@@ -80,7 +81,7 @@ class ProjectController @Inject()(projectRepository: ProjectRepository, hierarch
       if (projectRepository.existsById(id)) {
         projectRepository.save(project)
 
-        Ok(Json.toJson(project.copy(hierarchy = Some(hierarchyRepository.findAllByProjectId(project.id)))))
+        Ok(Json.toJson(projectRepository.findById(id)))
 
       } else {
         NotFound(s"No project $id")

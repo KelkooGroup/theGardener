@@ -22,6 +22,7 @@ DELETE      /api/projects/:id/hierarchy/:hierarchyId controllers.ProjectControll
 
 
 
+
 # HIERARCHY
 POST        /api/hierarchy                         controllers.HierarchyController.addHierarchy()
 GET         /api/hierarchy                         controllers.HierarchyController.getAllHierarchies()
