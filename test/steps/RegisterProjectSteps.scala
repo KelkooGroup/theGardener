@@ -1,21 +1,18 @@
 package steps
 
 
-import java.io._
 import java.nio.file._
 import java.util
 
-import cucumber.api._
+import cucumber.api.DataTable
 import cucumber.api.scala._
 import models._
-import org.apache.commons.io._
-import org.eclipse.jgit.api._
 import org.scalatest.mockito._
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.api.test._
 
-import _root_.scala.collection.JavaConverters._
+import scala.collection.JavaConverters._
 
 
 class RegisterProjectSteps extends ScalaDsl with EN with MockitoSugar {
@@ -63,7 +60,7 @@ class RegisterProjectSteps extends ScalaDsl with EN with MockitoSugar {
   }
 
   When("""^a user register a new project with$""") { projects: util.List[Project] =>
-    registerProject(projects.get(0)).copy(hierarchy = None))
+    registerProject(projects.get(0).copy(hierarchy = None))
   }
 
   When("""^a user register a new project in theGardener$""") { () =>
