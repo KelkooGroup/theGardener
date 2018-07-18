@@ -136,16 +136,16 @@ class ProjectController @Inject()(projectRepository: ProjectRepository, hierarch
     }
   }
 
-  @ApiOperation(value = "Get a project", response = classOf[Project])
+  @ApiOperation(value = "get the hierarchy link to a project", response = classOf[HierarchyNode])
   @ApiResponses(Array(new ApiResponse(code = 404, message = "Project not found")))
-  def getLinkProjectToHierarchy(@ApiParam("hierarchy Id") id: String): Action[AnyContent] = Action {
+  def getLinkProjectToHierarchy(@ApiParam("project Id") id: String): Action[AnyContent] = Action {
 
     Ok(Json.toJson(hierarchyRepository.findAllByProjectId(id)))
   }
 }
 
 @Api(value = "HierarchyController", produces = "application/json")
-class HierarchyController @Inject()(hierarchyRepository: HierarchyRepository, projectRepository: ProjectRepository) extends InjectedController {
+class HierarchyController @Inject()(hierarchyRepository: HierarchyRepository) extends InjectedController {
 
   implicit val hierarchyFormat = Json.format[HierarchyNode]
 

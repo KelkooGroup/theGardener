@@ -108,8 +108,7 @@ Feature: Define hierarchy
 {
 	"id": ".01.02.",
 	"slugName": "bakery",
-
-	"name": "Bakery system group"
+    "name": "Bakery system group"
 }
         """
     Then I get a response with status "200"
