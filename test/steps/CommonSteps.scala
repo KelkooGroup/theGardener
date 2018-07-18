@@ -43,6 +43,7 @@ object Injector {
 
 object CommonSteps extends PlaySpec with GuiceOneServerPerSuite with BeforeAndAfterAll with MockitoSugar with Injecting {
 
+  implicit val hierarchyFormat = Json.format[HierarchyNode]
   implicit val projectFormat = Json.format[Project]
 
   var response: Future[Result] = _
@@ -53,6 +54,7 @@ object CommonSteps extends PlaySpec with GuiceOneServerPerSuite with BeforeAndAf
   override def fakeApplication(): Application = new GuiceApplicationBuilder().in(Mode.Test).build()
 
   val db = Injector.inject[Database]
+  val hierarchyRepository = Injector.inject[HierarchyRepository]
   val projectRepository = Injector.inject[ProjectRepository]
   val featureService = Injector.inject[FeatureService]
   val config = Injector.inject[Config]
@@ -68,12 +70,6 @@ object CommonSteps extends PlaySpec with GuiceOneServerPerSuite with BeforeAndAf
   override def afterAll() = server.stop()
 
   def cleanHtmlWhitespaces(content: String): String = content.split('\n').map(_.trim.filter(_ >= ' ')).mkString.replaceAll(" +", " ")
-
-  def cleanDatabase(): Unit = {
-    db.withConnection { implicit connection =>
-      SQL("TRUNCATE TABLE project").executeUpdate()
-    }
-  }
 
   def initRemoteRepository(branchName: String, projectRepositoryPath: String): Git = {
     FileUtils.deleteDirectory(new File(projectRepositoryPath))
@@ -100,6 +96,14 @@ object CommonSteps extends PlaySpec with GuiceOneServerPerSuite with BeforeAndAf
 class CommonSteps extends ScalaDsl with EN with MockitoSugar {
 
   import CommonSteps._
+
+  Given("""^the database is empty$""") { () =>
+    db.withConnection { implicit connection =>
+      SQL("TRUNCATE TABLE project").executeUpdate()
+      SQL("TRUNCATE TABLE project_hierarchyNode").executeUpdate()
+      SQL("TRUNCATE TABLE hierarchyNode").executeUpdate()
+    }
+  }
 
   Given("""^No project is checkout$""") { () =>
     FileUtils.deleteDirectory(new File(projectsRootDirectory))
