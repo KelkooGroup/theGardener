@@ -36,8 +36,8 @@ object Injector {
 
 object CommonSteps extends PlaySpec with GuiceOneServerPerSuite with BeforeAndAfterAll with MockitoSugar with Injecting {
 
-  implicit val projectFormat = Json.format[Project]
   implicit val hierarchyFormat = Json.format[HierarchyNode]
+  implicit val projectFormat = Json.format[Project]
 
 
   var response: Future[Result] = _
@@ -61,17 +61,19 @@ object CommonSteps extends PlaySpec with GuiceOneServerPerSuite with BeforeAndAf
   override def afterAll() = server.stop()
 
   def cleanHtmlWhitespaces(content: String): String = content.split('\n').map(_.trim.filter(_ >= ' ')).mkString.replaceAll(" +", " ")
-
-  def cleanDatabase(): Unit = {
-    db.withConnection { implicit connection =>
-      SQL("TRUNCATE TABLE project").executeUpdate()
-    }
-  }
 }
 
 class CommonSteps extends ScalaDsl with EN with MockitoSugar {
 
   import CommonSteps._
+
+  Given("""^the database is empty$""") { () =>
+    db.withConnection { implicit connection =>
+      SQL("TRUNCATE TABLE project").executeUpdate()
+      SQL("TRUNCATE TABLE project_hierarchyNode").executeUpdate()
+      SQL("TRUNCATE TABLE hierarchyNode").executeUpdate()
+    }
+  }
 
   Given("""^a git server that host a project$""") { () =>
     // nothing to do here
