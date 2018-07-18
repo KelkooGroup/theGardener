@@ -32,8 +32,7 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
 
         for {
           _ <- gitService.clone(project.repositoryUrl, localRepository)
-          res <- gitService.checkout(branch, localRepository)
-        } yield res
+        } yield gitService.checkout(branch, localRepository)
       }
     )
   }
@@ -54,32 +53,32 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
     }
   }
 
-
   def synchronizeAll(): Future[Seq[Unit]] = {
     Logger.info("Start synchronizing projects")
 
     val projects = projectRepository.findAll()
 
     Future.sequence(
-      projects.map { project =>
-
-        val localBranches = new File(s"$projectsRootDirectory/${project.id}").list(DirectoryFileFilter.INSTANCE).toSet
-
-        gitService.getRemoteBranches(project.repositoryUrl).map(_.toSet).flatMap { remoteBranches =>
-
-          val branchesToUpdate = localBranches.intersect(remoteBranches)
-          val branchesToCheckout = remoteBranches -- localBranches
-          val branchesToDelete = localBranches -- remoteBranches
-
-          Logger.info(s"Project ${project.id}, branches to update: $branchesToUpdate, branches to checkout: $branchesToCheckout, branches to delete: $branchesToDelete")
-
-          for {
-            _ <- updateBranches(project, branchesToUpdate)
-            _ <- checkoutBranches(project, branchesToCheckout)
-            res <- deleteBranches(project, branchesToDelete)
-          } yield res
-        }
-      }
+      projects.map(synchronize)
     )
+  }
+
+  def synchronize(project: Project): Future[Unit] = {
+    val localBranchesArray = new File(s"$projectsRootDirectory/${project.id}").list(DirectoryFileFilter.INSTANCE)
+    val localBranches = if (localBranchesArray != null) localBranchesArray.toSet else Set[String]()
+
+    gitService.getRemoteBranches(project.repositoryUrl).map(_.toSet).flatMap { remoteBranches =>
+
+      val branchesToUpdate = localBranches.intersect(remoteBranches)
+      val branchesToCheckout = remoteBranches -- localBranches
+      val branchesToDelete = localBranches -- remoteBranches
+
+      Logger.info(s"Project ${project.id}, branches to update: $branchesToUpdate, branches to checkout: $branchesToCheckout, branches to delete: $branchesToDelete")
+
+      for {
+        _ <- updateBranches(project, branchesToUpdate)
+        _ <- checkoutBranches(project, branchesToCheckout)
+      } yield deleteBranches(project, branchesToDelete)
+    }
   }
 }

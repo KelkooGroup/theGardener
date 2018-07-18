@@ -47,7 +47,7 @@ class ProjectController @Inject()(projectRepository: ProjectRepository) extends 
     }
   }
 
-  @ApiOperation(value = "Get all projects", response = classOf[Project])
+  @ApiOperation(value = "Get all projects", response = classOf[Project], responseContainer = "list")
   def getAllProjects(): Action[AnyContent] = Action {
     Ok(Json.toJson(projectRepository.findAll()))
   }
