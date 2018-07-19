@@ -4,7 +4,8 @@ Feature: Show a feature
   So that my project feature is shared with all users
 
   Background:
-    Given we have the following projects
+    Given the database is empty
+    And we have the following projects
       | id            | name                    | repositoryUrl                                        | stableBranch | featuresRootPath |
       | suggestionsWS | Suggestions WebServices | git@gitlab.corp.kelkoo.net:library/suggestionsWS.git | master       | test/features    |
 

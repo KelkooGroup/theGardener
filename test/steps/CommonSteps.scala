@@ -1,30 +1,38 @@
 package steps
 
 
-import java.nio.file.{Files, Paths}
+import java.io._
+import java.net._
+import java.nio.file._
+import java.util
 
 import anorm.SQL
+import com.typesafe.config._
 import cucumber.api.DataTable
-import cucumber.api.scala.{EN, ScalaDsl}
+import cucumber.api.scala._
 import models._
-import net.ruippeixotog.scalascraper.browser.HtmlUnitBrowser
-import org.scalatest.BeforeAndAfterAll
-import org.scalatest.mockito.MockitoSugar
-import org.scalatestplus.play.PlaySpec
-import org.scalatestplus.play.guice.GuiceOneServerPerSuite
-import play.api.db.Database
-import play.api.inject.guice.GuiceApplicationBuilder
+import net.ruippeixotog.scalascraper.browser._
+import org.apache.commons.io._
+import org.eclipse.jgit.api._
+import org.scalatest._
+import org.scalatest.mockito._
+import org.scalatestplus.play._
+import org.scalatestplus.play.guice._
+import play.api._
+import play.api.db._
+import play.api.inject._
+import play.api.inject.guice._
 import play.api.libs.json.Json
-import play.api.mvc.Result
+import play.api.mvc._
 import play.api.test.Helpers._
 import play.api.test._
-import play.api.{Application, Mode}
-import repository.ProjectRepository
-import services.FeatureService
+import repository._
+import services._
 
 import scala.collection.JavaConverters._
-import scala.concurrent.Future
-import scala.reflect.ClassTag
+import scala.concurrent._
+import scala.io._
+import scala.reflect._
 
 
 object Injector {
@@ -36,6 +44,7 @@ object Injector {
 
 object CommonSteps extends PlaySpec with GuiceOneServerPerSuite with BeforeAndAfterAll with MockitoSugar with Injecting {
 
+  implicit val hierarchyFormat = Json.format[HierarchyNode]
   implicit val projectFormat = Json.format[Project]
 
   var response: Future[Result] = _
@@ -43,13 +52,18 @@ object CommonSteps extends PlaySpec with GuiceOneServerPerSuite with BeforeAndAf
 
   var projects: Map[String, Project] = _
 
-  override def fakeApplication(): Application = new GuiceApplicationBuilder().in(Mode.Test).build()
+  val applicationBuilder = new GuiceApplicationBuilder().in(Mode.Test)
+  override def fakeApplication(): Application = applicationBuilder.build()
 
   val db = Injector.inject[Database]
+  val hierarchyRepository = Injector.inject[HierarchyRepository]
   val projectRepository = Injector.inject[ProjectRepository]
   val featureService = Injector.inject[FeatureService]
+  val config = Injector.inject[Config]
 
-  val server = TestServer(port, app)
+  val projectsRootDirectory = config.getString("projects.root.directory")
+
+  var server = TestServer(port, app)
 
   val browser = HtmlUnitBrowser.typed()
 
@@ -59,19 +73,61 @@ object CommonSteps extends PlaySpec with GuiceOneServerPerSuite with BeforeAndAf
 
   def cleanHtmlWhitespaces(content: String): String = content.split('\n').map(_.trim.filter(_ >= ' ')).mkString.replaceAll(" +", " ")
 
-  def cleanDatabase(): Unit = {
-    db.withConnection { implicit connection =>
-      SQL("TRUNCATE TABLE project").executeUpdate()
-    }
+  def initRemoteRepository(branchName: String, projectRepositoryPath: String): Git = {
+    FileUtils.deleteDirectory(new File(projectRepositoryPath))
+
+    val git = Git.init().setDirectory(new File(projectRepositoryPath)).call()
+
+    if (branchName != "master") git.checkout().setCreateBranch(true).setName(branchName).call()
+
+    git
+  }
+
+  def addFile(git: Git, projectRepositoryPath: String, file: String, content: String): Any = {
+    val filePath = Paths.get(s"$projectRepositoryPath/$file")
+
+    Files.createDirectories(filePath.getParent)
+    Files.write(filePath, content.getBytes("UTF-8"))
+
+    git.add().addFilepattern(".").call()
+
+    git.commit().setMessage(s"Add file $file").call()
   }
 }
+
+case class Configuration(path: String, value: String)
 
 class CommonSteps extends ScalaDsl with EN with MockitoSugar {
 
   import CommonSteps._
 
+  Given("""^we have the following configuration$""") { configs: util.List[Configuration] =>
+    server.stop()
+
+    val newConfig = configs.asScala.foldLeft(config)((acc: Config, conf: Configuration) => acc.withValue(conf.path, ConfigValueFactory.fromAnyRef(conf.value)))
+
+    val newApp = applicationBuilder.overrides(bind[Config].toInstance(newConfig)).build()
+
+    server = TestServer(port, newApp)
+
+    server.start()
+  }
+
+  Given("""^the database is empty$""") { () =>
+    db.withConnection { implicit connection =>
+      SQL("TRUNCATE TABLE project").executeUpdate()
+      SQL("TRUNCATE TABLE project_hierarchyNode").executeUpdate()
+      SQL("TRUNCATE TABLE hierarchyNode").executeUpdate()
+    }
+  }
+
+  Given("""^No project is checkout$""") { () =>
+    FileUtils.deleteDirectory(new File(projectsRootDirectory))
+    Files.createDirectories(Paths.get(projectsRootDirectory))
+  }
+
   Given("""^a git server that host a project$""") { () =>
-    // nothing to do here
+    //nothing to do here
   }
 
   Given("""^a simple feature is available in my project$""") { () =>
@@ -101,12 +157,15 @@ Scenario: providing several book suggestions
     Files.write(fullPath, content.getBytes())
   }
 
-  Given("""^we have the following projects$""") { data: DataTable =>
-    val projects = data.asList(classOf[Project]).asScala
+  Given("""^we have the following projects$""") { projects: util.List[Project] =>
+    val projectsWithAbsoluteUrl = projects.asScala.map { project =>
+      if (project.repositoryUrl.contains("target/")) project.copy(repositoryUrl = new URL(new URL("file:"), new File(project.repositoryUrl).getAbsolutePath).toURI.toString)
+      else project
+    }
 
-    projectRepository.saveAll(projects)
+    projectRepository.saveAll(projectsWithAbsoluteUrl)
 
-    CommonSteps.projects = projects.map(p => (p.id, p)).toMap
+    CommonSteps.projects = projectsWithAbsoluteUrl.map(p => (p.id, p)).toMap
   }
 
   When("^we go in a browser to url \"([^\"]*)\"$") { url: String =>
@@ -137,5 +196,17 @@ Scenario: providing several book suggestions
     cleanHtmlWhitespaces(content) must include(cleanHtmlWhitespaces(expectedPageContentPart))
   }
 
+  Then("""^the file system store now the file "([^"]*)"$""") { (file: String, content: String) =>
+    Source.fromFile(file).mkString mustBe content
+  }
 
+  Then("""^the file system store now the files$""") { files: DataTable =>
+    files.asScala.map { line =>
+      val file = line("file")
+      val content = line("content")
+
+      Source.fromFile(file).mkString mustBe content
+    }
+
+  }
 }

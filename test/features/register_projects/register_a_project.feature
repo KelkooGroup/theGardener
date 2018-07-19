@@ -4,9 +4,7 @@ Feature: Register a project
   So that my project BDD features will be shared with all users
 
   Background:
-    Given no project settings are setup in theGardener
-
-
+    Given the database is empty
 
   @level_0_high_level @nominal_case @valid
   Scenario: register a project
@@ -81,7 +79,7 @@ Feature: Register a project
       | suggestionsWS2 | Suggestions WebServices2 | git@gitlab.corp.kelkoo.net:library/suggestionsWS2.git | master       | test/features    |
     When I perform a "GET" on following URL "/api/projects"
     Then I get a response with status "200"
-    And I get the following json response body
+    And  I get the following json response body
    """
 [
     {
@@ -138,5 +136,5 @@ Feature: Register a project
       | suggestionsWS | Suggestions WebServices | git@gitlab.corp.kelkoo.net:library/suggestionsWS.git | master       | test/features    |
     When I perform a "DELETE" on following URL "/api/projects/suggestionsWS"
     Then I get a response with status "200"
-     And the projects settings are now
+    And  the projects settings are now
       | id            | name                    | repositoryUrl                                        | stableBranch | featuresRootPath |
