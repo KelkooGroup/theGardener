@@ -1,17 +1,19 @@
 package services
 
-import java.io.File
+import java.io._
 
-import com.typesafe.config.ConfigFactory
-import models.Project
+import akka.actor.ActorSystem
+import akka.stream._
+import com.typesafe.config._
+import models._
 import org.apache.commons.io.FileUtils._
 import org.mockito.Matchers._
-import org.mockito.Mockito
+import org.mockito._
 import org.mockito.Mockito._
 import org.scalatest._
 import org.scalatest.concurrent._
 import org.scalatest.mockito._
-import repository.ProjectRepository
+import repository._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent._
@@ -28,7 +30,7 @@ class ProjectServiceTest extends WordSpec with MustMatchers with BeforeAndAfter 
   val gitService = mock[GitService]
   val projectRepository = mock[ProjectRepository]
 
-  val projectService = new ProjectService(projectRepository, gitService, ConfigFactory.load())
+  val projectService = new ProjectService(projectRepository, gitService, ConfigFactory.load(), ActorSystem())
 
   val project = Project("suggestionsWS", "Suggestions WebServices", "git@gitlab.corp.kelkoo.net:library/suggestionsWS.git", "master", "test/features")
   val masterDirectory = projectService.getLocalRepository(project.id, project.stableBranch)
@@ -41,7 +43,7 @@ class ProjectServiceTest extends WordSpec with MustMatchers with BeforeAndAfter 
   }
 
   "ProjectService" should {
-    "create a project" in {
+    "checkout the remote branches of a project" in {
       when(gitService.getRemoteBranches(project.repositoryUrl)).thenReturn(Future.successful(Seq(project.stableBranch, featureBranch, bugfixBranch)))
 
       when(gitService.clone(anyString(), anyString())).thenReturn(Future.failed(new Exception()))
@@ -56,10 +58,7 @@ class ProjectServiceTest extends WordSpec with MustMatchers with BeforeAndAfter 
       when(gitService.clone(project.repositoryUrl, bugfixBranchDirectory)).thenReturn(Future.successful(()))
       when(gitService.checkout(bugfixBranch, bugfixBranchDirectory)).thenReturn(Future.successful(()))
 
-      when(projectRepository.save(project)).thenReturn(project)
-
-
-      val result = projectService.create(project)
+      val result = projectService.checkoutRemoteBranches(project)
 
       whenReady(result) { _ =>
         verify(gitService, times(1)).getRemoteBranches(project.repositoryUrl)
@@ -67,8 +66,6 @@ class ProjectServiceTest extends WordSpec with MustMatchers with BeforeAndAfter 
         verify(gitService, times(1)).clone(project.repositoryUrl, masterDirectory)
         verify(gitService, times(1)).clone(project.repositoryUrl, featureBranchDirectory)
         verify(gitService, times(1)).clone(project.repositoryUrl, bugfixBranchDirectory)
-
-        verify(projectRepository, times(1)).save(project)
       }
     }
 
@@ -102,7 +99,6 @@ class ProjectServiceTest extends WordSpec with MustMatchers with BeforeAndAfter 
         verify(gitService, times(1)).pull(masterDirectory)
 
         verify(gitService, times(1)).clone(project.repositoryUrl, featureBranchDirectory)
-//        verify(gitService, times(1)).checkout(featureBranch, featureBranchDirectory)
 
         new File(bugfixBranchDirectory).exists() mustBe false
       }

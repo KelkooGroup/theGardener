@@ -8,6 +8,8 @@ import cucumber.api.scala._
 import models._
 import org.eclipse.jgit.api._
 import org.scalatest.mockito._
+import play.api.test.Helpers._
+import play.api.test._
 import services._
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -57,6 +59,15 @@ class GetFeaturesSteps extends ScalaDsl with EN with MockitoSugar {
 
   When("""^BDD features synchronization action is triggered$""") { () =>
     Await.result(projectService.synchronizeAll(), 30.seconds)
+  }
+
+  When("""^the synchronization action is triggered by the scheduler$""") { () =>
+    Thread.sleep(2000)
+  }
+
+  When("""^the synchronization action is triggered by the webhook for project "([^"]*)"$""") { project: String =>
+    response = route(app, FakeRequest("POST", s"/api/projects/$project/synchronize")).get
+    await(response)
   }
 
   Then("""^the project BDD features of this project are retrieved from the remote server$""") { () =>

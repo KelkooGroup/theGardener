@@ -1,28 +1,32 @@
 package services
 
-import java.io.File
+import java.io._
 
-import com.typesafe.config.Config
-import javax.inject.Inject
-import models.Project
-import org.apache.commons.io.FileUtils.deleteDirectory
-import org.apache.commons.io.filefilter.DirectoryFileFilter
-import play.Logger
-import repository.ProjectRepository
+import akka.actor.ActorSystem
+import com.typesafe.config._
+import javax.inject._
+import models._
+import org.apache.commons.io.FileUtils._
+import org.apache.commons.io.filefilter._
+import play._
+import repository._
 
 import scala.concurrent._
+import scala.concurrent.duration._
 
-class ProjectService @Inject()(projectRepository: ProjectRepository, gitService: GitService, config: Config)(implicit ec: ExecutionContext) {
+class ProjectService @Inject()(projectRepository: ProjectRepository, gitService: GitService, config: Config, actorSystem: ActorSystem)(implicit ec: ExecutionContext) {
   val projectsRootDirectory = config.getString("projects.root.directory")
+  val synchronizeInterval = config.getInt("projects.synchronize.interval")
+  val synchronizeInitialDelay = config.getInt("projects.synchronize.initial.delay")
+
+  actorSystem.scheduler.schedule(initialDelay = synchronizeInitialDelay.seconds, interval = synchronizeInterval.seconds)(synchronizeAll())
 
   def getLocalRepository(projectId: String, branch: String) = s"$projectsRootDirectory/$projectId/$branch"
 
-  def create(project: Project): Future[Unit] = {
+  def checkoutRemoteBranches(project: Project): Future[Unit] = {
     for {
       remoteBranches <- gitService.getRemoteBranches(project.repositoryUrl)
-      _ <- checkoutBranches(project, remoteBranches.toSet)
-
-    } yield projectRepository.save(project)
+    } yield checkoutBranches(project, remoteBranches.toSet)
   }
 
   private def checkoutBranches(project: Project, branches: Set[String]) = {
