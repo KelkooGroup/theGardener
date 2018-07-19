@@ -2,14 +2,16 @@ package controllers
 
 
 import io.swagger.annotations._
-import javax.inject.Inject
-import julienrf.json.derived
+import javax.inject._
+import julienrf.json._
 import models._
-import play.api.Configuration
+import play.api._
 import play.api.libs.json._
 import play.api.mvc._
 import repository._
-import services.FeatureService
+import services._
+
+import scala.concurrent._
 
 @Api(value = "FeatureController", produces = "application/json")
 class FeatureController @Inject()(featureService: FeatureService, configuration: Configuration) extends InjectedController {
@@ -28,7 +30,7 @@ class FeatureController @Inject()(featureService: FeatureService, configuration:
 }
 
 @Api(value = "ProjectController", produces = "application/json")
-class ProjectController @Inject()(projectRepository: ProjectRepository, hierarchyRepository: HierarchyRepository) extends InjectedController {
+class ProjectController @Inject()(projectRepository: ProjectRepository, projectService: ProjectService, hierarchyRepository: HierarchyRepository)(implicit ec: ExecutionContext) extends InjectedController {
 
   implicit val hierarchyFormat = Json.format[HierarchyNode]
   implicit val projectFormat = Json.format[Project]
@@ -44,6 +46,9 @@ class ProjectController @Inject()(projectRepository: ProjectRepository, hierarch
 
     } else {
       val savedProject = projectRepository.save(project)
+
+      projectService.checkoutRemoteBranches(savedProject)
+
       Created(Json.toJson(savedProject))
     }
   }
@@ -136,11 +141,25 @@ class ProjectController @Inject()(projectRepository: ProjectRepository, hierarch
     }
   }
 
+  @ApiOperation(value = "Webhook to synchronize a new project")
+  @ApiResponses(Array(new ApiResponse(code = 404, message = "Project not found")))
+  def synchronizeProject(@ApiParam("Project id") id: String): Action[AnyContent] = Action.async {
+    projectRepository.findById(id)
+      .map(projectService.synchronize(_).map(_ => Ok))
+      .getOrElse(Future.successful(NotFound(s"No project $id")))
+
+  }
+
   @ApiOperation(value = "get the hierarchy link to a project", response = classOf[HierarchyNode])
   @ApiResponses(Array(new ApiResponse(code = 404, message = "Project not found")))
   def getLinkProjectToHierarchy(@ApiParam("project Id") id: String): Action[AnyContent] = Action {
 
-    Ok(Json.toJson(hierarchyRepository.findAllByProjectId(id)))
+    if (projectRepository.existsById(id)) {
+      Ok(Json.toJson(hierarchyRepository.findAllByProjectId(id)))
+
+    } else {
+      NotFound(s"No project $id")
+    }
   }
 }
 

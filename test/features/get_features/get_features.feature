@@ -22,23 +22,11 @@ Feature: Get BDD features from a project
     And the server "target/data/GetFeatures" host under the project "library/suggestionsWS" on the branch "master" the file "test/features/provide_book_suggestions.feature"
     """
 Feature: As a user, I want some book suggestions so that I can do some discovery
-
-@level_0_high_level @nominal_case @ready
-Scenario: providing several book suggestions
-  Given a user
-  When we ask for suggestions
-  Then the suggestions are popular and available books adapted to the age of the user
     """
     When BDD features synchronization action is triggered
     Then the file system store now the file "target/data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature"
     """
 Feature: As a user, I want some book suggestions so that I can do some discovery
-
-@level_0_high_level @nominal_case @ready
-Scenario: providing several book suggestions
-  Given a user
-  When we ask for suggestions
-  Then the suggestions are popular and available books adapted to the age of the user
     """
 
   @level_1_specification @nominal_case @valid
@@ -89,9 +77,37 @@ Scenario: providing several book suggestions
   Then the suggestions are popular and available books adapted to the age of the user
     """
 
+  @level_1_specification @nominal_case @valid
+  Scenario: Synchronize with a webhook a project
+    Given we have the following projects
+      | id            | name                    | repositoryUrl                                  | stableBranch | featuresRootPath |
+      | suggestionsWS | Suggestions WebServices | target/data/GetFeatures/library/suggestionsWS/ | master       | test/features    |
+    And the server "target/data/GetFeatures" host under the project "library/suggestionsWS" on the branch "master" the file "test/features/provide_book_suggestions.feature"
+    """
+Feature: As a user, I want some book suggestions so that I can do some discovery
+    """
+    When the synchronization action is triggered by the webhook for project "suggestionsWS"
+    Then the file system store now the file "target/data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature"
+    """
+Feature: As a user, I want some book suggestions so that I can do some discovery
+    """
 
-
-## [PULL] One implementation can be a scheduler that pull from time to time all the remote server.
-## [PUSH] Another implementation, in addition to the first one, is to define a resource on theGardener that can be triggered by a webHook when some code is pushed on the remote server.
-
+  @level_1_specification @nominal_case @valid
+  Scenario: Synchronize with a fixed interval all the projects
+    Given we have the following configuration
+      | path                               | value |
+      | projects.synchronize.interval      | 60    |
+      | projects.synchronize.initial.delay | 1     |
+    And we have the following projects
+      | id            | name                    | repositoryUrl                                  | stableBranch | featuresRootPath |
+      | suggestionsWS | Suggestions WebServices | target/data/GetFeatures/library/suggestionsWS/ | master       | test/features    |
+    And the server "target/data/GetFeatures" host under the project "library/suggestionsWS" on the branch "master" the file "test/features/provide_book_suggestions.feature"
+    """
+Feature: As a user, I want some book suggestions so that I can do some discovery
+    """
+    When the synchronization action is triggered by the scheduler
+    Then the file system store now the file "target/data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature"
+    """
+Feature: As a user, I want some book suggestions so that I can do some discovery
+    """
 

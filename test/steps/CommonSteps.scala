@@ -20,6 +20,7 @@ import org.scalatestplus.play._
 import org.scalatestplus.play.guice._
 import play.api._
 import play.api.db._
+import play.api.inject._
 import play.api.inject.guice._
 import play.api.libs.json.Json
 import play.api.mvc._
@@ -51,7 +52,8 @@ object CommonSteps extends PlaySpec with GuiceOneServerPerSuite with BeforeAndAf
 
   var projects: Map[String, Project] = _
 
-  override def fakeApplication(): Application = new GuiceApplicationBuilder().in(Mode.Test).build()
+  val applicationBuilder = new GuiceApplicationBuilder().in(Mode.Test)
+  override def fakeApplication(): Application = applicationBuilder.build()
 
   val db = Injector.inject[Database]
   val hierarchyRepository = Injector.inject[HierarchyRepository]
@@ -61,7 +63,7 @@ object CommonSteps extends PlaySpec with GuiceOneServerPerSuite with BeforeAndAf
 
   val projectsRootDirectory = config.getString("projects.root.directory")
 
-  val server = TestServer(port, app)
+  var server = TestServer(port, app)
 
   val browser = HtmlUnitBrowser.typed()
 
@@ -93,9 +95,23 @@ object CommonSteps extends PlaySpec with GuiceOneServerPerSuite with BeforeAndAf
   }
 }
 
+case class Configuration(path: String, value: String)
+
 class CommonSteps extends ScalaDsl with EN with MockitoSugar {
 
   import CommonSteps._
+
+  Given("""^we have the following configuration$""") { configs: util.List[Configuration] =>
+    server.stop()
+
+    val newConfig = configs.asScala.foldLeft(config)((acc: Config, conf: Configuration) => acc.withValue(conf.path, ConfigValueFactory.fromAnyRef(conf.value)))
+
+    val newApp = applicationBuilder.overrides(bind[Config].toInstance(newConfig)).build()
+
+    server = TestServer(port, newApp)
+
+    server.start()
+  }
 
   Given("""^the database is empty$""") { () =>
     db.withConnection { implicit connection =>
