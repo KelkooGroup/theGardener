@@ -5,23 +5,21 @@ Feature: Get BDD features from a project
 
 
   Background:
-   # Given the configuration settings
-    #  | key                           | value         |
-     # | projects_local_copy_root_path | data/projects |
+    Given No project is checkout
 
 
-  @level_0_high_level @nominal_case @draft
+  @level_0_high_level @nominal_case @valid
   Scenario: get bdd features from a project
     Given a project in theGardener hosted on a remote server
     When BDD features synchronization action is triggered
     Then the project BDD features of this project are retrieved from the remote server
 
-  @level_1_specification @nominal_case @draft
+  @level_1_specification @nominal_case @ready
   Scenario: get bdd features from a project
     Given we have the following projects
-      | id            | name                    | repositoryUrl                                        | stableBranch | featuresRootPath |
-      | suggestionsWS | Suggestions WebServices | git@gitlab.corp.kelkoo.net:library/suggestionsWS.git | master       | test/features    |
-    And the server "gitlab.corp.kelkoo.net" host under the project "library/suggestionsWS" on the branch "master" the file "test/features/provide_book_suggestions.feature"
+      | id            | name                    | repositoryUrl                                  | stableBranch | featuresRootPath |
+      | suggestionsWS | Suggestions WebServices | target/data/GetFeatures/library/suggestionsWS/ | master       | test/features    |
+    And the server "target/data/GetFeatures" host under the project "library/suggestionsWS" on the branch "master" the file "test/features/provide_book_suggestions.feature"
     """
 Feature: As a user Tim, I want some book suggestions so that I can do some discovery
 
@@ -36,7 +34,7 @@ Scenario: providing several book suggestions
     And we have no scenario in the database
     And we have no tag in the database
     When BDD features synchronization action is triggered
-    Then the file system store now the file "data/projects/suggestionsWS/master/test/features/provide_book_suggestions.feature"
+    Then the file system store now the file "target/data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature"
     """
 Feature: As a user Tim, I want some book suggestions so that I can do some discovery
 
@@ -83,28 +81,28 @@ Scenario: providing several book suggestions
       | 1          | general |
       | 1          | literal |
 
-  @level_1_specification @nominal_case @draft
+  @level_1_specification @nominal_case @valid
   Scenario: get bdd features from a project with a complex structure of feature files
     Given we have the following projects
-      | id            | name                    | repositoryUrl                                        | stableBranch | featuresRootPath |
-      | suggestionsWS | Suggestions WebServices | git@gitlab.corp.kelkoo.net:library/suggestionsWS.git | master       | test/features    |
-    And the server "gitlab.corp.kelkoo.net" host under the project "library/suggestionsWS" on the branch "master" the files
+      | id            | name                    | repositoryUrl                                  | stableBranch | featuresRootPath |
+      | suggestionsWS | Suggestions WebServices | target/data/GetFeatures/library/suggestionsWS/ | master       | test/features    |
+    And the server "target/data/GetFeatures" host under the project "library/suggestionsWS" on the branch "master" the files
       | file                                                       | content                           |
       | test/features/suggestions/provide_book_suggestions.feature | Feature: Provide book suggestions |
       | test/features/setup/setup_suggestions.feature              | Feature: Setup book suggestions   |
     When BDD features synchronization action is triggered
     Then the file system store now the files
-      | files                                                                                         | content                           |
-      | data/projects/suggestionsWS/master/test/features/suggestions/provide_book_suggestions.feature | Feature: Provide book suggestions |
-      | data/projects/suggestionsWS/master/test/features/setup/setup_suggestions.feature              | Feature: Setup book suggestions   |
+      | file                                                                                            | content                           |
+      | target/data/git/suggestionsWS/master/test/features/suggestions/provide_book_suggestions.feature | Feature: Provide book suggestions |
+      | target/data/git/suggestionsWS/master/test/features/setup/setup_suggestions.feature              | Feature: Setup book suggestions   |
 
 
-  @level_2_technical_details @nominal_case @ready
+  @level_1_specification @nominal_case @ready
   Scenario: update bdd features from a project
     Given we have the following projects
-      | id            | name                    | repositoryUrl                                        | stableBranch | featuresRootPath |
-      | suggestionsWS | Suggestions WebServices | git@gitlab.corp.kelkoo.net:library/suggestionsWS.git | master       | test/features    |
-    And the file "data/projects/suggestionsWS/master/test/features/provide_book_suggestions.feature"
+      | id            | name                    | repositoryUrl                                  | stableBranch | featuresRootPath |
+      | suggestionsWS | Suggestions WebServices | target/data/GetFeatures/library/suggestionsWS/ | master       | test/features    |
+    And the file "test/features/provide_book_suggestions.feature" of the server "target/data/GetFeatures" in the project "library/suggestionsWS" on the branch "master" is updated with content
     """
 Feature: As a user Tim, I want some book suggestions so that I can do some discovery
 
@@ -150,7 +148,7 @@ Scenario: providing several book suggestions
       | scenarioId | tag     |
       | 1          | general |
       | 1          | literal |
-    And the server "gitlab.corp.kelkoo.net" host under the project "library/suggestionsWS" on the branch "master" the file "test/features/provide_book_suggestions.feature"
+    And the server "target/data/GetFeatures" host under the project "library/suggestionsWS" on the branch "master" the file "test/features/provide_book_suggestions.feature"
     """
 Feature: As a user, I want some book suggestions so that I can do some discovery
 
@@ -160,8 +158,9 @@ Scenario: providing several book suggestions
   When we ask for suggestions
   Then the suggestions are popular and available books adapted to the age of the user
     """
+    And the branch "master" of the project "suggestionsWS" is already checkout
     When BDD features synchronization action is triggered
-    Then the file system store now the file "data/projects/suggestionsWS/master/test/features/provide_book_suggestions.feature"
+    Then the file system store now the file "target/data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature"
     """
 Feature: As a user, I want some book suggestions so that I can do some discovery
 
@@ -207,8 +206,37 @@ Scenario: providing several book suggestions
       | scenarioId | tag     |
       | 1          | general |
 
+  @level_1_specification @nominal_case @valid
+  Scenario: Synchronize with a webhook a project
+    Given we have the following projects
+      | id            | name                    | repositoryUrl                                  | stableBranch | featuresRootPath |
+      | suggestionsWS | Suggestions WebServices | target/data/GetFeatures/library/suggestionsWS/ | master       | test/features    |
+    And the server "target/data/GetFeatures" host under the project "library/suggestionsWS" on the branch "master" the file "test/features/provide_book_suggestions.feature"
+    """
+Feature: As a user, I want some book suggestions so that I can do some discovery
+    """
+    When the synchronization action is triggered by the webhook for project "suggestionsWS"
+    Then the file system store now the file "target/data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature"
+    """
+Feature: As a user, I want some book suggestions so that I can do some discovery
+    """
 
-## [PULL] One implementation can be a scheduler that pull from time to time all the remote server.
-## [PUSH] Another implementation, in addition to the first one, is to define a resource on theGardener that can be triggered by a webHook when some code is pushed on the remote server.
-
+  @level_1_specification @nominal_case @valid
+  Scenario: Synchronize with a fixed interval all the projects
+    Given we have the following configuration
+      | path                               | value |
+      | projects.synchronize.interval      | 60    |
+      | projects.synchronize.initial.delay | 1     |
+    And we have the following projects
+      | id            | name                    | repositoryUrl                                  | stableBranch | featuresRootPath |
+      | suggestionsWS | Suggestions WebServices | target/data/GetFeatures/library/suggestionsWS/ | master       | test/features    |
+    And the server "target/data/GetFeatures" host under the project "library/suggestionsWS" on the branch "master" the file "test/features/provide_book_suggestions.feature"
+    """
+Feature: As a user, I want some book suggestions so that I can do some discovery
+    """
+    When the synchronization action is triggered by the scheduler
+    Then the file system store now the file "target/data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature"
+    """
+Feature: As a user, I want some book suggestions so that I can do some discovery
+    """
 
