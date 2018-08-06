@@ -36,6 +36,7 @@ class ProjectRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with In
       SQL"TRUNCATE TABLE project".executeUpdate()
       SQL"TRUNCATE TABLE hierarchyNode".executeUpdate()
       SQL"TRUNCATE TABLE project_hierarchyNode".executeUpdate()
+      SQL"TRUNCATE TABLE branch".executeUpdate()
     }
   }
 

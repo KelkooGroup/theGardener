@@ -3,19 +3,24 @@ package steps
 import java.io._
 import java.net._
 import java.nio.file._
+import java.util
+import anorm._
 
-import cucumber.api.scala._
+import cucumber.api.DataTable
+import cucumber.api.scala.{EN, ScalaDsl}
 import models._
 import org.eclipse.jgit.api._
-import org.scalatest.mockito._
+import org.scalatest.mockito.MockitoSugar
+import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.api.test._
 import services._
 
+import scala.collection.JavaConverters._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent._
 import scala.concurrent.duration._
-import scala.io._
+import scala.io.Source
 
 
 class GetFeaturesSteps extends ScalaDsl with EN with MockitoSugar {
@@ -58,7 +63,8 @@ class GetFeaturesSteps extends ScalaDsl with EN with MockitoSugar {
   }
 
   When("""^BDD features synchronization action is triggered$""") { () =>
-    Await.result(projectService.synchronizeAll(), 30.seconds)
+    val future = projectService.synchronizeAll()
+    Await.result(future, 30.seconds)
   }
 
   When("""^the synchronization action is triggered by the scheduler$""") { () =>
@@ -73,5 +79,59 @@ class GetFeaturesSteps extends ScalaDsl with EN with MockitoSugar {
   Then("""^the project BDD features of this project are retrieved from the remote server$""") { () =>
     Source.fromFile("target/data/git/suggestionsWS/master/test/features/suggestions/provide_book_suggestions.feature").mkString mustBe featureContent
   }
-}
 
+  Given("""^we have those branches in the database$""") { branches: util.List[Branch] =>
+    branchRepository.saveAll(branches.asScala)
+  }
+
+  Given("""^we have those features in the database$""") { features: util.List[Feature] =>
+    featureRepository.saveAll(features.asScala.map(_.copy(background = None, tags = Seq(), language = None, keyword = None, scenarios = Seq(), comments = Seq())))
+  }
+
+  Given("""^we have those scenario in the database$""") { (scenarios: util.List[Scenario]) =>
+    scenarioRepository.saveAll(scenarios.asScala.map(_.copy(tags = Seq(), steps = Seq())))
+  }
+
+  Given("""^we have those stepsAsJSon for the scenario "([^"]*)" in the database$""") { (scenarioId: Int, stepsAsJson : String) =>
+   db.withConnection { implicit connection =>
+     SQL"UPDATE scenario SET stepsAsJson = $stepsAsJson WHERE id = $scenarioId".executeUpdate()
+
+   }
+  }
+
+  Given("""^we have those tags in the database$""") { (tags: DataTable) =>
+    tags.asMaps(classOf[String], classOf[String]).asScala.map(_.asScala).foreach { _ =>
+      scenarioRepository.findAll().map(_.tags)
+      featureRepository.findAll().map(_.tags)
+    }
+  }
+
+  Then("""^we have now those branches in the database$""") { (branches: util.List[Branch]) =>
+    val expectedBranches = branches.asScala
+    val actualBranches = branchRepository.findAllBranch()
+    expectedBranches must contain theSameElementsAs actualBranches
+  }
+
+  Then("""^we have now those features in the database$""") { features: util.List[Feature] =>
+    val expectedFeatures = features.asScala.toList.map(_.copy(background = None, tags = Seq(), language = None, keyword = None, scenarios = Seq(), comments = Seq()))
+    val actualFeatures = featureRepository.findAll().map(_.copy(background = None, tags = Seq(), language = None, keyword = None, scenarios = Seq(), comments = Seq()))
+    actualFeatures must contain theSameElementsAs expectedFeatures
+  }
+
+  Then("""^we have now those scenario in the database$""") { (scenario: util.List[Scenario]) =>
+    val exceptedScenarios = scenario.asScala.toList.map(_.copy(tags = Seq(), steps = Seq()))
+    val actualScenarios = scenarioRepository.findAll().map(_.copy(tags = Seq(), steps = Seq()))
+    exceptedScenarios must contain theSameElementsAs actualScenarios
+  }
+
+  Then("""^we have now those stepsAsJSon for the scenario "([^"]*)" in the database$""") { (scenarioId: Int, expectedStep: String) =>
+    val actualStep = scenarioRepository.findById(scenarioId).map(_.steps).get
+    Json.toJson(actualStep) mustBe Json.parse(expectedStep)
+  }
+
+  Then("""^we have now those tags in the database$""") { (tags: DataTable) =>
+    val exceptedTags = tags.asScala
+    val actualTags = featureRepository.findAll
+    exceptedTags must contain theSameElementsAs actualTags
+  }
+}

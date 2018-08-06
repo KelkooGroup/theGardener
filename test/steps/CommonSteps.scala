@@ -31,7 +31,7 @@ import services._
 
 import scala.collection.JavaConverters._
 import scala.concurrent._
-import scala.io._
+import scala.io.Source
 import scala.reflect._
 
 
@@ -44,6 +44,12 @@ object Injector {
 
 object CommonSteps extends PlaySpec with GuiceOneServerPerSuite with BeforeAndAfterAll with MockitoSugar with Injecting {
 
+  implicit val examplesFormat = Json.format[Examples]
+  implicit val scenarioDefinitionFormat = Json.format[ScenarioDefinition]
+  implicit val featureFormat = Json.format[Feature]
+  implicit val scenarioFormat = Json.format[Scenario]
+
+  implicit val branchFormat = Json.format[Branch]
   implicit val hierarchyFormat = Json.format[HierarchyNode]
   implicit val projectFormat = Json.format[Project]
 
@@ -53,9 +59,13 @@ object CommonSteps extends PlaySpec with GuiceOneServerPerSuite with BeforeAndAf
   var projects: Map[String, Project] = _
 
   val applicationBuilder = new GuiceApplicationBuilder().in(Mode.Test)
+
   override def fakeApplication(): Application = applicationBuilder.build()
 
   val db = Injector.inject[Database]
+  val scenarioRepository = Injector.inject[ScenarioRepository]
+  val featureRepository = Injector.inject[FeatureRepository]
+  val branchRepository = Injector.inject[BranchRepository]
   val hierarchyRepository = Injector.inject[HierarchyRepository]
   val projectRepository = Injector.inject[ProjectRepository]
   val featureService = Injector.inject[FeatureService]
@@ -127,7 +137,7 @@ class CommonSteps extends ScalaDsl with EN with MockitoSugar {
   }
 
   Given("""^a git server that host a project$""") { () =>
-    //nothing to do here
+    // nothing to do here
   }
 
   Given("""^a simple feature is available in my project$""") { () =>

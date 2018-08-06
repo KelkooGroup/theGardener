@@ -1,6 +1,9 @@
 package models
 
-case class Feature(id: String, branch: String, tags: Seq[String], language: String, keyword: String, name: String, description: String, scenarios: Seq[ScenarioDefinition], comments: Seq[String] = Seq())
+import play.api.libs.json._
+
+case class Feature(id: String, branchId: String, path: String, background: Option[Background], tags: Seq[String] = Seq(), language: Option[String] = None, keyword: Option[String] = None, name: String, description: String, scenarios: Seq[ScenarioDefinition] = Seq(), comments: Seq[String] = Seq())
+
 
 sealed trait ScenarioDefinition {
   val id: Int
@@ -10,9 +13,40 @@ sealed trait ScenarioDefinition {
   val steps: Seq[Step]
 }
 
+object ScenarioDefinition {
+  implicit val format: Format[ScenarioDefinition] = Json.format[ScenarioDefinition]
+}
+
+
+object Examples {
+  implicit val format: Format[Examples] = Json.format[Examples]
+}
+
+
+object ScenarioOutline {
+  implicit val format: Format[ScenarioOutline] = Json.format[ScenarioOutline]
+}
+
+
+object Scenario {
+  implicit val format: Format[Scenario] = Json.format[Scenario]
+}
+
+
+object Background {
+
+  implicit val format: Format[Background] = Json.format[Background]
+}
+
+
+object Step {
+  implicit val format: Format[Step] = Json.format[Step]
+}
+
+
 case class Background(id: Int, keyword: String, name: String, description: String, steps: Seq[Step]) extends ScenarioDefinition
 
-case class Scenario(id: Int, tags: Seq[String], abstractionLevel: String, caseType: String, workflowStep: String, keyword: String, name: String, description: String, steps: Seq[Step]) extends ScenarioDefinition
+case class Scenario(id: Int, featureId: String, tags: Seq[String], abstractionLevel: String, caseType: String, workflowStep: String, keyword: String, name: String, description: String, steps: Seq[Step]) extends ScenarioDefinition
 
 case class ScenarioOutline(id: Int, tags: Seq[String], abstractionLevel: String, caseType: String, workflowStep: String, keyword: String, name: String, description: String, steps: Seq[Step], examples: Seq[Examples]) extends ScenarioDefinition
 

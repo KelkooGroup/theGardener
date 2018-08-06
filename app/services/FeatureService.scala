@@ -15,29 +15,33 @@ class FeatureService {
   def parseFeatureFile(projectId: String, filePath: String): Feature = {
     val featureFile = new File(filePath)
 
-    var branch = filePath.substring(filePath.indexOf(projectId + "/") + projectId.length + 1)
-    branch = branch.substring(0, branch.indexOf("/"))
+    var branchId = filePath.substring(filePath.indexOf(projectId + "/") + projectId.length + 1)
+    branchId = branchId.substring(0, branchId.indexOf("/"))
 
-    val id = s"$projectId/$branch/${featureFile.getName}"
 
+    val id = s"$projectId/$branchId/${featureFile.getName}"
+    val featureId = id
     val parser = new Parser[GherkinDocument](new AstBuilder())
     val gherkinDocument = parser.parse(Source.fromFile(featureFile).mkString)
 
     val comments = gherkinDocument.getComments.asScala.map(_.getText)
     val feature = gherkinDocument.getFeature
+
     val (tags, _, _, _) = mapGherkinTags(feature.getTags)
+    var backgroundOption: Option[Background] = None
 
 
     val scenarios = feature.getChildren.asScala.zipWithIndex.flatMap {
 
-      case (background: ast.Background, id: Int) => Some(Background(id, background.getKeyword, background.getName, trim(background.getDescription), mapGherkinSteps(background.getSteps)))
-
+      case (background: ast.Background, id: Int) =>
+        backgroundOption = Some(Background(id, background.getKeyword, background.getName, trim(background.getDescription), mapGherkinSteps(background.getSteps)))
+        backgroundOption
 
       case (scenario: ast.Scenario, id: Int) =>
 
         val (tags, abstractionLevel, caseType, workflowStep) = mapGherkinTags(scenario.getTags)
 
-        Some(Scenario(id, tags, abstractionLevel, caseType, workflowStep, scenario.getKeyword, scenario.getName, trim(scenario.getDescription), mapGherkinSteps(scenario.getSteps)))
+        Some(Scenario(id, featureId, tags, abstractionLevel, caseType, workflowStep, scenario.getKeyword, scenario.getName, trim(scenario.getDescription), mapGherkinSteps(scenario.getSteps)))
 
 
       case (scenario: ast.ScenarioOutline, id: Int) =>
@@ -48,7 +52,7 @@ class FeatureService {
       case _ => None
     }
 
-    Feature(id, branch, tags, feature.getLanguage, feature.getKeyword, feature.getName, trim(feature.getDescription), scenarios, comments)
+    Feature(id, branchId, filePath, backgroundOption, tags, Option(feature.getLanguage), Option(feature.getKeyword), feature.getName, trim(feature.getDescription), scenarios, comments)
   }
 
   private def mapGherkinSteps(gherkinSteps: JList[ast.Step]): Seq[Step] = {

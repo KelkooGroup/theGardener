@@ -14,14 +14,19 @@ import services._
 import scala.concurrent._
 
 @Api(value = "FeatureController", produces = "application/json")
-class FeatureController @Inject()(featureService: FeatureService, configuration: Configuration) extends InjectedController {
+class FeatureController @Inject()(featureService: FeatureService, configuration: Configuration, featureRepository: FeatureRepository) extends InjectedController {
 
   val projectsRootDirectory = configuration.get[String]("projects.root.directory")
+
 
   implicit val stepFormat = Json.format[Step]
   implicit val examplesFormat = Json.format[Examples]
   implicit val scenarioFormat = derived.flat.oformat[ScenarioDefinition]((__ \ "keyword").format[String])
+  implicit val backgroundFormat = Json.format[Background]
   implicit val featureFormat = Json.format[Feature]
+  implicit val scenariosFormat = Json.format[Scenario]
+  implicit val ScenarioOutlineFormat = Json.format[ScenarioOutline]
+
 
   @ApiOperation(value = "Get a feature", response = classOf[Feature])
   def feature(@ApiParam("Project id") project: String, @ApiParam("Feature file name") feature: String) = Action {
@@ -32,6 +37,8 @@ class FeatureController @Inject()(featureService: FeatureService, configuration:
 @Api(value = "ProjectController", produces = "application/json")
 class ProjectController @Inject()(projectRepository: ProjectRepository, projectService: ProjectService, hierarchyRepository: HierarchyRepository)(implicit ec: ExecutionContext) extends InjectedController {
 
+
+  implicit val branchFormat = Json.format[Branch]
   implicit val hierarchyFormat = Json.format[HierarchyNode]
   implicit val projectFormat = Json.format[Project]
 

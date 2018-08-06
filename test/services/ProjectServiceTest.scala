@@ -3,13 +3,12 @@ package services
 import java.io._
 
 import akka.actor.ActorSystem
-import akka.stream._
 import com.typesafe.config._
 import models._
 import org.apache.commons.io.FileUtils._
 import org.mockito.Matchers._
-import org.mockito._
 import org.mockito.Mockito._
+import org.mockito._
 import org.scalatest._
 import org.scalatest.concurrent._
 import org.scalatest.mockito._
@@ -29,8 +28,9 @@ class ProjectServiceTest extends WordSpec with MustMatchers with BeforeAndAfter 
 
   val gitService = mock[GitService]
   val projectRepository = mock[ProjectRepository]
+  val featureRepository = mock[FeatureRepository]
 
-  val projectService = new ProjectService(projectRepository, gitService, ConfigFactory.load(), ActorSystem())
+  val projectService = new ProjectService(projectRepository, gitService, ConfigFactory.load(), ActorSystem(), featureRepository)
 
   val project = Project("suggestionsWS", "Suggestions WebServices", "git@gitlab.corp.kelkoo.net:library/suggestionsWS.git", "master", "test/features")
   val masterDirectory = projectService.getLocalRepository(project.id, project.stableBranch)

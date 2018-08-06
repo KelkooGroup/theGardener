@@ -3,7 +3,7 @@
 @main("Feature") {
     <div id="@{feature.id.replace("/", "_").replace(".", "_")}">
         Project: @project<br/>
-        Branch: @feature.branch<br/>
+        Branch: @feature.branchId<br/>
 
         @feature.tags.mkString(" ")<br/>
         <strong>@feature.keyword</strong>: @feature.name<br/>
