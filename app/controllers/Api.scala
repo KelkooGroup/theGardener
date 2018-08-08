@@ -22,10 +22,8 @@ class FeatureController @Inject()(featureService: FeatureService, configuration:
   implicit val stepFormat = Json.format[Step]
   implicit val examplesFormat = Json.format[Examples]
   implicit val scenarioFormat = derived.flat.oformat[ScenarioDefinition]((__ \ "keyword").format[String])
-  implicit val backgroundFormat = Json.format[Background]
   implicit val featureFormat = Json.format[Feature]
   implicit val scenariosFormat = Json.format[Scenario]
-  implicit val ScenarioOutlineFormat = Json.format[ScenarioOutline]
 
 
   @ApiOperation(value = "Get a feature", response = classOf[Feature])

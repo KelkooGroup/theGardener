@@ -14,7 +14,7 @@ Feature: Get BDD features from a project
     When BDD features synchronization action is triggered
     Then the project BDD features of this project are retrieved from the remote server
 
-  @level_1_specification @nominal_case @draft
+  @level_1_specification @nominal_case @Ongoing
   Scenario: get bdd features from a project
     Given we have the following projects
       | id            | name                    | repositoryUrl                                        | stableBranch | featuresRootPath |
@@ -95,7 +95,7 @@ Scenario: providing several book suggestions
       | data/projects/suggestionsWS/master/test/features/setup/setup_suggestions.feature              | Feature: Setup book suggestions   |
 
 
-  @level_2_technical_details @nominal_case @Ongoing
+  @level_2_technical_details @nominal_case @valid
   Scenario: update bdd features from a project
     Given we have the following projects
       | id            | name                    | repositoryUrl                                  | stableBranch | featuresRootPath |
@@ -172,21 +172,21 @@ Scenario: providing several book suggestions
       | id | path                                           | name                                                                        | description | branchId |
       | 1  | test/features/provide_book_suggestions.feature | As a user Tim, I want some book suggestions so that I can do some discovery |             | 1        |
     And we have now those scenario in the database
-      | id | description                        | keyword  | workflowStep | caseType     | abstractionLevel |name                                                                       | featureId |
-      | 1  | providing several book suggestions | Scenario | ready        | nominal_case | level_0          |As a user Tim, I want some book suggestions so that I can do some discovery| 1         |
+      | id | description                        | keyword  | workflowStep | caseType     | abstractionLevel | name                                                                        | featureId |
+      | 1  | providing several book suggestions | Scenario | ready        | nominal_case | level_0          | As a user Tim, I want some book suggestions so that I can do some discovery | 1         |
     And we have now those stepsAsJSon for the scenario "1" in the database
 """
 [
                         {
                         "id": 0,
                         "keyword": "Given",
-                        "text": "a user",
+                        "text": "a user Tim",
                         "argument": []
                         },
                         {
                         "id": 1,
                         "keyword": "When",
-                        "text": "we ask for suggestions",
+                        "text": "we ask for some suggestions",
                         "argument": []
                         },
                         {
@@ -200,6 +200,7 @@ Scenario: providing several book suggestions
     And we have now those tags in the database
       | scenarioId | tag     |
       | 1          | general |
+      | 1          | literal |
 
   @level_1_specification @nominal_case @valid
   Scenario: Synchronize with a webhook a project

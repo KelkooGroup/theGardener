@@ -39,9 +39,7 @@ class ScenarioRepository @Inject()(db: Database) {
         SQL"REPLACE INTO scenario_tag(scenarioId, name) VALUES (${scenario.id}, $tag)".executeUpdate()
       }
       val scenarios = SQL"SELECT * FROM scenario WHERE id = ${scenario.id} ".as(parser.singleOpt)
-      scenarios.map(_.copy(tags = SQL"SELECT name FROM scenario_tag WHERE scenarioId = ${scenario.id}".as(scalar[String].*))).map {
-        case (name) => name.copy(name = scenario.tags.toString())
-      }
+      scenarios.map(_.copy(tags = SQL"SELECT name FROM scenario_tag WHERE scenarioId = ${scenario.id}".as(scalar[String].*)))
     }
   }
 

@@ -4,8 +4,8 @@ import java.io._
 import java.net._
 import java.nio.file._
 import java.util
-import anorm._
 
+import anorm._
 import cucumber.api.DataTable
 import cucumber.api.scala.{EN, ScalaDsl}
 import models._
@@ -92,17 +92,18 @@ class GetFeaturesSteps extends ScalaDsl with EN with MockitoSugar {
     scenarioRepository.saveAll(scenarios.asScala.map(_.copy(tags = Seq(), steps = Seq())))
   }
 
-  Given("""^we have those stepsAsJSon for the scenario "([^"]*)" in the database$""") { (scenarioId: Int, stepsAsJson : String) =>
-   db.withConnection { implicit connection =>
-     SQL"UPDATE scenario SET stepsAsJson = $stepsAsJson WHERE id = $scenarioId".executeUpdate()
-
-   }
+  Given("""^we have those stepsAsJSon for the scenario "([^"]*)" in the database$""") { (scenarioId: Int, stepsAsJson: String) =>
+    db.withConnection { implicit connection =>
+      SQL"UPDATE scenario SET stepsAsJson = $stepsAsJson WHERE id = $scenarioId".executeUpdate()
+    }
   }
 
-  Given("""^we have those tags in the database$""") { (tags: DataTable) =>
-    tags.asMaps(classOf[String], classOf[String]).asScala.map(_.asScala).foreach { _ =>
-      scenarioRepository.findAll().map(_.tags)
-      featureRepository.findAll().map(_.tags)
+  Given("""^we have those tags in the database$""") { (table: DataTable) =>
+    table.asMaps(classOf[String], classOf[String]).asScala.map(_.asScala).foreach { tag =>
+      val id = scenarioRepository.findAll().map(_.id)
+      db.withConnection { implicit connection =>
+        SQL"INSERT INTO scenario_tag(scenarioId, name) VALUES($id, ${tag.toString()})".executeInsert()
+      }
     }
   }
 
@@ -125,13 +126,13 @@ class GetFeaturesSteps extends ScalaDsl with EN with MockitoSugar {
   }
 
   Then("""^we have now those stepsAsJSon for the scenario "([^"]*)" in the database$""") { (scenarioId: Int, expectedStep: String) =>
-    val actualStep = scenarioRepository.findById(scenarioId).map(_.steps).get
+    val actualStep = scenarioRepository.findById(scenarioId).map(_.steps)
     Json.toJson(actualStep) mustBe Json.parse(expectedStep)
   }
 
   Then("""^we have now those tags in the database$""") { (tags: DataTable) =>
-    val exceptedTags = tags.asScala
-    val actualTags = featureRepository.findAll
-    exceptedTags must contain theSameElementsAs actualTags
+    val exceptedTags = tags.asScala.map(_.toString())
+    val actualTags = scenarioRepository.findAll().map(_.tags)
+    Seq(exceptedTags) mustBe actualTags
   }
 }
