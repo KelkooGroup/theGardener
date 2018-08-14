@@ -26,17 +26,17 @@ class BranchRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with Inj
 
   override def beforeEach() {
     db.withConnection { implicit connection =>
-      projects.foreach { project =>
-        SQL"""INSERT INTO project (id, name, repositoryUrl, stableBranch,featuresRootPath)
-           VALUES (${project.id}, ${project.name}, ${project.repositoryUrl},${project.stableBranch}, ${project.featuresRootPath})"""
+      branches.foreach { branch =>
+        SQL"""INSERT INTO branch (id, name, isStable, projectId)
+           VALUES (${branch.id}, ${branch.name}, ${branch.isStable}, ${branch.projectId})"""
           .executeInsert()
       }
     }
 
     db.withConnection { implicit connection =>
-      branches.foreach { branch =>
-        SQL"""INSERT INTO branch (id, name, isStable, projectId)
-           VALUES (${branch.id}, ${branch.name}, ${branch.isStable}, ${branch.projectId})"""
+      projects.foreach { project =>
+        SQL"""INSERT INTO project (id, name, repositoryUrl, stableBranch,featuresRootPath)
+           VALUES (${project.id}, ${project.name}, ${project.repositoryUrl},${project.stableBranch}, ${project.featuresRootPath})"""
           .executeInsert()
       }
     }
