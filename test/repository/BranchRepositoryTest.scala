@@ -1,5 +1,6 @@
 package repository
 
+import anorm.SqlParser.scalar
 import anorm._
 import models._
 import org.scalatest.BeforeAndAfterEach
@@ -49,39 +50,63 @@ class BranchRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with Inj
   }
 
   "GetFeatureRepository" should {
+    "count the number of branches" in {
+      branchRepository.count() mustBe 3
+    }
+
+    "delete all branches" in {
+      branchRepository.deleteAll()
+      db.withConnection { implicit connection =>
+        SQL"SELECT COUNT(*) FROM branch".as(scalar[Long].single) mustBe 0
+      }
+    }
+
+    "delete a branch" in {
+      branchRepository.delete(branch1)
+    }
+
+    "delete a branch by id" in {
+      branchRepository.deleteById(branch1.id)
+      db.withConnection { implicit connection =>
+        SQL"SELECT COUNT(*) FROM branch WHERE id = ${branch1.id}".as(scalar[Long].single) mustBe 0
+      }
+    }
+
+    "find all by id" in {
+      branchRepository.findAllById(branches.tail.map(_.id)) must contain theSameElementsAs branches.tail
+    }
+
+    "find a branch by id" in {
+      branchRepository.findById(branch1.id) mustBe Some(branch1)
+    }
 
     "get all branches" in {
-      branchRepository.findAllBranch() must contain theSameElementsAs branches
+      branchRepository.findAll() must contain theSameElementsAs branches
     }
 
     "get all branches by projectId" in {
-      branchRepository.findAllBranchByProjectId("id1") must contain theSameElementsAs Seq(branch1, branch2)
-    }
-
-    "get a branch by projectId" in {
-      branchRepository.findBranchByProjectId(1, "id1") must contain theSameElementsAs Seq(branch1)
+      branchRepository.findAllByProjectId("id1") must contain theSameElementsAs Seq(branch1, branch2)
     }
 
     "check if a branch exist by projectId" in {
       branchRepository.existsByProjectId(1, "id1") mustBe true
     }
 
-    "create a branch by projectId" in {
-      val branch4 = Branch(4, "name3", false, "id1")
-      branchRepository.save(branch4)
-      branchRepository.findBranchByProjectId(4, "id1") mustBe Seq(branch4)
+    "check if a branch exist by id" in {
+      branchRepository.existsById(branch1.id) mustBe true
     }
 
-    "update a branch by projectId" in {
-      val branch1 = Branch(1, "name6", false, "id1")
-      branchRepository.save(branch1)
-      branchRepository.findBranchByProjectId(1, "id1") mustBe Seq(branch1)
+    "save a branch" in {
+      val branch4 = Branch(1, "name6", false, "id1")
+      branchRepository.save(branch4)
+      branchRepository.findById(branch4.id) mustBe Some(branch4)
     }
 
     "save all branches by projectId" in {
       val newBranches = Seq(Branch(6, "name6", false, "id1"), Branch(7, "name7", true, "id1"))
       branchRepository.saveAll(newBranches)
-      branchRepository.findAllBranchByProjectId("id1") must contain theSameElementsAs (newBranches :+ branch1 :+ branch2)
+      branchRepository.findAllByProjectId("id1") must contain theSameElementsAs (newBranches :+ branch1 :+ branch2)
     }
   }
 }
+

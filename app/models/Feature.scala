@@ -2,7 +2,7 @@ package models
 
 import play.api.libs.json._
 
-case class Feature(id: String, branchId: String, path: String, background: Option[Background], tags: Seq[String] = Seq(), language: Option[String] = None, keyword: Option[String] = None, name: String, description: String, scenarios: Seq[ScenarioDefinition] = Seq(), comments: Seq[String] = Seq())
+case class Feature(id: String, branchId: String, path: String, background: Option[Background], tags: Seq[String] = Seq(), language: Option[String] = None, keyword: String, name: String, description: String, scenarios: Seq[ScenarioDefinition] = Seq(), comments: Seq[String] = Seq())
 
 
 sealed trait ScenarioDefinition {
@@ -53,6 +53,8 @@ case class ScenarioOutline(id: Int, tags: Seq[String], abstractionLevel: String,
 case class Examples(id: Int, tags: Seq[String], keyword: String, description: String, tableHeader: Seq[String], tableBody: Seq[Seq[String]])
 
 case class Step(id: Int, keyword: String, text: String, argument: Seq[Seq[String]])
+
+case class Tag(scenarioId: Int, tag: String)
 
 object Feature {
   val abstractionLevels = Map("level_0_high_level" -> Set("level0", "l0"), "level_1_specification" -> Set("level1", "l1"), "level_2_technical_details" -> Set("level2", "l2"))

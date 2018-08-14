@@ -1,3 +1,9 @@
 package models
 
-case class Branch(id: Int, name : String, isStable : Boolean, projectId : String)
+import play.api.libs.json._
+
+case class Branch(id: Int, name: String, isStable: Boolean, projectId: String)
+
+object Branch {
+  implicit val format: Format[Branch] = Json.format[Branch]
+}

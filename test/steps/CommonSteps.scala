@@ -10,6 +10,7 @@ import anorm.SQL
 import com.typesafe.config._
 import cucumber.api.DataTable
 import cucumber.api.scala._
+import julienrf.json.derived
 import models._
 import net.ruippeixotog.scalascraper.browser._
 import org.apache.commons.io._
@@ -22,7 +23,7 @@ import play.api._
 import play.api.db._
 import play.api.inject._
 import play.api.inject.guice._
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, __}
 import play.api.mvc._
 import play.api.test.Helpers._
 import play.api.test._
@@ -44,11 +45,7 @@ object Injector {
 
 object CommonSteps extends PlaySpec with GuiceOneServerPerSuite with BeforeAndAfterAll with MockitoSugar with Injecting {
 
-  implicit val examplesFormat = Json.format[Examples]
-  implicit val scenarioDefinitionFormat = Json.format[ScenarioDefinition]
-  implicit val featureFormat = Json.format[Feature]
-  implicit val scenarioFormat = Json.format[Scenario]
-
+  implicit val scenarioFormat = derived.flat.oformat[ScenarioDefinition]((__ \ "keyword").format[String])
   implicit val branchFormat = Json.format[Branch]
   implicit val hierarchyFormat = Json.format[HierarchyNode]
   implicit val projectFormat = Json.format[Project]

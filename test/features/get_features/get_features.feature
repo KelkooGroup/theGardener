@@ -104,8 +104,8 @@ Scenario: providing several book suggestions
       | id | name   | isStable | projectId     |
       | 1  | master | true     | suggestionsWS |
     And we have those features in the database
-      | id | path                                           | name                                                                        | description | branchId |
-      | 1  | test/features/provide_book_suggestions.feature | As a user Tim, I want some book suggestions so that I can do some discovery |             | 1        |
+      | id | path                                           | name                                                                        | description | branchId | keyword  |
+      | 1  | test/features/provide_book_suggestions.feature | As a user Tim, I want some book suggestions so that I can do some discovery |             | 1        | Scenario |
     And we have those scenario in the database
       | id | description                        | keyword  | workflowStep | caseType     | abstractionLevel | name                                                                        | featureId |
       | 1  | providing several book suggestions | Scenario | ready        | nominal_case | level_0          | As a user Tim, I want some book suggestions so that I can do some discovery | 1         |
@@ -135,7 +135,6 @@ Scenario: providing several book suggestions
     And we have those tags in the database
       | scenarioId | tag     |
       | 1          | general |
-      | 1          | literal |
     And the server "target/data/GetFeatures" host under the project "library/suggestionsWS" on the branch "master" the file "test/features/provide_book_suggestions.feature"
     """
 Feature: As a user Tim, I want some book suggestions so that I can do some discovery
@@ -169,8 +168,8 @@ Scenario: providing several book suggestions
       | id | name   | isStable | projectId     |
       | 1  | master | true     | suggestionsWS |
     And we have now those features in the database
-      | id | path                                           | name                                                                        | description | branchId |
-      | 1  | test/features/provide_book_suggestions.feature | As a user Tim, I want some book suggestions so that I can do some discovery |             | 1        |
+      | id | path                                           | name                                                                        | description | branchId | keyword  |
+      | 1  | test/features/provide_book_suggestions.feature | As a user Tim, I want some book suggestions so that I can do some discovery |             | 1        | Scenario |
     And we have now those scenario in the database
       | id | description                        | keyword  | workflowStep | caseType     | abstractionLevel | name                                                                        | featureId |
       | 1  | providing several book suggestions | Scenario | ready        | nominal_case | level_0          | As a user Tim, I want some book suggestions so that I can do some discovery | 1         |
@@ -200,7 +199,6 @@ Scenario: providing several book suggestions
     And we have now those tags in the database
       | scenarioId | tag     |
       | 1          | general |
-      | 1          | literal |
 
   @level_1_specification @nominal_case @valid
   Scenario: Synchronize with a webhook a project

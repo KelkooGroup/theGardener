@@ -3,7 +3,7 @@ package controllers
 
 import io.swagger.annotations._
 import javax.inject._
-import julienrf.json._
+import julienrf.json.derived
 import models._
 import play.api._
 import play.api.libs.json._
@@ -18,12 +18,10 @@ class FeatureController @Inject()(featureService: FeatureService, configuration:
 
   val projectsRootDirectory = configuration.get[String]("projects.root.directory")
 
-
   implicit val stepFormat = Json.format[Step]
   implicit val examplesFormat = Json.format[Examples]
   implicit val scenarioFormat = derived.flat.oformat[ScenarioDefinition]((__ \ "keyword").format[String])
   implicit val featureFormat = Json.format[Feature]
-  implicit val scenariosFormat = Json.format[Scenario]
 
 
   @ApiOperation(value = "Get a feature", response = classOf[Feature])

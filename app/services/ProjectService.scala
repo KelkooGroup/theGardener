@@ -14,7 +14,7 @@ import repository._
 import scala.concurrent._
 import scala.concurrent.duration._
 
-class ProjectService @Inject()(projectRepository: ProjectRepository, gitService: GitService, config: Config, actorSystem: ActorSystem, featureRepository: FeatureRepository)(implicit ec: ExecutionContext) {
+class ProjectService @Inject()(projectRepository: ProjectRepository, gitService: GitService, config: Config, actorSystem: ActorSystem, featureRepository: FeatureRepository, branchRepository: BranchRepository)(implicit ec: ExecutionContext) {
   val projectsRootDirectory = config.getString("projects.root.directory")
   val synchronizeInterval = config.getInt("projects.synchronize.interval")
   val synchronizeInitialDelay = config.getInt("projects.synchronize.initial.delay")
@@ -68,6 +68,13 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
   }
 
   def synchronize(project: Project): Future[Unit] = {
+    project.id.map { _ =>
+      project.repositoryUrl.map { _ =>
+        project.branches.map { newBranches =>
+          branchRepository.saveAll(newBranches)
+        }
+      }
+    }
 
     val localBranchesArray = new File(s"$projectsRootDirectory/${project.id}").list(DirectoryFileFilter.INSTANCE)
     val localBranches = if (localBranchesArray != null) localBranchesArray.toSet else Set[String]()

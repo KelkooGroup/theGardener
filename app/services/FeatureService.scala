@@ -52,7 +52,7 @@ class FeatureService {
       case _ => None
     }
 
-    Feature(id, branchId, filePath, backgroundOption, tags, Option(feature.getLanguage), Option(feature.getKeyword), feature.getName, trim(feature.getDescription), scenarios, comments)
+    Feature(id, branchId, filePath, backgroundOption, tags, Option(feature.getLanguage), feature.getKeyword, feature.getName, trim(feature.getDescription), scenarios, comments)
   }
 
   private def mapGherkinSteps(gherkinSteps: JList[ast.Step]): Seq[Step] = {

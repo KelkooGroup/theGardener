@@ -1,5 +1,6 @@
 package repository
 
+import anorm.SqlParser.scalar
 import anorm._
 import models._
 import org.scalatest.BeforeAndAfterEach
@@ -21,9 +22,9 @@ class ScenarioRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with I
 
   val scenario1 = Scenario(1, "1", Seq("tag1", "tag2", "tag3"), "abstractionLevel1", "caseType1", "workflowStep1", "keyword1", "name1", "description1", step)
   val scenario2 = Scenario(2, "1", Seq("tag1", "tag2", "tag3"), "abstractionLevel1", "caseType1", "workflowStep1", "keyword1", "name1", "description1", step)
-  val scenario = Seq(scenario1)
+  val scenario = Seq(scenario1, scenario2)
 
-  val feature1 = Feature("1", "1", "path1", Some(background1), Seq("tag1", "tag2", "tag3"), Some("language1"), Some("keyword1"), "name1", "description1", Seq(), Seq("comments1"))
+  val feature1 = Feature("1", "1", "path1", Some(background1), Seq("tag1", "tag2", "tag3"), Some("language1"), "keyword1", "name1", "description1", Seq(), Seq("comments1"))
   val features = Seq(feature1)
 
   override def beforeEach(): Unit = {
@@ -49,12 +50,42 @@ class ScenarioRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with I
   }
 
   "ScenarioRepository" should {
+    "count the number of scenarios" in {
+      scenarioRepository.count() mustBe 2
+    }
+
     "get all" in {
       scenarioRepository.findAll() must contain theSameElementsAs scenario
     }
 
     "find by id" in {
       scenarioRepository.findById(scenario1.id) mustBe Some(scenario1)
+    }
+
+    "find all by id" in {
+      scenarioRepository.findAllById(scenario.tail.map(_.id)) must contain theSameElementsAs scenario.tail
+    }
+
+    "delete all scenarios" in {
+      scenarioRepository.deleteAll()
+      db.withConnection { implicit connection =>
+        SQL"SELECT COUNT(*) FROM scenario".as(scalar[Long].single) mustBe 0
+      }
+    }
+
+    "delete a scenario by id" in {
+      scenarioRepository.deleteById(scenario1.id)
+      db.withConnection { implicit connection =>
+        SQL"SELECT COUNT(*) FROM branch WHERE id = ${scenario1.id}".as(scalar[Long].single) mustBe 0
+      }
+    }
+
+    "delete a scenario" in {
+      scenarioRepository.delete(scenario1)
+    }
+
+    "exists a scenario by id" in {
+      scenarioRepository.existsById(scenario1.id) mustBe true
     }
 
     "save a scenario" in {
@@ -67,7 +98,7 @@ class ScenarioRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with I
       val newScenario = Seq(Scenario(5, "1", Seq("tag1", "tag2", "tag3"), "abstractionLevel1", "caseType1", "workflowStep1", "keyword1", "name1", "description1", step),
         Scenario(6, "1", Seq("tag1", "tag2", "tag3"), "abstractionLevel1", "caseType1", "workflowStep1", "keyword1", "name1", "description1", step))
       scenarioRepository.saveAll(newScenario)
-      scenarioRepository.findAll() must contain theSameElementsAs (scenario1 +: newScenario)
+      scenarioRepository.findAll() must contain theSameElementsAs (scenario1 +: scenario2 +: newScenario)
     }
   }
 }

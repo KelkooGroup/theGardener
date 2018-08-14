@@ -36,7 +36,7 @@ create table project_hierarchyNode(
 );
 
 create table branch(
-  id int not null,
+  id int not null AUTO_INCREMENT,
   name varchar(255) not null,
   isStable BOOLEAN not null,
   projectId varchar(255) not null,
@@ -44,14 +44,14 @@ create table branch(
 );
 
 create table feature(
-  id varchar(255) not null,
+  id int not null AUTO_INCREMENT,
   path varchar(255) not null,
   name varchar(255) not null,
   description varchar(255) not null,
   backgroundAsJson text,
-  branchId varchar(255) not null,
+  branchId int not null,
   language varchar (255),
-  keyword varchar(255),
+  keyword varchar(255) not null,
   comments varchar(255) not null,
   constraint pk_feature primary key(id)
 );
@@ -73,7 +73,7 @@ create table comments(
 );
 
 create table scenario(
-  id int not null,
+  id int not null AUTO_INCREMENT,
   description varchar(255) not null,
   workflowStep varchar(255) not null,
   caseType varchar(255) not null,
@@ -81,7 +81,7 @@ create table scenario(
   stepsAsJson text,
   keyword varchar(255) not null,
   name varchar(255) not null,
-  featureId varchar(255) not null,
+  featureId int not null,
   constraint pk_scenario primary key (id)
 );
 

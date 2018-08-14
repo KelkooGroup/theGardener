@@ -25,7 +25,7 @@ class RegisterProjectSteps extends ScalaDsl with EN with MockitoSugar {
   }
 
   private def checkProjectsInDb(expectedProjects: Seq[Project]) = {
-    val actualProjects = projectRepository.findAll()
+    val actualProjects = projectRepository.findAll().map(_.copy(hierarchy = None, branches = None))
     actualProjects mustBe expectedProjects
   }
 
@@ -60,7 +60,7 @@ class RegisterProjectSteps extends ScalaDsl with EN with MockitoSugar {
   }
 
   When("""^a user register a new project with$""") { projects: util.List[Project] =>
-    registerProject(projects.get(0).copy(hierarchy = None))
+    registerProject(projects.get(0).copy(hierarchy = None, branches = None))
   }
 
   When("""^a user register a new project in theGardener$""") { () =>
@@ -74,6 +74,6 @@ class RegisterProjectSteps extends ScalaDsl with EN with MockitoSugar {
   }
 
   Then("""^the projects settings are now$""") { projects: util.List[Project] =>
-    checkProjectsInDb(projects.asScala.map(_.copy(hierarchy = None)))
+    checkProjectsInDb(projects.asScala.map(_.copy(hierarchy = None, branches = None)))
   }
 }
