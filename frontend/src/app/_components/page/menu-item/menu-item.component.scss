@@ -1,0 +1,53 @@
+
+
+
+li {
+
+  position: relative;
+  display: block;
+
+  a {
+    position: relative;
+    display: block;
+
+    text-align: center !important;
+    font-weight: 400;
+    font-size: 10px;
+    padding: 10px 5px;
+  }
+
+  a svg {
+    font-size: 25px !important;
+    text-align: center;
+    width: 100% !important;
+    margin-bottom: 5px;
+  }
+
+  > a {
+    margin-bottom: 6px;
+  }
+
+  a:hover {
+    color: #000;
+  }
+
+}
+
+.active {
+  position: relative;
+  display: block;
+
+  background-color: #5A738E;
+  a {
+    color: white;
+  }
+  a:hover {
+    color: white;
+  }
+}
+
+li > a:hover,
+li > a:focus {
+  text-decoration: none;
+  background: transparent
+}
