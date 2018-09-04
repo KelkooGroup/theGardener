@@ -5,7 +5,6 @@
 
 ## How to develop locally ?
 
-
 ### Launch local server
 
 Run local server with resources hot reload:
@@ -13,3 +12,16 @@ Run local server with resources hot reload:
 
 Run local server with resources hot reload and remote debugging enabled:
 `sbt -jvm-debug 9999 ~run`
+
+Run Angular Live Development server, under `frontend` directory
+`ng serve`  
+
+
+##### Application play
+run on 9000, for instance Swagger is available on http://localhost:9000/docs/  
+
+##### Application angular
+run on 4200, for instance the UI is available on http://localhost:4200/
+
+
+Note: on production, the Angular Live Development Server is not running, all requests are done on the play application.
