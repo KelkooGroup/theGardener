@@ -1,10 +1,22 @@
 
 
+.menu-item{
+  width: 100%;
+  border-top-color: #1F7079;
+  border-top-style: solid;
+  border-top-width: 1px;
 
+  border-bottom-color: #1F7079;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+
+
+}
 li {
 
   position: relative;
   display: block;
+
 
   a {
     position: relative;
@@ -28,7 +40,7 @@ li {
   }
 
   a:hover {
-    color: #000;
+    color: #10353d;
   }
 
 }
@@ -37,7 +49,7 @@ li {
   position: relative;
   display: block;
 
-  background-color: #5A738E;
+  background-color: #1F7079;
   a {
     color: white;
   }
