@@ -1,0 +1,51 @@
+<mat-tree [dataSource]="nestedDataSource" [treeControl]="nestedTreeControl" class="criterias-tree">
+  <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
+    <li class="mat-tree-node">
+      <button mat-icon-button disabled></button>
+      <div class="hierarchyNode" >{{node.name}}</div>
+    </li>
+  </mat-tree-node>
+
+  <mat-nested-tree-node *matTreeNodeDef="let node; when: hasNestedChild">
+    <li>
+      <div class="mat-tree-node">
+        <button mat-icon-button matTreeNodeToggle
+                [attr.aria-label]="'toggle ' + node.name">
+          <mat-icon class="mat-icon-rtl-mirror">
+            {{nestedTreeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+          </mat-icon>
+        </button>
+        <mat-checkbox class="hierarchyNode"
+                      [checked]="node.selected"
+                      [value]="node"
+                      (change)="selectHierarchyNode($event)"
+        >{{node.name}}</mat-checkbox>
+      </div>
+      <ul [class.criterias-tree-invisible]="!nestedTreeControl.isExpanded(node)">
+        <div >{{node.childrenLabel}}:</div>
+        <div class="mat-tree-node pull-right" *ngFor="let project of node.projects">
+          <ul class="flex-container flex-direction-column flex-align-items-start" >
+             <li>
+               <mat-checkbox class="project"
+                             [checked]="project.selected"
+                             [value]="project"
+                             (change)="selectProject($event)"
+                 >{{project.label}}</mat-checkbox>
+             </li>
+            <li>
+              <mat-select class="pull-right branch"  placeholder="Stable branch by default"  (selectionChange)="selectBranch($event)" >
+                <mat-option [class.stable-branch]="branch.name == project.stableBranch.name"  *ngFor="let branch of project.branches" [value]="branch">{{branch.name}}</mat-option>
+              </mat-select>
+            </li>
+          </ul>
+        </div>
+      </ul>
+
+      <ul [class.criterias-tree-invisible]="!nestedTreeControl.isExpanded(node)">
+        <ng-container matTreeNodeOutlet></ng-container>
+      </ul>
+
+
+    </li>
+  </mat-nested-tree-node>
+</mat-tree>

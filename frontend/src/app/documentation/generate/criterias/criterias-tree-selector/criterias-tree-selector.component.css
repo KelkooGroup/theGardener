@@ -1,0 +1,36 @@
+.criterias-tree-invisible {
+  display: none;
+}
+
+.criterias-tree ul,
+.criterias-tree li {
+  margin-top: 0;
+  margin-bottom: 0;
+  list-style-type: none;
+}
+
+
+.hierarchyNode {
+  color: #0e425b;
+}
+
+.pull-right{
+  margin-left: 25px;
+  padding-left: 25px;
+}
+
+.project {
+  font-family: "courier";
+  color: #0e425b;
+}
+
+.branch {
+  font-family: "courier";
+  font-size: x-small;
+  width: 50%;
+  max-width: 600px;
+}
+
+.stable-branch {
+  font-weight: bold;
+}

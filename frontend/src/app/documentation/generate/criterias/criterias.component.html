@@ -1,17 +1,6 @@
 <app-panel class="criterias" panelTitle="Criterias" panelIcon="fas fa-sliders-h">
-  <ul class="flex-container flex-direction-column flex-align-items-start">
-    <li *ngIf="hierarchyLevel0" >
-      <app-hierarchy-selector  [hierarchyLevel]="hierarchyLevel0"
-                               (onSelectHierarchyLevel)="selectHierarchyNode($event.value)"
-                               (onDeselectHierarchyLevel)="deselectHierarchyNode($event.value)"
-                               (onDeselectProject)="deselectProject($event)"
-                               (onSelectProject)="selectProject($event)"
-                               (onSelectBranch)="selectBranch($event)" ></app-hierarchy-selector>
-    </li>
-    <li>
-      {{httpParams}}
-    </li>
-  </ul>
+      <app-criterias-tree-selector (onHierarchyProvided)="storeHierarchyNodesSelector($event)"></app-criterias-tree-selector>
+      <button (click)="generateDocumentation()"  mat-stroked-button>Generate documentation</button>
 </app-panel>
 
 

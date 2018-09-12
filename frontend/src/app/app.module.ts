@@ -1,19 +1,18 @@
-
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import {BrowserModule} from '@angular/platform-browser';
+import {NgModule} from '@angular/core';
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {APIInterceptor} from "./http-interceptor";
-import { AppComponent } from './app.component';
+import {AppComponent} from './app.component';
 import {environment} from "../environments/environment";
-import { HeaderComponent } from './_components/page/header/header.component';
+import {HeaderComponent} from './_components/page/header/header.component';
 import {AppRoutingModule} from './app-routing.module';
-import { MenuComponent } from './_components/page/menu/menu.component';
-import { MenuItemComponent } from './_components/page/menu-item/menu-item.component';
-import { GenerateComponent } from './documentation/generate/generate.component';
-import { PageComponent } from './_components/page/page/page.component';
-import { AdminPageComponent } from './admin/admin-page/admin-page.component';
+import {MenuComponent} from './_components/page/menu/menu.component';
+import {MenuItemComponent} from './_components/page/menu-item/menu-item.component';
+import {GenerateComponent} from './documentation/generate/generate.component';
+import {PageComponent} from './_components/page/page/page.component';
+import {AdminPageComponent} from './admin/admin-page/admin-page.component';
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-import { FormsModule }   from '@angular/forms';
+import {FormsModule} from '@angular/forms';
 import {
   MatButtonModule,
   MatCheckboxModule,
@@ -24,13 +23,15 @@ import {
   MatSelectModule,
   MatInputModule,
   MatListModule,
+  MatTreeModule,
+  MatIconModule,
   MatProgressSpinnerModule,
 } from "@angular/material";
-import { PanelComponent } from './_components/panel/panel.component';
-import { CriteriasComponent } from './documentation/generate/criterias/criterias.component';
-import { OutputComponent } from './documentation/generate/output/output.component';
+import {PanelComponent} from './_components/panel/panel.component';
+import {CriteriasComponent} from './documentation/generate/criterias/criterias.component';
+import {OutputComponent} from './documentation/generate/output/output.component';
 import {HierarchyService} from "./_services/hierarchy.service";
-import { HierarchySelectorComponent } from './documentation/generate/criterias/hierarchy-selector/hierarchy-selector.component';
+import {CriteriasTreeSelectorComponent} from './documentation/generate/criterias/criterias-tree-selector/criterias-tree-selector.component';
 
 const nonProductionProviders = [{
   provide: HTTP_INTERCEPTORS,
@@ -51,7 +52,7 @@ const nonProductionProviders = [{
     PanelComponent,
     CriteriasComponent,
     OutputComponent,
-    HierarchySelectorComponent,
+    CriteriasTreeSelectorComponent,
   ],
   imports: [
     HttpClientModule,
@@ -67,6 +68,8 @@ const nonProductionProviders = [{
     MatInputModule,
     MatListModule,
     MatSelectModule,
+    MatTreeModule,
+    MatIconModule,
     MatProgressSpinnerModule,
     FormsModule
   ],
@@ -76,4 +79,5 @@ const nonProductionProviders = [{
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}

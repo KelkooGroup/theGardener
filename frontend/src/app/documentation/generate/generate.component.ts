@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 
 @Component({
   selector: 'app-generate',
@@ -9,7 +9,14 @@ export class GenerateComponent implements OnInit {
 
   constructor() { }
 
+  @Output()
+  httpParams: string;
+
   ngOnInit() {
+  }
+
+  generateDocumentationRequest(httpParams : string){
+    this.httpParams = httpParams ;
   }
 
 }
