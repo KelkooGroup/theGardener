@@ -2,25 +2,19 @@ import {HierarchyNodeApi, ProjectApi} from "./criterias";
 
 
 class TupleHierarchyNodeSelector {
+
   constructor(
     public taken: Array<HierarchyNodeSelector>,
     public left: Array<HierarchyNodeSelector>
-  ) {
-  }
+  ) { }
 }
 
 export class BranchSelector {
 
-  public contextId: string;
-
   constructor(
     public name: string,
     public project: ProjectSelector
-  ) {
-    if (this.project != null) {
-      this.contextId = `${this.project.contextId}#${this.name}`;
-    }
-  }
+  ) { }
 
 }
 
@@ -29,7 +23,6 @@ export class ProjectSelector {
   public selected: boolean = false;
   public selectedBranch: BranchSelector;
   public relatedHierarchyNode: HierarchyNodeSelector;
-  public contextId: string;
 
   constructor(
     public id: string,
@@ -49,7 +42,6 @@ export class ProjectSelector {
       stableBranch,
       branches
     );
-    stableBranch.contextId = `${instance.contextId}#${this.name}`;
     stableBranch.project = instance;
     if (projectApi.branches != null) {
       for (var k = 0; k < projectApi.branches.length; k++) {
@@ -67,7 +59,6 @@ export class HierarchyNodeSelector {
   public open: boolean = false;
   public level: number;
   public path: string;
-  public contextId: string;
   public children = new Array<HierarchyNodeSelector>();
   public projects = new Array<ProjectSelector>();
 
@@ -78,7 +69,6 @@ export class HierarchyNodeSelector {
     public childrenLabel: string,
     public childLabel: string) {
     this.level = this.id.split(".").length - 1;
-    this.contextId = this.id;
   }
 
   public hasChilden(): boolean {
@@ -171,11 +161,6 @@ export class HierarchyNodeSelector {
         if (loopNode.id.startsWith(node.id)) {
           if (loopNode.id.length == node.id.length + 3) {
             loopNode.path = `${node.path}/${loopNode.slugName}`;
-
-            for (var j = 0; j < loopNode.projects.length; j++) {
-              var loopProjectSelector = loopNode.projects[j];
-              loopProjectSelector.contextId = `${loopNode.contextId}#${loopProjectSelector.id}`;
-            }
             taken.push(loopNode);
           }
           if (loopNode.id.length > node.id.length + 3) {
