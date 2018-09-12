@@ -1,0 +1,30 @@
+<ul class="flex-container flex-direction-column flex-align-items-start" *ngIf="hierarchyLevel">
+  <li>
+    <mat-form-field  *ngIf="showHierarchy" >
+      <mat-select placeholder="{{hierarchyLevel.childrenLabel}}" [(value)]="selectedHierarchyLevel"  (selectionChange)="selectHierarchyLevel($event)" >
+         <mat-option *ngFor="let node of hierarchyLevel.children" [value]="node">{{node.name}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </li>
+  <li *ngFor="let project of hierarchyLevel.projects" >
+      <mat-checkbox  [checked]="true" [value]="project.id" (change)="selectProject($event)" >{{project.label}}</mat-checkbox> on
+
+      <mat-form-field>
+        <mat-select placeholder="Branches" [value]="project.stableBranchAsObject" (selectionChange)="selectBranch($event.value)"  >
+          <mat-option  *ngFor="let branch of project.branchesAsObjects" [value]="branch">{{branch.branch}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+  </li>
+  <li *ngIf="selectedHierarchyLevel" >
+       <app-hierarchy-selector  [hierarchyLevel]="selectedHierarchyLevel"
+                                (onDeselectHierarchyLevel)="propagateDeselectHierarchyLevel($event)"
+                                (onSelectHierarchyLevel)="propagateSelectHierarchyLevel($event)"
+                                (onDeselectProject)="propagateDeselectProject($event)"
+                                (onSelectProject)="propagateSelectProject($event)"
+                                (onSelectBranch)="propagateSelectBranch($event)"
+                               ></app-hierarchy-selector>
+  </li>
+</ul>
+
+

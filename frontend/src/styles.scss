@@ -22,4 +22,4 @@ $theme: mat-light-theme($primary, $accent, $warn);
 // that you are using.
 @include angular-material-theme($theme);
 
-@import "stylesheets/theGardener";/* You can add global styles to this file, and also import other style files */
+@import "stylesheets/theGardener-bo";/* You can add global styles to this file, and also import other style files */
