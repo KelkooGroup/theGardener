@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Injectable, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Injectable, Input, OnInit, Output} from '@angular/core';
 import {BehaviorSubject} from "rxjs/index";
 import {
   BranchSelector,
@@ -12,46 +12,26 @@ import {MatTreeNestedDataSource} from "@angular/material/tree";
 import {NestedTreeControl} from "@angular/cdk/tree";
 
 
-@Injectable()
-export class HierarchyProvider {
-  dataChange = new BehaviorSubject<HierarchyNodeSelector[]>([]);
-
-  get data(): HierarchyNodeSelector[] {
-    return this.dataChange.value;
-  }
-
-  constructor(private hierarchyService: HierarchyService) {
-    this.hierarchyService.criterias().subscribe(
-      (result: Array<HierarchyNodeApi>) => {
-        const root: HierarchyNodeSelector = HierarchyNodeSelector.buildHierarchyNodeSelectorAsTree(HierarchyNodeSelector.buildHierarchyNodeSelector(result))
-        this.dataChange.next(root.children);
-      },
-      err => {
-      });
-  }
-}
-
-
 @Component({
   selector: 'app-criterias-tree-selector',
   templateUrl: './criterias-tree-selector.component.html',
-  styleUrls: ['./criterias-tree-selector.component.css'],
-  providers: [HierarchyProvider]
+  styleUrls: ['./criterias-tree-selector.component.css']
 })
-export class CriteriasTreeSelectorComponent {
-
-  @Output()
-  onHierarchyProvided: EventEmitter<HierarchyNodeSelector[]> = new EventEmitter();
+export class CriteriasTreeSelectorComponent  implements OnInit {
 
   nestedTreeControl: NestedTreeControl<HierarchyNodeSelector>;
   nestedDataSource: MatTreeNestedDataSource<HierarchyNodeSelector>;
 
+  @Input()
+  data : HierarchyNodeSelector[] ;
 
-  constructor(hierarchyProvider: HierarchyProvider) {
+  @Input()
+  childrenLabel : string ;
+
+  ngOnInit() {
     this.nestedTreeControl = new NestedTreeControl<HierarchyNodeSelector>(this._getChildren);
     this.nestedDataSource = new MatTreeNestedDataSource();
-    hierarchyProvider.dataChange.subscribe(data => this.nestedDataSource.data = data);
-    hierarchyProvider.dataChange.subscribe(data => this.onHierarchyProvided.emit(data));
+    this.nestedDataSource.data = this.data;
   }
 
   hasNestedChild = (_: number, nodeData: HierarchyNodeSelector) => nodeData.hasChilden() || nodeData.hasProjects();

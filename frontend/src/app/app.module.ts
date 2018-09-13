@@ -25,12 +25,14 @@ import {
   MatListModule,
   MatTreeModule,
   MatIconModule,
+  MatTabsModule,
   MatProgressSpinnerModule,
 } from "@angular/material";
 import {PanelComponent} from './_components/panel/panel.component';
 import {CriteriasComponent} from './documentation/generate/criterias/criterias.component';
 import {OutputComponent} from './documentation/generate/output/output.component';
 import {HierarchyService} from "./_services/hierarchy.service";
+import {DocumentationService} from "./_services/documentation.service";
 import {CriteriasTreeSelectorComponent} from './documentation/generate/criterias/criterias-tree-selector/criterias-tree-selector.component';
 
 const nonProductionProviders = [{
@@ -68,6 +70,7 @@ const nonProductionProviders = [{
     MatInputModule,
     MatListModule,
     MatSelectModule,
+    MatTabsModule,
     MatTreeModule,
     MatIconModule,
     MatProgressSpinnerModule,
@@ -75,7 +78,8 @@ const nonProductionProviders = [{
   ],
   providers: [
     ...!environment.production ? nonProductionProviders : [],
-    HierarchyService
+    HierarchyService,
+    DocumentationService
   ],
   bootstrap: [AppComponent]
 })

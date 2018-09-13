@@ -349,29 +349,43 @@ class FakeCriteriasController @Inject()() extends InjectedController {
          }
        ]
 	},
-
-     {
+   {
  		"id": ".02.",
  		"slugName": "biz",
  		"name": "Business view",
     "childrenLabel": "Units",
- 	  "childLabel": "Unit",
+ 	  "childLabel": "Unit"
+   },
+   {
+		"id": ".02.01.",
+		"slugName": "u1",
+		"name": "Unit 1",
+    "childrenLabel": "Sub units",
+    "childLabel": "Sub unit",
+       "projects" : [
+        {
+          "id" : "otherWS",
+          "label" : "Other WebService",
+          "stableBranch" : "master",
+          "branches" : [  "master" ]
+        }
+      ]
+	},
+    {
+		"id": ".02.02.",
+		"slugName": "u2",
+		"name": "Unit 2",
+    "childrenLabel": "Sub units",
+    "childLabel": "Sub unit",
     "projects" : [
-          {
-            "id" : "unit1",
-            "label" : "Unit 1",
-            "stableBranch" : "master",
-            "branches" : [  "master" ]
-          },
-          {
-             "id" : "unit1",
-             "label" : "Unit 1",
-             "stableBranch" : "master",
-             "branches" : [  "master" ]
-           }
-
-        ]
-   }
+         {
+           "id" : "anotherWS",
+           "label" : "Another WebService",
+           "stableBranch" : "master",
+           "branches" : [  "master" ]
+         }
+       ]
+	}
 ]
   """.stripMargin)
   }

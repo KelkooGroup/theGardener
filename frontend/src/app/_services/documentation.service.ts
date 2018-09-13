@@ -6,14 +6,14 @@ import {HierarchyNodeApi} from "../_models/criterias";
 @Injectable({
   providedIn: 'root'
 })
-export class HierarchyService {
+export class DocumentationService {
 
 
   constructor(private http: HttpClient) {
   }
 
-  criterias(): Observable<Array<HierarchyNodeApi>> {
-    const url = `api/criterias`;
+  generateDocumentation(params : string): Observable<Array<HierarchyNodeApi>> {
+    const url = `api/generateDocumentation?${params}`;
     return this.http.get<Array<HierarchyNodeApi>>(url);
   }
 
