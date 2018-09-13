@@ -324,14 +324,30 @@ class FakeCriteriasController @Inject()() extends InjectedController {
 		"slugName": "other",
 		"name": "Other system group",
     "childrenLabel": "Systems",
-    "childLabel": "System"
+    "childLabel": "System",
+       "projects" : [
+        {
+          "id" : "otherWS",
+          "label" : "Other WebService",
+          "stableBranch" : "master",
+          "branches" : [  "master" ]
+        }
+      ]
 	},
     {
 		"id": ".01.03.",
 		"slugName": "another",
 		"name": "Another system group",
     "childrenLabel": "Systems",
-    "childLabel": "System"
+    "childLabel": "System",
+    "projects" : [
+         {
+           "id" : "anotherWS",
+           "label" : "Another WebService",
+           "stableBranch" : "master",
+           "branches" : [  "master" ]
+         }
+       ]
 	},
 
      {
@@ -339,7 +355,22 @@ class FakeCriteriasController @Inject()() extends InjectedController {
  		"slugName": "biz",
  		"name": "Business view",
     "childrenLabel": "Units",
- 	  "childLabel": "Unit"
+ 	  "childLabel": "Unit",
+    "projects" : [
+          {
+            "id" : "unit1",
+            "label" : "Unit 1",
+            "stableBranch" : "master",
+            "branches" : [  "master" ]
+          },
+          {
+             "id" : "unit1",
+             "label" : "Unit 1",
+             "stableBranch" : "master",
+             "branches" : [  "master" ]
+           }
+
+        ]
    }
 ]
   """.stripMargin)

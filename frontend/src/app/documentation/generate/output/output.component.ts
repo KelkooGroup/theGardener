@@ -8,7 +8,7 @@ import {Component, Input, OnInit} from '@angular/core';
 export class OutputComponent implements OnInit {
 
   @Input()
-  httpParams: string = "";
+  projects: string = "";
 
   constructor() { }
 

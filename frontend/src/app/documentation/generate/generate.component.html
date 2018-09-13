@@ -1,4 +1,4 @@
 <app-page pageTitle="Generate documentation" >
-    <app-generate-documentation-criterias (onGenerateDocumentationRequest)="generateDocumentationRequest($event)" ></app-generate-documentation-criterias>
-    <app-generate-documentation-output [httpParams]="httpParams"  ></app-generate-documentation-output>
+    <app-generate-documentation-criterias  *ngIf="isCriterias" (onGenerateDocumentationRequest)="generateDocumentationRequest($event)" ></app-generate-documentation-criterias>
+    <app-generate-documentation-output     *ngIf="isOutput" [projects]="projects"  ></app-generate-documentation-output>
 </app-page>

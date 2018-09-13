@@ -7,21 +7,26 @@ import {AdminPageComponent} from "./admin/admin-page/admin-page.component";
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'app/documentation/generate',
+    redirectTo: 'app/documentation/generate/criterias',
     pathMatch: 'full',
   },
   {
     path: 'app',
-    redirectTo: 'app/documentation/generate',
-    pathMatch: 'full',
-  },
-  {
-    path: 'app/documentation',
-    redirectTo: 'app/documentation/generate',
+    redirectTo: 'app/documentation/generate/criterias',
     pathMatch: 'full',
   },
   {
     path: 'app/documentation/generate',
+    redirectTo: 'app/documentation/generate/criterias',
+    pathMatch: 'full',
+  },
+  {
+    path: 'app/documentation',
+    redirectTo: 'app/documentation/generate/criterias',
+    pathMatch: 'full',
+  },
+  {
+    path: 'app/documentation/generate/:type',
     component: GenerateComponent,
     canActivate: []
   },
