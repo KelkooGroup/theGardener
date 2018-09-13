@@ -1,5 +1,5 @@
 <app-panel [showSpinner]="false" >
 
-  <div *ngIf="httpParams.length > 0" >Call documentation generation with {{httpParams}}</div>
+  <div *ngIf="httpParams != null && httpParams.length > 0" >Call documentation generation with {{httpParams}}</div>
 
 </app-panel>

@@ -282,7 +282,21 @@ class FakeCriteriasController @Inject()() extends InjectedController {
 		"slugName": "user",
 		"name": "User system",
     "childrenLabel": "Projects",
-    "childLabel": "Project"
+    "childLabel": "Project",
+    "projects" : [
+        {
+          "id" : "userWS",
+          "label" : "User WebService",
+          "stableBranch" : "master",
+          "branches" : [   "feature/upgrade-angular", "master",  "bugfix/13553"]
+        },
+        {
+          "id" : "userWSClient",
+           "label" : "User WebService client library",
+           "stableBranch" : "master",
+           "branches" : [   "bugfix/13553", "bugfix/13521", "master", "bugfix/13544313" ]
+         }
+      ]
 	},
     {
 		"id": ".01.01.03.",

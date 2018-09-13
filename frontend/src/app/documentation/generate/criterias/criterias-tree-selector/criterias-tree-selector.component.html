@@ -17,6 +17,7 @@
         </button>
         <mat-checkbox class="hierarchyNode"
                       [checked]="node.selected"
+                      [indeterminate]="node.indeterminate"
                       [value]="node"
                       (change)="selectHierarchyNode($event)"
         >{{node.name}}</mat-checkbox>

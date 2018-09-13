@@ -61,16 +61,17 @@ export class CriteriasTreeSelectorComponent {
 
   selectHierarchyNode(event) {
     var source = event.source.value as HierarchyNodeSelector;
-    source.selected = event.checked;
+    source.selection( event.checked );
+    source.refreshIndeterminateStatus();
   }
 
   selectProject(event) {
     var source = event.source.value as ProjectSelector;
-    source.selected = event.checked;
+    source.selection( event.checked );
   }
 
   selectBranch(event) {
     var source = event.source.value as BranchSelector;
-    source.project.selectedBranch = source;
+    source.selection();
   }
 }

@@ -6,7 +6,8 @@ class TupleHierarchyNodeSelector {
   constructor(
     public taken: Array<HierarchyNodeSelector>,
     public left: Array<HierarchyNodeSelector>
-  ) { }
+  ) {
+  }
 }
 
 export class BranchSelector {
@@ -14,7 +15,12 @@ export class BranchSelector {
   constructor(
     public name: string,
     public project: ProjectSelector
-  ) { }
+  ) {
+  }
+
+  public selection() {
+    this.project.selectedBranch = this;
+  }
 
 }
 
@@ -30,6 +36,11 @@ export class ProjectSelector {
     public stableBranch: BranchSelector,
     public branches: Array<BranchSelector>,
   ) {
+  }
+
+  public selection(selected: boolean) {
+    this.selected = selected;
+    this.relatedHierarchyNode.root.updateIndeterminateStatus();
   }
 
   public static newFromApi(projectApi: ProjectApi): ProjectSelector {
@@ -56,11 +67,13 @@ export class ProjectSelector {
 export class HierarchyNodeSelector {
 
   public selected: boolean = false;
+  public indeterminate: boolean = false;
   public open: boolean = false;
   public level: number;
   public path: string;
   public children = new Array<HierarchyNodeSelector>();
   public projects = new Array<ProjectSelector>();
+  public root: HierarchyNodeSelector;
 
   constructor(
     public id: string,
@@ -96,16 +109,105 @@ export class HierarchyNodeSelector {
   public selection(selected: boolean) {
     this.selected = selected;
     for (var i = 0; i < this.children.length; i++) {
-      this.children[i].selected = this.selected;
+      this.children[i].selection(selected);
+    }
+    for (var i = 0; i < this.projects.length; i++) {
+      this.projects[i].selected = this.selected;
     }
   }
 
-  public selectionToggle() {
-    this.selected = !this.selected;
-    for (var i = 0; i < this.children.length; i++) {
-      this.children[i].selected = this.selected;
-    }
+  public refreshIndeterminateStatus() {
+    this.root.updateIndeterminateStatus();
   }
+
+  public updateIndeterminateStatus(): string {
+
+    var localStatus: string = "na";
+
+    if (!this.hasChilden() && !this.hasProjects()) {
+      this.indeterminate = false;
+      return localStatus;
+    }
+
+    if (this.hasProjects()) {
+      var nbSelected = 0;
+
+      for (var j = 0; j < this.projects.length; j++) {
+        var loopProjectApi = this.projects[j];
+        if (loopProjectApi.selected) {
+          nbSelected++;
+        }
+      }
+      if (nbSelected == this.projects.length) {
+        localStatus = "selected";
+      } else {
+        if (nbSelected == 0) {
+          localStatus = "notSelected";
+        } else {
+          localStatus = "indeterminate";
+        }
+      }
+    }
+
+    if (!this.hasChilden()) {
+      this.indeterminate = (localStatus == "indeterminate");
+      this.selected = (localStatus == "selected");
+      return localStatus;
+    }
+
+    var status = "na";
+
+    var nbChildrenSelected = 0;
+    var nbChildrenNotSelected = 0;
+    var nbChildrenIndeterminate = 0;
+
+    for (var i = 0; i < this.children.length; i++) {
+      var loopNode = this.children[i];
+      var loopStatus = loopNode.updateIndeterminateStatus();
+      switch (loopStatus) {
+        case "notSelected" :
+          nbChildrenNotSelected++;
+          break;
+        case "indeterminate" :
+          nbChildrenIndeterminate++;
+          break;
+        case "selected" :
+          nbChildrenSelected++;
+          break;
+      }
+    }
+
+    switch (localStatus) {
+      case "na" :
+        if (nbChildrenIndeterminate > 0 || (nbChildrenSelected > 0 && nbChildrenNotSelected > 0)) {
+          status = "indeterminate";
+        } else {
+          if (nbChildrenNotSelected > 0) {
+            status = "notSelected";
+          } else {
+            status = "selected";
+          }
+        }
+        break;
+      case "selected" :
+        if (nbChildrenIndeterminate > 0 || nbChildrenNotSelected > 0) {
+          status = "indeterminate";
+        }
+        break;
+      case "notSelected" :
+        if (nbChildrenIndeterminate > 0 || nbChildrenSelected > 0) {
+          status = "indeterminate";
+        }
+        break;
+      case "indeterminate" :
+        break;
+    }
+
+    this.indeterminate = (status == "indeterminate");
+    this.selected = (status == "selected");
+    return status;
+  }
+
 
   public static newFromApi(nodeApi: HierarchyNodeApi): HierarchyNodeSelector {
     var instance = new HierarchyNodeSelector(
@@ -143,14 +245,14 @@ export class HierarchyNodeSelector {
       root = listNode[0];
       root.path = "";
       root.open = true;
-      var tuple = HierarchyNodeSelector.build(root, listNode);
+      var tuple = HierarchyNodeSelector.build(root, listNode, root);
       root.children = tuple.taken;
     }
     return root;
   }
 
 
-  private static build(node: HierarchyNodeSelector, children: Array<HierarchyNodeSelector>): TupleHierarchyNodeSelector {
+  private static build(node: HierarchyNodeSelector, children: Array<HierarchyNodeSelector>, root: HierarchyNodeSelector): TupleHierarchyNodeSelector {
 
     var taken = new Array<HierarchyNodeSelector>();
     var left = new Array<HierarchyNodeSelector>();
@@ -159,6 +261,7 @@ export class HierarchyNodeSelector {
       for (var i = 0; i < children.length; i++) {
         var loopNode = children[i];
         if (loopNode.id.startsWith(node.id)) {
+          loopNode.root = root;
           if (loopNode.id.length == node.id.length + 3) {
             loopNode.path = `${node.path}/${loopNode.slugName}`;
             taken.push(loopNode);
@@ -172,7 +275,7 @@ export class HierarchyNodeSelector {
     if (taken.length > 0) {
       for (var i = 0; i < taken.length; i++) {
         var loopTaken = taken[i];
-        var tuple = HierarchyNodeSelector.build(loopTaken, Object.assign([], left));
+        var tuple = HierarchyNodeSelector.build(loopTaken, Object.assign([], left), root);
         loopTaken.children = tuple.taken;
       }
     }
@@ -214,14 +317,16 @@ export class CriteriasSelector {
       httpParamsToReturn = hierarchyNodeSelector.path;
     }
     if (hierarchyNodeSelector.hasChilden()) {
-      for (var i = 0; i < hierarchyNodeSelector.children.length; i++) {
-        var loopNode = hierarchyNodeSelector.children[i];
-        var loopHttpParams = this._buildHttpParams(loopNode);
-        if (loopHttpParams.length > 0) {
-          if (httpParamsToReturn.length == 0) {
-            httpParamsToReturn = loopHttpParams;
-          } else {
-            httpParamsToReturn = `${httpParamsToReturn};${loopHttpParams}`
+      if (!(hierarchyNodeSelector.selected && this._hasAllChildrenSelected(hierarchyNodeSelector))) {
+        for (var i = 0; i < hierarchyNodeSelector.children.length; i++) {
+          var loopNode = hierarchyNodeSelector.children[i];
+          var loopHttpParams = this._buildHttpParams(loopNode);
+          if (loopHttpParams.length > 0) {
+            if (httpParamsToReturn.length == 0) {
+              httpParamsToReturn = loopHttpParams;
+            } else {
+              httpParamsToReturn = `${httpParamsToReturn};${loopHttpParams}`
+            }
           }
         }
       }
@@ -244,5 +349,21 @@ export class CriteriasSelector {
       }
     }
     return httpParamsToReturn;
+  }
+
+  private _hasAllChildrenSelected(hierarchyNodeSelector: HierarchyNodeSelector): boolean {
+    for (var i = 0; i < hierarchyNodeSelector.children.length; i++) {
+      var loopNode = hierarchyNodeSelector.children[i];
+      if (!loopNode.selected || !this._hasAllChildrenSelected(loopNode)) {
+        return false;
+      }
+    }
+    for (var i = 0; i < hierarchyNodeSelector.projects.length; i++) {
+      var loopProject: ProjectSelector = hierarchyNodeSelector.projects[i];
+      if (!loopProject.selected) {
+        return false;
+      }
+    }
+    return true;
   }
 }
