@@ -279,13 +279,8 @@ export class HierarchyNodeSelector {
         loopTaken.children = tuple.taken;
       }
     }
-
-
     return new TupleHierarchyNodeSelector(taken, left);
-
   }
-
-
 }
 
 export class CriteriasSelector {
@@ -313,20 +308,28 @@ export class CriteriasSelector {
 
   private _buildHttpParams(hierarchyNodeSelector: HierarchyNodeSelector): string {
     var httpParamsToReturn = "";
+
+    if (!hierarchyNodeSelector.selected && !hierarchyNodeSelector.indeterminate) {
+      return httpParamsToReturn;
+    }
     if (hierarchyNodeSelector.selected) {
       httpParamsToReturn = hierarchyNodeSelector.path;
+      var httpParamsForSpecificBranches = this._buildHttpParamsForSpecificBranches(hierarchyNodeSelector);
+      if (httpParamsForSpecificBranches.length > 0) {
+        httpParamsToReturn = `${httpParamsToReturn};${httpParamsForSpecificBranches}`
+      }
+      return httpParamsToReturn;
     }
+
     if (hierarchyNodeSelector.hasChilden()) {
-      if (!(hierarchyNodeSelector.selected && this._hasAllChildrenSelected(hierarchyNodeSelector))) {
-        for (var i = 0; i < hierarchyNodeSelector.children.length; i++) {
-          var loopNode = hierarchyNodeSelector.children[i];
-          var loopHttpParams = this._buildHttpParams(loopNode);
-          if (loopHttpParams.length > 0) {
-            if (httpParamsToReturn.length == 0) {
-              httpParamsToReturn = loopHttpParams;
-            } else {
-              httpParamsToReturn = `${httpParamsToReturn};${loopHttpParams}`
-            }
+      for (var i = 0; i < hierarchyNodeSelector.children.length; i++) {
+        var loopNode = hierarchyNodeSelector.children[i];
+        var loopHttpParams = this._buildHttpParams(loopNode);
+        if (loopHttpParams.length > 0) {
+          if (httpParamsToReturn.length == 0) {
+            httpParamsToReturn = loopHttpParams;
+          } else {
+            httpParamsToReturn = `${httpParamsToReturn};${loopHttpParams}`
           }
         }
       }
@@ -351,19 +354,36 @@ export class CriteriasSelector {
     return httpParamsToReturn;
   }
 
-  private _hasAllChildrenSelected(hierarchyNodeSelector: HierarchyNodeSelector): boolean {
-    for (var i = 0; i < hierarchyNodeSelector.children.length; i++) {
-      var loopNode = hierarchyNodeSelector.children[i];
-      if (!loopNode.selected || !this._hasAllChildrenSelected(loopNode)) {
-        return false;
+  private _buildHttpParamsForSpecificBranches(hierarchyNodeSelector: HierarchyNodeSelector): string {
+    var httpParamsToReturn = "";
+    if (hierarchyNodeSelector.hasProjects()) {
+      for (var i = 0; i < hierarchyNodeSelector.projects.length; i++) {
+        var loopProject: ProjectSelector = hierarchyNodeSelector.projects[i];
+        if (loopProject.selected) {
+          if (loopProject.selectedBranch != null && loopProject.selectedBranch.name != loopProject.stableBranch.name) {
+            var loopHttpParams = `${loopProject.id}#${loopProject.selectedBranch.name}@${hierarchyNodeSelector.path}`
+            if (httpParamsToReturn.length == 0) {
+              httpParamsToReturn = loopHttpParams;
+            } else {
+              httpParamsToReturn = `${httpParamsToReturn};${loopHttpParams}`
+            }
+          }
+        }
       }
     }
-    for (var i = 0; i < hierarchyNodeSelector.projects.length; i++) {
-      var loopProject: ProjectSelector = hierarchyNodeSelector.projects[i];
-      if (!loopProject.selected) {
-        return false;
+    if (hierarchyNodeSelector.hasChilden()) {
+      for (var i = 0; i < hierarchyNodeSelector.children.length; i++) {
+        var loopNode = hierarchyNodeSelector.children[i];
+        var loopHttpParams = this._buildHttpParamsForSpecificBranches(loopNode);
+        if (loopHttpParams.length > 0) {
+          if (httpParamsToReturn.length == 0) {
+            httpParamsToReturn = loopHttpParams;
+          } else {
+            httpParamsToReturn = `${httpParamsToReturn};${loopHttpParams}`
+          }
+        }
       }
     }
-    return true;
+    return httpParamsToReturn;
   }
 }
