@@ -1,7 +1,9 @@
-import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
-import {CriteriasSelector, HierarchyNodeSelector} from "../../../_models/criteriasSelection";
+import {Component, Input, Output, EventEmitter} from '@angular/core';
+import {CriteriasDisplay, CriteriasSelector, HierarchyNodeSelector} from "../../../_models/criteriasSelection";
 import {HierarchyNodeApi} from "../../../_models/criterias";
 import {HierarchyService} from "../../../_services/hierarchy.service";
+import {ActivatedRoute, Params} from "@angular/router";
+import {HttpParams} from "@angular/common/http";
 
 @Component({
   selector: 'app-generate-documentation-criterias',
@@ -10,8 +12,14 @@ import {HierarchyService} from "../../../_services/hierarchy.service";
 })
 export class CriteriasComponent  {
 
+  @Input()
+  isCriteriaSelection : boolean = false;
+
+  @Input()
+  isCriteriaDisplay   : boolean = false;
+
   @Output()
-  onGenerateDocumentationRequest: EventEmitter<string> = new EventEmitter();
+  onGenerateDocumentationRequest: EventEmitter<HttpParams> = new EventEmitter();
 
   @Output()
   criteriasSelector = new CriteriasSelector() ;
@@ -20,27 +28,33 @@ export class CriteriasComponent  {
   views : HierarchyNodeSelector[] ;
 
   @Output()
-  view1 : HierarchyNodeSelector ;
+  criteriaDisplay: CriteriasDisplay ;
 
-  @Output()
-  view2 : HierarchyNodeSelector ;
-
-
-  constructor(private hierarchyService: HierarchyService) {
+  constructor(private hierarchyService: HierarchyService, private route: ActivatedRoute) {
     this.hierarchyService.criterias().subscribe(
       (result: Array<HierarchyNodeApi>) => {
         this.criteriasSelector.hierarchyNodesSelector = HierarchyNodeSelector.buildHierarchyNodeSelectorAsTree(HierarchyNodeSelector.buildHierarchyNodeSelector(result)).children ;
-        this.view1 = this.criteriasSelector.hierarchyNodesSelector[0] ;
-        this.view2 = this.criteriasSelector.hierarchyNodesSelector[1] ;
         this.views = this.criteriasSelector.hierarchyNodesSelector ;
 
       },
       err => {
       });
+
+    this.route.queryParams.subscribe(httpParams => {
+       this.displayCriteria(httpParams["projects"]);
+    });
+  }
+
+  displayCriteria(projectsHttpParamValue: string   ){
+    this.criteriaDisplay = this.criteriasSelector.humanizeHttpParams(projectsHttpParamValue);
   }
 
   generateDocumentation(){
-    this.onGenerateDocumentationRequest.emit(this.criteriasSelector.buildHttpParams()) ;
+    var httpParams = this.criteriasSelector.buildHttpParams() ;
+    this.onGenerateDocumentationRequest.emit(httpParams) ;
+    this.displayCriteria(httpParams.get("projects"));
+    this.isCriteriaSelection = false ;
+    this.isCriteriaDisplay = true ;
   }
 
 }
