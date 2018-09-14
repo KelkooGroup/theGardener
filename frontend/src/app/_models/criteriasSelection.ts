@@ -265,7 +265,7 @@ export class HierarchyNodeSelector {
         if (loopNode.id.startsWith(node.id)) {
           loopNode.root = root;
           if (loopNode.id.length == node.id.length + 3) {
-            loopNode.path = `${node.path}>${loopNode.slugName}`;
+            loopNode.path = `${node.path}${CriteriasSelector.SEP_NODES}${loopNode.slugName}`;
             taken.push(loopNode);
           }
           if (loopNode.id.length > node.id.length + 3) {
@@ -290,10 +290,10 @@ export class CriteriasSelector {
   public hierarchyNodesSelector: HierarchyNodeSelector[];
 
 
-  SEP_PROJECT  = ';' ;
-  SEP_NODES  = '>' ;
-  SEL_BRANCH = '@' ;
-  SEL_NODES  = '~' ;
+  static SEP_PROJECT  = ';' ;
+  static SEP_NODES  = '_' ;
+  static SEL_BRANCH = '>' ;
+  static SEL_PROJECT  = '>' ;
 
   public buildHttpParams(): string {
 
@@ -305,7 +305,7 @@ export class CriteriasSelector {
         if (httpParams.length == 0) {
           httpParams = loopHttpParams;
         } else {
-          httpParams = `${httpParams}${this.SEP_PROJECT}${loopHttpParams}`;
+          httpParams = `${httpParams}${CriteriasSelector.SEP_PROJECT}${loopHttpParams}`;
         }
       }
     }
@@ -323,7 +323,7 @@ export class CriteriasSelector {
       httpParamsToReturn = hierarchyNodeSelector.path;
       var httpParamsForSpecificBranches = this._buildHttpParamsForSpecificBranches(hierarchyNodeSelector);
       if (httpParamsForSpecificBranches.length > 0) {
-        httpParamsToReturn = `${httpParamsToReturn}${this.SEP_PROJECT}${httpParamsForSpecificBranches}`
+        httpParamsToReturn = `${httpParamsToReturn}${CriteriasSelector.SEP_PROJECT}${httpParamsForSpecificBranches}`
       }
       return httpParamsToReturn;
     }
@@ -336,7 +336,7 @@ export class CriteriasSelector {
           if (httpParamsToReturn.length == 0) {
             httpParamsToReturn = loopHttpParams;
           } else {
-            httpParamsToReturn = `${httpParamsToReturn}${this.SEP_PROJECT}${loopHttpParams}`
+            httpParamsToReturn = `${httpParamsToReturn}${CriteriasSelector.SEP_PROJECT}${loopHttpParams}`
           }
         }
       }
@@ -345,11 +345,10 @@ export class CriteriasSelector {
       for (var i = 0; i < hierarchyNodeSelector.projects.length; i++) {
         var loopProject: ProjectSelector = hierarchyNodeSelector.projects[i];
         if (loopProject.selected) {
-          var loopHttpParams = loopProject.id;
+          var loopHttpParams = `${hierarchyNodeSelector.path}${CriteriasSelector.SEL_PROJECT}${loopProject.id}`;
           if (loopProject.selectedBranch != null && loopProject.selectedBranch.name != loopProject.stableBranch.name) {
-            loopHttpParams += `${this.SEL_BRANCH}${loopProject.selectedBranch.name}`
+            loopHttpParams += `${CriteriasSelector.SEL_BRANCH}${loopProject.selectedBranch.name}`
           }
-          loopHttpParams += `${this.SEL_NODES}${hierarchyNodeSelector.path}`;
           if (httpParamsToReturn.length == 0) {
             httpParamsToReturn = loopHttpParams;
           } else {
@@ -368,11 +367,11 @@ export class CriteriasSelector {
         var loopProject: ProjectSelector = hierarchyNodeSelector.projects[i];
         if (loopProject.selected) {
           if (loopProject.selectedBranch != null && loopProject.selectedBranch.name != loopProject.stableBranch.name) {
-            var loopHttpParams = `${loopProject.id}${this.SEL_BRANCH}${loopProject.selectedBranch.name}${this.SEL_NODES}${hierarchyNodeSelector.path}`
+            var loopHttpParams = `${hierarchyNodeSelector.path}${CriteriasSelector.SEL_PROJECT}${loopProject.id}${CriteriasSelector.SEL_BRANCH}${loopProject.selectedBranch.name}`
             if (httpParamsToReturn.length == 0) {
               httpParamsToReturn = loopHttpParams;
             } else {
-              httpParamsToReturn = `${httpParamsToReturn}${this.SEP_PROJECT}${loopHttpParams}`
+              httpParamsToReturn = `${httpParamsToReturn}${CriteriasSelector.SEP_PROJECT}${loopHttpParams}`
             }
           }
         }
@@ -386,7 +385,7 @@ export class CriteriasSelector {
           if (httpParamsToReturn.length == 0) {
             httpParamsToReturn = loopHttpParams;
           } else {
-            httpParamsToReturn = `${httpParamsToReturn}${this.SEP_PROJECT}${loopHttpParams}`
+            httpParamsToReturn = `${httpParamsToReturn}${CriteriasSelector.SEP_PROJECT}${loopHttpParams}`
           }
         }
       }

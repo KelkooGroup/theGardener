@@ -1,6 +1,5 @@
 import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
 import {CriteriasSelector, HierarchyNodeSelector} from "../../../_models/criteriasSelection";
-import {HierarchyProvider} from "./criterias-tree-selector/criterias-tree-selector.component";
 import {HierarchyNodeApi} from "../../../_models/criterias";
 import {HierarchyService} from "../../../_services/hierarchy.service";
 
