@@ -1,13 +1,9 @@
-import {Component, EventEmitter, Injectable, Input, OnInit, Output} from '@angular/core';
-import {BehaviorSubject} from "rxjs/index";
+import {Component, Input, OnInit} from '@angular/core';
 import {
   BranchSelector,
-  CriteriasSelector,
   HierarchyNodeSelector,
   ProjectSelector
-} from "../../../../_models/criteriasSelection";
-import {HierarchyNodeApi} from "../../../../_models/criterias";
-import {HierarchyService} from "../../../../_services/hierarchy.service";
+} from "../../../../_services/criteriasSelection";
 import {MatTreeNestedDataSource} from "@angular/material/tree";
 import {NestedTreeControl} from "@angular/cdk/tree";
 

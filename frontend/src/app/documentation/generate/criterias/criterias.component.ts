@@ -1,7 +1,10 @@
 import {Component, Input, Output, EventEmitter} from '@angular/core';
-import {CriteriasDisplay, CriteriasSelector, HierarchyNodeSelector} from "../../../_models/criteriasSelection";
+import {
+  CriteriasDisplay,
+  CriteriasSelector,
+  HierarchyNodeSelector, } from "../../../_services/criteriasSelection";
 import {HierarchyNodeApi} from "../../../_models/criterias";
-import {HierarchyService} from "../../../_services/hierarchy.service";
+import {CriteriasService} from "../../../_services/criterias.service";
 import {ActivatedRoute, Params} from "@angular/router";
 import {HttpParams} from "@angular/common/http";
 
@@ -30,10 +33,10 @@ export class CriteriasComponent  {
   @Output()
   criteriaDisplay: CriteriasDisplay ;
 
-  constructor(private hierarchyService: HierarchyService, private route: ActivatedRoute) {
-    this.hierarchyService.criterias().subscribe(
+  constructor(private criteriasService: CriteriasService, private route: ActivatedRoute) {
+    this.criteriasService.criterias().subscribe(
       (result: Array<HierarchyNodeApi>) => {
-        this.criteriasSelector.hierarchyNodesSelector = HierarchyNodeSelector.buildHierarchyNodeSelectorAsTree(HierarchyNodeSelector.buildHierarchyNodeSelector(result)).children ;
+        this.criteriasSelector.hierarchyNodesSelector = criteriasService.buildHierarchyNodeSelectorAsTree(criteriasService.buildHierarchyNodeSelector(result)).children ;
         this.views = this.criteriasSelector.hierarchyNodesSelector ;
 
       },
@@ -67,3 +70,5 @@ export class CriteriasComponent  {
   }
 
 }
+
+

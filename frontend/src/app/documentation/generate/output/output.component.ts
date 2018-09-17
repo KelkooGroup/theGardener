@@ -1,9 +1,7 @@
 import {Component, Input, OnInit, Output} from '@angular/core';
-import {HttpParams} from "@angular/common/http";
 import {DocumentationService} from "../../../_services/documentation.service";
-import {HierarchyNodeApi} from "../../../_models/criterias";
-import {HierarchyNodeSelector} from "../../../_models/criteriasSelection";
 import {DocumentationNodeApi} from "../../../_models/documentation";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-generate-documentation-output',
@@ -18,11 +16,39 @@ export class OutputComponent implements OnInit {
   @Output()
   result : DocumentationNodeApi[]
 
-  constructor(private documentationService: DocumentationService) {
+  constructor(private documentationService: DocumentationService,  private route: ActivatedRoute) {
 
   }
 
   ngOnInit() {
+
+    this.route.queryParams.subscribe(httpParams => {
+      var httpParamsAsString = this.buildHttpParams(httpParams["node"],httpParams["project"] );
+      this.generateDocumentation(httpParamsAsString);
+    });
+  }
+
+  buildHttpParams(nodes: string[], projects: string[]   ) : string{
+    var nodesArray = nodes;
+    if (! (nodesArray instanceof Array)){
+      nodesArray = new Array(nodesArray);
+    }
+    var projectsArray = projects ;
+    if (! (projectsArray instanceof Array)){
+      projectsArray = new Array(projectsArray);
+    }
+    var httpParams = "" ;
+    for (var i = 0; i < nodesArray.length; i++) {
+      if(nodesArray[i] != null) {
+        httpParams += `node=${nodesArray[i]}&`;
+      }
+    }
+    for (var i = 0; i < projectsArray.length; i++) {
+      if(projectsArray[i] != null) {
+        httpParams += `project=${projectsArray[i]}&`;
+      }
+    }
+    return httpParams;
   }
 
   generateDocumentation(httpParams : string){

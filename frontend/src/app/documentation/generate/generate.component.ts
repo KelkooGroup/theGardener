@@ -38,7 +38,6 @@ export class GenerateComponent implements OnInit {
   generateDocumentationRequest(httpParams : HttpParams){
     var httpParamsAsString = httpParams.toString();
     this.router.navigateByUrl(`app/documentation/generate/output?${httpParamsAsString}`);
-    this.outputComponent.generateDocumentation(httpParamsAsString);
     this.outputComponent.display =true ;
   }
 

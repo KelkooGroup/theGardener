@@ -31,7 +31,7 @@ import {
 import {PanelComponent} from './_components/panel/panel.component';
 import {CriteriasComponent} from './documentation/generate/criterias/criterias.component';
 import {OutputComponent} from './documentation/generate/output/output.component';
-import {HierarchyService} from "./_services/hierarchy.service";
+import {CriteriasService} from "./_services/criterias.service";
 import {DocumentationService} from "./_services/documentation.service";
 import {CriteriasTreeSelectorComponent} from './documentation/generate/criterias/criterias-tree-selector/criterias-tree-selector.component';
 
@@ -78,7 +78,7 @@ const nonProductionProviders = [{
   ],
   providers: [
     ...!environment.production ? nonProductionProviders : [],
-    HierarchyService,
+    CriteriasService,
     DocumentationService
   ],
   bootstrap: [AppComponent]
