@@ -401,27 +401,35 @@ class FakeGenerateDocumentationController @Inject()() extends InjectedController
     Ok(
       """
         |    {
-        |      "id": ".",
-        |      "slugName": "root",
-        |      "name": "Hierarchy root",
+        |		"id": ".",
+        |		"slugName": "root",
+        |		"name": "Hierarchy root",
+        |    "childrenLabel": "Views",
+        |    "childLabel": "View",
         |      "projects": [],
-        |      "hierarchyNodes":[
+        |      "children":[
         |        {
-        |          "id": ".01.",
-        |          "slugName": "eng",
-        |          "name": "Engineering view",
+        |		"id": ".01.",
+        |		"slugName": "eng",
+        |		"name": "Engineering view",
+        |    "childrenLabel": "System groups",
+        |	  "childLabel": "System groups",
         |          "projects": [],
-        |          "hierarchyNodes":[
+        |          "children":[
         |            {
-        |              "id": ".01.01.",
-        |              "slugName": "library",
-        |              "name": "Library system group",
+        |		"id": ".01.01.",
+        |		"slugName": "library",
+        |		"name": "Library system group",
+        |    "childrenLabel": "Systems",
+        |    "childLabel": "System",
         |              "projects": [],
-        |              "hierarchyNodes":[
+        |              "children":[
         |                {
-        |                  "id": ".01.01.01.",
-        |                  "slugName": "suggestion",
-        |                  "name": "Suggestion system ",
+        |		 "id": ".01.01.01.",
+        |		 "slugName": "suggestion",
+        |		 "name": "Suggestion system",
+        |    "childrenLabel": "Projects",
+        |    "childLabel": "Project",
         |                  "projects": [
         |                     {
         |                       "id": "suggestionsWS",
@@ -484,7 +492,7 @@ class FakeGenerateDocumentationController @Inject()() extends InjectedController
         |                       ]
         |                     }
         |                  ],
-        |                  "hierarchyNodes":[]
+        |                  "children":[]
         |                }
         |              ]
         |            }
