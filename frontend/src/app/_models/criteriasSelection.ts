@@ -333,36 +333,48 @@ export class CriteriasSelector {
   public hierarchyNodesSelector: HierarchyNodeSelector[];
 
 
-  static SEP_PROJECT = ';';
+  static PARAM_PROJECT = 'project';
+  static PARAM_NODE = 'node';
+
   static SEP_PATH = '_';
   static SPLIT_PROJECT = '>';
 
-  public humanizeHttpParams(projectsHttpParams: string): CriteriasDisplay {
+  public humanizeHttpParams(nodes: string[], projects: string[]): CriteriasDisplay {
     var criteriasDisplay = new CriteriasDisplay();
 
-    if (projectsHttpParams != null) {
-      var projectSelectorStringArray = projectsHttpParams.split(CriteriasSelector.SEP_PROJECT);
-      for (var i = 0; i < projectSelectorStringArray.length; i++) {
-        var projectSelectorString = projectSelectorStringArray[i];
-        var projectSelectorParams = projectSelectorString.split(CriteriasSelector.SPLIT_PROJECT);
 
-        if (projectSelectorParams.length > 0) {
-          var path = projectSelectorParams[0];
-          var hierarchyNode = new HierarchyNodeDisplay(path, this.humanizeNodePath(path));
-          if (projectSelectorParams.length == 1) {
-            criteriasDisplay.hierarchyNodes.push(hierarchyNode);
-          } else {
-            var projectParam = projectSelectorParams[1];
-            var project = new ProjectDisplay(hierarchyNode, projectParam, this.humanizeProjectId(projectParam));
-            if (projectSelectorParams.length > 2) {
-              var projectBranch = projectSelectorParams[2];
-              project.specificBranch = projectBranch;
+    if (nodes != null) {
+      for (var i = 0; i < nodes.length; i++) {
+        var path = nodes[i];
+        var hierarchyNode = new HierarchyNodeDisplay(path, this.humanizeNodePath(path));
+        criteriasDisplay.hierarchyNodes.push(hierarchyNode);
+      }
+    }
+    if (projects != null) {
+      for (var i = 0; i < projects.length; i++) {
+        var projectSelectorString = projects[i];
+        if (projectSelectorString != null) {
+          var projectSelectorParams = projectSelectorString.split(CriteriasSelector.SPLIT_PROJECT);
+
+          if (projectSelectorParams.length > 0) {
+            var path = projectSelectorParams[0];
+            var hierarchyNode = new HierarchyNodeDisplay(path, this.humanizeNodePath(path));
+            if (projectSelectorParams.length == 1) {
+              criteriasDisplay.hierarchyNodes.push(hierarchyNode);
+            } else {
+              var projectParam = projectSelectorParams[1];
+              var project = new ProjectDisplay(hierarchyNode, projectParam, this.humanizeProjectId(projectParam));
+              if (projectSelectorParams.length > 2) {
+                var projectBranch = projectSelectorParams[2];
+                project.specificBranch = projectBranch;
+              }
+              criteriasDisplay.projects.push(project);
             }
-            criteriasDisplay.projects.push(project);
           }
         }
       }
     }
+
     return criteriasDisplay;
   }
 
@@ -379,49 +391,27 @@ export class CriteriasSelector {
   public buildHttpParams(): HttpParams {
 
     var httpParams = new HttpParams()
-    var projectHttpParamValue = "";
     for (var i = 0; i < this.hierarchyNodesSelector.length; i++) {
       var loopNode = this.hierarchyNodesSelector[i];
-      var loopHttpParams = this._buildHttpParams(loopNode);
-      if (loopHttpParams.length > 0) {
-        if (projectHttpParamValue.length == 0) {
-          projectHttpParamValue = loopHttpParams;
-        } else {
-          projectHttpParamValue = `${projectHttpParamValue}${CriteriasSelector.SEP_PROJECT}${loopHttpParams}`;
-        }
-      }
+      httpParams = this._buildHttpParams(httpParams, loopNode);
     }
-    httpParams = httpParams.set("projects", projectHttpParamValue);
     return httpParams;
 
   }
 
-  private _buildHttpParams(hierarchyNodeSelector: HierarchyNodeSelector): string {
-    var httpParamsToReturn = "";
+  private _buildHttpParams(httpParams: HttpParams, hierarchyNodeSelector: HierarchyNodeSelector): HttpParams {
 
     if (!hierarchyNodeSelector.selected && !hierarchyNodeSelector.indeterminate) {
-      return httpParamsToReturn;
+      return httpParams;
     }
     if (hierarchyNodeSelector.selected) {
-      httpParamsToReturn = hierarchyNodeSelector.path;
-      var httpParamsForSpecificBranches = this._buildHttpParamsForSpecificBranches(hierarchyNodeSelector);
-      if (httpParamsForSpecificBranches.length > 0) {
-        httpParamsToReturn = `${httpParamsToReturn}${CriteriasSelector.SEP_PROJECT}${httpParamsForSpecificBranches}`
-      }
-      return httpParamsToReturn;
+      httpParams = httpParams.append(CriteriasSelector.PARAM_NODE, hierarchyNodeSelector.path);
+      return this._buildHttpParamsForSpecificBranches(httpParams, hierarchyNodeSelector);
     }
 
     if (hierarchyNodeSelector.hasChilden()) {
       for (var i = 0; i < hierarchyNodeSelector.children.length; i++) {
-        var loopNode = hierarchyNodeSelector.children[i];
-        var loopHttpParams = this._buildHttpParams(loopNode);
-        if (loopHttpParams.length > 0) {
-          if (httpParamsToReturn.length == 0) {
-            httpParamsToReturn = loopHttpParams;
-          } else {
-            httpParamsToReturn = `${httpParamsToReturn}${CriteriasSelector.SEP_PROJECT}${loopHttpParams}`
-          }
-        }
+        httpParams = this._buildHttpParams(httpParams, hierarchyNodeSelector.children[i]);
       }
     }
     if (hierarchyNodeSelector.hasProjects()) {
@@ -432,47 +422,30 @@ export class CriteriasSelector {
           if (loopProject.selectedBranch != null && loopProject.selectedBranch.name != loopProject.stableBranch.name) {
             loopHttpParams += `${CriteriasSelector.SPLIT_PROJECT}${loopProject.selectedBranch.name}`
           }
-          if (httpParamsToReturn.length == 0) {
-            httpParamsToReturn = loopHttpParams;
-          } else {
-            httpParamsToReturn = `${httpParamsToReturn};${loopHttpParams}`
-          }
+          httpParams = httpParams.append(CriteriasSelector.PARAM_PROJECT, loopHttpParams);
         }
       }
     }
-    return httpParamsToReturn;
+    return httpParams;
   }
 
-  private _buildHttpParamsForSpecificBranches(hierarchyNodeSelector: HierarchyNodeSelector): string {
-    var httpParamsToReturn = "";
+  private _buildHttpParamsForSpecificBranches(httpParams: HttpParams, hierarchyNodeSelector: HierarchyNodeSelector): HttpParams {
     if (hierarchyNodeSelector.hasProjects()) {
       for (var i = 0; i < hierarchyNodeSelector.projects.length; i++) {
         var loopProject: ProjectSelector = hierarchyNodeSelector.projects[i];
         if (loopProject.selected) {
           if (loopProject.selectedBranch != null && loopProject.selectedBranch.name != loopProject.stableBranch.name) {
             var loopHttpParams = `${hierarchyNodeSelector.path}${CriteriasSelector.SPLIT_PROJECT}${loopProject.id}${CriteriasSelector.SPLIT_PROJECT}${loopProject.selectedBranch.name}`
-            if (httpParamsToReturn.length == 0) {
-              httpParamsToReturn = loopHttpParams;
-            } else {
-              httpParamsToReturn = `${httpParamsToReturn}${CriteriasSelector.SEP_PROJECT}${loopHttpParams}`
-            }
+            httpParams = httpParams.append(CriteriasSelector.PARAM_PROJECT, loopHttpParams);
           }
         }
       }
     }
     if (hierarchyNodeSelector.hasChilden()) {
       for (var i = 0; i < hierarchyNodeSelector.children.length; i++) {
-        var loopNode = hierarchyNodeSelector.children[i];
-        var loopHttpParams = this._buildHttpParamsForSpecificBranches(loopNode);
-        if (loopHttpParams.length > 0) {
-          if (httpParamsToReturn.length == 0) {
-            httpParamsToReturn = loopHttpParams;
-          } else {
-            httpParamsToReturn = `${httpParamsToReturn}${CriteriasSelector.SEP_PROJECT}${loopHttpParams}`
-          }
-        }
+        httpParams = this._buildHttpParamsForSpecificBranches(httpParams, hierarchyNodeSelector.children[i]);
       }
     }
-    return httpParamsToReturn;
+    return httpParams;
   }
 }

@@ -4,5 +4,5 @@
                                             (onGenerateDocumentationRequest)="generateDocumentationRequest($event)" >
 
     </app-generate-documentation-criterias>
-    <app-generate-documentation-output     *ngIf="isOutput" [projects]="projects"  ></app-generate-documentation-output>
+    <app-generate-documentation-output    ngShow="isOutput"  ></app-generate-documentation-output>
 </app-page>

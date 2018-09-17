@@ -1,5 +1,7 @@
-<app-panel [showSpinner]="false" >
+<app-panel *ngIf="display"  [showSpinner]="false" panelTitle="Documentation" panelIcon="fas fa-book">
 
-  <div *ngIf="projects != null && projects.length > 0" >Call documentation generation for {{projects}}</div>
+
+  {{result}}
+
 
 </app-panel>

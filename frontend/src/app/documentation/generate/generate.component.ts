@@ -1,6 +1,7 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
 import {ActivatedRoute, Params, Router} from "@angular/router";
 import {HttpParams} from "@angular/common/http";
+import {OutputComponent} from "./output/output.component";
 
 @Component({
   selector: 'app-generate',
@@ -15,6 +16,9 @@ export class GenerateComponent implements OnInit {
   @Output()
   isOutput = false ;
 
+  @ViewChild(OutputComponent)
+  outputComponent: OutputComponent;
+
   constructor(private route: ActivatedRoute, private router: Router){
 
   }
@@ -25,12 +29,17 @@ export class GenerateComponent implements OnInit {
           var type = params['type'];
           this.isCriterias = type == "criterias" ;
           this.isOutput    = type == "output" ;
+          this.outputComponent.display = this.isOutput ;
     });
+
+
   }
 
   generateDocumentationRequest(httpParams : HttpParams){
     var httpParamsAsString = httpParams.toString();
     this.router.navigateByUrl(`app/documentation/generate/output?${httpParamsAsString}`);
+    this.outputComponent.generateDocumentation(httpParamsAsString);
+    this.outputComponent.display =true ;
   }
 
 }

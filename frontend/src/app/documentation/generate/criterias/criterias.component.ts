@@ -41,20 +41,29 @@ export class CriteriasComponent  {
       });
 
     this.route.queryParams.subscribe(httpParams => {
-       this.displayCriteria(httpParams["projects"]);
+       this.displayCriteria(httpParams["node"],httpParams["project"]);
     });
   }
 
-  displayCriteria(projectsHttpParamValue: string   ){
-    this.criteriaDisplay = this.criteriasSelector.humanizeHttpParams(projectsHttpParamValue);
+  displayCriteria(nodes: string[], projects: string[]   ){
+    var nodesArray = nodes;
+    if (! (nodesArray instanceof Array)){
+      nodesArray = new Array(nodesArray);
+    }
+    var projectsArray = projects ;
+    if (! (projectsArray instanceof Array)){
+      projectsArray = new Array(projectsArray);
+    }
+
+    this.criteriaDisplay = this.criteriasSelector.humanizeHttpParams(nodesArray,projectsArray);
+    this.isCriteriaSelection = false ;
+    this.isCriteriaDisplay = true ;
   }
 
   generateDocumentation(){
     var httpParams = this.criteriasSelector.buildHttpParams() ;
     this.onGenerateDocumentationRequest.emit(httpParams) ;
-    this.displayCriteria(httpParams.get("projects"));
-    this.isCriteriaSelection = false ;
-    this.isCriteriaDisplay = true ;
+    this.displayCriteria(httpParams.getAll("node"),httpParams.getAll("project"));
   }
 
 }
