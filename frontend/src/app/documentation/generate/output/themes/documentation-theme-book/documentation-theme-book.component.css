@@ -1,0 +1,76 @@
+
+.documentation-tree-invisible {
+  display: none;
+}
+
+.documentation-tree ul,
+.documentation-tree li {
+  margin-top: 0;
+  margin-bottom: 0;
+  list-style-type: none;
+}
+
+.pull-right{
+  margin-left: 25px;
+  padding-left: 25px;
+}
+
+.documentationNode {
+  color: black;
+}
+
+.level1 {
+  font-size: 23px;
+}
+
+.level2 {
+  font-size: 21px;
+}
+
+.level3 {
+  font-size: 19px;
+}
+
+.level4 {
+  font-size: 18px;
+}
+
+.level5 {
+  font-size: 17px;
+}
+
+.level6 {
+  font-size: 16px;
+}
+
+.level7 {
+  font-size: 15px;
+}
+
+.project{
+  color: black;
+}
+
+
+.branch {
+  font-family: "courier";
+  font-size: x-small;
+  width: 50%;
+  max-width: 600px;
+}
+
+.feature{
+  margin-top: 10px;
+}
+
+
+.scenario{
+  margin-top: 10px;
+}
+
+
+.step{
+  margin-top: 10px;
+}
+
+

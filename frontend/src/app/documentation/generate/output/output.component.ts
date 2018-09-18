@@ -1,6 +1,6 @@
 import {Component, Input, OnInit, Output} from '@angular/core';
 import {DocumentationService} from "../../../_services/documentation.service";
-import {DocumentationNodeApi} from "../../../_models/documentation";
+import {DocumentationNode, DocumentationNodeApi} from "../../../_models/documentation";
 import {ActivatedRoute} from "@angular/router";
 
 @Component({
@@ -14,7 +14,7 @@ export class OutputComponent implements OnInit {
   display = false ;
 
   @Output()
-  result : DocumentationNodeApi[]
+  documentationData : DocumentationNode[]
 
   constructor(private documentationService: DocumentationService,  private route: ActivatedRoute) {
 
@@ -53,8 +53,8 @@ export class OutputComponent implements OnInit {
 
   generateDocumentation(httpParams : string){
     this.documentationService.generateDocumentation(httpParams).subscribe(
-      (result: Array<DocumentationNodeApi>) => {
-        this.result = result ;
+      (result: DocumentationNodeApi) => {
+        this.documentationData = this.documentationService.decorate(result) ;
       },
       err => {
       });

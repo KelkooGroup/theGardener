@@ -400,7 +400,7 @@ class FakeGenerateDocumentationController @Inject()() extends InjectedController
   def generateDocumentation(): Action[AnyContent] = Action {
     Ok(
       """
-        |    {
+        |  {
         |		"id": ".",
         |		"slugName": "root",
         |		"name": "Hierarchy root",

@@ -34,6 +34,7 @@ import {OutputComponent} from './documentation/generate/output/output.component'
 import {CriteriasService} from "./_services/criterias.service";
 import {DocumentationService} from "./_services/documentation.service";
 import {CriteriasTreeSelectorComponent} from './documentation/generate/criterias/criterias-tree-selector/criterias-tree-selector.component';
+import { DocumentationThemeBookComponent } from './documentation/generate/output/themes/documentation-theme-book/documentation-theme-book.component';
 
 const nonProductionProviders = [{
   provide: HTTP_INTERCEPTORS,
@@ -55,6 +56,7 @@ const nonProductionProviders = [{
     CriteriasComponent,
     OutputComponent,
     CriteriasTreeSelectorComponent,
+    DocumentationThemeBookComponent,
   ],
   imports: [
     HttpClientModule,
