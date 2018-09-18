@@ -14,15 +14,10 @@ class BranchRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with Inj
   val db = inject[Database]
   val branchRepository = inject[BranchRepository]
 
-  val branch1 = Branch(1, "name", true, "id1")
-  val branch2 = Branch(2, "name2", true, "id1")
-  val branch3 = Branch(3, "name3", false, "id2")
+  val branch1 = Branch(1, "name", isStable = true, "project1")
+  val branch2 = Branch(2, "name2", isStable = true, "project1")
+  val branch3 = Branch(3, "name3", isStable = false, "project2")
   val branches = Seq(branch1, branch2, branch3)
-
-  val project1 = Project("id1", "name1", "repositoryUrl1", "stableBranch1", "featuresRootPath1")
-  val project2 = Project("id2", "name2", "repositoryUrl2", "stableBranch2", "featuresRootPath2")
-  val project3 = Project("id3", "name3", "repositoryUrl3", "stableBranch3", "featuresRootPath3")
-  val projects = Seq(project1, project2, project3)
 
   override def beforeEach() {
     db.withConnection { implicit connection =>
@@ -32,20 +27,12 @@ class BranchRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with Inj
           .executeInsert()
       }
     }
-
-    db.withConnection { implicit connection =>
-      projects.foreach { project =>
-        SQL"""INSERT INTO project (id, name, repositoryUrl, stableBranch,featuresRootPath)
-           VALUES (${project.id}, ${project.name}, ${project.repositoryUrl},${project.stableBranch}, ${project.featuresRootPath})"""
-          .executeInsert()
-      }
-    }
   }
 
   override def afterEach() {
     db.withConnection { implicit connection =>
       SQL"TRUNCATE TABLE branch".executeUpdate()
-      SQL"TRUNCATE TABLE project".executeUpdate()
+      SQL"ALTER TABLE branch ALTER COLUMN id RESTART WITH 1".executeUpdate()
     }
   }
 
@@ -85,11 +72,7 @@ class BranchRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with Inj
     }
 
     "get all branches by projectId" in {
-      branchRepository.findAllByProjectId("id1") must contain theSameElementsAs Seq(branch1, branch2)
-    }
-
-    "check if a branch exist by projectId" in {
-      branchRepository.existsByProjectId(1, "id1") mustBe true
+      branchRepository.findAllByProjectId("project1") must contain theSameElementsAs Seq(branch1, branch2)
     }
 
     "check if a branch exist by id" in {
@@ -97,15 +80,23 @@ class BranchRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with Inj
     }
 
     "save a branch" in {
-      val branch4 = Branch(1, "name6", false, "id1")
-      branchRepository.save(branch4)
-      branchRepository.findById(branch4.id) mustBe Some(branch4)
+      val newBranch = Branch(-1, "name4", isStable = false, "project1")
+      branchRepository.save(newBranch) mustBe newBranch.copy(id = 4)
+    }
+
+    "update a branch" in {
+      val updatedBranch = branch1.copy(isStable = false)
+      branchRepository.save(updatedBranch) mustBe updatedBranch
+      branchRepository.findAll() must contain theSameElementsAs Seq(updatedBranch, branch2, branch3)
     }
 
     "save all branches by projectId" in {
-      val newBranches = Seq(Branch(6, "name6", false, "id1"), Branch(7, "name7", true, "id1"))
-      branchRepository.saveAll(newBranches)
-      branchRepository.findAllByProjectId("id1") must contain theSameElementsAs (newBranches :+ branch1 :+ branch2)
+      val branch4 = Branch(-1, "name4", isStable = false, "project1")
+      val branch5 = Branch(-1, "name5", isStable = true, "project1")
+      val expectedBranches = Seq(branch4.copy(id = 4), branch5.copy(id = 5))
+
+      branchRepository.saveAll(Seq(branch4, branch5)) must contain theSameElementsAs expectedBranches
+      branchRepository.findAll() must contain theSameElementsAs branches ++ expectedBranches
     }
   }
 }

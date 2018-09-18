@@ -6,12 +6,13 @@ import java.net._
 import java.nio.file._
 import java.util
 
-import anorm.SQL
+import anorm._
 import com.typesafe.config._
 import cucumber.api.DataTable
 import cucumber.api.scala._
 import julienrf.json.derived
 import models._
+import models.Feature._
 import net.ruippeixotog.scalascraper.browser._
 import org.apache.commons.io._
 import org.eclipse.jgit.api._
@@ -66,6 +67,7 @@ object CommonSteps extends PlaySpec with GuiceOneServerPerSuite with BeforeAndAf
   val hierarchyRepository = Injector.inject[HierarchyRepository]
   val projectRepository = Injector.inject[ProjectRepository]
   val featureService = Injector.inject[FeatureService]
+  val tagRepository = Injector.inject[TagRepository]
   val config = Injector.inject[Config]
 
   val projectsRootDirectory = config.getString("projects.root.directory")
@@ -122,13 +124,23 @@ class CommonSteps extends ScalaDsl with EN with MockitoSugar {
 
   Given("""^the database is empty$""") { () =>
     db.withConnection { implicit connection =>
-      SQL("TRUNCATE TABLE project").executeUpdate()
-      SQL("TRUNCATE TABLE project_hierarchyNode").executeUpdate()
-      SQL("TRUNCATE TABLE hierarchyNode").executeUpdate()
+      SQL"TRUNCATE TABLE project".executeUpdate()
+      SQL"TRUNCATE TABLE project_hierarchyNode".executeUpdate()
+      SQL"TRUNCATE TABLE hierarchyNode".executeUpdate()
+      SQL"TRUNCATE TABLE branch".executeUpdate()
+      SQL"TRUNCATE TABLE feature".executeUpdate()
+      SQL"TRUNCATE TABLE scenario".executeUpdate()
+      SQL"TRUNCATE TABLE feature_tag".executeUpdate()
+      SQL"TRUNCATE TABLE scenario_tag".executeUpdate()
+      SQL"TRUNCATE TABLE tag".executeUpdate()
+      SQL"ALTER TABLE branch ALTER COLUMN id RESTART WITH 1".executeUpdate()
+      SQL"ALTER TABLE feature ALTER COLUMN id RESTART WITH 1".executeUpdate()
+      SQL"ALTER TABLE scenario ALTER COLUMN id RESTART WITH 1".executeUpdate()
     }
   }
 
   Given("""^No project is checkout$""") { () =>
+    FileUtils.deleteDirectory(new File("target/data/"))
     FileUtils.deleteDirectory(new File(projectsRootDirectory))
     Files.createDirectories(Paths.get(projectsRootDirectory))
   }
@@ -173,6 +185,10 @@ Scenario: providing several book suggestions
     projectRepository.saveAll(projectsWithAbsoluteUrl)
 
     CommonSteps.projects = projectsWithAbsoluteUrl.map(p => (p.id, p)).toMap
+  }
+
+  Given("""^we have those branches in the database$""") { branches: util.List[Branch] =>
+    branchRepository.saveAll(branches.asScala)
   }
 
   When("^we go in a browser to url \"([^\"]*)\"$") { url: String =>

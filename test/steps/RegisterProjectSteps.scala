@@ -1,12 +1,12 @@
 package steps
 
-
 import java.nio.file._
 import java.util
 
 import cucumber.api.DataTable
 import cucumber.api.scala._
 import models._
+import models.Feature.stepFormat
 import org.scalatest.mockito._
 import play.api.libs.json.Json
 import play.api.test.Helpers._

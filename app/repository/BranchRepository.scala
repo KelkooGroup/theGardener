@@ -11,7 +11,7 @@ class BranchRepository @Inject()(db: Database) {
 
 
   private val parser = for {
-    id <- int("id")
+    id <- long("id")
     name <- str("name")
     isStable <- bool("isStable")
     projectId <- str("projectId")
@@ -30,29 +30,26 @@ class BranchRepository @Inject()(db: Database) {
     }
   }
 
-  def save(branch: Branch): Option[Branch] = {
+  def save(branch: Branch): Branch = {
     db.withConnection { implicit connection =>
-      if (existsById(branch.id)) {
+      val id: Option[Long] = if (existsById(branch.id)) {
         SQL"""REPLACE INTO branch (id, name, isStable, projectId)
            VALUES (${branch.id}, ${branch.name}, ${branch.isStable}, ${branch.projectId})"""
           .executeUpdate()
-      }
-      else {
-        SQL"""INSERT INTO branch (id, name, isStable, projectId)
-           VALUES (${branch.id}, ${branch.name}, ${branch.isStable}, ${branch.projectId})"""
+
+        Some(branch.id)
+
+      } else {
+        SQL"""INSERT INTO branch (name, isStable, projectId)
+           VALUES (${branch.name}, ${branch.isStable}, ${branch.projectId})"""
           .executeInsert()
       }
-      SQL"SELECT * FROM branch WHERE id = ${branch.id}".as(parser.singleOpt)
+
+      SQL"SELECT * FROM branch WHERE id = $id".as(parser.single)
     }
   }
 
-  def existsByProjectId(id: Int, projectId: String): Boolean = {
-    db.withConnection { implicit connection =>
-      SQL"SELECT COUNT(*) FROM branch WHERE id = $id AND projectId = $projectId".as(scalar[Long].single) > 0
-    }
-  }
-
-  def saveAll(branches: Seq[Branch]): Seq[Option[Branch]] = {
+  def saveAll(branches: Seq[Branch]): Seq[Branch] = {
     branches.map(save)
   }
 
@@ -62,7 +59,7 @@ class BranchRepository @Inject()(db: Database) {
     }
   }
 
-  def deleteById(id: Int): Unit = {
+  def deleteById(id: Long): Unit = {
     db.withConnection { implicit connection =>
       SQL"DELETE FROM branch WHERE id = $id".executeUpdate()
     }
@@ -84,19 +81,25 @@ class BranchRepository @Inject()(db: Database) {
     deleteById(branch.id)
   }
 
-  def findAllById(ids: Seq[Int]): Seq[Branch] = {
+  def findAllById(ids: Seq[Long]): Seq[Branch] = {
     db.withConnection { implicit connection =>
       SQL"SELECT * FROM branch WHERE id IN ($ids)".as(parser.*)
     }
   }
 
-  def findById(id: Int): Option[Branch] = {
+  def findById(id: Long): Option[Branch] = {
     db.withConnection { implicit connection =>
       SQL"SELECT * FROM branch WHERE id = $id".as(parser.singleOpt)
     }
   }
 
-  def existsById(id: Int): Boolean = {
+  def findByProjectIdAndName(projectId: String, name: String): Option[Branch] = {
+    db.withConnection { implicit connection =>
+      SQL"SELECT * FROM branch WHERE projectId = $projectId AND name = $name".as(parser.singleOpt)
+    }
+  }
+
+  def existsById(id: Long): Boolean = {
     db.withConnection { implicit connection =>
       SQL"SELECT COUNT(*) FROM branch WHERE id = $id".as(scalar[Long].single) > 0
     }

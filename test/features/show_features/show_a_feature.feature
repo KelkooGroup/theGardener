@@ -8,6 +8,9 @@ Feature: Show a feature
     And we have the following projects
       | id            | name                    | repositoryUrl                                        | stableBranch | featuresRootPath |
       | suggestionsWS | Suggestions WebServices | git@gitlab.corp.kelkoo.net:library/suggestionsWS.git | master       | test/features    |
+    And we have those branches in the database
+      | id | name   | isStable | projectId     |
+      | 1  | master | true     | suggestionsWS |
 
   @level_0_high_level @nominal_case @valid
   Scenario: show a simple feature
@@ -63,7 +66,7 @@ Scenario: providing several book suggestions
     When I perform a "GET" on following URL "/features/suggestionsWS/provide_book_suggestions.feature"
     Then the page contains
 """
-    <div id="suggestionsWS_master_provide_book_suggestions_feature">
+    <div id="Feature">
         Project: Suggestions WebServices<br/>
         Branch: master<br/>
 """
@@ -121,59 +124,46 @@ Scenario: providing several book suggestions
   Then the suggestions are popular and available books adapted to the age of the user
 
     """
-    When I perform a "GET" on following URL "/api/features/suggestionsWS/provide_book_suggestions.feature"
+    When I perform a "GET" on following URL "/api/features/suggestionsWS/master/provide_book_suggestions.feature"
     Then I get the following json response body
 """
-  {
-    "id": "suggestionsWS/master/provide_book_suggestions.feature",
-    "branch": "master",
-    "name": "Provide some book suggestions",
-    "description": "As a user,\nI want some book suggestions\nSo that I can do some discovery",
-    "tags": [],
-    "language": "en",
-    "keyword": "Feature",
-    "scenarios":
-        [
-          {
-            "id": 0,
-            "name": "providing several book suggestions",
-            "abstractionLevel": "level_0_high_level",
-            "caseType": "nominal_case",
-            "workflowStep": "ready",
-
-            "keyword": "Scenario",
-            "description": "",
-            "tags": [
-                "level_0_high_level",
-                "nominal_case",
-                "ready"
-            ],
-
-            "steps": [
-                        {
-                        "id": 0,
-                        "keyword": "Given",
-                        "text": "a user",
-                        "argument": []
-                        },
-                        {
-                        "id": 1,
-                        "keyword": "When",
-                        "text": "we ask for suggestions",
-                        "argument": []
-                        },
-                        {
-                        "id": 2,
-                        "keyword": "Then",
-                        "text": "the suggestions are popular and available books adapted to the age of the user",
-                        "argument": []
-                        }
-                      ]
-
-          }
-        ],
-    "comments": []
-  }
+{
+  "id": 0,
+  "branchId": 1,
+  "path": "target/data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature",
+  "tags": [],
+  "language": "en",
+  "keyword": "Feature",
+  "name": "Provide some book suggestions",
+  "description": "As a user,\nI want some book suggestions\nSo that I can do some discovery",
+  "scenarios": [{
+    "keyword": "Scenario",
+    "name": "providing several book suggestions",
+    "description": "",
+    "tags": ["level_0_high_level", "nominal_case", "ready"],
+    "abstractionLevel": "level_0_high_level",
+    "id": 0,
+    "caseType": "nominal_case",
+    "steps": [{
+      "id": 0,
+      "keyword": "Given",
+      "text": "a user",
+      "argument": []
+    }, {
+      "id": 1,
+      "keyword": "When",
+      "text": "we ask for suggestions",
+      "argument": []
+    }, {
+      "id": 2,
+      "keyword": "Then",
+      "text": "the suggestions are popular and available books adapted to the age of the user",
+      "argument": []
+    }],
+    "workflowStep": "ready"
+  }],
+  "comments": []
+}
 """
 
 

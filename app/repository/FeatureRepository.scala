@@ -3,15 +3,15 @@ package repository
 import anorm.SqlParser._
 import anorm._
 import javax.inject.Inject
+import models.Feature.backgroundFormat
 import models._
 import play.api.db.Database
 import play.api.libs.json.Json
 
-class FeatureRepository @Inject()(db: Database) {
-
+class FeatureRepository @Inject()(db: Database, tagRepository: TagRepository, scenarioRepository: ScenarioRepository) {
 
   val parser = for {
-    id <- int("id")
+    id <- long("id")
     branchId <- int("branchId")
     path <- str("path")
     backgroundAsJson <- get[Option[String]]("backgroundAsJson")
@@ -20,16 +20,18 @@ class FeatureRepository @Inject()(db: Database) {
     name <- str("name")
     description <- str("description")
     comments <- str("comments")
-  } yield Feature(id.toString, branchId.toString, path, backgroundAsJson.map(Json.parse(_).as[Background]), Seq(), language, keyword, name, description, Seq(), Seq(comments))
+  } yield Feature(id, branchId, path, backgroundAsJson.map(Json.parse(_).as[Background]),
+    tagRepository.findAllByFeatureId(id), language, keyword, name, description,
+    scenarioRepository.findAllByFeatureId(id), comments.split("\n"))
 
   def findAll(): Seq[Feature] = {
     db.withConnection { implicit connection =>
-      val feature = SQL"SELECT * FROM feature".as(parser.*)
-      feature.map(f => f.copy(tags = SQL"SELECT name FROM feature_tag WHERE featureId = ${f.id}".as(scalar[String].*)))
+      SQL"SELECT * FROM feature".as(parser.*)
+        .map(feature => feature.copy(tags = SQL"SELECT name FROM feature_tag WHERE featureId = ${feature.id}".as(scalar[String].*)))
     }
   }
 
-  def existsById(id: String): Boolean = {
+  def existsById(id: Long): Boolean = {
     db.withConnection { implicit connection =>
       SQL"SELECT COUNT(*) FROM feature WHERE id = $id".as(scalar[Long].single) > 0
     }
@@ -37,33 +39,46 @@ class FeatureRepository @Inject()(db: Database) {
 
   def save(feature: Feature): Option[Feature] = {
     db.withConnection { implicit connection =>
-      if (existsById(feature.id)) {
-        SQL"REPLACE INTO feature(id, branchId, path, backgroundAsJson, language, keyword, name, description, comments) VALUES ( ${feature.id}, ${feature.branchId}, ${feature.path}, ${feature.background.map(Json.toJson(_).toString())}, ${feature.language.map(_.toString)}, ${feature.keyword},  ${feature.name}, ${feature.description}, ${feature.comments.mkString("\n")})"
+      val id : Option[Long] = if (existsById(feature.id)) {
+        SQL"""REPLACE INTO feature(id, branchId, path, backgroundAsJson, language, keyword, name, description, comments)
+             VALUES (${feature.id}, ${feature.branchId}, ${feature.path}, ${feature.background.map(Json.toJson(_).toString)}, ${feature.language}, ${feature.keyword}, ${feature.name}, ${feature.description}, ${feature.comments.mkString("\n")})"""
           .executeUpdate()
+        Some(feature.id)
+
       } else {
-        SQL"INSERT INTO feature(id, branchId, path, backgroundAsJson, language, keyword, name, description, comments) VALUES ( ${feature.id}, ${feature.branchId}, ${feature.path}, ${feature.background.map(Json.toJson(_).toString())}, ${feature.language.map(_.toString)}, ${feature.keyword},  ${feature.name}, ${feature.description}, ${feature.comments.mkString("\n")})"
+        SQL"""INSERT INTO feature(branchId, path, backgroundAsJson, language, keyword, name, description, comments)
+             VALUES (${feature.branchId}, ${feature.path}, ${feature.background.map(Json.toJson(_).toString())}, ${feature.language}, ${feature.keyword}, ${feature.name}, ${feature.description}, ${feature.comments.mkString("\n")})"""
           .executeInsert()
       }
 
-      feature.tags.foreach { tag =>
-        if (feature.tags.isEmpty) {
-          SQL"INSERT INTO tag(name) VALUES ($tag)".executeInsert()
-          SQL"INSERT INTO feature_tag(featureId, name) VALUES(${feature.id}, $tag)".executeInsert()
-        } else {
-          SQL"DELETE FROM tag".executeUpdate()
-          SQL"REPLACE INTO tag(name) VALUES ($tag)".executeUpdate()
-          SQL"REPLACE INTO feature_tag(featureId, name) VALUES(${feature.id}, $tag)".executeUpdate()
-        }
+      if (id.isDefined) {
+        scenarioRepository.deleteAllByFeatureId(id.get)
+        scenarioRepository.saveAll(id.get, feature.scenarios)
+
+        tagRepository.deleteAllByFeatureId(id.get)
+        tagRepository.saveAllByFeatureId(id.get, feature.tags)
       }
-      val features = SQL"SELECT * FROM feature WHERE id = ${feature.id} ".as(parser.singleOpt)
-      features.map(_.copy(tags = SQL"SELECT name FROM feature_tag WHERE featureId = ${feature.id}".as(scalar[String].*)))
+
+
+      SQL"SELECT * FROM feature WHERE id = $id".as(parser.singleOpt)
     }
   }
 
-  def findById(id: String): Option[Feature] = {
+  def findById(id: Long): Option[Feature] = {
     db.withConnection { implicit connection =>
-      val feature = SQL"SELECT * FROM feature WHERE id = $id".as(parser.singleOpt)
-      feature.map(_.copy(tags = SQL"SELECT name FROM feature_tag WHERE featureId = $id".as(scalar[String].*)))
+      SQL"SELECT * FROM feature WHERE id = $id".as(parser.singleOpt)
+    }
+  }
+
+  def findByBranchIdAndPath(branchId: Long, path: String): Option[Feature] = {
+    db.withConnection { implicit connection =>
+      SQL"SELECT * FROM feature WHERE branchId = $branchId AND path = $path".as(parser.singleOpt)
+    }
+  }
+
+  def findAllByBranchId(branchId: Long): Seq[Feature] = {
+    db.withConnection { implicit connection =>
+      SQL"SELECT * FROM feature WHERE branchId = $branchId".as(parser.*)
     }
   }
 
@@ -71,8 +86,10 @@ class FeatureRepository @Inject()(db: Database) {
     features.map(save)
   }
 
-  def deleteById(id: String): Unit = {
+  def deleteById(id: Long): Unit = {
     db.withConnection { implicit connection =>
+      scenarioRepository.deleteAllByFeatureId(id)
+      tagRepository.deleteAllByFeatureId(id)
       SQL"DELETE FROM feature WHERE id = $id".executeUpdate()
     }
   }
@@ -83,8 +100,14 @@ class FeatureRepository @Inject()(db: Database) {
 
   def deleteAll(): Unit = {
     db.withConnection { implicit connection =>
+      scenarioRepository.deleteAll()
+      tagRepository.deleteAll()
       SQL"TRUNCATE TABLE feature".executeUpdate()
     }
+  }
+
+  def deleteAllByBranchId(branchId: Long): Unit = {
+    findAllByBranchId(branchId).foreach(delete)
   }
 
   def count(): Long = {

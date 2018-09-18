@@ -36,7 +36,7 @@ create table project_hierarchyNode(
 );
 
 create table branch(
-  id int not null AUTO_INCREMENT,
+  id bigint not null AUTO_INCREMENT,
   name varchar(255) not null,
   isStable BOOLEAN not null,
   projectId varchar(255) not null,
@@ -44,14 +44,14 @@ create table branch(
 );
 
 create table feature(
-  id int not null AUTO_INCREMENT,
+  id bigint not null AUTO_INCREMENT,
+  branchId bigint not null,
   path varchar(255) not null,
-  name varchar(255) not null,
-  description varchar(255) not null,
   backgroundAsJson text,
-  branchId int not null,
   language varchar (255),
   keyword varchar(255) not null,
+  name varchar(255) not null,
+  description varchar(255) not null,
   comments varchar(255) not null,
   constraint pk_feature primary key(id)
 );
@@ -62,31 +62,27 @@ create table tag(
 );
 
 create table feature_tag(
-   featureId varchar(255) not null,
+   featureId bigint not null,
    name varchar(255) not null,
    constraint pk_tag_feature primary key (featureId, name)
 );
 
-create table comments(
-    comments varchar(255) not null,
-    featureId int not null
-);
-
 create table scenario(
-  id int not null AUTO_INCREMENT,
-  description varchar(255) not null,
-  workflowStep varchar(255) not null,
-  caseType varchar(255) not null,
+  id bigint not null AUTO_INCREMENT,
   abstractionLevel varchar(255) not null,
-  stepsAsJson text,
+  caseType varchar(255) not null,
+  workflowStep varchar(255) not null,
   keyword varchar(255) not null,
   name varchar(255) not null,
-  featureId int not null,
+  description varchar(255) not null,
+  stepsAsJson text,
+  examplesAsJson text,
+  featureId bigint not null,
   constraint pk_scenario primary key (id)
 );
 
 create table scenario_tag(
-    scenarioId int not null,
+    scenarioId bigint not null,
     name varchar(255) not null,
     constraint pk_scenario_tag primary key (scenarioId, name)
 );

@@ -6,8 +6,8 @@ import java.nio.file._
 import java.util
 
 import anorm._
-import cucumber.api.DataTable
 import cucumber.api.scala.{EN, ScalaDsl}
+import models.Feature._
 import models._
 import org.eclipse.jgit.api._
 import org.scalatest.mockito.MockitoSugar
@@ -21,7 +21,6 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent._
 import scala.concurrent.duration._
 import scala.io.Source
-
 
 class GetFeaturesSteps extends ScalaDsl with EN with MockitoSugar {
 
@@ -75,33 +74,25 @@ class GetFeaturesSteps extends ScalaDsl with EN with MockitoSugar {
   }
 
   Given("""^we have no tag in the database$""") { () =>
-  }
-
-  Given("""^we have those branches in the database$""") { branches: util.List[Branch] =>
-    branchRepository.saveAll(branches.asScala)
+    tagRepository.deleteAll()
   }
 
   Given("""^we have those features in the database$""") { features: util.List[Feature] =>
     featureRepository.saveAll(features.asScala.map(_.copy(background = None, tags = Seq(), language = None, scenarios = Seq(), comments = Seq())))
   }
 
-  Given("""^we have those scenario in the database$""") { (scenarios: util.List[Scenario]) =>
-    scenarioRepository.saveAll(scenarios.asScala.map(_.copy(tags = Seq(), steps = Seq())))
+  Given("""^we have those scenario for the feature "([^"]*)" in the database$""") { (featureId: Long, scenarios: util.List[Scenario]) =>
+    scenarioRepository.saveAll(featureId, scenarios.asScala.map(_.copy(tags = Seq(), steps = Seq())))
   }
 
-  Given("""^we have those stepsAsJSon for the scenario "([^"]*)" in the database$""") { (scenarioId: Int, stepsAsJson: String) =>
+  Given("""^we have those stepsAsJSon for the scenario "([^"]*)" in the database$""") { (scenarioId: Long, stepsAsJson: String) =>
     db.withConnection { implicit connection =>
       SQL"UPDATE scenario SET stepsAsJson = $stepsAsJson WHERE id = $scenarioId".executeUpdate()
     }
   }
 
-  Given("""^we have those tags in the database$""") { (table: DataTable) =>
-    table.asMaps(classOf[String], classOf[String]).asScala.map(_.asScala).foreach { tag =>
-      val id = scenarioRepository.findAll().map(_.id)
-      db.withConnection { implicit connection =>
-        SQL"INSERT INTO scenario_tag(scenarioId, name) VALUES($id, ${tag("tag")})".executeInsert()
-      }
-    }
+  Given("""^we have those tags for the scenario "([^"]*)" in the database$""") { (scenarioId: Long, tags: util.List[String]) =>
+    tagRepository.saveAllByScenarioId(scenarioId, tags.asScala)
   }
 
   When("""^BDD features synchronization action is triggered$""") { () =>
@@ -122,22 +113,22 @@ class GetFeaturesSteps extends ScalaDsl with EN with MockitoSugar {
     Source.fromFile("target/data/git/suggestionsWS/master/test/features/suggestions/provide_book_suggestions.feature").mkString mustBe featureContent
   }
 
-  Then("""^we have now those branches in the database$""") { (branches: util.List[Branch]) =>
+  Then("""^we have now those branches in the database$""") { branches: util.List[Branch] =>
     val expectedBranches = branches.asScala
     val actualBranches = branchRepository.findAll()
-    expectedBranches must contain theSameElementsAs actualBranches
+    actualBranches must contain theSameElementsAs expectedBranches
   }
 
   Then("""^we have now those features in the database$""") { features: util.List[Feature] =>
-    val expectedFeatures = features.asScala.toList.map(_.copy(background = None, tags = Seq(), language = None, scenarios = Seq(), comments = Seq()))
+    val expectedFeatures = features.asScala.toList.map(_.copy(background = None, tags = Seq(), language = None, scenarios = Seq(), comments = Seq(), keyword = "Feature"))
     val actualFeatures = featureRepository.findAll().map(_.copy(background = None, tags = Seq(), language = None, scenarios = Seq(), comments = Seq()))
     actualFeatures must contain theSameElementsAs expectedFeatures
   }
 
-  Then("""^we have now those scenario in the database$""") { (scenario: util.List[Scenario]) =>
-    val exceptedScenarios = scenario.asScala.toList.map(_.copy(tags = Seq(), steps = Seq()))
-    val actualScenarios = scenarioRepository.findAll().map(_.copy(tags = Seq(), steps = Seq()))
-    exceptedScenarios must contain theSameElementsAs actualScenarios
+  Then("""^we have now those scenario in the database$""") { scenario: util.List[Scenario] =>
+    val expectedScenarios = scenario.asScala.toList.map(_.copy(tags = Seq(), steps = Seq()))
+    val actualScenarios = scenarioRepository.findAll().map(_.asInstanceOf[Scenario].copy(tags = Seq(), steps = Seq()))
+    actualScenarios must contain theSameElementsAs expectedScenarios
   }
 
   Then("""^we have now those stepsAsJSon for the scenario "([^"]*)" in the database$""") { (scenarioId: Int, expectedStep: String) =>
@@ -145,9 +136,9 @@ class GetFeaturesSteps extends ScalaDsl with EN with MockitoSugar {
     Json.toJson(actualStep) mustBe Json.parse(expectedStep)
   }
 
-  Then("""^we have now those tags in the database$""") { (tags: util.List[Tag]) =>
-    val exceptedTags = Seq(tags.asScala.toList.map(_.tag))
-    val actualTags = scenarioRepository.findAll().map(_.tags)
-    exceptedTags must contain theSameElementsAs actualTags
+  Then("""^we have now those tags for the scenario "([^"]*)" in the database$""") { (scenarioId: Int, tags: util.List[String]) =>
+    val expectedTags = tags.asScala.toList
+    val actualTags = tagRepository.findAllByScenarioId(scenarioId)
+    actualTags must contain theSameElementsAs expectedTags
   }
 }

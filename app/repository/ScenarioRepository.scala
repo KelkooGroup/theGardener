@@ -3,16 +3,15 @@ package repository
 import anorm.SqlParser._
 import anorm._
 import javax.inject.Inject
+import models.Feature.{examplesFormat, stepFormat}
 import models._
 import play.api.db.Database
 import play.api.libs.json.Json
 
-class ScenarioRepository @Inject()(db: Database) {
-
+class ScenarioRepository @Inject()(db: Database, tagRepository: TagRepository) {
 
   val parser = for {
-    id <- int("id")
-    featureId <- int("featureId")
+    id <- long("id")
     abstractionLevel <- str("abstractionLevel")
     caseType <- str("caseType")
     workflowStep <- str("workflowStep")
@@ -20,52 +19,9 @@ class ScenarioRepository @Inject()(db: Database) {
     name <- str("name")
     description <- str("description")
     stepsAsJson <- str("stepsAsJson")
-  } yield Scenario(id, featureId.toString, Seq(), abstractionLevel, caseType, workflowStep, keyword, name, description, Json.parse(stepsAsJson).as[Seq[Step]])
-
-  def findAll(): Seq[Scenario] = {
-    db.withConnection { implicit connection =>
-      val scenario = SQL"SELECT * FROM scenario".as(parser.*)
-      scenario.map(s => s.copy(tags = SQL"SELECT name FROM scenario_tag where scenarioId = ${s.id}".as(scalar[String].*)))
-    }
-  }
-
-  def existsById(id: Int): Boolean = {
-    db.withConnection { implicit connection =>
-      SQL"SELECT COUNT(*) FROM scenario WHERE id = $id".as(scalar[Long].single) > 0
-    }
-  }
-
-  def save(scenario: Scenario): Option[Scenario] = {
-
-    db.withConnection { implicit connection =>
-      if (existsById(scenario.id)) {
-        SQL"""REPLACE INTO scenario(id, description, workflowStep, caseType, abstractionLevel, stepsAsJson, keyword, name, featureId)
-              VALUES(${scenario.id}, ${scenario.description}, ${scenario.workflowStep}, ${scenario.caseType}, ${scenario.abstractionLevel}, ${Json.toJson(scenario.steps).toString()}, ${scenario.keyword}, ${scenario.name}, ${scenario.featureId})"""
-          .executeUpdate()
-      } else {
-        SQL"""INSERT INTO scenario(id, description, workflowStep, caseType, abstractionLevel, stepsAsJson, keyword, name, featureId)
-              VALUES(${scenario.id}, ${scenario.description}, ${scenario.workflowStep}, ${scenario.caseType}, ${scenario.abstractionLevel}, ${Json.toJson(scenario.steps).toString()}, ${scenario.keyword}, ${scenario.name}, ${scenario.featureId})"""
-          .executeInsert()
-      }
-      scenario.tags.foreach { tag =>
-        SQL"REPLACE INTO tag(name) VALUES ($tag)".executeUpdate()
-        SQL"REPLACE INTO scenario_tag(scenarioId, name) VALUES (${scenario.id}, $tag)".executeUpdate()
-      }
-      val scenarios = SQL"SELECT * FROM scenario WHERE id = ${scenario.id} ".as(parser.singleOpt)
-      scenarios.map(_.copy(tags = SQL"SELECT name FROM scenario_tag WHERE scenarioId = ${scenario.id}".as(scalar[String].*)))
-    }
-  }
-
-  def saveAll(scenarios: Seq[Scenario]): Seq[Option[Scenario]] = {
-    scenarios.map(save)
-  }
-
-  def findById(scenarioId: Int): Option[Scenario] = {
-    db.withConnection { implicit connection =>
-      val scenarios = SQL"SELECT * FROM scenario WHERE id = $scenarioId ".as(parser.singleOpt)
-      scenarios.map(_.copy(tags = SQL"SELECT name FROM scenario_tag WHERE scenarioId = $scenarioId".as(scalar[String].*)))
-    }
-  }
+    examplesAsJson <- get[Option[String]]("examplesAsJson")
+  } yield if (examplesAsJson.isEmpty) Scenario(id, tagRepository.findAllByScenarioId(id), abstractionLevel, caseType, workflowStep, keyword, name, description, Json.parse(stepsAsJson).as[Seq[Step]])
+  else ScenarioOutline(id, tagRepository.findAllByScenarioId(id), abstractionLevel, caseType, workflowStep, keyword, name, description, Json.parse(stepsAsJson).as[Seq[Step]], examplesAsJson.map(Json.parse(_).as[Seq[Examples]]).getOrElse(Seq()))
 
   def count(): Long = {
     db.withConnection { implicit connection =>
@@ -73,26 +29,109 @@ class ScenarioRepository @Inject()(db: Database) {
     }
   }
 
+  def delete(scenario: ScenarioDefinition): Unit = {
+    deleteById(scenario.id)
+  }
+
   def deleteAll(): Unit = {
     db.withConnection { implicit connection =>
+      tagRepository.deleteAllScenarioTag()
       SQL"TRUNCATE TABLE scenario".executeUpdate()
     }
   }
 
-  def delete(scenario: Scenario): Unit = {
-    deleteById(scenario.id)
-  }
-
-  def deleteById(scenarioId: Int): Unit = {
+  def deleteById(scenarioId: Long): Unit = {
     db.withConnection { implicit connection =>
+      tagRepository.deleteAllByScenarioId(scenarioId)
       SQL"DELETE FROM scenario WHERE id = $scenarioId".executeUpdate()
     }
   }
 
-  def findAllById(ids: Seq[Int]): Seq[Scenario] = {
+  def deleteAllByFeatureId(featureId: Long) = {
+    findAllByFeatureId(featureId).foreach(delete)
+  }
+
+  def existsById(id: Long): Boolean = {
     db.withConnection { implicit connection =>
-      val scenario = SQL"SELECT * FROM scenario WHERE id IN ($ids)".as(parser.*)
-      scenario.map(s => s.copy(tags = SQL"SELECT name FROM scenario_tag where scenarioId = ${s.id}".as(scalar[String].*)))
+      SQL"SELECT COUNT(*) FROM scenario WHERE id = $id".as(scalar[Long].single) > 0
     }
+  }
+
+  def findAll(): Seq[ScenarioDefinition] = {
+    db.withConnection { implicit connection =>
+      SQL"SELECT * FROM scenario".as(parser.*)
+    }
+  }
+
+  def findAllById(ids: Seq[Long]): Seq[ScenarioDefinition] = {
+    db.withConnection { implicit connection =>
+      SQL"SELECT * FROM scenario WHERE id IN ($ids)".as(parser.*)
+    }
+  }
+
+  def findById(scenarioId: Long): Option[ScenarioDefinition] = {
+    db.withConnection { implicit connection =>
+      SQL"SELECT * FROM scenario WHERE id = $scenarioId ".as(parser.singleOpt)
+    }
+  }
+
+  def findAllByFeatureId(featureId: Long): Seq[ScenarioDefinition] = {
+    db.withConnection { implicit connection =>
+      SQL"SELECT * FROM scenario WHERE featureId = $featureId".as(parser.*)
+    }
+  }
+
+  def save(featureId: Long, scenario: ScenarioDefinition): Option[ScenarioDefinition] = {
+    scenario match {
+      case s: Scenario => saveScenario(featureId, s)
+      case so: ScenarioOutline => saveScenarioOutline(featureId, so)
+      case _ => None
+    }
+  }
+
+  private def saveScenario(featureId: Long, scenario: Scenario): Option[ScenarioDefinition] = {
+
+    db.withConnection { implicit connection =>
+      val id: Option[Long] = if (existsById(scenario.id)) {
+        SQL"""REPLACE INTO scenario(id, description, workflowStep, caseType, abstractionLevel, stepsAsJson, keyword, name, featureId)
+              VALUES(${scenario.id}, ${scenario.description}, ${scenario.workflowStep}, ${scenario.caseType}, ${scenario.abstractionLevel}, ${Json.toJson(scenario.steps).toString()}, ${scenario.keyword}, ${scenario.name}, $featureId)"""
+          .executeUpdate()
+        Some(scenario.id)
+
+      } else {
+        SQL"""INSERT INTO scenario(description, workflowStep, caseType, abstractionLevel, stepsAsJson, keyword, name, featureId)
+              VALUES(${scenario.description}, ${scenario.workflowStep}, ${scenario.caseType}, ${scenario.abstractionLevel}, ${Json.toJson(scenario.steps).toString()}, ${scenario.keyword}, ${scenario.name}, $featureId)"""
+          .executeInsert()
+      }
+
+      id.map(tagRepository.saveAllByScenarioId(_, scenario.tags))
+
+      SQL"SELECT * FROM scenario WHERE id = $id".as(parser.singleOpt)
+    }
+  }
+
+  private def saveScenarioOutline(featureId: Long, scenario: ScenarioOutline): Option[ScenarioDefinition] = {
+
+    db.withConnection { implicit connection =>
+      val id: Option[Long] = if (existsById(scenario.id)) {
+        SQL"""REPLACE INTO scenario(id, description, workflowStep, caseType, abstractionLevel, stepsAsJson, keyword, name, featureId, examplesAsJson)
+              VALUES(${scenario.id}, ${scenario.description}, ${scenario.workflowStep}, ${scenario.caseType}, ${scenario.abstractionLevel}, ${Json.toJson(scenario.steps).toString()}, ${scenario.keyword}, ${scenario.name}, $featureId, ${Json.toJson(scenario.examples).toString()})"""
+          .executeUpdate()
+        Some(scenario.id)
+
+      } else {
+        SQL"""INSERT INTO scenario(description, workflowStep, caseType, abstractionLevel, stepsAsJson, keyword, name, featureId, examplesAsJson)
+              VALUES(${scenario.description}, ${scenario.workflowStep}, ${scenario.caseType}, ${scenario.abstractionLevel}, ${Json.toJson(scenario.steps).toString()}, ${scenario.keyword}, ${scenario.name}, $featureId, ${Json.toJson(scenario.examples).toString()})"""
+          .executeInsert()
+      }
+
+      id.map(tagRepository.saveAllByScenarioId(_, scenario.tags))
+
+      SQL"SELECT * FROM scenario WHERE id = $id".as(parser.singleOpt)
+    }
+  }
+
+  def saveAll(featureId: Long, scenarios: Seq[ScenarioDefinition]): Seq[ScenarioDefinition] = {
+    scenarios.flatMap(save(featureId, _))
   }
 }
