@@ -42,7 +42,6 @@ class DefineHierarchySteps extends ScalaDsl with EN with MockitoSugar {
     table.asMaps(classOf[String], classOf[String]).asScala.map(_.asScala).foreach { projectHierarchy =>
       hierarchyRepository.findAllByProjectId(projectHierarchy("projectId")).map(_.id) must contain(projectHierarchy("hierarchyId"))
     }
-
   }
 
   Then("""^the hierarchy nodes are now$""") { hierarchy: util.List[HierarchyNode] =>

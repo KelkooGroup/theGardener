@@ -3,7 +3,7 @@ package services
 import java.io.File
 
 import org.apache.commons.io.FileUtils._
-import org.eclipse.jgit.api.Git
+import org.eclipse.jgit.api._
 import org.scalatest._
 import org.scalatest.concurrent._
 import scala.concurrent.duration._

@@ -8,7 +8,6 @@ import play.api.db.Database
 
 class ProjectRepository @Inject()(db: Database) {
 
-
   private val parser = for {
     id <- str("id")
     name <- str("name")

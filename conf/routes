@@ -9,7 +9,7 @@ GET           /                                               controllers.Applic
 GET           /features/:project/:feature                     controllers.Application.feature(project: String, feature: String)
 
 # API
-GET           /api/features/:project/:feature                 controllers.FeatureController.feature(project: String, feature: String)
+GET           /api/features/:project/:branch/:feature         controllers.FeatureController.feature(project: String, branch: String, feature: String)
 
 POST          /api/projects                                   controllers.ProjectController.registerProject()
 GET           /api/projects                                   controllers.ProjectController.getAllProjects()

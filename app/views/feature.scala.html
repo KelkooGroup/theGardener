@@ -1,9 +1,9 @@
-@(project: String, feature: Feature)
+@(projectName: String, branch: Branch, feature: Feature)
 
 @main("Feature") {
-    <div id="@{feature.id.replace("/", "_").replace(".", "_")}">
-        Project: @project<br/>
-        Branch: @feature.branch<br/>
+    <div id="Feature">
+        Project: @projectName<br/>
+        Branch: @branch.name<br/>
 
         @feature.tags.mkString(" ")<br/>
         <strong>@feature.keyword</strong>: @feature.name<br/>

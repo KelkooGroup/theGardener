@@ -24,11 +24,7 @@ class ShowFeaturesSteps extends ScalaDsl with EN with MockitoSugar with ScalaFut
   }
 
   Then("""^this feature is displayed properly$""") { () =>
-    val id = "suggestionsWS_master_provide_book_suggestions_feature"
-
-    contentAsString(response) must include(id)
-
-    val featureText = browser.parseString(contentAsString(response)) >> text("#" + id)
+    val featureText = browser.parseString(contentAsString(response)) >> text("#Feature")
 
     featureText must include("Provide some book suggestions")
     featureText must include("As a user")
@@ -39,11 +35,7 @@ class ShowFeaturesSteps extends ScalaDsl with EN with MockitoSugar with ScalaFut
 
   Then("""^the following feature is displayed$""") { dataTable: DataTable =>
     dataTable.asScala.map { feature =>
-      val id = feature("id").replace("/", "_").replace(".", "_")
-
-      contentAsString(response) must include(id)
-
-      val featureText = browser.parseString(contentAsString(response).replace("<br/>", " ")) >> text("#" + id)
+      val featureText = browser.parseString(contentAsString(response).replace("<br/>", " ")) >> text("#Feature")
 
       featureText must include(feature("name"))
       featureText must include(feature("description"))
