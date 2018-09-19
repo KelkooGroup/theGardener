@@ -28,11 +28,11 @@
                 <ul class="flex-container flex-direction-column flex-align-items-start" >
                   <li>
                     <div class="feature level{{feature.level}}" >{{feature.data.name}}  </div>
-                    <div  >{{feature.data.description}}  </div>
+                    <div class="feature" >{{feature.data.description}}  </div>
 
 
 
-                    <div class="mat-tree-node pull-right" *ngFor="let scenario of feature.scenarios">
+                    <div class="pull-right" *ngFor="let scenario of feature.scenarios">
                       <ul class="flex-container flex-direction-column flex-align-items-start" >
                         <li>
                           <div class="scenario" >{{scenario.data.name}}  </div>
@@ -42,16 +42,21 @@
                             <li>caseType: {{scenario.data.caseType}}</li>
                             <li>workflowStep: {{scenario.data.workflowStep}}</li>
 
+                            <div class="steps">
+                              <div class="pull-right" *ngFor="let step of scenario.steps">
+                                <ul class="flex-container flex-direction-column flex-align-items-start" >
+                                  <li>
+                                    <div class="step" ><span class="stepKeyword" >{{step.data.keyword}}</span> {{step.data.text}}  </div>
 
-                            <div class="mat-tree-node pull-right" *ngFor="let step of scenario.steps">
-                              <ul class="flex-container flex-direction-column flex-align-items-start" >
-                                <li>
-                                  <div class="step" >{{step.data.keyword}} {{step.data.text}}  </div>
-                                  <div  *ngFor="let arg of step.argument">{{arg}}  </div>
-                                </li>
-                              </ul>
+                                    <div  *ngIf="step.hasTable"  class="table pull-right" >
+                                      <app-documentation-theme-book-table [table]="step.table" ></app-documentation-theme-book-table>
+                                    </div>
+
+
+                                  </li>
+                                </ul>
+                              </div>
                             </div>
-
 
 
                          </ul>

@@ -11,7 +11,7 @@ import {NestedTreeControl} from "@angular/cdk/tree";
 @Component({
   selector: 'app-criterias-tree-selector',
   templateUrl: './criterias-tree-selector.component.html',
-  styleUrls: ['./criterias-tree-selector.component.css']
+  styleUrls: ['./criterias-tree-selector.component.scss']
 })
 export class CriteriasTreeSelectorComponent  implements OnInit {
 

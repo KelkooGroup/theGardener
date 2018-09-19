@@ -11,7 +11,7 @@ import {HttpParams} from "@angular/common/http";
 @Component({
   selector: 'app-generate-documentation-criterias',
   templateUrl: './criterias.component.html',
-  styleUrls: ['./criterias.component.css']
+  styleUrls: ['./criterias.component.scss']
 })
 export class CriteriasComponent  {
 

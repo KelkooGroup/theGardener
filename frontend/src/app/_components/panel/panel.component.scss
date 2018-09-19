@@ -1,3 +1,5 @@
+@import "../../../stylesheets/colors";
+
 
 .panel-default {
 
@@ -5,7 +7,7 @@
   margin: 5px;
 
 h3 {
-  color: #F56026;
+  color: $color-text-invert;
   text-transform: uppercase;
   font-weight: 600;
   font-size: 15px;
@@ -22,7 +24,7 @@ h4 {
 
 .panel {
   position: relative;
-  border: 1px solid #E6E9ED;
+  border: 1px solid $color-border-light;
   background-color: white !important;
 
 .panel-top {
@@ -37,7 +39,7 @@ h4 {
 .panel-icon {
   font-size: 30px;
   padding: 0 10px 0 10px;
-  color: #1F7079;
+  color: $color-main;
 }
 
 .panel-body {
@@ -68,7 +70,7 @@ h4 {
 }
 
 .field-loading {
-  color: #F56026;
+  color: $color-text-invert;
   font-style: italic;
 }
 }

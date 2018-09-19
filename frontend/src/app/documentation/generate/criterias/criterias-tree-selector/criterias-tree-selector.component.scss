@@ -1,3 +1,5 @@
+@import "../../../../../stylesheets/colors";
+
 .title{
   padding: 10px;
 }
@@ -15,7 +17,7 @@
 
 
 .hierarchyNode {
-  color: #0e425b;
+  color: $color-text;
 }
 
 .pull-right{
@@ -25,7 +27,7 @@
 
 .project {
   font-family: "courier";
-  color: #0e425b;
+  color: $color-text;
 }
 
 .branch {

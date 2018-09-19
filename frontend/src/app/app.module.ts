@@ -22,6 +22,7 @@ import {
   MatFormFieldModule,
   MatSelectModule,
   MatInputModule,
+  MatTableModule,
   MatListModule,
   MatTreeModule,
   MatIconModule,
@@ -35,6 +36,7 @@ import {CriteriasService} from "./_services/criterias.service";
 import {DocumentationService} from "./_services/documentation.service";
 import {CriteriasTreeSelectorComponent} from './documentation/generate/criterias/criterias-tree-selector/criterias-tree-selector.component';
 import { DocumentationThemeBookComponent } from './documentation/generate/output/themes/documentation-theme-book/documentation-theme-book.component';
+import { DocumentationThemeBookTableComponent } from './documentation/generate/output/themes/documentation-theme-book/documentation-theme-book-table/documentation-theme-book-table.component';
 
 const nonProductionProviders = [{
   provide: HTTP_INTERCEPTORS,
@@ -57,6 +59,7 @@ const nonProductionProviders = [{
     OutputComponent,
     CriteriasTreeSelectorComponent,
     DocumentationThemeBookComponent,
+    DocumentationThemeBookTableComponent,
   ],
   imports: [
     HttpClientModule,
@@ -71,6 +74,7 @@ const nonProductionProviders = [{
     MatFormFieldModule,
     MatInputModule,
     MatListModule,
+    MatTableModule,
     MatSelectModule,
     MatTabsModule,
     MatTreeModule,

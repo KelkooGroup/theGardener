@@ -1,3 +1,4 @@
+@import "../../../../../../stylesheets/colors";
 
 .documentation-tree-invisible {
   display: none;
@@ -11,12 +12,12 @@
 }
 
 .pull-right{
-  margin-left: 25px;
-  padding-left: 25px;
+  margin-left: 5px;
+  padding-left: 5px;
 }
 
 .documentationNode {
-  color: black;
+  color: $color-text-dark;
 }
 
 .level1 {
@@ -24,31 +25,31 @@
 }
 
 .level2 {
-  font-size: 21px;
+  font-size: 22px;
 }
 
 .level3 {
-  font-size: 19px;
+  font-size: 20px;
 }
 
 .level4 {
-  font-size: 18px;
+  font-size: 19px;
 }
 
 .level5 {
-  font-size: 17px;
+  font-size: 18px;
 }
 
 .level6 {
-  font-size: 16px;
+  font-size: 17px;
 }
 
 .level7 {
-  font-size: 15px;
+  font-size: 16px;
 }
 
-.project{
-  color: black;
+.project, .branch, .feature, .scenario, .step, .table{
+  color: $color-text-darker;
 }
 
 
@@ -68,9 +69,20 @@
   margin-top: 10px;
 }
 
-
-.step{
+.steps{
   margin-top: 10px;
 }
 
+.step{
+  margin-top: 2px;
+}
+
+.table{
+  margin-top: 2px;
+}
+
+.stepKeyword{
+  font-weight: 600;
+  color: $color-text;
+}
 

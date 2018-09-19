@@ -7,12 +7,12 @@ import {HierarchyNodeSelector} from "../../../../../_services/criteriasSelection
 @Component({
   selector: 'app-documentation-theme-book',
   templateUrl: './documentation-theme-book.component.html',
-  styleUrls: ['./documentation-theme-book.component.css']
+  styleUrls: ['./documentation-theme-book.component.scss']
 })
 export class DocumentationThemeBookComponent implements OnInit {
 
   @Input()
-  documentationData : DocumentationNode[]
+  documentationData : DocumentationNode[];
 
   nestedTreeControl: NestedTreeControl<DocumentationNode>;
   nestedDataSource: MatTreeNestedDataSource<DocumentationNode>;

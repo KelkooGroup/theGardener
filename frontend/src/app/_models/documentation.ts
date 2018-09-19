@@ -3,7 +3,7 @@ export class DocumentationStepApi {
   public id: string;
   public keyword: string;
   public text: string;
-  public argument: Array<string>;
+  public argument: Array<Array<string>>;
 }
 
 export class DocumentationScenarioApi {
@@ -53,12 +53,46 @@ export class DocumentationNodeApi {
   public projects: Array<DocumentationProjectApi>;
 }
 
+
+export class DocumentationStepRow{
+  public values : { [key:string]:string; } = {};
+
+  public getValue(key: string):string {
+    return this.values[key] ;
+  }
+}
+
+export class DocumentationStepTable{
+  public headers = new  Array<string>();
+  public rows    = new Array<DocumentationStepRow>();
+}
+
+
 export class DocumentationStep {
   public data: DocumentationStepApi;
+  public hasTable: boolean;
+  public table: DocumentationStepTable;
+
 
   public static newFromApi(dataApi: DocumentationStepApi): DocumentationStep {
     var instance = new DocumentationStep( );
     instance.data = dataApi ;
+    instance.hasTable = dataApi.argument != null && dataApi.argument.length > 0;
+    if (instance.hasTable){
+      instance.table = new DocumentationStepTable();
+      for (var j = 0; j < dataApi.argument.length; j++) {
+        var currentRowValues = dataApi.argument[j];
+        if (j ==0) {
+          instance.table.headers = currentRowValues;
+        }else{
+          var row = new DocumentationStepRow() ;
+          for (var k = 0; k < currentRowValues.length; k++) {
+            row.values[instance.table.headers[k]] = currentRowValues[k] ;
+          }
+          instance.table.rows.push(row);
+        }
+      }
+    }
     return instance;
   }
 }

@@ -484,7 +484,124 @@ class FakeGenerateDocumentationController @Inject()() extends InjectedController
         |                                                    }
         |                                                  ]
         |                                      }
-        |                                    ],
+        |
+        |
+        |                   ,{
+        |                                        "id": 1,
+        |                                        "name": "providing several book suggestions",
+        |                                        "abstractionLevel": "level_1",
+        |                                        "caseType": "error_case",
+        |                                        "workflowStep": "ready",
+        |                                        "keyword": "Scenario",
+        |                                        "description": "",
+        |                                        "tags": [
+        |                                            "level_1",
+        |                                            "error_case",
+        |                                            "ready"
+        |                                        ],
+        |                                        "steps": [
+        |                      {
+        |                        "id": 0,
+        |                        "keyword": "Given",
+        |                        "text": "the user \"Tim\"",
+        |                        "argument": []
+        |                      },
+        |                      {
+        |                        "id": 1,
+        |                        "keyword": "And",
+        |                        "text": "impossible to get information on the user",
+        |                        "argument": []
+        |                      },
+        |                      {
+        |                        "id": 2,
+        |                        "keyword": "When",
+        |                        "text": "we ask for \"3\" suggestions from \"2\" different categories",
+        |                        "argument": []
+        |                      },
+        |                      {
+        |                        "id": 3,
+        |                        "keyword": "Then",
+        |                        "text": "the system is temporary not available",
+        |                        "argument": []
+        |                      }
+        |
+        |                                    ]
+        |
+        |
+        |                            }
+        |
+        |
+        |                   ,{
+        |                                        "id": 1,
+        |                                        "name": "providing several book suggestions with popular categories",
+        |                                        "abstractionLevel": "level_1",
+        |                                        "caseType": "nominal_case",
+        |                                        "workflowStep": "valid",
+        |                                        "keyword": "Scenario",
+        |                                        "description": "",
+        |                                        "tags": [
+        |                                            "level_1",
+        |                                            "nominal_case",
+        |                                            "valid"
+        |                                        ],
+        |                                        "steps": [
+        |                        {
+        |                          "id": 0,
+        |                          "keyword": "Given",
+        |                          "text": "the user \"Tim\"",
+        |                          "argument": []
+        |                        },
+        |                        {
+        |                          "id": 1,
+        |                          "keyword": "And",
+        |                          "text": "he is \"4\" years old",
+        |                          "argument": []
+        |                        },
+        |                        {
+        |                          "id": 2,
+        |                          "keyword": "And",
+        |                          "text": "the popular categories for this age are",
+        |                          "argument": [
+        |                            [
+        |                              "categoryId",
+        |                              "categoryName"
+        |                            ],
+        |                            [
+        |                              "cat1",
+        |                              "Walt Disney"
+        |                            ],
+        |                            [
+        |                              "cat2",
+        |                              "Picture books"
+        |                            ],
+        |                            [
+        |                              "cat3",
+        |                              "Bedtime stories"
+        |                            ]
+        |                          ]
+        |                        },
+        |                        {
+        |                          "id": 3,
+        |                          "keyword": "When",
+        |                          "text": "we ask for \"3\" suggestions from \"2\" different categories",
+        |                          "argument": []
+        |                        },
+        |                        {
+        |                          "id": 4,
+        |                          "keyword": "Then",
+        |                          "text": "the suggestions are popular and available books adapted to the age of the user",
+        |                          "argument": []
+        |                        }
+        |]
+        |
+        |
+        |                            }
+        |
+        |
+        |
+        |
+        |
+        |                                     ],
         |                                "comments": []
         |                              }
         |                            ]

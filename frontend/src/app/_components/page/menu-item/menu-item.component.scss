@@ -1,12 +1,12 @@
-
+@import "../../../../stylesheets/colors";
 
 .menu-item{
   width: 100%;
-  border-top-color: #1F7079;
+  border-top-color: $color-main;
   border-top-style: solid;
   border-top-width: 1px;
 
-  border-bottom-color: #1F7079;
+  border-bottom-color: $color-main;
   border-bottom-style: solid;
   border-bottom-width: 1px;
 
@@ -49,12 +49,12 @@ li {
   position: relative;
   display: block;
 
-  background-color: #1F7079;
+  background-color: $color-main;
   a {
-    color: white;
+    color: $color-text-opposite;
   }
   a:hover {
-    color: white;
+    color: $color-text-opposite;
   }
 }
 
