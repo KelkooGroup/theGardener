@@ -105,9 +105,13 @@
 }
 
 .bookLink {
-  color: $color-link;
+  color: $color-border-light;
   cursor: pointer;
   text-decoration: none;
-  padding-right: 5px;
+  padding-left: 5px;
+}
+
+.bookLink li {
+  height: 10px;
 }
 
