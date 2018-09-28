@@ -61,12 +61,19 @@
 }
 
 .feature{
-  margin-top: 10px;
+  margin-top: 5px;
 }
 
 
 .scenario{
-  margin-top: 10px;
+}
+
+.tags{
+  font-style: italic;
+  font-weight: lighter;
+  font-size: x-small;
+  font-family: "courier";
+  color: $color-text-darker;
 }
 
 .steps{
@@ -83,6 +90,24 @@
 
 .stepKeyword{
   font-weight: 600;
-  color: $color-text;
+  color: $color-text-dark;
+}
+
+.stepParameter{
+  background-color: $color-text-dark;
+  color: $color-text-opposite;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.stepText{
+  color: $color-text-dark;
+}
+
+.bookLink {
+  color: $color-link;
+  cursor: pointer;
+  text-decoration: none;
+  padding-right: 5px;
 }
 

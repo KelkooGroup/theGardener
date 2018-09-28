@@ -22,7 +22,7 @@ export class DocumentationService {
   public  decorate(apiResult: DocumentationNodeApi): Array<DocumentationNode> {
     var decoratedDataArray = new Array<DocumentationNode>();
     for (let node of apiResult.children) {
-      decoratedDataArray.push( DocumentationNode.newFromApi(node,1) )  ;
+      decoratedDataArray.push( DocumentationNode.newFromApi("", node,1) )  ;
     }
     return decoratedDataArray;
   }

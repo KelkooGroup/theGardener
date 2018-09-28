@@ -68,8 +68,13 @@ export class DocumentationStepTable{
 }
 
 
+export class DocumentationStepTextFragment{
+  constructor(public text: string, public isParameter: boolean){}
+}
+
 export class DocumentationStep {
   public data: DocumentationStepApi;
+  public text = new  Array<DocumentationStepTextFragment>();
   public hasTable: boolean;
   public table: DocumentationStepTable;
 
@@ -93,18 +98,48 @@ export class DocumentationStep {
         }
       }
     }
+    var fragments = instance.data.text.split('"') ;
+    if (fragments.length > 0) {
+      if (fragments.length == 1) {
+        instance.text.push( new DocumentationStepTextFragment(instance.data.text, false) ) ;
+      } else {
+        var isParameter = false ;
+        for (var j = 0; j < fragments.length; j++) {
+          instance.text.push( new DocumentationStepTextFragment(fragments[j], isParameter) )
+          isParameter = ! isParameter ;
+        }
+      }
+    }
     return instance;
   }
 }
 
-export class DocumentationScenario {
+export interface ExpandableNode {
+
+  type : string ;
+  nodeId : string ;
+  localId : string ;
+
+  getChilden() : Array<ExpandableNode> ;
+
+  hasChilden(): boolean ;
+
+}
+
+
+export class DocumentationScenario  implements ExpandableNode {
+  public type = "scenario" ;
+  public nodeId : string ;
+  public localId : string ;
   public data: DocumentationScenarioApi;
   public level : number;
   public steps: Array<DocumentationStep>;
 
-  public static newFromApi(dataApi: DocumentationScenarioApi, level: number): DocumentationScenario {
+  public static newFromApi(parentNodeId: string,dataApi: DocumentationScenarioApi, level: number): DocumentationScenario {
     var instance = new DocumentationScenario( );
     instance.data = dataApi ;
+    instance.localId =  DocumentationNode.toAnchor( dataApi.name) ;
+    instance.nodeId  = `${parentNodeId}_${instance.localId}` ;
     instance.level = level ;
     instance.steps = new Array<DocumentationStep>() ;
     for (let step of dataApi.steps) {
@@ -112,84 +147,145 @@ export class DocumentationScenario {
     }
     return instance;
   }
+
+  getChilden() : Array<ExpandableNode>{
+    return new Array<ExpandableNode>();
+  }
+
+  hasChilden(): boolean {
+    return this.getChilden().length > 0 ;
+  }
 }
 
-export class DocumentationFeature {
+
+export class DocumentationFeature implements ExpandableNode{
+  public type = "feature" ;
+  public nodeId : string ;
+  public localId : string ;
   public data: DocumentationFeatureApi;
   public level : number;
   public scenarios: Array<DocumentationScenario>;
 
-  public static newFromApi(dataApi: DocumentationFeatureApi, level: number): DocumentationFeature {
+  public static newFromApi(parentNodeId: string, dataApi: DocumentationFeatureApi, level: number): DocumentationFeature {
     var instance = new DocumentationFeature( );
     instance.data = dataApi ;
+    instance.localId = DocumentationNode.toAnchor( dataApi.path);
+    instance.nodeId  = `${parentNodeId}_${instance.localId}` ;
     instance.level = level ;
     instance.scenarios = new Array<DocumentationScenario>() ;
     for (let scenario of dataApi.scenarios) {
-      instance.scenarios.push( DocumentationScenario.newFromApi(scenario, level+1)   );
+      instance.scenarios.push( DocumentationScenario.newFromApi(instance.nodeId,scenario, level+1)   );
     }
     return instance;
+  }
+
+  getChilden() : Array<ExpandableNode>{
+    return this.scenarios;
+  }
+
+  hasChilden(): boolean {
+    return this.getChilden().length > 0 ;
   }
 }
 
 export class DocumentationBranch {
   public data: DocumentationBranchApi;
+  public nodeId : string ;
+  public localId : string ;
   public level : number;
   public features: Array<DocumentationFeature>;
 
-  public static newFromApi(dataApi: DocumentationBranchApi, level: number): DocumentationBranch {
+  public static newFromApi(parentNodeId: string, dataApi: DocumentationBranchApi, level: number): DocumentationBranch {
     var instance = new DocumentationBranch( );
     instance.data = dataApi ;
+    instance.localId = DocumentationNode.toAnchor( dataApi.name) ;
+    instance.nodeId  = `${parentNodeId}_${instance.localId}` ;
     instance.level = level ;
     instance.features = new Array<DocumentationFeature>() ;
     for (let feature of dataApi.features) {
-      instance.features.push( DocumentationFeature.newFromApi(feature,level+1));
+      instance.features.push( DocumentationFeature.newFromApi(instance.nodeId,feature,level+1));
     }
     return instance;
   }
 }
 
-export class DocumentationProject {
+
+export class DocumentationProject implements ExpandableNode{
+  public type = "project" ;
+  public nodeId : string ;
+  public localId : string ;
   public data: DocumentationProjectApi;
   public level : number;
   public branch: DocumentationBranch;
 
-  public static newFromApi(dataApi: DocumentationProjectApi, level: number): DocumentationProject  {
+  public static newFromApi(parentNodeId: string, dataApi: DocumentationProjectApi, level: number): DocumentationProject  {
     var instance = new DocumentationProject( );
     instance.data = dataApi ;
+    instance.localId = DocumentationNode.toAnchor( dataApi.name)  ;
+    instance.nodeId  = `${parentNodeId}_${instance.localId}` ;
     instance.level = level ;
     for (let branch of dataApi.branches) {
-      instance.branch =  DocumentationBranch.newFromApi(branch,level)   ;
+      instance.branch =  DocumentationBranch.newFromApi(instance.nodeId,branch,level)   ;
     }
     return instance;
   }
+
+  getChilden() : Array<ExpandableNode>{
+    return this.branch.features ;
+  }
+
+  hasChilden(): boolean {
+    return this.getChilden().length > 0 ;
+  }
 }
 
-export class DocumentationNode {
+export class DocumentationNode implements ExpandableNode{
+  public type = "node" ;
+  public nodeId : string ;
+  public localId : string ;
   public data: DocumentationNodeApi;
   public level : number;
   public children: Array<DocumentationNode>;
   public projects: Array<DocumentationProject>;
 
-  public static newFromApi(dataApi: DocumentationNodeApi, level: number): DocumentationNode  {
+  public static toAnchor( id: string) : string{
+    return id.split(' ').join('_').split('/').join('-').split('.').join('-').split('#').join('-').toLocaleLowerCase()
+  }
+
+  public static newFromApi(parentNodeId: string, dataApi: DocumentationNodeApi, level: number): DocumentationNode  {
     var instance = new DocumentationNode( );
     instance.data = dataApi ;
+    instance.localId = DocumentationNode.toAnchor( dataApi.slugName) ;
+    instance.nodeId  = `${parentNodeId}_${instance.localId}` ;
     instance.level = level ;
     instance.children = new Array<DocumentationNode>() ;
     for (let child of dataApi.children) {
-      instance.children.push( DocumentationNode.newFromApi(child,level+1) )  ;
+      instance.children.push( DocumentationNode.newFromApi(instance.nodeId , child,level+1) )  ;
     }
     instance.projects = new Array<DocumentationProject>() ;
     for (let project of dataApi.projects) {
-      instance.projects.push( DocumentationProject.newFromApi(project,level+1) )  ;
+      instance.projects.push( DocumentationProject.newFromApi(instance.nodeId ,project,level+1) )  ;
     }
     return instance;
   }
 
-  public hasChilden(): boolean {
-    return this.children.length > 0;
+  getChilden() : Array<ExpandableNode>{
+    var all = new Array<ExpandableNode>();
+    for (let child of this.children) {
+      all.push( child )  ;
+    }
+    for (let project of this.projects) {
+      all.push( project )  ;
+    }
+    return all ;
   }
 
-  public hasProjects(): boolean {
-    return this.projects.length > 0;
+  hasChilden(): boolean {
+    return this.getChilden().length > 0 ;
   }
+
+
 }
+
+
+

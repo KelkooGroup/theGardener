@@ -1,35 +1,64 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {DocumentationNode} from "../../../../../_models/documentation";
+import {Component, Input, OnInit, AfterViewInit} from '@angular/core';
+import {DocumentationNode, ExpandableNode} from "../../../../../_models/documentation";
 import {MatTreeNestedDataSource} from "@angular/material/tree";
 import {NestedTreeControl} from "@angular/cdk/tree";
-import {HierarchyNodeSelector} from "../../../../../_services/criteriasSelection";
+import {ActivatedRoute, Params, Router, RouterEvent} from "@angular/router";
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-documentation-theme-book',
   templateUrl: './documentation-theme-book.component.html',
   styleUrls: ['./documentation-theme-book.component.scss']
 })
-export class DocumentationThemeBookComponent implements OnInit {
+export class DocumentationThemeBookComponent implements OnInit, AfterViewInit {
 
   @Input()
   documentationData : DocumentationNode[];
 
-  nestedTreeControl: NestedTreeControl<DocumentationNode>;
+  nestedTreeControl: NestedTreeControl<ExpandableNode>;
   nestedDataSource: MatTreeNestedDataSource<DocumentationNode>;
 
-  constructor() { }
+  url : string ;
+  hash : string ;
+
+  constructor(private location: Location, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit() {
-    this.nestedTreeControl = new NestedTreeControl<DocumentationNode>(this._getChildren);
+    this.nestedTreeControl = new NestedTreeControl<ExpandableNode>(this._getChildren);
     this.nestedDataSource = new MatTreeNestedDataSource();
     this.nestedDataSource.data = this.documentationData;
     this.nestedTreeControl.dataNodes = this.documentationData;
     this.nestedTreeControl.expandAll();
+
+    this.route.url.subscribe((url) => {
+      this.url = this.location.path() ;
+    });
+
+
+    this.route.fragment.subscribe((hash: string) => {
+        if (hash) {
+          this.hash = hash;
+          console.log("Event Hash" + hash)
+        }
+    });
+
   }
 
-  hasNestedChild = (_: number, nodeData: DocumentationNode) => nodeData.hasChilden() || nodeData.hasProjects();
+  ngAfterViewInit() {
+    if (this.hash ) {
+      const cmp = document.getElementById(this.hash);
+      if (cmp) {
+        console.log("Found related cmp : "+ cmp) ;
+        cmp.scrollIntoView();
+        console.log("Scroll to "+ cmp) ;
+      }
+    }
+  }
 
-  private _getChildren = (node: DocumentationNode ) => node.children;
+
+  hasNestedChild = (_: number, nodeData: DocumentationNode) => nodeData.hasChilden() ;
+
+  private _getChildren = (node: ExpandableNode ) => node.getChilden();
 
 
 
