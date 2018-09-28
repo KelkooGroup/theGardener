@@ -29,6 +29,7 @@ import {
   MatTabsModule,
   MatProgressSpinnerModule,
 } from "@angular/material";
+import {MatCardModule} from '@angular/material/card';
 import {PanelComponent} from './_components/panel/panel.component';
 import {CriteriasComponent} from './documentation/generate/criterias/criterias.component';
 import {OutputComponent} from './documentation/generate/output/output.component';
@@ -66,6 +67,7 @@ const nonProductionProviders = [{
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
+    MatCardModule,
     MatButtonModule,
     MatCheckboxModule,
     MatChipsModule,

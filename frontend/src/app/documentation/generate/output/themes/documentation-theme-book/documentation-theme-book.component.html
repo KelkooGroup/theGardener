@@ -59,12 +59,12 @@
             <li>
 
               <div class="pull-right" >
-                <ul class="flex-container flex-direction-column flex-align-items-start" >
-                  <li>
-                    <ul>
-                      <li class="tags" >{{node.data.abstractionLevel}}
-                          {{node.data.caseType}}
-                          {{node.data.workflowStep}}</li>
+                <ul class="flex-container flex-direction-row flex-align-items-start" >
+                    <li *ngIf="node.data.abstractionLevel.startsWith('level_0')"  class="tag fas fa-graduation-cap fa-sm " title="High level of abstraction" ></li>
+                    <li *ngIf="node.data.abstractionLevel.startsWith('level_2')"  class="tag fas fa-cogs fa-sm "   title="Technical details" ></li>
+                    <li *ngIf="node.data.caseType.startsWith('error')"  class="tag fas fa-times-circle fa-sm " title="Error case" ></li>
+                    <li *ngIf="node.data.caseType.startsWith('limit')"  class="tag fas fa-exclamation-triangle fa-sm " title="Limit case"></li>
+                    <li>
                       <div class="steps">
                         <div class="pull-right" *ngFor="let step of node.steps">
                           <ul class="flex-container flex-direction-column flex-align-items-start" >
@@ -79,11 +79,12 @@
 
 
                             </li>
+
                           </ul>
+
                         </div>
                       </div>
-                    </ul>
-                  </li>
+                    </li>
                 </ul>
               </div>
 
