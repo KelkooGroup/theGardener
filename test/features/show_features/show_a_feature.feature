@@ -353,3 +353,130 @@ Examples:
       | Tim       | 1                  |
 
 
+  @level_2_technical_details @nominal_case @draft
+  Scenario: show a feature with one simple scenario with all required tags and meta data - json output
+    Given we have now those scenario in the database
+      | id | description                        | scenarioType | workflowStep | caseType     | abstractionLevel | featureId |
+      | 1  | providing several book suggestions | Scenario     | ready        | nominal_case | level_0          | 1         |
+    And we have now those stepsAsJSon for the scenario "1" in the database
+"""
+[
+                        {
+                        "id": 0,
+                        "keyword": "Given",
+                        "text": "a user Tim",
+                        "argument": []
+                        },
+                        {
+                        "id": 1,
+                        "keyword": "When",
+                        "text": "we ask for some suggestions",
+                        "argument": []
+                        },
+                        {
+                        "id": 2,
+                        "keyword": "Then",
+                        "text": "the suggestions are popular and available books adapted to the age of the user",
+                        "argument": []
+                        }
+]
+"""
+    When I perform a "GET" on following URL "/api/documentation/eng/library/suggestion?projects=suggestionsWS"
+    Then I get the following json response body
+"""
+    {
+      "id": ".",
+      "slugName": "root",
+      "name": "Hierarchy root",
+      "projects": [],
+      "hierarchyNodes":[
+        {
+          "id": ".01.",
+          "slugName": "eng",
+          "name": "Engineering view",
+          "projects": [],
+          "hierarchyNodes":[
+            {
+              "id": ".01.01.",
+              "slugName": "library",
+              "name": "Library system group",
+              "projects": [],
+              "hierarchyNodes":[
+                {
+                  "id": ".01.01.01.",
+                  "slugName": "suggestion",
+                  "name": "Suggestion system ",
+                  "projects": [
+                     {
+                       "id": "suggestionsWS",
+                       "name": "Suggestions WebServices",
+                       "branches":[
+                         {
+                            "id": 1,
+                            "name": "master",
+                            "isStable": true,
+                            "features":[
+                              {
+                                "id": 1,
+                                "path": "test/features/provide_book_suggestions.feature",
+                                "name": "Provide some book suggestions",
+                                "description": "As a user,\nI want some book suggestions\nSo that I can do some discovery",
+                                "tags": [],
+                                "language": "en",
+                                "keyword": "Feature",
+                                "scenarios":
+                                    [
+                                      {
+                                        "id": 0,
+                                        "name": "providing several book suggestions",
+                                        "abstractionLevel": "level_0_high_level",
+                                        "caseType": "nominal_case",
+                                        "workflowStep": "ready",
+
+                                        "keyword": "Scenario",
+                                        "description": "",
+                                        "tags": [
+                                            "level_0_high_level",
+                                            "nominal_case",
+                                            "ready"
+                                        ],
+
+                                        "steps": [
+                                                    {
+                                                    "id": 0,
+                                                    "keyword": "Given",
+                                                    "text": "a user",
+                                                    "argument": []
+                                                    },
+                                                    {
+                                                    "id": 1,
+                                                    "keyword": "When",
+                                                    "text": "we ask for suggestions",
+                                                    "argument": []
+                                                    },
+                                                    {
+                                                    "id": 2,
+                                                    "keyword": "Then",
+                                                    "text": "the suggestions are popular and available books adapted to the age of the user",
+                                                    "argument": []
+                                                    }
+                                                  ]
+
+                                      }
+                                    ],
+                                "comments": []
+                              }
+                            ]
+                         }
+                       ]
+                     }
+                  ],
+                  "hierarchyNodes":[]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+"""
