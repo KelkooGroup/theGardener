@@ -12,13 +12,8 @@ GET           /app/*path                                                        
 GET           /assets/images/*file                                                          controllers.Application.imageAssets(file: Asset)
 GET           /assets/*file                                                                 controllers.Application.assets(file:Asset)
 
-
-
-# Views
-GET           /features/:project/:feature                     controllers.Application.feature(project: String, feature: String)
-
 # API
-GET           /api/features/:project/:feature                 controllers.FeatureController.feature(project: String, feature: String)
+GET           /api/features/:project/:branch/:feature         controllers.FeatureController.feature(project: String, branch: String, feature: String)
 
 POST          /api/projects                                   controllers.ProjectController.registerProject()
 GET           /api/projects                                   controllers.ProjectController.getAllProjects()
@@ -32,17 +27,14 @@ DELETE        /api/projects/:id/hierarchy/:hierarchyId        controllers.Projec
 
 GET           /api/generateDocumentation                      controllers.FakeGenerateDocumentationController.generateDocumentation()
 
-
-# HIERARCHY
 POST          /api/hierarchy                                  controllers.HierarchyController.addHierarchy()
 GET           /api/hierarchy                                  controllers.HierarchyController.getAllHierarchies()
 PUT           /api/hierarchy/:id                              controllers.HierarchyController.updateHierarchy(id: String)
 DELETE        /api/hierarchy/:id                              controllers.HierarchyController.deleteHierarchy(id: String)
 
-# CRITERIAS
 GET           /api/criterias                                  controllers.FakeCriteriasController.getAllHierarchies()
 
-# Swagger API
+# API DOCUMENTATION
 GET           /api/docs/                                      controllers.Assets.at(path="/public/swagger-ui",file="index.html")
 GET           /api/docs/swagger.json                          controllers.ApiHelpController.getResources
 GET           /api/docs/*file                                 controllers.Assets.at(path="/public/swagger-ui",file)

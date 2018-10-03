@@ -12,9 +12,8 @@ class Application @Inject()(featureService: FeatureService, projectRepository: P
 
   val projectsRootDirectory = configuration.get[String]("projects.root.directory")
 
-
-  def index() = Action {
-    Redirect("/app/")
+  def index = Action {
+    Ok(html.index("Hello, the Gardener"))
   }
 
   def app(path: String): Action[AnyContent] = assets.at("dist/index.html")
@@ -24,9 +23,5 @@ class Application @Inject()(featureService: FeatureService, projectRepository: P
   def imageAssets(file: Asset): Action[AnyContent] = assets.versioned(path = "/public/dist/assets/images", file)
 
 
-  def feature(project: String, feature: String) = Action {
-    val projectName = projectRepository.findById(project).map(_.name).getOrElse(project)
 
-    Ok(html.feature(projectName, featureService.parseFeatureFile(project, s"$projectsRootDirectory/$project/master/test/features/$feature")))
-  }
 }
