@@ -1,0 +1,27 @@
+<app-panel *ngIf="isCriteriaSelection"   [showSpinner]="! views"  class="criterias" panelTitle="Criterias" panelIcon="fas fa-sliders-h">
+  <mat-tab-group  >
+    <mat-tab  *ngFor="let view of views;"  label="{{view.name}}"  >
+      <app-criterias-tree-selector [data]="view.children"  [childrenLabel]="view.childrenLabel"  ></app-criterias-tree-selector>
+    </mat-tab>
+  </mat-tab-group>
+  <button class="generate" (click)="generateDocumentation()"  mat-stroked-button>Generate documentation</button>
+</app-panel>
+
+<app-panel *ngIf="isCriteriaDisplay && criteriaDisplay"   class="criterias" panelTitle="Criterias" panelIcon="fas fa-sliders-h">
+  <div *ngIf="criteriaDisplay.hierarchyNodes.length > 0">
+    All projects from sections:
+    <ul>
+      <li *ngFor="let node of criteriaDisplay.hierarchyNodes;">{{node}}</li>
+    </ul>
+  </div>
+  <div *ngIf="criteriaDisplay.projects.length > 0">
+    <span *ngIf="criteriaDisplay.hierarchyNodes.length ==0">Projects:</span>
+    <span *ngIf="criteriaDisplay.hierarchyNodes.length > 0">Additional projects:</span>
+    <ul>
+      <li *ngFor="let project of criteriaDisplay.projects;">{{project}}</li>
+    </ul>
+  </div>
+</app-panel>
+
+
+

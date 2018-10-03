@@ -1,0 +1,33 @@
+@import "../../../../../../../stylesheets/colors";
+
+table {
+  width: 100%;
+}
+
+.book-header-cell, .book-cell{
+  align-items: start;
+  padding-left: 5px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+
+.book-header-cell {
+  background-color: $color-text-dark;
+  color: $color-text-opposite;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+
+.book-cell {
+  background-color: $color-background;
+  color: $color-text-dark;
+  font-size: 12px;
+  font-weight: 300;
+}
+
+
+.book-row, .book-header-row{
+  min-height: 16px;
+}

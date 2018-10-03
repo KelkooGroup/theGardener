@@ -12,13 +12,13 @@ Feature: Show a feature
       | id | name   | isStable | projectId     |
       | 1  | master | true     | suggestionsWS |
 
-  @level_0_high_level @nominal_case @valid
+  @level_0_high_level @nominal_case @draft
   Scenario: show a simple feature
     Given a simple feature is available in my project
     When a user access to this feature in theGardener
     Then this feature is displayed properly
 
-  @level_1_specification @nominal_case @valid
+  @level_1_specification @nominal_case @draft
   Scenario: show a feature with one simple scenario with all required tags and meta data
     Given the file "data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature"
     """
@@ -47,7 +47,7 @@ Scenario: providing several book suggestions
       | 1  | When  | we ask for suggestions                                                         |
       | 2  | Then  | the suggestions are popular and available books adapted to the age of the user |
 
-  @level_2_technical_details @nominal_case @valid
+  @level_2_technical_details @nominal_case @draft
   Scenario: show a feature with one simple scenario with all required tags and meta data - html output
     Given the file "data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature"
     """
@@ -108,7 +108,7 @@ Scenario: providing several book suggestions
 """
 
 
-  @level_2_technical_details @nominal_case @valid
+  @level_2_technical_details @nominal_case @draft
   Scenario: show a feature with one simple scenario with all required tags and meta data - json output
     Given the file "data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature"
     """
@@ -167,7 +167,7 @@ Scenario: providing several book suggestions
 """
 
 
-  @level_1_specification @nominal_case @valid
+  @level_1_specification @nominal_case @draft
   Scenario Outline: show the different possible values of the annotation considered by theGardener
     Given the file "data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature"
     """
@@ -202,7 +202,7 @@ Scenario: providing several book suggestions
       | @level_0_high_level        | @limit_case |             | level_0                      | limit_case           | valid                    |
       | @level_0_high_level        | @limit_case | @ongoing    | level_0                      | limit_case           | ongoing                  |
 
-  @level_1_specification @limit_case @valid
+  @level_1_specification @limit_case @draft
   Scenario Outline: show the different possible values of the annotation considered by theGardener
     Given the file "data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature"
     """
@@ -246,7 +246,7 @@ Scenario: providing several book suggestions
       | @Nominal           | level_1                      | nominal_case         | valid                    |
       | @Draft             | level_1                      | nominal_case         | draft                    |
 
-  @level_1_specification @error_case @valid
+  @level_1_specification @error_case @draft
   Scenario: try to show a feature based on an incorrect feature file
     Given the file "data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature"
     """
@@ -262,7 +262,7 @@ Scenario: providing several book suggestions
     When a user access to the feature "provide_book_suggestions.feature" of the project "suggestionsWS"
     Then no feature is displayed
 
-  @level_1_specification @nominal_case @valid
+  @level_1_specification @nominal_case @draft
   Scenario: show a feature with one scenario with some parameters
     Given the file "data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature"
     """
@@ -284,7 +284,7 @@ Scenario: one service on which the suggestion system depends on is down
       | 2  | When  | we ask for <param_0> suggestions from <param_1> different categories | param_0:3,param_1:2 |
       | 3  | Then  | the system is temporary not available                                |                     |
 
-  @level_1_specification @nominal_case @valid
+  @level_1_specification @nominal_case @draft
   Scenario: show a feature with one scenario with a multi lines step
     Given the file "data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature"
     """
@@ -317,7 +317,7 @@ Feature: As a user, I want some book suggestions so that I can do some discovery
       | cat2       | Picture books   |
       | cat3       | Bedtime stories |
 
-  @level_1_specification @nominal_case @valid
+  @level_1_specification @nominal_case @draft
   Scenario: show a feature with one outline scenario
     Given the file "data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature"
     """

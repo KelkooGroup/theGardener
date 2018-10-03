@@ -1,0 +1,124 @@
+@import "../../../../../../stylesheets/colors";
+
+.documentation-tree-invisible {
+  display: none;
+}
+
+.documentation-tree ul,
+.documentation-tree li {
+  margin-top: 0;
+  margin-bottom: 0;
+  list-style-type: none;
+}
+
+.pull-right{
+  margin-left: 5px;
+  padding-left: 5px;
+}
+
+.documentationNode {
+  color: $color-text-dark;
+}
+
+.level1 {
+  font-size: 23px;
+}
+
+.level2 {
+  font-size: 22px;
+}
+
+.level3 {
+  font-size: 20px;
+}
+
+.level4 {
+  font-size: 19px;
+}
+
+.level5 {
+  font-size: 18px;
+}
+
+.level6 {
+  font-size: 17px;
+}
+
+.level7 {
+  font-size: 16px;
+}
+
+.project, .branch, .feature, .scenario, .step, .table{
+  color: $color-text-darker;
+}
+
+
+.branch {
+  font-family: "courier";
+  font-size: x-small;
+  width: 50%;
+  max-width: 600px;
+  padding-left: 10px;
+}
+
+.feature{
+  margin-top: 5px;
+}
+
+
+.scenario{
+}
+
+.tag{
+  color: $color-text-invert;
+  font-weight: lighter;
+}
+
+.tags{
+  font-style: italic;
+  font-weight: lighter;
+  font-size: x-small;
+  font-family: "courier";
+  color: $color-text-darker;
+}
+
+.steps{
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+
+.step{
+  margin-top: 2px;
+}
+
+.table{
+  margin-top: 2px;
+}
+
+.stepKeyword{
+  font-weight: 600;
+  color: $color-text-dark;
+}
+
+.stepParameter{
+  background-color: $color-text-dark;
+  color: $color-text-opposite;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.stepText{
+  color: $color-text-dark;
+}
+
+.bookLink {
+  color: $color-border-light;
+  cursor: pointer;
+  text-decoration: none;
+  padding-left: 5px;
+}
+
+.bookLink li {
+  height: 10px;
+}
+
