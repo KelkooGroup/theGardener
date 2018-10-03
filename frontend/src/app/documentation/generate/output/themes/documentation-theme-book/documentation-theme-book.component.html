@@ -64,8 +64,7 @@
                     <li *ngIf="node.data.abstractionLevel.startsWith('level_2')"  class="tag fas fa-cogs fa-sm "   title="Technical details" ></li>
                     <li *ngIf="node.data.caseType.startsWith('error')"  class="tag fas fa-times-circle fa-sm " title="Error case" ></li>
                     <li *ngIf="node.data.caseType.startsWith('limit')"  class="tag fas fa-exclamation-triangle fa-sm " title="Limit case"></li>
-                    <li>
-                      <div class="steps">
+                    <li class="steps" >
                         <div class="pull-right" *ngFor="let step of node.steps">
                           <ul class="flex-container flex-direction-column flex-align-items-start" >
                             <li>
@@ -83,7 +82,6 @@
                           </ul>
 
                         </div>
-                      </div>
                     </li>
                 </ul>
               </div>

@@ -38,7 +38,6 @@ export class DocumentationThemeBookComponent implements OnInit, AfterViewInit {
     this.route.fragment.subscribe((hash: string) => {
         if (hash) {
           this.hash = hash;
-          console.log("Event Hash" + hash)
         }
     });
 
@@ -48,9 +47,7 @@ export class DocumentationThemeBookComponent implements OnInit, AfterViewInit {
     if (this.hash ) {
       const cmp = document.getElementById(this.hash);
       if (cmp) {
-        console.log("Found related cmp : "+ cmp) ;
         cmp.scrollIntoView();
-        console.log("Scroll to "+ cmp) ;
       }
     }
   }
