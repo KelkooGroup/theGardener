@@ -62,15 +62,24 @@ class GetFeaturesSteps extends ScalaDsl with EN with MockitoSugar {
   }
 
   Given("""^we have no branch in the database$""") { () =>
-    branchRepository.deleteAll()
+    db.withConnection { implicit connection =>
+      SQL"TRUNCATE TABLE branch".executeUpdate()
+      SQL"ALTER TABLE branch ALTER COLUMN id RESTART WITH 1".executeUpdate()
+    }
   }
 
   Given("""^we have no feature in the database$""") { () =>
-    featureRepository.deleteAll()
+    db.withConnection { implicit connection =>
+      SQL"TRUNCATE TABLE feature".executeUpdate()
+      SQL"ALTER TABLE feature ALTER COLUMN id RESTART WITH 1".executeUpdate()
+    }
   }
 
   Given("""^we have no scenario in the database$""") { () =>
-    scenarioRepository.deleteAll()
+    db.withConnection { implicit connection =>
+      SQL"TRUNCATE TABLE scenario".executeUpdate()
+      SQL"ALTER TABLE scenario ALTER COLUMN id RESTART WITH 1".executeUpdate()
+    }
   }
 
   Given("""^we have no tag in the database$""") { () =>
