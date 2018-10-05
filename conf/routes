@@ -13,8 +13,6 @@ GET           /assets/images/*file                                              
 GET           /assets/*file                                                                 controllers.Application.assets(file:Asset)
 
 # API
-GET           /api/features/:project/:branch/:feature         controllers.FeatureController.feature(project: String, branch: String, feature: String)
-
 POST          /api/projects                                   controllers.ProjectController.registerProject()
 GET           /api/projects                                   controllers.ProjectController.getAllProjects()
 GET           /api/projects/:id                               controllers.ProjectController.getProject(id: String)
@@ -25,7 +23,6 @@ GET           /api/projects/:id/hierarchy                     controllers.Projec
 POST          /api/projects/:id/hierarchy/:hierarchyId        controllers.ProjectController.linkProjectToHierarchy(id: String, hierarchyId : String)
 DELETE        /api/projects/:id/hierarchy/:hierarchyId        controllers.ProjectController.deleteLinkProjectToHierarchy(id: String, hierarchyId : String)
 
-GET           /api/generateDocumentation                      controllers.FakeGenerateDocumentationController.generateDocumentation()
 
 POST          /api/hierarchy                                  controllers.HierarchyController.addHierarchy()
 GET           /api/hierarchy                                  controllers.HierarchyController.getAllHierarchies()
@@ -33,6 +30,7 @@ PUT           /api/hierarchy/:id                              controllers.Hierar
 DELETE        /api/hierarchy/:id                              controllers.HierarchyController.deleteHierarchy(id: String)
 
 GET           /api/criterias                                  controllers.FakeCriteriasController.getAllHierarchies()
+GET           /api/generateDocumentation                      controllers.FakeGenerateDocumentationController.generateDocumentation()
 
 # API DOCUMENTATION
 GET           /api/docs/                                      controllers.Assets.at(path="/public/swagger-ui",file="index.html")

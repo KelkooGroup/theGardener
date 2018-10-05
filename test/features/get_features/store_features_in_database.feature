@@ -262,6 +262,8 @@ Feature: As a user Tim, I want some book suggestions so that I can do some disco
     And we have now those features in the database
       | id | path                                                                                | name                                                                        | description | branchId |
       | 1  | target/data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature | As a user Tim, I want some book suggestions so that I can do some discovery |             | 1        |
+
+#     TODO The Feature name should be "Provide book suggestions"  based on the name of the file provide_book_suggestions.feature
     And we have now those scenario in the database
       | id | name                                                                      | keyword  | workflowStep | caseType     | abstractionLevel      | description |
       | 1  | suggestions of popular and available books adapted to the age of the user | Scenario | valid        | nominal_case | level_1_specification |             |

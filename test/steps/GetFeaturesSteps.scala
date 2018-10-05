@@ -82,6 +82,11 @@ class GetFeaturesSteps extends ScalaDsl with EN with MockitoSugar {
     }
   }
 
+  Given("""^the database is synchronized on the project "([^"]*)"$""") { project: String =>
+    response = route(app, FakeRequest("POST", s"/api/projects/$project/synchronize")).get
+    await(response)
+  }
+
   Given("""^we have no tag in the database$""") { () =>
     tagRepository.deleteAll()
   }
