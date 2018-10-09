@@ -12,29 +12,6 @@ import services._
 
 import scala.concurrent._
 
-@Api(value = "FeatureController", produces = "application/json")
-@ApiResponses(Array(new ApiResponse(code = 404, message = "Project or branch not found")))
-class FeatureController @Inject()(featureService: FeatureService, configuration: Configuration, featureRepository: FeatureRepository, projectRepository: ProjectRepository, branchRepository: BranchRepository) extends InjectedController {
-
-  val projectsRootDirectory = configuration.get[String]("projects.root.directory")
-
-  @ApiOperation(value = "Get a feature", response = classOf[Feature])
-  def feature(@ApiParam("Project id") project: String, @ApiParam("Branch name") branch: String, @ApiParam("Feature file name") feature: String) = Action {
-
-    if (projectRepository.existsById(project)) {
-      val branchId = branchRepository.findByProjectIdAndName(project, branch)
-      if (branchId.isDefined) {
-        Ok(Json.toJson(featureService.parseFeatureFile(project, branchId.get.id, s"$projectsRootDirectory/$project/$branch/test/features/$feature")))
-
-      } else {
-        NotFound(s"No branch $branch for project $project")
-      }
-    } else {
-      NotFound(s"Project $project not configured")
-    }
-  }
-}
-
 @Api(value = "ProjectController", produces = "application/json")
 class ProjectController @Inject()(projectRepository: ProjectRepository, projectService: ProjectService, hierarchyRepository: HierarchyRepository)(implicit ec: ExecutionContext) extends InjectedController {
 

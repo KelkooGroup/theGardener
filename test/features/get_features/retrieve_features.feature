@@ -1,6 +1,6 @@
-Feature: Get BDD features from a project
+Feature: Retrieve BDD features from a project on a remote server
   As a user,
-  I want theGardener to retrieve all features related to BDD of my project
+  I want theGardener to retrieve all features related to BDD of my project on a remote server
   So that I can access to those features through theGardener
 
 
@@ -10,13 +10,13 @@ Feature: Get BDD features from a project
 
 
   @level_0_high_level @nominal_case @valid
-  Scenario: get bdd features from a project
+  Scenario: retrieve bdd features from a project
     Given a project in theGardener hosted on a remote server
     When BDD features synchronization action is triggered
     Then the project BDD features of this project are retrieved from the remote server
 
   @level_1_specification @nominal_case @valid
-  Scenario: get bdd features from a project
+  Scenario: retrieve bdd features from a project
     Given we have the following projects
       | id            | name                    | repositoryUrl                                  | stableBranch | featuresRootPath |
       | suggestionsWS | Suggestions WebServices | target/data/GetFeatures/library/suggestionsWS/ | master       | test/features    |
@@ -79,7 +79,7 @@ Scenario: providing several book suggestions
       | literal            |
 
   @level_1_specification @nominal_case @valid
-  Scenario: get bdd features from a project with a complex structure of feature files
+  Scenario: retrieve bdd features from a project with a complex structure of feature files
     Given we have the following projects
       | id            | name                    | repositoryUrl                                  | stableBranch | featuresRootPath |
       | suggestionsWS | Suggestions WebServices | target/data/GetFeatures/library/suggestionsWS/ | master       | test/features    |
@@ -207,38 +207,3 @@ Scenario: providing several book suggestions
       | nominal_case       |
       | ongoing            |
       | general            |
-
-  @level_1_specification @nominal_case @valid
-  Scenario: Synchronize with a webhook a project
-    Given we have the following projects
-      | id            | name                    | repositoryUrl                                  | stableBranch | featuresRootPath |
-      | suggestionsWS | Suggestions WebServices | target/data/GetFeatures/library/suggestionsWS/ | master       | test/features    |
-    And the server "target/data/GetFeatures" host under the project "library/suggestionsWS" on the branch "master" the file "test/features/provide_book_suggestions.feature"
-    """
-Feature: As a user, I want some book suggestions so that I can do some discovery
-    """
-    When the synchronization action is triggered by the webhook for project "suggestionsWS"
-    Then the file system store now the file "target/data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature"
-    """
-Feature: As a user, I want some book suggestions so that I can do some discovery
-    """
-
-  @level_1_specification @nominal_case @valid
-  Scenario: Synchronize with a fixed interval all the projects
-    Given we have the following configuration
-      | path                               | value |
-      | projects.synchronize.interval      | 60    |
-      | projects.synchronize.initial.delay | 1     |
-    And we have the following projects
-      | id            | name                    | repositoryUrl                                  | stableBranch | featuresRootPath |
-      | suggestionsWS | Suggestions WebServices | target/data/GetFeatures/library/suggestionsWS/ | master       | test/features    |
-    And the server "target/data/GetFeatures" host under the project "library/suggestionsWS" on the branch "master" the file "test/features/provide_book_suggestions.feature"
-    """
-Feature: As a user, I want some book suggestions so that I can do some discovery
-    """
-    When the synchronization action is triggered by the scheduler
-    Then the file system store now the file "target/data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature"
-    """
-Feature: As a user, I want some book suggestions so that I can do some discovery
-    """
-

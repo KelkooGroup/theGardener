@@ -14,10 +14,10 @@ class FeatureServiceTest extends WordSpec with MustMatchers with MockitoSugar {
     "parse a feature file" in {
       when(featureRepository.findByBranchIdAndPath(any[Long], any[String])).thenReturn(None)
 
-      val feature = new FeatureService(featureRepository).parseFeatureFile("test", 1, "test/features/show_features/show_a_feature.feature")
+      val feature = new FeatureService(featureRepository).parseFeatureFile("test", 1, "test/features/generate_documentation/show_a_feature.feature")
 
-      feature.name mustBe "Show a feature"
-      feature.description must include("So that my project feature is shared with all users")
+      feature.name mustBe "Generate documentation"
+      feature.description must include("As a user,")
       feature.comments mustBe Seq()
     }
   }
