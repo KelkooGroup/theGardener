@@ -2,6 +2,6 @@
 logLevel := Level.Warn
 
 // Use the Play sbt plugin for Play projects
-addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.6.19")
+addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.6.20")
 
 evictionWarningOptions in update := EvictionWarningOptions.empty
