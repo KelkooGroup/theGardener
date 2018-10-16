@@ -13,16 +13,16 @@ import play.api.test.Injecting
 class HierarchyRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with Injecting with BeforeAndAfterEach {
   val db = inject[Database]
   val hierarchyRepository = inject[HierarchyRepository]
-  val hierarchyNode1 = HierarchyNode("id1", "slugName1", "name1")
-  val hierarchyNode2 = HierarchyNode("id2", "slugName2", "name2")
+  val hierarchyNode1 = HierarchyNode("id1", "slugName1", "name1", "childrenLabel1", "childLabel1")
+  val hierarchyNode2 = HierarchyNode("id2", "slugName2", "name2", "childrenLabel2", "childLabel2")
 
   val hierarchyNodes = Seq(hierarchyNode1, hierarchyNode2)
 
   override def beforeEach(): Unit = {
     db.withConnection { implicit connection =>
       hierarchyNodes.foreach { hierarchyNode =>
-        SQL"""INSERT INTO hierarchyNode (id, slugName, name)
-             VALUES (${hierarchyNode.id}, ${hierarchyNode.slugName}, ${hierarchyNode.name})""".executeInsert()
+        SQL"""INSERT INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel)
+             VALUES (${hierarchyNode.id}, ${hierarchyNode.slugName}, ${hierarchyNode.name}, ${hierarchyNode.childrenLabel}, ${hierarchyNode.childLabel})""".executeInsert()
       }
     }
   }
@@ -65,13 +65,13 @@ class HierarchyRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with 
     }
 
     "save an hierarchyNode" in {
-      val hierarchyNode5 = HierarchyNode("id5", "slugName5", "name5")
-      hierarchyRepository.save(hierarchyNode5)
-      hierarchyRepository.findById(hierarchyNode5.id) mustBe Some(hierarchyNode5)
+      val hierarchyNode3 = HierarchyNode("id3", "slugName3", "name3", "childrenLabel3", "childLabel3")
+      hierarchyRepository.save(hierarchyNode3)
+      hierarchyRepository.findById(hierarchyNode3.id) mustBe Some(hierarchyNode3)
     }
 
     "save all hierarchyNodes" in {
-      val newHierarchyNodes = Seq(HierarchyNode("id3", "slugName3", "name3"), HierarchyNode("id4", "slugName4", "name4"))
+      val newHierarchyNodes = Seq(HierarchyNode("id4", "slugName4", "name4", "childrenLabel4", "childLabel4"), HierarchyNode("id5", "slugName5", "name5", "childrenLabel5", "childLabel5"))
       hierarchyRepository.saveAll(newHierarchyNodes)
       hierarchyRepository.findAll() must contain theSameElementsAs (newHierarchyNodes :+ hierarchyNode1 :+ hierarchyNode2)
     }

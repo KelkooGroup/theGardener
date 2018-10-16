@@ -45,6 +45,8 @@ class ScenarioRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with I
             SQL"REPLACE INTO tag(name) VALUES ($tag)".executeUpdate()
             SQL"REPLACE INTO scenario_tag(scenarioId, name) VALUES(${scenarioOutline.id}, $tag)".executeUpdate()
           }
+
+        case _ =>
       }
     }
   }
