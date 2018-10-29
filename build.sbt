@@ -41,7 +41,7 @@ libraryDependencies ++= Seq(
   "mysql" % "mysql-connector-java" % "8.0.12",
   "org.eclipse.jgit" % "org.eclipse.jgit" % "5.1.2.201810061102-r",
   "io.swagger" %% "swagger-play2" % "1.6.0",
-  "com.h2database" % "h2" % "1.4.197" % Test,
+  "com.h2database" % "h2" % "1.4.197",
   "net.ruippeixotog" %% "scala-scraper" % "2.1.0" % Test,
   "io.cucumber" %% "cucumber-scala" % "2.0.1" % Test,
   "io.cucumber" % "cucumber-junit" % "2.0.1" % Test,

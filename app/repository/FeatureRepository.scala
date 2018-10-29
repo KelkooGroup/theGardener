@@ -22,7 +22,7 @@ class FeatureRepository @Inject()(db: Database, tagRepository: TagRepository, sc
     comments <- str("comments")
   } yield Feature(id, branchId, path, backgroundAsJson.map(Json.parse(_).as[Background]),
     tagRepository.findAllByFeatureId(id), language, keyword, name, description,
-    scenarioRepository.findAllByFeatureId(id), comments.split("\n"))
+    scenarioRepository.findAllByFeatureId(id), comments.split("\n").filterNot(_.isEmpty))
 
   def findAll(): Seq[Feature] = {
     db.withConnection { implicit connection =>

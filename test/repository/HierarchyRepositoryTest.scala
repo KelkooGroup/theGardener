@@ -44,6 +44,10 @@ class HierarchyRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with 
       hierarchyRepository.findById(hierarchyNode1.id) mustBe Some(hierarchyNode1)
     }
 
+    "find an hierarchyNode by slugName" in {
+      hierarchyRepository.findBySlugName(hierarchyNode1.slugName) mustBe Some(hierarchyNode1)
+    }
+
     "delete all hierarchyNodes" in {
       hierarchyRepository.deleteAll()
 

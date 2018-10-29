@@ -42,9 +42,9 @@ Feature: Define hierarchy
       | .          | root       | Hierarchy root       | Views         | View         |
       | .01.       | eng        | Engineering view     | System groups | System group |
       | .01.01.    | library    | Library system group | Systems       | System       |
-      | .01.01.01. | suggestion | Suggestion system    | Components    | Component    |
-      | .01.01.02. | user       | User system          | Components    | Component    |
-      | .01.01.03. | search     | Search system        | Components    | Component    |
+      | .01.01.01. | suggestion | Suggestion system    | Projects      | Project      |
+      | .01.01.02. | user       | User system          | Projects      | Project      |
+      | .01.01.03. | search     | Search system        | Projects      | Project      |
       | .01.02.    | other      | Other system group   | Systems       | System       |
       | .01.03.    | another    | Another system group | Systems       | System       |
     When I perform a "GET" on following URL "/api/hierarchy"
@@ -77,22 +77,22 @@ Feature: Define hierarchy
 		"id": ".01.01.01.",
 		"slugName": "suggestion",
 		"name": "Suggestion system",
-		"childrenLabel": "Components",
-		"childLabel": "Component"
+		"childrenLabel": "Projects",
+		"childLabel": "Project"
 	},
     {
 		"id": ".01.01.02.",
 		"slugName": "user",
 		"name": "User system",
-		"childrenLabel": "Components",
-		"childLabel": "Component"
+		"childrenLabel": "Projects",
+		"childLabel": "Project"
 	},
     {
 		"id": ".01.01.03.",
 		"slugName": "search",
 		"name": "Search system",
-		"childrenLabel": "Components",
-		"childLabel": "Component"
+		"childrenLabel": "Projects",
+		"childLabel": "Project"
 	},
     {
 		"id": ".01.02.",
@@ -118,9 +118,9 @@ Feature: Define hierarchy
       | .          | root       | Hierarchy root       | Views         | View         |
       | .01.       | eng        | Engineering view     | System groups | System group |
       | .01.01.    | library    | Library system group | Systems       | System       |
-      | .01.01.01. | suggestion | Suggestion system    | Components    | Component    |
-      | .01.01.02. | user       | User system          | Components    | Component    |
-      | .01.01.03. | search     | Search system        | Components    | Component    |
+      | .01.01.01. | suggestion | Suggestion system    | Projects      | Project      |
+      | .01.01.02. | user       | User system          | Projects      | Project      |
+      | .01.01.03. | search     | Search system        | Projects      | Project      |
       | .01.02.    | other      | Other system group   | Systems       | System       |
       | .01.03.    | another    | Another system group | Systems       | System       |
     When I perform a "PUT" on following URL "/api/hierarchy/.01.02." with json body
@@ -149,9 +149,9 @@ Feature: Define hierarchy
       | .          | root       | Hierarchy root       | Views         | View         |
       | .01.       | eng        | Engineering view     | System groups | System group |
       | .01.01.    | library    | Library system group | Systems       | System       |
-      | .01.01.01. | suggestion | Suggestion system    | Components    | Component    |
-      | .01.01.02. | user       | User system          | Components    | Component    |
-      | .01.01.03. | search     | Search system        | Components    | Component    |
+      | .01.01.01. | suggestion | Suggestion system    | Projects      | Project      |
+      | .01.01.02. | user       | User system          | Projects      | Project      |
+      | .01.01.03. | search     | Search system        | Projects      | Project      |
       | .01.02.    | bakery     | Bakery system group  | Systems       | System       |
       | .01.03.    | another    | Another system group | Systems       | System       |
 
@@ -162,9 +162,9 @@ Feature: Define hierarchy
       | .          | root       | Hierarchy root       | Views         | View         |
       | .01.       | eng        | Engineering view     | System groups | System group |
       | .01.01.    | library    | Library system group | Systems       | System       |
-      | .01.01.01. | suggestion | Suggestion system    | Components    | Component    |
-      | .01.01.02. | user       | User system          | Components    | Component    |
-      | .01.01.03. | search     | Search system        | Components    | Component    |
+      | .01.01.01. | suggestion | Suggestion system    | Projects      | Project      |
+      | .01.01.02. | user       | User system          | Projects      | Project      |
+      | .01.01.03. | search     | Search system        | Projects      | Project      |
       | .01.02.    | other      | Other system group   | Systems       | System       |
       | .01.03.    | another    | Another system group | Systems       | System       |
     When I perform a "DELETE" on following URL "/api/hierarchy/.01.03."
@@ -174,7 +174,7 @@ Feature: Define hierarchy
       | .          | root       | Hierarchy root       | Views         | View         |
       | .01.       | eng        | Engineering view     | System groups | System group |
       | .01.01.    | library    | Library system group | Systems       | System       |
-      | .01.01.01. | suggestion | Suggestion system    | Components    | Component    |
-      | .01.01.02. | user       | User system          | Components    | Component    |
-      | .01.01.03. | search     | Search system        | Components    | Component    |
+      | .01.01.01. | suggestion | Suggestion system    | Projects      | Project      |
+      | .01.01.02. | user       | User system          | Projects      | Project      |
+      | .01.01.03. | search     | Search system        | Projects      | Project      |
       | .01.02.    | other      | Other system group   | Systems       | System       |

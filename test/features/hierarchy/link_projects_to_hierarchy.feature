@@ -1,4 +1,3 @@
-@ongoing
 Feature: Link a project to the hierarchy
   As an administrator,
   I want to define at which node of the hierarchy a project belongs
@@ -11,9 +10,9 @@ Feature: Link a project to the hierarchy
       | .          | root       | Hierarchy root       | Views         | View         |
       | .01.       | eng        | Engineering view     | System groups | System group |
       | .01.01.    | library    | Library system group | Systems       | System       |
-      | .01.01.01. | suggestion | Suggestion system    | Components    | Component    |
-      | .01.01.02. | user       | User system          | Components    | Component    |
-      | .01.01.03. | search     | Search system        | Components    | Component    |
+      | .01.01.01. | suggestion | Suggestion system    | Projects      | Project      |
+      | .01.01.02. | user       | User system          | Projects      | Project      |
+      | .01.01.03. | search     | Search system        | Projects      | Project      |
       | .01.02.    | other      | Other system group   | Systems       | System       |
       | .01.03.    | another    | Another system group | Systems       | System       |
       | .02.       | product    | Product view         | System groups | System group |
@@ -35,8 +34,8 @@ Feature: Link a project to the hierarchy
 		"id": ".01.01.01.",
 		"slugName": "suggestion",
 		"name": "Suggestion system",
-		"childrenLabel": "Components",
-		"childLabel": "Component"
+		"childrenLabel": "Projects",
+		"childLabel": "Project"
 	}
 ]
   """
@@ -58,8 +57,8 @@ Feature: Link a project to the hierarchy
 		"id": ".01.01.01.",
 		"slugName": "suggestion",
 		"name": "Suggestion system",
-		"childrenLabel": "Components",
-		"childLabel": "Component"
+		"childrenLabel": "Projects",
+		"childLabel": "Project"
 	},
     {
 		"id": ".02.",
@@ -95,8 +94,8 @@ Feature: Link a project to the hierarchy
 			"id": ".01.01.01.",
 			"slugName": "suggestion",
 			"name": "Suggestion system",
-			"childrenLabel": "Components",
-			"childLabel": "Component"
+			"childrenLabel": "Projects",
+			"childLabel": "Project"
 		},
 		{
 			"id": ".02.",
@@ -124,8 +123,8 @@ Feature: Link a project to the hierarchy
 		"id": ".01.01.01.",
 		"slugName": "suggestion",
 		"name": "Suggestion system",
-		"childrenLabel": "Components",
-		"childLabel": "Component"
+		"childrenLabel": "Projects",
+		"childLabel": "Project"
 	},
     {
 		"id": ".02.",
@@ -153,8 +152,8 @@ Feature: Link a project to the hierarchy
 		"id": ".01.01.01.",
 		"slugName": "suggestion",
 		"name": "Suggestion system",
-		"childrenLabel": "Components",
-		"childLabel": "Component"
+		"childrenLabel": "Projects",
+		"childLabel": "Project"
 	}
 ]
   """

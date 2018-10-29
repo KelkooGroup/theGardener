@@ -57,6 +57,12 @@ class HierarchyRepository @Inject()(db: Database) {
     }
   }
 
+  def findBySlugName(slugName: String): Option[HierarchyNode] = {
+    db.withConnection { implicit connection =>
+      SQL"SELECT * FROM hierarchyNode WHERE slugName = $slugName".as(parser.singleOpt)
+    }
+  }
+
   def findAllByProjectId(projectId: String): Seq[HierarchyNode] = {
     db.withConnection { implicit connection =>
       SQL"SELECT * FROM project_hierarchyNode LEFT OUTER JOIN hierarchyNode on (hierarchyId = id) WHERE projectId = $projectId".as(parser.*)

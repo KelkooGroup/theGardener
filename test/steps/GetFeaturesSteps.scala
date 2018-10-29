@@ -145,9 +145,20 @@ class GetFeaturesSteps extends ScalaDsl with EN with MockitoSugar {
     actualScenarios must contain theSameElementsAs expectedScenarios
   }
 
+  Then("""^we have now those scenario outline in the database$""") { scenario: util.List[ScenarioOutline] =>
+    val expectedScenarios = scenario.asScala.toList.map(_.copy(tags = Seq(), steps = Seq(), examples = Seq()))
+    val actualScenarios = scenarioRepository.findAll().map(_.asInstanceOf[ScenarioOutline].copy(tags = Seq(), steps = Seq(), examples = Seq()))
+    actualScenarios must contain theSameElementsAs expectedScenarios
+  }
+
   Then("""^we have now those stepsAsJSon for the scenario "([^"]*)" in the database$""") { (scenarioId: Int, expectedStep: String) =>
     val actualStep = scenarioRepository.findById(scenarioId).map(_.steps)
     Json.toJson(actualStep) mustBe Json.parse(expectedStep)
+  }
+
+  Then("""^we have now those examplesAsJSon for the scenario "([^"]*)" in the database$""") { (scenarioId: Int, expectedExamples: String) =>
+    val actualExamples = scenarioRepository.findById(scenarioId).map(_.asInstanceOf[ScenarioOutline].examples)
+    actualExamples mustBe Some(Json.parse(expectedExamples).as[Seq[Examples]])
   }
 
   Then("""^we have now those tags for the scenario "([^"]*)" in the database$""") { (scenarioId: Int, tags: util.List[String]) =>

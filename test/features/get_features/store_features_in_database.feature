@@ -320,7 +320,7 @@ Feature: As a user Tim, I want some book suggestions so that I can do some disco
 ]
 """
 
-  @level_1_specification @nominal_case @ready
+  @level_1_specification @nominal_case @valid
   Scenario: transform a outline scenario with parameters in Gherkin language to theGardener representation
     Given No project is checkout
     And we have the following projects
@@ -354,9 +354,9 @@ Feature: As a user Tim, I want some book suggestions so that I can do some disco
     And we have now those features in the database
       | id | path                                                                                | name                                                                        | description | branchId |
       | 1  | target/data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature | As a user Tim, I want some book suggestions so that I can do some discovery |             | 1        |
-    And we have now those scenario in the database
-      | id | name                        | keyword  | workflowStep | caseType   | abstractionLevel      | description |
-      | 1  | unknown user, no suggestion | Scenario | valid        | error_case | level_1_specification |             |
+    And we have now those scenario outline in the database
+      | id | name                        | keyword          | workflowStep | caseType   | abstractionLevel      | description |
+      | 1  | unknown user, no suggestion | Scenario Outline | valid        | error_case | level_1_specification |             |
     And we have now those stepsAsJSon for the scenario "1" in the database
 """
 [
