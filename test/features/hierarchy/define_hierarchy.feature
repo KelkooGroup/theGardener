@@ -15,7 +15,9 @@ Feature: Define hierarchy
 {
 	"id": ".",
 	"slugName": "root",
-	"name": "Hierarchy root"
+	"name": "Hierarchy root",
+	"childrenLabel": "Projects",
+	"childLabel": "Project"
 }
         """
     Then I get a response with status "201"
@@ -24,25 +26,27 @@ Feature: Define hierarchy
 {
 	"id": ".",
 	"slugName": "root",
-	"name": "Hierarchy root"
+	"name": "Hierarchy root",
+	"childrenLabel": "Projects",
+	"childLabel": "Project"
 }
         """
     And the hierarchy nodes are now
-      | id | slugName | name           |
-      | .  | root     | Hierarchy root |
+      | id | slugName | name           | childrenLabel | childLabel |
+      | .  | root     | Hierarchy root | Projects      | Project    |
 
   @level_2_technical_details @nominal_case @valid
   Scenario: Get all hierarchy
     Given the hierarchy nodes are
-      | id         | slugName   | name                 |
-      | .          | root       | Hierarchy root       |
-      | .01.       | eng        | Engineering view     |
-      | .01.01.    | library    | Library system group |
-      | .01.01.01. | suggestion | Suggestion system    |
-      | .01.01.02. | user       | User system          |
-      | .01.01.03. | search     | Search system        |
-      | .01.02.    | other      | Other system group   |
-      | .01.03.    | another    | Another system group |
+      | id         | slugName   | name                 | childrenLabel | childLabel   |
+      | .          | root       | Hierarchy root       | Views         | View         |
+      | .01.       | eng        | Engineering view     | System groups | System group |
+      | .01.01.    | library    | Library system group | Systems       | System       |
+      | .01.01.01. | suggestion | Suggestion system    | Components    | Component    |
+      | .01.01.02. | user       | User system          | Components    | Component    |
+      | .01.01.03. | search     | Search system        | Components    | Component    |
+      | .01.02.    | other      | Other system group   | Systems       | System       |
+      | .01.03.    | another    | Another system group | Systems       | System       |
     When I perform a "GET" on following URL "/api/hierarchy"
     Then I get a response with status "200"
     And I get the following json response body
@@ -51,42 +55,58 @@ Feature: Define hierarchy
     {
 		"id": ".",
 		"slugName": "root",
-		"name": "Hierarchy root"
+		"name": "Hierarchy root",
+		"childrenLabel": "Views",
+		"childLabel": "View"
 	},
     {
 		"id": ".01.",
 		"slugName": "eng",
-		"name": "Engineering view"
+		"name": "Engineering view",
+		"childrenLabel": "System groups",
+		"childLabel": "System group"
 	},
     {
 		"id": ".01.01.",
 		"slugName": "library",
-		"name": "Library system group"
+		"name": "Library system group",
+		"childrenLabel": "Systems",
+		"childLabel": "System"
 	},
     {
 		"id": ".01.01.01.",
 		"slugName": "suggestion",
-		"name": "Suggestion system"
+		"name": "Suggestion system",
+		"childrenLabel": "Components",
+		"childLabel": "Component"
 	},
     {
 		"id": ".01.01.02.",
 		"slugName": "user",
-		"name": "User system"
+		"name": "User system",
+		"childrenLabel": "Components",
+		"childLabel": "Component"
 	},
     {
 		"id": ".01.01.03.",
 		"slugName": "search",
-		"name": "Search system"
+		"name": "Search system",
+		"childrenLabel": "Components",
+		"childLabel": "Component"
 	},
     {
 		"id": ".01.02.",
 		"slugName": "other",
-		"name": "Other system group"
+		"name": "Other system group",
+		"childrenLabel": "Systems",
+		"childLabel": "System"
 	},
     {
 		"id": ".01.03.",
 		"slugName": "another",
-		"name": "Another system group"
+		"name": "Another system group",
+		"childrenLabel": "Systems",
+		"childLabel": "System"
 	}
 ]
   """
@@ -94,21 +114,23 @@ Feature: Define hierarchy
   @level_2_technical_details @nominal_case @valid
   Scenario: Update a hierarchy node
     Given the hierarchy nodes are
-      | id         | slugName   | name                 |
-      | .          | root       | Hierarchy root       |
-      | .01.       | eng        | Engineering view     |
-      | .01.01.    | library    | Library system group |
-      | .01.01.01. | suggestion | Suggestion system    |
-      | .01.01.02. | user       | User system          |
-      | .01.01.03. | search     | Search system        |
-      | .01.02.    | other      | Other system group   |
-      | .01.03.    | another    | Another system group |
+      | id         | slugName   | name                 | childrenLabel | childLabel   |
+      | .          | root       | Hierarchy root       | Views         | View         |
+      | .01.       | eng        | Engineering view     | System groups | System group |
+      | .01.01.    | library    | Library system group | Systems       | System       |
+      | .01.01.01. | suggestion | Suggestion system    | Components    | Component    |
+      | .01.01.02. | user       | User system          | Components    | Component    |
+      | .01.01.03. | search     | Search system        | Components    | Component    |
+      | .01.02.    | other      | Other system group   | Systems       | System       |
+      | .01.03.    | another    | Another system group | Systems       | System       |
     When I perform a "PUT" on following URL "/api/hierarchy/.01.02." with json body
         """
 {
 	"id": ".01.02.",
 	"slugName": "bakery",
-    "name": "Bakery system group"
+    "name": "Bakery system group",
+    "childrenLabel": "Systems",
+    "childLabel": "System"
 }
         """
     Then I get a response with status "200"
@@ -117,40 +139,42 @@ Feature: Define hierarchy
 {
 	"id": ".01.02.",
 	"slugName": "bakery",
-	"name": "Bakery system group"
+	"name": "Bakery system group",
+    "childrenLabel": "Systems",
+    "childLabel": "System"
 }
         """
     And the hierarchy nodes are now
-      | id         | slugName   | name                 |
-      | .          | root       | Hierarchy root       |
-      | .01.       | eng        | Engineering view     |
-      | .01.01.    | library    | Library system group |
-      | .01.01.01. | suggestion | Suggestion system    |
-      | .01.01.02. | user       | User system          |
-      | .01.01.03. | search     | Search system        |
-      | .01.02.    | bakery     | Bakery system group  |
-      | .01.03.    | another    | Another system group |
+      | id         | slugName   | name                 | childrenLabel | childLabel   |
+      | .          | root       | Hierarchy root       | Views         | View         |
+      | .01.       | eng        | Engineering view     | System groups | System group |
+      | .01.01.    | library    | Library system group | Systems       | System       |
+      | .01.01.01. | suggestion | Suggestion system    | Components    | Component    |
+      | .01.01.02. | user       | User system          | Components    | Component    |
+      | .01.01.03. | search     | Search system        | Components    | Component    |
+      | .01.02.    | bakery     | Bakery system group  | Systems       | System       |
+      | .01.03.    | another    | Another system group | Systems       | System       |
 
   @level_2_technical_details @nominal_case @valid
   Scenario: Delete a hierarchy node
     Given the hierarchy nodes are
-      | id         | slugName   | name                 |
-      | .          | root       | Hierarchy root       |
-      | .01.       | eng        | Engineering view     |
-      | .01.01.    | library    | Library system group |
-      | .01.01.01. | suggestion | Suggestion system    |
-      | .01.01.02. | user       | User system          |
-      | .01.01.03. | search     | Search system        |
-      | .01.02.    | bakery     | Bakery system group  |
-      | .01.03.    | another    | Another system group |
+      | id         | slugName   | name                 | childrenLabel | childLabel   |
+      | .          | root       | Hierarchy root       | Views         | View         |
+      | .01.       | eng        | Engineering view     | System groups | System group |
+      | .01.01.    | library    | Library system group | Systems       | System       |
+      | .01.01.01. | suggestion | Suggestion system    | Components    | Component    |
+      | .01.01.02. | user       | User system          | Components    | Component    |
+      | .01.01.03. | search     | Search system        | Components    | Component    |
+      | .01.02.    | other      | Other system group   | Systems       | System       |
+      | .01.03.    | another    | Another system group | Systems       | System       |
     When I perform a "DELETE" on following URL "/api/hierarchy/.01.03."
     Then I get a response with status "200"
     And the hierarchy nodes are now
-      | id         | slugName   | name                 |
-      | .          | root       | Hierarchy root       |
-      | .01.       | eng        | Engineering view     |
-      | .01.01.    | library    | Library system group |
-      | .01.01.01. | suggestion | Suggestion system    |
-      | .01.01.02. | user       | User system          |
-      | .01.01.03. | search     | Search system        |
-      | .01.02.    | bakery     | Bakery system group  |
+      | id         | slugName   | name                 | childrenLabel | childLabel   |
+      | .          | root       | Hierarchy root       | Views         | View         |
+      | .01.       | eng        | Engineering view     | System groups | System group |
+      | .01.01.    | library    | Library system group | Systems       | System       |
+      | .01.01.01. | suggestion | Suggestion system    | Components    | Component    |
+      | .01.01.02. | user       | User system          | Components    | Component    |
+      | .01.01.03. | search     | Search system        | Components    | Component    |
+      | .01.02.    | other      | Other system group   | Systems       | System       |
