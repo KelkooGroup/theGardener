@@ -4,11 +4,23 @@
 
 $min-width: 1100px;
 
+$font-size-h1 : 35px;
+$font-size-h2 : 32px;
+$font-size-h3 : 30px;
+$font-size-h4 : 28px;
+$font-size-h5 : 25px;
+$font-size-h6 : 22px;
+$font-size-h7 : 20px;
+$font-size-text : 20px;
+$font-size-text-x-small: x-small;
+$font-size-text-big: 22px;
+
+
 html, body {
   min-height: 100%;
   background-color: $color-background;
   color: $color-text;
-  font-size: 12px;
+  font-size: $font-size-text;
   font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Verdana, Arial, sans-serif;
   margin: 0;
 }
@@ -29,7 +41,7 @@ a.mat-raised-button {
 
 .theGardener, .mat-dialog-container {
 
-  font-size: 12px;
+  font-size: $font-size-text;
   background-color: $color-background;
 
   .content {
@@ -59,7 +71,7 @@ a.mat-raised-button {
 
   .page-title {
     width: 100%;
-    font-size: 14px;
+    font-size: $font-size-h3;
   }
 
   select {
@@ -69,7 +81,7 @@ a.mat-raised-button {
     padding: 5px 10px;
     border-radius: 2px;
     background: #fff;
-    font-size: 12px;
+    font-size: $font-size-h3;
   }
 
 }

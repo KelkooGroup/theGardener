@@ -1,4 +1,4 @@
-@import "../../../../stylesheets/colors";
+@import "../../../../stylesheets/backoffice";
 
 .menu-item{
   width: 100%;
@@ -28,12 +28,12 @@ li {
 
     text-align: center !important;
     font-weight: 400;
-    font-size: 10px;
+    font-size: $font-size-text;
     padding: 10px 5px;
   }
 
   a svg {
-    font-size: 25px !important;
+    font-size: $font-size-h2 !important;
     text-align: center;
     width: 100% !important;
     margin-bottom: 5px;
