@@ -16,6 +16,9 @@ export class MenuItemComponent implements OnInit {
   @Input()
   label: string;
 
+  @Input()
+  implemented: boolean = true;
+
   constructor() { }
 
   ngOnInit() {

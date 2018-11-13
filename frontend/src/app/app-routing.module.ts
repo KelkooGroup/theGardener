@@ -1,7 +1,10 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {GenerateComponent} from "./documentation/generate/generate.component";
-import {AdminPageComponent} from "./admin/admin-page/admin-page.component";
+import {AdminPageComponent} from "./next/admin-page/admin-page.component";
+import {DashboardPageComponent} from "./next/dashboard-page/dashboard-page.component";
+import {ProfilePageComponent} from "./next/profile-page/profile-page.component";
+import {SearchPageComponent} from "./next/search-page/search-page.component";
 
 
 const routes: Routes = [
@@ -33,6 +36,22 @@ const routes: Routes = [
   {
     path: 'app/admin',
     component: AdminPageComponent,
+    canActivate: []
+  }
+  ,
+  {
+    path: 'app/dashboard',
+    component: DashboardPageComponent,
+    canActivate: []
+  },
+  {
+    path: 'app/search',
+    component: SearchPageComponent,
+    canActivate: []
+  },
+  {
+    path: 'app/profile',
+    component: ProfilePageComponent,
     canActivate: []
   },
 ];

@@ -10,7 +10,10 @@ import {MenuComponent} from './_components/page/menu/menu.component';
 import {MenuItemComponent} from './_components/page/menu-item/menu-item.component';
 import {GenerateComponent} from './documentation/generate/generate.component';
 import {PageComponent} from './_components/page/page/page.component';
-import {AdminPageComponent} from './admin/admin-page/admin-page.component';
+import {AdminPageComponent} from "./next/admin-page/admin-page.component";
+import {DashboardPageComponent} from "./next/dashboard-page/dashboard-page.component";
+import {ProfilePageComponent} from "./next/profile-page/profile-page.component";
+import {SearchPageComponent} from "./next/search-page/search-page.component";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {FormsModule} from '@angular/forms';
 import {
@@ -38,6 +41,7 @@ import {DocumentationService} from "./_services/documentation.service";
 import {CriteriasTreeSelectorComponent} from './documentation/generate/criterias/criterias-tree-selector/criterias-tree-selector.component';
 import { DocumentationThemeBookComponent } from './documentation/generate/output/themes/documentation-theme-book/documentation-theme-book.component';
 import { DocumentationThemeBookTableComponent } from './documentation/generate/output/themes/documentation-theme-book/documentation-theme-book-table/documentation-theme-book-table.component';
+import { FooterComponent } from './_components/page/footer/footer.component';
 
 const nonProductionProviders = [{
   provide: HTTP_INTERCEPTORS,
@@ -61,6 +65,10 @@ const nonProductionProviders = [{
     CriteriasTreeSelectorComponent,
     DocumentationThemeBookComponent,
     DocumentationThemeBookTableComponent,
+    DashboardPageComponent,
+    ProfilePageComponent,
+    SearchPageComponent,
+    FooterComponent,
   ],
   imports: [
     HttpClientModule,
