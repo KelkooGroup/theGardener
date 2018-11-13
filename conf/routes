@@ -30,7 +30,7 @@ PUT           /api/hierarchy/:id                              controllers.Hierar
 DELETE        /api/hierarchy/:id                              controllers.HierarchyController.deleteHierarchy(id: String)
 
 GET           /api/criterias                                  controllers.CriteriasController.getCriterias()
-GET           /api/generateDocumentation                      controllers.GenerateDocumentationController.generateDocumentation()
+GET           /api/generateDocumentation                      controllers.DocumentationController.generateDocumentation()
 
 # API DOCUMENTATION
 GET           /api/docs/                                      controllers.Assets.at(path="/public/swagger-ui",file="index.html")

@@ -7,15 +7,23 @@ import play.api.libs.json.Json
 import play.api.mvc._
 import repository._
 
-case class BranchDocumentationDTO(id: Long, name: String, isStable: Boolean, features: Seq[Feature])
+case class BranchDocumentationDTO(id: Long, name: String, isStable: Boolean, features: Seq[Feature]) {
+  def merge(other: BranchDocumentationDTO): BranchDocumentationDTO = {
+    if (id == other.id) this.copy(features = (features ++ other.features).distinct) else this
+  }
+}
 
 object BranchDocumentationDTO {
-  def apply(branch: Branch,  features: Seq[Feature]): BranchDocumentationDTO = {
+  def apply(branch: Branch, features: Seq[Feature]): BranchDocumentationDTO = {
     BranchDocumentationDTO(branch.id, branch.name, branch.isStable, features)
   }
 }
 
-case class ProjectDocumentationDTO(id: String, name:String, branches: Seq[BranchDocumentationDTO])
+case class ProjectDocumentationDTO(id: String, name: String, branches: Seq[BranchDocumentationDTO]) {
+  def merge(other: ProjectDocumentationDTO): ProjectDocumentationDTO = {
+    if (id == other.id) this.copy(branches = branches.flatMap(b => other.branches.map(_.merge(b))).distinct) else this
+  }
+}
 
 object ProjectDocumentationDTO {
   def apply(project: Project, branches: Seq[BranchDocumentationDTO]): ProjectDocumentationDTO = {
@@ -23,7 +31,13 @@ object ProjectDocumentationDTO {
   }
 }
 
-case class Documentation(id: String, slugName: String, name: String, childrenLabel: String, childLabel: String, projects: Seq[ProjectDocumentationDTO], children: Seq[Documentation])
+case class Documentation(id: String, slugName: String, name: String, childrenLabel: String, childLabel: String, projects: Seq[ProjectDocumentationDTO], children: Seq[Documentation]) {
+
+  def merge(other: Documentation): Documentation = {
+    if (id == other.id) this.copy(projects = (projects ++ other.projects).distinct, children = children.flatMap(c => other.children.map(_.merge(c))).distinct) else this
+  }
+}
+
 object Documentation {
   def apply(hierarchyNode: HierarchyNode, projects: Seq[ProjectDocumentationDTO], children: Seq[Documentation]): Documentation = {
     Documentation(hierarchyNode.id, hierarchyNode.slugName, hierarchyNode.name, hierarchyNode.childrenLabel, hierarchyNode.childLabel, projects, children)
@@ -31,9 +45,8 @@ object Documentation {
 }
 
 
-
-@Api(value = "GenerateDocumentationController", produces = "application/json")
-class GenerateDocumentationController @Inject()(hierarchyRepository: HierarchyRepository, projectRepository: ProjectRepository, branchRepository: BranchRepository, featureRepository: FeatureRepository) extends InjectedController {
+@Api(value = "DocumentationController", produces = "application/json")
+class DocumentationController @Inject()(hierarchyRepository: HierarchyRepository, projectRepository: ProjectRepository, branchRepository: BranchRepository, featureRepository: FeatureRepository) extends InjectedController {
 
   implicit val branchFormat = Json.format[BranchDocumentationDTO]
   implicit val projectFormat = Json.format[ProjectDocumentationDTO]
@@ -42,7 +55,6 @@ class GenerateDocumentationController @Inject()(hierarchyRepository: HierarchyRe
   @ApiOperation(value = "Get documentation", response = classOf[Documentation])
   def generateDocumentation(): Action[AnyContent] = Action { request =>
 
-    val nodes = request.queryString.getOrElse("node", Seq()).map(_.split("_").toSeq.filter(_.isEmpty))
     val projects = request.queryString.getOrElse("project", Seq()).map { p =>
       val hierarchy = p.substring(0, p.indexOf(">")).split("_").toSeq.filterNot(_.isEmpty).flatMap(hierarchyRepository.findBySlugName)
       val projectId = p.substring(p.indexOf(">") + 1)
@@ -53,12 +65,14 @@ class GenerateDocumentationController @Inject()(hierarchyRepository: HierarchyRe
       buildDocumentation(hierarchy, project)
     }
 
-    Ok(Json.toJson(projects.head))
+    val documentation = projects.reduceLeft((acc: Documentation, current: Documentation) => acc.merge(current))
+
+    Ok(Json.toJson(documentation))
   }
 
-  def buildDocumentation(hierarchy: Seq[HierarchyNode], projects: Seq[ProjectDocumentationDTO]) : Documentation = {
+  def buildDocumentation(hierarchy: Seq[HierarchyNode], projects: Seq[ProjectDocumentationDTO]): Documentation = {
     hierarchy.toList match {
-      case Nil =>  Documentation(hierarchyRepository.findAll().head, projects, Seq())
+      case Nil => Documentation(hierarchyRepository.findAll().head, projects, Seq())
       case h :: Nil => Documentation(h, projects, Seq())
       case h :: tail => Documentation(h, Seq(), Seq(buildDocumentation(tail, projects)))
     }

@@ -230,6 +230,16 @@ Scenario: providing several book suggestions
 
       Source.fromFile(file).mkString mustBe content
     }
+  }
 
+  Then("""^I get the following scenarios$""") { dataTable: DataTable =>
+    dataTable.asScala.map { columns =>
+      contentType(response) mustBe Some(JSON)
+      println(contentAsString(response))
+      contentAsString(response) must include(columns("hierarchy"))
+      contentAsString(response) must include(columns("project"))
+      contentAsString(response) must include(columns("feature"))
+      contentAsString(response) must include(columns("scenario"))
+    }
   }
 }
