@@ -13,9 +13,17 @@ export class PanelComponent implements OnInit {
   @Input() panelTitle: string;
   @Input() panelIcon: string;
 
+  @Input() isClosable?: boolean = true;
+
+  @Input() isClosed?: boolean = false;
+
   constructor() { }
 
   ngOnInit() {
+  }
+
+  toggleClosed(){
+    this.isClosed = ! this.isClosed;
   }
 
 }

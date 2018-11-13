@@ -44,6 +44,10 @@ export class DocumentationThemeBookComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
+    this.selectHash();
+  }
+
+  selectHash(){
     if (this.hash ) {
       const cmp = document.getElementById(this.hash);
       if (cmp) {
