@@ -72,6 +72,7 @@
 .tag{
   color: $color-text-invert;
   font-weight: lighter;
+  padding-right: 2px;
 }
 
 .tags{
@@ -101,8 +102,8 @@
 }
 
 .stepParameter{
-  background-color: $color-text-dark;
-  color: $color-text-opposite;
+  background-color: $color-text-lighter;
+  color: $color-text;
   font-size: 13px;
   font-weight: 500;
 }

@@ -13,8 +13,8 @@ table {
 
 
 .book-header-cell {
-  background-color: $color-text-dark;
-  color: $color-text-opposite;
+  background-color: $color-text-lighter;
+  color: $color-text;
   font-size: 13px;
   font-weight: 500;
 }
@@ -22,9 +22,14 @@ table {
 
 .book-cell {
   background-color: $color-background;
-  color: $color-text-dark;
+  color: $color-text;
   font-size: 12px;
   font-weight: 300;
+
+  border-right-color: $color-border-light;
+  border-right-style: dotted;
+  border-right-width: 1px;
+
 }
 
 
