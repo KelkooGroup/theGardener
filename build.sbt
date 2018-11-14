@@ -7,7 +7,7 @@ version := { pom \  "version" text}
 val jdkVersion = "1.8"
 scalaVersion := "2.12.7"
 
-lazy val root = (project in file(".")).enablePlugins(PlayScala)
+lazy val root = (project in file(".")).enablePlugins(PlayScala).enablePlugins(SbtWeb)
 
 
 // specify the source and target jdk for Java compiler
@@ -59,3 +59,7 @@ libraryDependencies ++= Seq(
 evictionWarningOptions in update := EvictionWarningOptions.empty
 
 routesGenerator := InjectedRoutesGenerator
+
+JsEngineKeys.npmNodeModules in Assets := Nil
+
+JsEngineKeys.npmNodeModules in TestAssets := Nil
