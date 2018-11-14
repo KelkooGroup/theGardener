@@ -1,5 +1,9 @@
 name := "the_gardener"
 
+val pom = xml.XML.load("pom.xml")
+
+version := { pom \  "version" text}
+
 val jdkVersion = "1.8"
 scalaVersion := "2.12.7"
 
@@ -32,6 +36,7 @@ libraryDependencies ++= Seq(
   evolutions,
   jdbc,
   //ehcache,
+  "com.kelkoo.common" %% "playScalaCommon" % "2.1.2",
   "ch.qos.logback" % "logback-access" % "1.2.3",
   "net.logstash.logback" % "logstash-logback-encoder" % "4.11",
   "com.typesafe.play" %% "play-json" % "2.6.10",
@@ -49,6 +54,7 @@ libraryDependencies ++= Seq(
   "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % Test,
   "org.mockito" % "mockito-all" % "1.10.19" % Test
 )
+
 
 evictionWarningOptions in update := EvictionWarningOptions.empty
 
