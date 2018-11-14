@@ -1,9 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Observable} from "rxjs/Observable";
 import {HttpClient} from "@angular/common/http";
-import {HierarchyNodeApi} from "../_models/criterias";
-import {DocumentationNode, DocumentationNodeApi, DocumentationProject} from "../_models/documentation";
-import {HierarchyNodeSelector, ProjectSelector} from "./criteriasSelection";
+import {DocumentationNode, DocumentationNodeApi} from "../_models/documentation";
 
 @Injectable({
   providedIn: 'root'
