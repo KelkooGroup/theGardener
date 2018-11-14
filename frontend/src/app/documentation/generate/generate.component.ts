@@ -39,6 +39,7 @@ export class GenerateComponent implements OnInit {
     var httpParamsAsString = httpParams.toString();
     this.router.navigateByUrl(`app/documentation/generate/output?${httpParamsAsString}`);
     this.outputComponent.display =true ;
+    this.outputComponent.showSpinner =true ;
   }
 
 }

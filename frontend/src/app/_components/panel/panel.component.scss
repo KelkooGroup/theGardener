@@ -1,4 +1,4 @@
-@import "../../../stylesheets/colors";
+@import "../../../stylesheets/backoffice";
 
 
 .panel-default {
@@ -10,12 +10,12 @@ h3 {
   color: $color-text-invert;
   text-transform: uppercase;
   font-weight: 600;
-  font-size: 15px;
+  font-size: $font-size-h3;
 }
 
 h4 {
   text-transform: uppercase;
-  font-size: 12px;
+  font-size: $font-size-h4;
   font-weight: 600;
   margin: 10px 0;
 }
@@ -37,7 +37,7 @@ h4 {
 }
 
 .panel-icon {
-  font-size: 30px;
+  font-size: $font-size-h1;
   padding: 0 10px 0 10px;
   color: $color-main;
 }

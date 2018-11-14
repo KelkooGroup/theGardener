@@ -1,4 +1,4 @@
-@import "../../../../../../stylesheets/colors";
+@import "../../../../../../stylesheets/backoffice";
 
 .documentation-tree-invisible {
   display: none;
@@ -21,41 +21,45 @@
 }
 
 .level1 {
-  font-size: 23px;
+  font-size: $font-size-h1;
 }
 
 .level2 {
-  font-size: 22px;
+  font-size: $font-size-h2;
 }
 
 .level3 {
-  font-size: 20px;
+  font-size: $font-size-h3;
 }
 
 .level4 {
-  font-size: 19px;
+  font-size: $font-size-h4;
 }
 
 .level5 {
-  font-size: 18px;
+  font-size: $font-size-h5;
 }
 
 .level6 {
-  font-size: 17px;
+  font-size: $font-size-h6;
 }
 
 .level7 {
-  font-size: 16px;
+  font-size: $font-size-h7;
 }
 
 .project, .branch, .feature, .scenario, .step, .table{
   color: $color-text-darker;
 }
 
+.project{
+  font-size: $font-size-h3;
+}
+
 
 .branch {
   font-family: "courier";
-  font-size: x-small;
+  font-size: $font-size-text-x-small;
   width: 50%;
   max-width: 600px;
   padding-left: 10px;
@@ -63,22 +67,26 @@
 
 .feature{
   margin-top: 5px;
+  font-size: $font-size-h4;
 }
 
 
 .scenario{
+  margin-top: 6px;
+  font-size: $font-size-h5;
 }
 
 .tag{
   color: $color-text-invert;
   font-weight: lighter;
-  padding-right: 2px;
+  padding-right: 4px;
+  font-size: $font-size-text-big;
 }
 
 .tags{
   font-style: italic;
   font-weight: lighter;
-  font-size: x-small;
+  font-size: $font-size-text-x-small;
   font-family: "courier";
   color: $color-text-darker;
 }
@@ -89,7 +97,8 @@
 }
 
 .step{
-  margin-top: 2px;
+  margin-top: 6px;
+  font-size: $font-size-text;
 }
 
 .table{
@@ -104,7 +113,7 @@
 .stepParameter{
   background-color: $color-text-lighter;
   color: $color-text;
-  font-size: 13px;
+  font-size: $font-size-text;
   font-weight: 500;
 }
 

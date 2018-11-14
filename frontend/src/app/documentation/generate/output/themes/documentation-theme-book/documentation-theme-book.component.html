@@ -11,20 +11,20 @@
           </mat-icon>
         </button>
         <div  class="documentationNode level{{node.level}}" >{{node.data.name}}</div>
-        <a  href="{{url}}#{{node.nodeId}}"  class="bookLink"   ><li class="fas fa-link fa-sm" ></li></a>
+        <a  href="{{url}}#{{node.nodeId}}"  target="_blank" class="bookLink"   ><li class="fas fa-link fa-sm" ></li></a>
       </div>
 
-      <div  *ngIf="node.type == 'project'" class="mat-tree-node" >
+      <div  *ngIf="node.type == 'project'" class="mat-tree-node project" >
         <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.data.name">
           <mat-icon class="mat-icon-rtl-mirror">
             {{nestedTreeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
           </mat-icon>
         </button>
         {{node.data.name}}  <span class="branch" >({{node.branch.data.name}})</span>
-        <a  href="{{url}}#{{node.nodeId}}"  class="bookLink"   ><li class="fas fa-link fa-sm" ></li></a>
+        <a  href="{{url}}#{{node.nodeId}}"  target="_blank" class="bookLink"   ><li class="fas fa-link fa-sm" ></li></a>
       </div>
 
-      <div  *ngIf="node.type == 'feature'" class="mat-tree-node" >
+      <div  *ngIf="node.type == 'feature'" class="mat-tree-node feature" >
         <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.data.name">
           <mat-icon class="mat-icon-rtl-mirror">
             {{nestedTreeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
@@ -38,17 +38,17 @@
               <span class="feature" >{{node.data.description}}  </span>
           </li>
         </ul>
-        <a  href="{{url}}#{{node.nodeId}}"  class="bookLink"   ><li class="fas fa-link fa-sm" ></li></a>
+        <a  href="{{url}}#{{node.nodeId}}"  target="_blank" class="bookLink"   ><li class="fas fa-link fa-sm" ></li></a>
       </div>
 
-      <div  *ngIf="node.type == 'scenario'" class="mat-tree-node">
+      <div  *ngIf="node.type == 'scenario'" class="mat-tree-node scenario">
         <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.data.name">
           <mat-icon class="mat-icon-rtl-mirror">
             {{nestedTreeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
           </mat-icon>
         </button>
         <span class="scenario" >{{node.data.name}}  </span>
-        <a  href="{{url}}#{{node.nodeId}}"  class="bookLink"  ><li class="fas fa-link fa-sm" ></li></a>
+        <a  href="{{url}}#{{node.nodeId}}" target="_blank"  class="bookLink"  ><li class="fas fa-link fa-sm" ></li></a>
       </div>
 
 

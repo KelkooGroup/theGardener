@@ -1,7 +1,8 @@
-import {Component, Input, OnInit, Output} from '@angular/core';
+import {Component, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {DocumentationService} from "../../../_services/documentation.service";
 import {DocumentationNode, DocumentationNodeApi} from "../../../_models/documentation";
 import {ActivatedRoute} from "@angular/router";
+import {DocumentationThemeBookComponent} from "./themes/documentation-theme-book/documentation-theme-book.component";
 
 @Component({
   selector: 'app-generate-documentation-output',
@@ -15,6 +16,11 @@ export class OutputComponent implements OnInit {
 
   @Output()
   documentationData : DocumentationNode[]
+
+  showSpinner : boolean = true ;
+
+  @ViewChild(DocumentationThemeBookComponent)
+  documentationTheme: DocumentationThemeBookComponent;
 
   constructor(private documentationService: DocumentationService,  private route: ActivatedRoute) {
 
@@ -52,9 +58,12 @@ export class OutputComponent implements OnInit {
   }
 
   generateDocumentation(httpParams : string){
+    this.showSpinner = true ;
     this.documentationService.generateDocumentation(httpParams).subscribe(
       (result: DocumentationNodeApi) => {
         this.documentationData = this.documentationService.decorate(result) ;
+        this.showSpinner = false ;
+        this.documentationTheme.selectHash();
       },
       err => {
       });
