@@ -11,7 +11,7 @@
           </mat-icon>
         </button>
         <div  class="documentationNode level{{node.level}}" >{{node.data.name}}</div>
-        <a  href="{{url}}#{{node.nodeId}}"  class="bookLink"   ><li class="fas fa-link fa-sm" ></li></a>
+        <a  href="{{url}}#{{node.nodeId}}"  target="_blank" class="bookLink"   ><li class="fas fa-link fa-sm" ></li></a>
       </div>
 
       <div  *ngIf="node.type == 'project'" class="mat-tree-node project" >
@@ -21,7 +21,7 @@
           </mat-icon>
         </button>
         {{node.data.name}}  <span class="branch" >({{node.branch.data.name}})</span>
-        <a  href="{{url}}#{{node.nodeId}}"  class="bookLink"   ><li class="fas fa-link fa-sm" ></li></a>
+        <a  href="{{url}}#{{node.nodeId}}"  target="_blank" class="bookLink"   ><li class="fas fa-link fa-sm" ></li></a>
       </div>
 
       <div  *ngIf="node.type == 'feature'" class="mat-tree-node feature" >
@@ -38,7 +38,7 @@
               <span class="feature" >{{node.data.description}}  </span>
           </li>
         </ul>
-        <a  href="{{url}}#{{node.nodeId}}"  class="bookLink"   ><li class="fas fa-link fa-sm" ></li></a>
+        <a  href="{{url}}#{{node.nodeId}}"  target="_blank" class="bookLink"   ><li class="fas fa-link fa-sm" ></li></a>
       </div>
 
       <div  *ngIf="node.type == 'scenario'" class="mat-tree-node scenario">
@@ -48,7 +48,7 @@
           </mat-icon>
         </button>
         <span class="scenario" >{{node.data.name}}  </span>
-        <a  href="{{url}}#{{node.nodeId}}"  class="bookLink"  ><li class="fas fa-link fa-sm" ></li></a>
+        <a  href="{{url}}#{{node.nodeId}}" target="_blank"  class="bookLink"  ><li class="fas fa-link fa-sm" ></li></a>
       </div>
 
 

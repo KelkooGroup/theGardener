@@ -1,16 +1,17 @@
-import {Component, Input, OnInit, AfterViewInit} from '@angular/core';
+import {Component, Input, OnInit, AfterViewInit, AfterViewChecked} from '@angular/core';
 import {DocumentationNode, ExpandableNode} from "../../../../../_models/documentation";
 import {MatTreeNestedDataSource} from "@angular/material/tree";
 import {NestedTreeControl} from "@angular/cdk/tree";
 import {ActivatedRoute, Params, Router, RouterEvent} from "@angular/router";
 import { Location } from '@angular/common';
+import {OnChanges, SimpleChanges} from "@angular/core/src/metadata/lifecycle_hooks";
 
 @Component({
   selector: 'app-documentation-theme-book',
   templateUrl: './documentation-theme-book.component.html',
   styleUrls: ['./documentation-theme-book.component.scss']
 })
-export class DocumentationThemeBookComponent implements OnInit, AfterViewInit {
+export class DocumentationThemeBookComponent implements OnInit, AfterViewChecked {
 
   @Input()
   documentationData : DocumentationNode[];
@@ -43,7 +44,7 @@ export class DocumentationThemeBookComponent implements OnInit, AfterViewInit {
 
   }
 
-  ngAfterViewInit() {
+  ngAfterViewChecked(){
     this.selectHash();
   }
 
