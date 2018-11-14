@@ -24,7 +24,7 @@ export class CriteriasService {
     return this.http.get<Array<HierarchyNodeApi>>(url);
   }
 
-  public  buildHierarchyNodeSelector(apiResult: Array<HierarchyNodeApi>): Array<HierarchyNodeSelector> {
+  static buildHierarchyNodeSelector(apiResult: Array<HierarchyNodeApi>): Array<HierarchyNodeSelector> {
     var hierarchyNodeSelectorArray = new Array<HierarchyNodeSelector>();
     for (var i = 0; i < apiResult.length; i++) {
       var loopNodeApi = apiResult[i];
