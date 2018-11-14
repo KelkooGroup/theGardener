@@ -6,11 +6,13 @@ import java.net._
 import java.nio.file._
 import java.util
 
-import anorm.SQL
+import anorm._
 import com.typesafe.config._
 import cucumber.api.DataTable
 import cucumber.api.scala._
+import julienrf.json.derived
 import models._
+import models.Feature._
 import net.ruippeixotog.scalascraper.browser._
 import org.apache.commons.io._
 import org.eclipse.jgit.api._
@@ -22,7 +24,7 @@ import play.api._
 import play.api.db._
 import play.api.inject._
 import play.api.inject.guice._
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, __}
 import play.api.mvc._
 import play.api.test.Helpers._
 import play.api.test._
@@ -31,7 +33,7 @@ import services._
 
 import scala.collection.JavaConverters._
 import scala.concurrent._
-import scala.io._
+import scala.io.Source
 import scala.reflect._
 
 
@@ -44,6 +46,8 @@ object Injector {
 
 object CommonSteps extends PlaySpec with GuiceOneServerPerSuite with BeforeAndAfterAll with MockitoSugar with Injecting {
 
+  implicit val scenarioFormat = derived.flat.oformat[ScenarioDefinition]((__ \ "keyword").format[String])
+  implicit val branchFormat = Json.format[Branch]
   implicit val hierarchyFormat = Json.format[HierarchyNode]
   implicit val projectFormat = Json.format[Project]
 
@@ -53,12 +57,17 @@ object CommonSteps extends PlaySpec with GuiceOneServerPerSuite with BeforeAndAf
   var projects: Map[String, Project] = _
 
   val applicationBuilder = new GuiceApplicationBuilder().in(Mode.Test)
+
   override def fakeApplication(): Application = applicationBuilder.build()
 
   val db = Injector.inject[Database]
+  val scenarioRepository = Injector.inject[ScenarioRepository]
+  val featureRepository = Injector.inject[FeatureRepository]
+  val branchRepository = Injector.inject[BranchRepository]
   val hierarchyRepository = Injector.inject[HierarchyRepository]
   val projectRepository = Injector.inject[ProjectRepository]
   val featureService = Injector.inject[FeatureService]
+  val tagRepository = Injector.inject[TagRepository]
   val config = Injector.inject[Config]
 
   val projectsRootDirectory = config.getString("projects.root.directory")
@@ -115,19 +124,29 @@ class CommonSteps extends ScalaDsl with EN with MockitoSugar {
 
   Given("""^the database is empty$""") { () =>
     db.withConnection { implicit connection =>
-      SQL("TRUNCATE TABLE project").executeUpdate()
-      SQL("TRUNCATE TABLE project_hierarchyNode").executeUpdate()
-      SQL("TRUNCATE TABLE hierarchyNode").executeUpdate()
+      SQL"TRUNCATE TABLE project".executeUpdate()
+      SQL"TRUNCATE TABLE project_hierarchyNode".executeUpdate()
+      SQL"TRUNCATE TABLE hierarchyNode".executeUpdate()
+      SQL"TRUNCATE TABLE branch".executeUpdate()
+      SQL"TRUNCATE TABLE feature".executeUpdate()
+      SQL"TRUNCATE TABLE scenario".executeUpdate()
+      SQL"TRUNCATE TABLE feature_tag".executeUpdate()
+      SQL"TRUNCATE TABLE scenario_tag".executeUpdate()
+      SQL"TRUNCATE TABLE tag".executeUpdate()
+      SQL"ALTER TABLE branch ALTER COLUMN id RESTART WITH 1".executeUpdate()
+      SQL"ALTER TABLE feature ALTER COLUMN id RESTART WITH 1".executeUpdate()
+      SQL"ALTER TABLE scenario ALTER COLUMN id RESTART WITH 1".executeUpdate()
     }
   }
 
   Given("""^No project is checkout$""") { () =>
+    FileUtils.deleteDirectory(new File("target/data/"))
     FileUtils.deleteDirectory(new File(projectsRootDirectory))
     Files.createDirectories(Paths.get(projectsRootDirectory))
   }
 
   Given("""^a git server that host a project$""") { () =>
-    //nothing to do here
+    // nothing to do here
   }
 
   Given("""^a simple feature is available in my project$""") { () =>
@@ -166,6 +185,10 @@ Scenario: providing several book suggestions
     projectRepository.saveAll(projectsWithAbsoluteUrl)
 
     CommonSteps.projects = projectsWithAbsoluteUrl.map(p => (p.id, p)).toMap
+  }
+
+  Given("""^we have those branches in the database$""") { branches: util.List[Branch] =>
+    branchRepository.saveAll(branches.asScala)
   }
 
   When("^we go in a browser to url \"([^\"]*)\"$") { url: String =>
@@ -207,6 +230,16 @@ Scenario: providing several book suggestions
 
       Source.fromFile(file).mkString mustBe content
     }
+  }
 
+  Then("""^I get the following scenarios$""") { dataTable: DataTable =>
+    dataTable.asScala.map { columns =>
+      contentType(response) mustBe Some(JSON)
+      println(contentAsString(response))
+      contentAsString(response) must include(columns("hierarchy"))
+      contentAsString(response) must include(columns("project"))
+      contentAsString(response) must include(columns("feature"))
+      contentAsString(response) must include(columns("scenario"))
+    }
   }
 }

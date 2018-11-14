@@ -3,13 +3,12 @@ package services
 import java.io._
 
 import akka.actor.ActorSystem
-import akka.stream._
 import com.typesafe.config._
 import models._
 import org.apache.commons.io.FileUtils._
 import org.mockito.Matchers._
-import org.mockito._
 import org.mockito.Mockito._
+import org.mockito._
 import org.scalatest._
 import org.scalatest.concurrent._
 import org.scalatest.mockito._
@@ -29,13 +28,17 @@ class ProjectServiceTest extends WordSpec with MustMatchers with BeforeAndAfter 
 
   val gitService = mock[GitService]
   val projectRepository = mock[ProjectRepository]
+  val featureRepository = mock[FeatureRepository]
+  val branchRepository = mock[BranchRepository]
+  val featureService = mock[FeatureService]
 
-  val projectService = new ProjectService(projectRepository, gitService, ConfigFactory.load(), ActorSystem())
+  val projectService = new ProjectService(projectRepository, gitService, ConfigFactory.load(), ActorSystem(), featureService, featureRepository, branchRepository)
 
   val project = Project("suggestionsWS", "Suggestions WebServices", "git@gitlab.corp.kelkoo.net:library/suggestionsWS.git", "master", "test/features")
   val masterDirectory = projectService.getLocalRepository(project.id, project.stableBranch)
   val featureBranchDirectory = projectService.getLocalRepository(project.id, featureBranch)
   val bugfixBranchDirectory = projectService.getLocalRepository(project.id, bugfixBranch)
+  val masterBranch  = Branch(1, project.stableBranch, isStable = true, project.id)
 
 
   before {
@@ -57,6 +60,12 @@ class ProjectServiceTest extends WordSpec with MustMatchers with BeforeAndAfter 
 
       when(gitService.clone(project.repositoryUrl, bugfixBranchDirectory)).thenReturn(Future.successful(()))
       when(gitService.checkout(bugfixBranch, bugfixBranchDirectory)).thenReturn(Future.successful(()))
+
+      when(featureService.parseBranchDirectory(any[Project], any[Long], any[String])).thenReturn(Seq())
+      when(featureRepository.saveAll(any[Seq[Feature]])).thenReturn(Seq())
+      when(featureRepository.findByBranchIdAndPath(any[Long], any[String])).thenReturn(None)
+
+      when(branchRepository.save(any[Branch])).thenReturn(Branch(1, "master", isStable = true, project.id))
 
       val result = projectService.checkoutRemoteBranches(project)
 
@@ -87,6 +96,14 @@ class ProjectServiceTest extends WordSpec with MustMatchers with BeforeAndAfter 
 
       when(gitService.clone(project.repositoryUrl, featureBranchDirectory)).thenReturn(Future.successful(()))
       when(gitService.checkout(featureBranch, featureBranchDirectory)).thenReturn(Future.successful(()))
+
+      when(featureService.parseBranchDirectory(any[Project], any[Long], any[String])).thenReturn(Seq())
+      when(featureRepository.saveAll(any[Seq[Feature]])).thenReturn(Seq())
+      when(featureRepository.findByBranchIdAndPath(any[Long], any[String])).thenReturn(None)
+
+      when(branchRepository.save(any[Branch])).thenReturn(masterBranch)
+      when(branchRepository.findByProjectIdAndName(any[String], any[String])).thenReturn(Some(masterBranch))
+      when(branchRepository.findAllByProjectId(any[String])).thenReturn(Seq(masterBranch, Branch(2, bugfixBranch, isStable = false, project.id)))
 
 
       val result = projectService.synchronizeAll()

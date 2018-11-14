@@ -1,15 +1,23 @@
 package services
 
-import org.scalatest.{MustMatchers, WordSpec}
+import org.mockito.Matchers._
+import org.mockito.Mockito._
+import org.scalatest.mockito._
+import org.scalatest._
+import repository.FeatureRepository
 
-class FeatureServiceTest extends WordSpec with MustMatchers {
+class FeatureServiceTest extends WordSpec with MustMatchers with MockitoSugar {
+
+  val featureRepository = mock[FeatureRepository]
 
   "FeatureService" should {
     "parse a feature file" in {
-      val feature = new FeatureService().parseFeatureFile("test", "test/features/show_features/show_a_feature.feature")
+      when(featureRepository.findByBranchIdAndPath(any[Long], any[String])).thenReturn(None)
 
-      feature.name mustBe "Show a feature"
-      feature.description must include("So that my project feature is shared with all users")
+      val feature = new FeatureService(featureRepository).parseFeatureFile("test", 1, "test/features/generate_documentation/show_a_feature.feature")
+
+      feature.name mustBe "Generate documentation"
+      feature.description must include("As a user,")
       feature.comments mustBe Seq()
     }
   }

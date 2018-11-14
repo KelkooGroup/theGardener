@@ -7,14 +7,13 @@ import com.typesafe.config._
 import javax.inject._
 import models._
 import org.apache.commons.io.FileUtils._
-import org.apache.commons.io.filefilter._
 import play._
 import repository._
 
 import scala.concurrent._
 import scala.concurrent.duration._
 
-class ProjectService @Inject()(projectRepository: ProjectRepository, gitService: GitService, config: Config, actorSystem: ActorSystem)(implicit ec: ExecutionContext) {
+class ProjectService @Inject()(projectRepository: ProjectRepository, gitService: GitService, config: Config, actorSystem: ActorSystem, featureService: FeatureService, featureRepository: FeatureRepository, branchRepository: BranchRepository)(implicit ec: ExecutionContext) {
   val projectsRootDirectory = config.getString("projects.root.directory")
   val synchronizeInterval = config.getInt("projects.synchronize.interval")
   val synchronizeInitialDelay = config.getInt("projects.synchronize.initial.delay")
@@ -31,12 +30,15 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
 
   private def checkoutBranches(project: Project, branches: Set[String]) = {
     Future.sequence(
-      branches.map { branch =>
-        val localRepository = getLocalRepository(project.id, branch)
+      branches.map { name =>
+        val localRepository = getLocalRepository(project.id, name)
+
+        val branchId = branchRepository.save(Branch(-1, name, name == "master", project.id)).id
 
         for {
           _ <- gitService.clone(project.repositoryUrl, localRepository)
-        } yield gitService.checkout(branch, localRepository)
+          _ <- gitService.checkout(name, localRepository)
+        } yield featureRepository.saveAll(featureService.parseBranchDirectory(project, branchId, getLocalRepository(project.id, name)))
       }
     )
   }
@@ -44,7 +46,12 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
   private def updateBranches(project: Project, branches: Set[String]) = {
     Future.sequence(
       branches.map { branch =>
-        gitService.pull(getLocalRepository(project.id, branch))
+        gitService.pull(getLocalRepository(project.id, branch)).map { _ =>
+          branchRepository.findByProjectIdAndName(project.id, branch).map(_.id).foreach{ branchId =>
+            featureRepository.deleteAllByBranchId(branchId)
+            featureRepository.saveAll(featureService.parseBranchDirectory(project, branchId, getLocalRepository(project.id, branch)))
+          }
+        }
       }
     )
   }
@@ -53,7 +60,10 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
     Future {
       for (branch <- branches) {
         deleteDirectory(new File(getLocalRepository(project.id, branch)))
+        branchRepository.findByProjectIdAndName(project.id, branch).map(_.id).foreach(featureRepository.deleteAllByBranchId)
       }
+
+      branchRepository.deleteAll(branchRepository.findAllByProjectId(project.id).filter(b => branches.contains(b.name)))
     }
   }
 
@@ -68,8 +78,7 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
   }
 
   def synchronize(project: Project): Future[Unit] = {
-    val localBranchesArray = new File(s"$projectsRootDirectory/${project.id}").list(DirectoryFileFilter.INSTANCE)
-    val localBranches = if (localBranchesArray != null) localBranchesArray.toSet else Set[String]()
+    val localBranches = branchRepository.findAllByProjectId(project.id).map(_.name).toSet
 
     gitService.getRemoteBranches(project.repositoryUrl).map(_.toSet).flatMap { remoteBranches =>
 

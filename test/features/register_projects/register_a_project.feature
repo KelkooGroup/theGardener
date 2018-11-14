@@ -54,7 +54,7 @@ Feature: Register a project
 
 
   @level_2_technical_details @nominal_case @valid
-  Scenario: Get a project
+  Scenario: get a project
     Given we have the following projects
       | id            | name                    | repositoryUrl                                        | stableBranch | featuresRootPath |
       | suggestionsWS | Suggestions WebServices | git@gitlab.corp.kelkoo.net:library/suggestionsWS.git | master       | test/features    |
@@ -72,7 +72,7 @@ Feature: Register a project
   """
 
   @level_2_technical_details @nominal_case @valid
-  Scenario: Get all projects
+  Scenario: get all projects
     Given we have the following projects
       | id             | name                     | repositoryUrl                                         | stableBranch | featuresRootPath |
       | suggestionsWS  | Suggestions WebServices  | git@gitlab.corp.kelkoo.net:library/suggestionsWS.git  | master       | test/features    |
@@ -100,7 +100,7 @@ Feature: Register a project
   """
 
   @level_2_technical_details @nominal_case @valid
-  Scenario: Update a project
+  Scenario: update a project
     Given we have the following projects
       | id            | name                    | repositoryUrl                                        | stableBranch | featuresRootPath |
       | suggestionsWS | Suggestions WebServices | git@gitlab.corp.kelkoo.net:library/suggestionsWS.git | master       | test/features    |
@@ -130,7 +130,7 @@ Feature: Register a project
       | suggestionsWS | Suggestions WebServices1 | git@gitlab.corp.kelkoo.net:library/suggestionsWS.git | master       | test/features    |
 
   @level_2_technical_details @nominal_case @valid
-  Scenario: Delete a project
+  Scenario: delete a project
     Given we have the following projects
       | id            | name                    | repositoryUrl                                        | stableBranch | featuresRootPath |
       | suggestionsWS | Suggestions WebServices | git@gitlab.corp.kelkoo.net:library/suggestionsWS.git | master       | test/features    |

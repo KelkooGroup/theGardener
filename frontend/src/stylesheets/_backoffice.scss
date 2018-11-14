@@ -1,0 +1,75 @@
+@import '_colors.scss';
+
+/* Backoffice style */
+
+$min-width: 1100px;
+
+html, body {
+  min-height: 100%;
+  background-color: $color-background;
+  color: $color-text;
+  font-size: 12px;
+  font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Verdana, Arial, sans-serif;
+  margin: 0;
+}
+
+a {
+  color: $color-link;
+  cursor: pointer;
+}
+
+a.mat-raised-button {
+  text-decoration: none;
+}
+
+.theGardener {
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.theGardener, .mat-dialog-container {
+
+  font-size: 12px;
+  background-color: $color-background;
+
+  .content {
+    flex: 1 90%;
+    width: 100%;
+    background-color: $color-background;
+    padding: 10px 15px 10px 15px;
+  }
+
+  .right_col {
+    margin-left: 70px;
+    padding: 10px 20px;
+  }
+
+  h1, h2, h3 {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+
+  h2 a {
+    text-decoration: underline;
+  }
+
+  h3 a {
+    text-decoration: underline;
+  }
+
+  .page-title {
+    width: 100%;
+    font-size: 14px;
+  }
+
+  select {
+    color: $color-link-over;
+    height: 30px;
+    line-height: 18px;
+    padding: 5px 10px;
+    border-radius: 2px;
+    background: #fff;
+    font-size: 12px;
+  }
+
+}

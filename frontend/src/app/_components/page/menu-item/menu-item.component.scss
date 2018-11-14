@@ -1,0 +1,93 @@
+@import "../../../../stylesheets/colors";
+
+.menu-item{
+  width: 100%;
+  border-top-color: $color-main;
+  border-top-style: solid;
+  border-top-width: 1px;
+
+  border-bottom-color: $color-main;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+
+
+}
+
+
+
+
+li {
+
+  position: relative;
+  display: block;
+
+
+  a {
+    position: relative;
+    display: block;
+
+    text-align: center !important;
+    font-weight: 400;
+    font-size: 10px;
+    padding: 10px 5px;
+  }
+
+  a svg {
+    font-size: 25px !important;
+    text-align: center;
+    width: 100% !important;
+    margin-bottom: 5px;
+  }
+
+  > a {
+    margin-bottom: 6px;
+  }
+
+  a:hover {
+    color: #10353d;
+  }
+
+}
+
+.active {
+  position: relative;
+  display: block;
+
+  background-color: $color-main;
+  a {
+    color: $color-text-opposite;
+  }
+  a:hover {
+    color: $color-text-opposite;
+  }
+}
+
+.active-disabled {
+  position: relative;
+  display: block;
+
+  background-color: $color-border-light;
+  a {
+    color: $color-text-opposite;
+  }
+  a:hover {
+    color: $color-text-opposite;
+  }
+}
+
+.disabled {
+  a {
+    color: $color-disabled;
+  }
+  a:hover {
+    color: $color-disabled;
+  }
+}
+
+
+li > a:hover,
+li > a:focus {
+  text-decoration: none;
+  background: transparent
+}
+

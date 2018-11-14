@@ -3,14 +3,16 @@
 # ~~~~
 
 
-# Views
-GET           /                                               controllers.Application.index()
+# Angular App routes
+GET           /                                                                             controllers.Application.index
+GET           /app/                                                                         controllers.Application.app(path= "")
+GET           /app/*path                                                                    controllers.Application.app(path: String)
 
-GET           /features/:project/:feature                     controllers.Application.feature(project: String, feature: String)
+# Map static resources from the /public folder to the /assets URL path
+GET           /assets/images/*file                                                          controllers.Application.imageAssets(file: Asset)
+GET           /assets/*file                                                                 controllers.Application.assets(file:Asset)
 
 # API
-GET           /api/features/:project/:feature                 controllers.FeatureController.feature(project: String, feature: String)
-
 POST          /api/projects                                   controllers.ProjectController.registerProject()
 GET           /api/projects                                   controllers.ProjectController.getAllProjects()
 GET           /api/projects/:id                               controllers.ProjectController.getProject(id: String)
@@ -22,19 +24,19 @@ POST          /api/projects/:id/hierarchy/:hierarchyId        controllers.Projec
 DELETE        /api/projects/:id/hierarchy/:hierarchyId        controllers.ProjectController.deleteLinkProjectToHierarchy(id: String, hierarchyId : String)
 
 
-# HIERARCHY
 POST          /api/hierarchy                                  controllers.HierarchyController.addHierarchy()
 GET           /api/hierarchy                                  controllers.HierarchyController.getAllHierarchies()
 PUT           /api/hierarchy/:id                              controllers.HierarchyController.updateHierarchy(id: String)
 DELETE        /api/hierarchy/:id                              controllers.HierarchyController.deleteHierarchy(id: String)
 
-# Swagger API
+GET           /api/criterias                                  controllers.CriteriasController.getCriterias()
+GET           /api/generateDocumentation                      controllers.DocumentationController.generateDocumentation()
+
+# API DOCUMENTATION
 GET           /api/docs/                                      controllers.Assets.at(path="/public/swagger-ui",file="index.html")
 GET           /api/docs/swagger.json                          controllers.ApiHelpController.getResources
 GET           /api/docs/*file                                 controllers.Assets.at(path="/public/swagger-ui",file)
 
-# Map static resources from the /public folder to the /assets URL path
-GET           /assets/*file                                   controllers.Assets.versioned(path="/public", file: Asset)
 
 
 #IsAlive
