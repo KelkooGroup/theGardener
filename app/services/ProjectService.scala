@@ -33,7 +33,7 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
       branches.map { name =>
         val localRepository = getLocalRepository(project.id, name)
 
-        val branchId = branchRepository.save(Branch(-1, name, name == "master", project.id)).id
+        val branchId = branchRepository.save(Branch(-1, name, name == project.stableBranch, project.id)).id
 
         for {
           _ <- gitService.clone(project.repositoryUrl, localRepository)
