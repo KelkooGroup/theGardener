@@ -55,19 +55,31 @@ class DocumentationController @Inject()(hierarchyRepository: HierarchyRepository
   @ApiOperation(value = "Get documentation", response = classOf[Documentation])
   def generateDocumentation(): Action[AnyContent] = Action { request =>
 
-    val projects = request.queryString.getOrElse("project", Seq()).map { p =>
-      val hierarchy = p.substring(0, p.indexOf(">")).split("_").toSeq.filterNot(_.isEmpty).flatMap(hierarchyRepository.findBySlugName)
-      val projectId = p.substring(p.indexOf(">") + 1)
+    try {
+      val projects = request.queryString.getOrElse("project", Seq()).map { p =>
+        val hierarchy = p.split(">")(0).split("_").toSeq.filterNot(_.isEmpty).flatMap(hierarchyRepository.findBySlugName)
+        val projectId = p.split(">")(1)
+        val branchId = p.split(">").lift(2)
 
-      val branches = branchRepository.findAllByProjectId(projectId).map(b => BranchDocumentationDTO(b, featureRepository.findAllByBranchId(b.id)))
-      val project = projectRepository.findAllById(Seq(projectId)).map(ProjectDocumentationDTO(_, branches))
+        val branches = branchRepository.findAllByProjectId(projectId)
+          .filter(b => branchId.forall(_ == b.name))
+          .map(b => BranchDocumentationDTO(b, featureRepository.findAllByBranchId(b.id)))
+        val project = projectRepository.findAllById(Seq(projectId)).map(ProjectDocumentationDTO(_, branches))
 
-      buildDocumentation(hierarchy, project)
+        buildDocumentation(hierarchy, project)
+      }
+
+      if (projects.nonEmpty) {
+        val documentation = projects.reduceLeft((acc: Documentation, current: Documentation) => acc.merge(current))
+
+        Ok(Json.toJson(documentation))
+
+      } else {
+        NotFound
+      }
+    } catch {
+      case _: Exception => BadRequest
     }
-
-    val documentation = projects.reduceLeft((acc: Documentation, current: Documentation) => acc.merge(current))
-
-    Ok(Json.toJson(documentation))
   }
 
   def buildDocumentation(hierarchy: Seq[HierarchyNode], projects: Seq[ProjectDocumentationDTO]): Documentation = {
