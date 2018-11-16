@@ -13,7 +13,7 @@ class Application @Inject()(featureService: FeatureService, projectRepository: P
   val projectsRootDirectory = configuration.get[String]("projects.root.directory")
 
   def index = Action {
-    Ok(html.index("Hello, the Gardener"))
+    Redirect("/app/")
   }
 
   def app(path: String): Action[AnyContent] = assets.at("dist/index.html")

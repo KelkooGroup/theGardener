@@ -1,23 +1,26 @@
 package services
 
-import java.io.File
+import java.io.{File, FileReader}
 import java.util.{List => JList}
 
 import gherkin.ast.GherkinDocument
 import gherkin.{AstBuilder, Parser, ast}
 import javax.inject.Inject
 import models._
+import utils._
 import repository.FeatureRepository
 
 import scala.collection.JavaConverters._
-import scala.io.Source
+import scala.util._
 
-class FeatureService @Inject()( featureRepository: FeatureRepository){
+
+class FeatureService @Inject()(featureRepository: FeatureRepository) {
 
   def parseBranchDirectory(project: Project, branchId: Long, directoryPath: String): Seq[Feature] = {
     new File(directoryPath).listFiles().flatMap {
       case d if d.isDirectory => parseBranchDirectory(project, branchId, d.getPath)
-      case f if f.isFile && f.getName.contains(".feature") => Seq(parseFeatureFile(project.id, branchId, f.getPath))
+      case f if f.isFile && f.getName.contains(".feature") => Try(Seq(parseFeatureFile(project.id, branchId, f.getPath)))
+        .logError(s"Error while parsing file ${f.getPath}").getOrElse(Seq())
       case _ => Seq()
     }
   }
@@ -27,7 +30,7 @@ class FeatureService @Inject()( featureRepository: FeatureRepository){
 
     val featureId = featureRepository.findByBranchIdAndPath(branchId, filePath).map(_.id).getOrElse(0L)
     val parser = new Parser[GherkinDocument](new AstBuilder())
-    val gherkinDocument = parser.parse(Source.fromFile(featureFile).mkString)
+    val gherkinDocument = parser.parse(new FileReader(featureFile))
 
     val comments = gherkinDocument.getComments.asScala.map(_.getText)
     val feature = gherkinDocument.getFeature
