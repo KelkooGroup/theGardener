@@ -59,14 +59,14 @@ class DocumentationController @Inject()(hierarchyRepository: HierarchyRepository
       val projects = request.queryString.getOrElse("project", Seq()).map { p =>
         val hierarchy = p.split(">")(0).split("_").toSeq.filterNot(_.isEmpty).flatMap(hierarchyRepository.findBySlugName)
         val projectId = p.split(">")(1)
-        val branchId = p.split(">").lift(2)
+        val project = projectRepository.findById(projectId)
 
-        val branches = branchRepository.findAllByProjectId(projectId)
-          .filter(b => branchId.forall(_ == b.name))
+        val branchName = p.split(">").lift(2).getOrElse(project.map(_.stableBranch).getOrElse("master"))
+
+        val branches = branchRepository.findByProjectIdAndName(projectId, branchName)
           .map(b => BranchDocumentationDTO(b, featureRepository.findAllByBranchId(b.id)))
-        val project = projectRepository.findAllById(Seq(projectId)).map(ProjectDocumentationDTO(_, branches))
 
-        buildDocumentation(hierarchy, project)
+        buildDocumentation(hierarchy, project.map(ProjectDocumentationDTO(_, branches.toSeq)).toSeq)
       }
 
       if (projects.nonEmpty) {
