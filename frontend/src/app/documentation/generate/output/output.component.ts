@@ -63,7 +63,11 @@ export class OutputComponent implements OnInit {
       (result: DocumentationNodeApi) => {
         this.documentationData = this.documentationService.decorate(result) ;
         this.showSpinner = false ;
-        this.documentationTheme.selectHash();
+        new Promise(resolve => {
+          setTimeout(() => {
+            this.documentationTheme.selectHash();
+          }, 1000);
+        });
       },
       err => {
       });
