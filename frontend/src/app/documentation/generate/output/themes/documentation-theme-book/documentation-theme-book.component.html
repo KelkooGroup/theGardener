@@ -24,21 +24,85 @@
         <a  href="{{url}}#{{node.nodeId}}"  target="_blank" class="bookLink"   ><li class="fas fa-link fa-sm" ></li></a>
       </div>
 
-      <div  *ngIf="node.type == 'feature'" class="mat-tree-node feature" >
+      <div *ngIf="node.type == 'feature'" class="mat-tree-node feature">
         <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.data.name">
           <mat-icon class="mat-icon-rtl-mirror">
             {{nestedTreeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
           </mat-icon>
         </button>
-        <ul class="flex-container flex-direction-column flex-align-items-start" >
+        <ul class="flex-container flex-direction-column flex-align-items-start">
           <li>
-              <span class="feature level{{node.level}}" >{{node.data.name}}</span>
+            <span class="feature level{{node.level}}">{{node.data.name}}</span>
+            <a href="{{url}}#{{node.nodeId}}" target="_blank" class="bookLink">
+               <li class="fas fa-link fa-sm"></li>
+            </a>
           </li>
           <li>
-              <span class="feature" >{{node.data.description}}  </span>
+            <span class="feature">{{node.data.description}}  </span>
           </li>
         </ul>
-        <a  href="{{url}}#{{node.nodeId}}"  target="_blank" class="bookLink"   ><li class="fas fa-link fa-sm" ></li></a>
+      </div>
+
+      <div *ngIf="node.type == 'background' " class="mat-tree-node scenario-backgound">
+        <ul class="flex-container flex-direction-column flex-align-items-start">
+          <li>
+            <ul class="flex-container flex-direction-row flex-align-items-center">
+              <li>
+              <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.data.name ">
+                <mat-icon class="mat-icon-rtl-mirror">
+                  {{nestedTreeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                </mat-icon>
+              </button>
+              </li>
+              <li>
+                <span class="scenario" >Background </span>
+              </li>
+            </ul>
+          </li>
+          <li>
+
+           <div *ngIf="nestedTreeControl.isExpanded(node)"  class="scenario-backgound-steps">
+                <li>
+                  <div  class="mat-tree-node feature">
+                    <div class="mat-tree-node pull-right">
+                      <ul class="flex-container flex-direction-column flex-align-items-start">
+                        <li>
+                          <div class="pull-right">
+                            <ul class="flex-container flex-direction-row flex-align-items-start">
+                              <li class="steps">
+                                <div class="pull-right" *ngFor="let step of node.steps">
+                                  <ul class="flex-container flex-direction-column flex-align-items-start">
+                                    <li>
+                                      <div class="step">
+                                        <span class="stepKeyword">{{step.data.keyword}}</span>&nbsp;
+                                        <span [class.stepParameter]="fragment.isParameter"
+                                              [class.stepText]="! fragment.isParameter" *ngFor="let fragment of step.text">{{fragment.text}}</span>
+                                      </div>
+                                      <div *ngIf="step.hasTable" class="table pull-right">
+                                        <app-documentation-theme-book-table
+                                          [table]="step.table"></app-documentation-theme-book-table>
+                                      </div>
+                                    </li>
+                                  </ul>
+                                </div>
+                              </li>
+                            </ul>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </li>
+            </div>
+
+
+
+          </li>
+        </ul>
+
+
+
+
       </div>
 
       <div  *ngIf="node.type == 'scenario'" class="mat-tree-node scenario">
