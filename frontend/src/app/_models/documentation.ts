@@ -64,8 +64,13 @@ export class DocumentationStepRow{
 }
 
 export class DocumentationStepTable{
-  public headers = new  Array<string>();
-  public rows    = new Array<DocumentationStepRow>();
+  public headers   : { [key:string]:string; } = {};
+  public headerIds = new  Array<string>();
+  public rows      = new Array<DocumentationStepRow>();
+
+  public getHeader(headerId: string):string {
+    return this.headers[headerId] ;
+  }
 }
 
 
@@ -92,11 +97,14 @@ export class DocumentationStep  implements ExpandableNode {
       for (var j = 0; j < dataApi.argument.length; j++) {
         var currentRowValues = dataApi.argument[j];
         if (j ==0) {
-          instance.table.headers = currentRowValues;
+          for (var l = 0; l < currentRowValues.length; l++) {
+            instance.table.headerIds.push( l+ '' );
+            instance.table.headers[l] = currentRowValues[l];
+          }
         }else{
           var row = new DocumentationStepRow() ;
           for (var k = 0; k < currentRowValues.length; k++) {
-            row.values[instance.table.headers[k]] = currentRowValues[k] ;
+            row.values[instance.table.headerIds[k]] = currentRowValues[k] ;
           }
           instance.table.rows.push(row);
         }
@@ -205,7 +213,10 @@ export class DocumentationFeature implements ExpandableNode{
       instance.children.push(instance.background)
     }
     for (let scenario of instance.scenarios) {
-      instance.children.push( scenario   );
+      // TODO Provide an output for outline scenario
+      if (scenario.data.keyword != "Scenario Outline") {
+        instance.children.push(scenario);
+      }
     }
 
     return instance;

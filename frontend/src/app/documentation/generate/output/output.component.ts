@@ -65,7 +65,9 @@ export class OutputComponent implements OnInit {
         this.showSpinner = false ;
         new Promise(resolve => {
           setTimeout(() => {
-            this.documentationTheme.selectHash();
+            if (this.documentationTheme){
+               this.documentationTheme.selectHash();
+            }
           }, 1000);
         });
       },
