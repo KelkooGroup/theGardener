@@ -5,6 +5,7 @@ Feature: Link a project to the hierarchy
 
   Background:
     Given the database is empty
+    And the cache is empty
     And the hierarchy nodes are
       | id         | slugName   | name                 | childrenLabel | childLabel   |
       | .          | root       | Hierarchy root       | Views         | View         |

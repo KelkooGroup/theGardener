@@ -31,7 +31,7 @@ libraryDependencies ++= Seq(
   guice,
   evolutions,
   jdbc,
-  //ehcache,
+  cacheApi,
   "ch.qos.logback" % "logback-access" % "1.2.3",
   "net.logstash.logback" % "logstash-logback-encoder" % "4.11",
   "com.typesafe.play" %% "play-json" % "2.6.10",

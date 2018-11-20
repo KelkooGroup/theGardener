@@ -3,9 +3,11 @@ package controllers
 import io.swagger.annotations._
 import javax.inject.Inject
 import models._
+import play.api.Logger
 import play.api.libs.json.Json
 import play.api.mvc._
 import repository._
+import services.CriteriaService
 
 case class BranchDocumentationDTO(id: Long, name: String, isStable: Boolean, features: Seq[Feature]) {
   def merge(other: BranchDocumentationDTO): BranchDocumentationDTO = {
@@ -46,39 +48,61 @@ object Documentation {
 
 
 @Api(value = "DocumentationController", produces = "application/json")
-class DocumentationController @Inject()(hierarchyRepository: HierarchyRepository, projectRepository: ProjectRepository, branchRepository: BranchRepository, featureRepository: FeatureRepository) extends InjectedController {
+class DocumentationController @Inject()(documentationRepository: DocumentationRepository, criteriaService: CriteriaService, hierarchyRepository: HierarchyRepository, projectRepository: ProjectRepository) extends InjectedController {
 
   implicit val branchFormat = Json.format[BranchDocumentationDTO]
   implicit val projectFormat = Json.format[ProjectDocumentationDTO]
   implicit val documentationFormat = Json.format[Documentation]
 
   @ApiOperation(value = "Get documentation", response = classOf[Documentation])
+  @ApiImplicitParams(Array(
+    new ApiImplicitParam(name = "project", dataType = "string", paramType = "query", allowMultiple = true),
+    new ApiImplicitParam(name = "node", dataType = "string", paramType = "query", allowMultiple = true)
+  ))
+  @ApiResponses(Array(
+    new ApiResponse(code = 400, message = "Incorrect json"),
+    new ApiResponse(code = 404, message = "Project not found")
+  ))
   def generateDocumentation(): Action[AnyContent] = Action { request =>
-
     try {
-      val projects = request.queryString.getOrElse("project", Seq()).map { p =>
-        val hierarchy = p.split(">")(0).split("_").toSeq.filterNot(_.isEmpty).flatMap(hierarchyRepository.findBySlugName)
-        val projectId = p.split(">")(1)
+      val criteriasTree = criteriaService.getCriteriasTree()
+      val criteriaMap = criteriaService.getCriterias().map(c => c.id -> CriteriaService.findCriteriasSubtree(c.id)(criteriasTree)).toMap
+
+      val projectDocumentations = request.queryString.getOrElse("project", Seq()).map { projectParam =>
+        val hierarchy = projectParam.split(">")(0).split("_").toSeq.filterNot(_.isEmpty).flatMap(hierarchyRepository.findBySlugName)
+        val projectId = projectParam.split(">")(1)
         val project = projectRepository.findById(projectId)
+        val projectName = project.map(_.name).getOrElse("")
 
-        val branchName = p.split(">").lift(2).getOrElse(project.map(_.stableBranch).getOrElse("master"))
+        val branchName = projectParam.split(">").lift(2).getOrElse(project.map(_.stableBranch).getOrElse("master"))
 
-        val branches = branchRepository.findByProjectIdAndName(projectId, branchName)
-          .map(b => BranchDocumentationDTO(b, featureRepository.findAllByBranchId(b.id)))
-
-        buildDocumentation(hierarchy, project.map(ProjectDocumentationDTO(_, branches.toSeq)).toSeq)
+        buildDocumentation(hierarchy, Seq(documentationRepository.buildProjectDocumentation(ProjectCriteria(projectId, projectName, branchName))))
       }
 
-      if (projects.nonEmpty) {
-        val documentation = projects.reduceLeft((acc: Documentation, current: Documentation) => acc.merge(current))
+      val nodeDocumentations = request.queryString.getOrElse("node", Seq()).flatMap { nodeParam =>
+        val hierarchy = nodeParam.split("_").toSeq.filterNot(_.isEmpty).flatMap(hierarchyRepository.findBySlugName)
 
-        Ok(Json.toJson(documentation))
+        criteriaMap.get(hierarchy.last.id).flatten.map(CriteriaService.mergeChildrenHierarchy).getOrElse(Seq()).flatMap { hierarchyNode =>
+          criteriaMap.get(hierarchyNode.id).flatten.map { criteria =>
+            criteria.projects.map { project =>
+              buildDocumentation(criteria.hierarchy, Seq(documentationRepository.buildProjectDocumentation(ProjectCriteria(project.id, project.name, project.stableBranch))))
+            }
+          }
+        }.flatten
+      }
+
+      val documentations = projectDocumentations ++ nodeDocumentations
+
+      if (documentations.nonEmpty) {
+        Ok(Json.toJson(documentations.reduceLeft((acc: Documentation, current: Documentation) => acc.merge(current))))
 
       } else {
         NotFound
       }
     } catch {
-      case _: Exception => BadRequest
+      case e: Exception =>
+        Logger.error(e.getMessage, e)
+        BadRequest
     }
   }
 

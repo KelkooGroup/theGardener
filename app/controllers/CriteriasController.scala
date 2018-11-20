@@ -5,41 +5,40 @@ import javax.inject.Inject
 import models._
 import play.api.libs.json.Json
 import play.api.mvc._
-import repository._
+import services.CriteriaService
 
-case class ProjectCriteriasDTO(id: String, label: String, stableBranch: String, branches: Seq [String])
+case class ProjectCriteriasDTO(id: String, label: String, stableBranch: String, branches: Seq[String])
 
 object ProjectCriteriasDTO {
-  def apply(project: Project, branches: Seq[String]): ProjectCriteriasDTO = {
-    ProjectCriteriasDTO(project.id, project.name, project.stableBranch, branches)
+  def apply(project: Project): ProjectCriteriasDTO = {
+    ProjectCriteriasDTO(project.id, project.name, project.stableBranch, project.branches.getOrElse(Seq()).map(_.name))
   }
 }
 
-case class CriteriaDTO(id: String, slugName: String, name: String, childrenLabel: String, childLabel: String, projects: Seq[ProjectCriteriasDTO])
+case class CriteriaDTO(id: String, slugName: String, name: String, childrenLabel: String, childLabel: String, projects: Seq[ProjectCriteriasDTO], children: Option[Seq[CriteriaDTO]])
 
 object CriteriaDTO {
-  def apply(hierarchyNode: HierarchyNode, projects: Seq[ProjectCriteriasDTO]): CriteriaDTO = {
-    CriteriaDTO(hierarchyNode.id, hierarchyNode.slugName, hierarchyNode.name, hierarchyNode.childrenLabel, hierarchyNode.childLabel, projects)
+  def apply(criteria: Criteria): CriteriaDTO = {
+    CriteriaDTO(criteria.id, criteria.hierarchy.last.slugName, criteria.hierarchy.last.name, criteria.hierarchy.last.childrenLabel, criteria.hierarchy.last.childLabel,
+      criteria.projects.map(ProjectCriteriasDTO(_)), Some(criteria.children.map(CriteriaDTO(_))))
   }
 }
 
 @Api(value = "CriteriasController", produces = "application/json")
-class CriteriasController @Inject()(hierarchyRepository: HierarchyRepository, projectRepository: ProjectRepository, branchRepository: BranchRepository) extends InjectedController {
+class CriteriasController @Inject()(criteriaService: CriteriaService) extends InjectedController {
 
   implicit val projectFormat = Json.format[ProjectCriteriasDTO]
   implicit val criteriaFormat = Json.format[CriteriaDTO]
 
-  @ApiOperation(value = "Get all criterias", response = classOf[CriteriaDTO])
+  @ApiOperation(value = "Get all criterias", response = classOf[CriteriaDTO], responseContainer = "list")
   def getCriterias(): Action[AnyContent] = Action {
 
-    val hierarchyNodes = hierarchyRepository.findAll().map { hierarchyNode =>
-      val projects = projectRepository.findAllByHierarchyId(hierarchyNode.id).map { project =>
-        ProjectCriteriasDTO(project, branchRepository.findAllByProjectId(project.id).map(_.name))
-      }
+    Ok(Json.toJson(criteriaService.getCriterias().map(CriteriaDTO(_).copy(children = None))))
+  }
 
-      CriteriaDTO(hierarchyNode, projects.sortBy(_.id))
-    }
+  @ApiOperation(value = "Get all criterias in a tree", response = classOf[CriteriaDTO])
+  def getCriteriasTree(): Action[AnyContent] = Action {
 
-    Ok(Json.toJson(hierarchyNodes.sortBy(_.id)))
+    Ok(Json.toJson(CriteriaDTO(criteriaService.getCriteriasTree())))
   }
 }

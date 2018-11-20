@@ -41,6 +41,7 @@ class ProjectRepository @Inject()(db: Database) {
   def deleteById(id: String): Unit = {
     db.withConnection { implicit connection =>
       SQL"DELETE FROM project WHERE id = $id".executeUpdate()
+      SQL"DELETE FROM project_hierarchyNode WHERE projectId = $id".executeUpdate()
     }
   }
 

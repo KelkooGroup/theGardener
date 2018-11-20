@@ -3,11 +3,15 @@ Feature: Store the feature files in the database
   I want to store the feature files in a database
   So that I can propose several criterias to the end user when he want to search specific scenario
 
+  Background:
+    Given No project is checkout
+    And the database is empty
+    And the cache is empty
+
 
   @level_1_specification @nominal_case @valid
   Scenario Outline: show the different possible values of the annotation considered by theGardener
-    Given No project is checkout
-    And we have the following projects
+    Given we have the following projects
       | id            | name                    | repositoryUrl                                         | stableBranch | featuresRootPath |
       | suggestionsWS | Suggestions WebServices | target/remote/data/GetFeatures/library/suggestionsWS/ | master       | test/features    |
     And the server "target/remote/data/GetFeatures" host under the project "library/suggestionsWS" on the branch "master" the file "test/features/provide_book_suggestions.feature"
@@ -57,8 +61,7 @@ Scenario: providing several book suggestions
 
   @level_1_specification @limit_case @valid
   Scenario Outline: show the different possible values of the annotation considered by theGardener
-    Given No project is checkout
-    And we have the following projects
+    Given we have the following projects
       | id            | name                    | repositoryUrl                                         | stableBranch | featuresRootPath |
       | suggestionsWS | Suggestions WebServices | target/remote/data/GetFeatures/library/suggestionsWS/ | master       | test/features    |
     And the server "target/remote/data/GetFeatures" host under the project "library/suggestionsWS" on the branch "master" the file "test/features/provide_book_suggestions.feature"
@@ -115,8 +118,7 @@ Scenario: providing several book suggestions
 
   @level_1_specification @nominal_case @valid
   Scenario: transform a scenario in Gherkin language to theGardener representation
-    Given No project is checkout
-    And we have the following projects
+    Given we have the following projects
       | id            | name                    | repositoryUrl                                         | stableBranch | featuresRootPath |
       | suggestionsWS | Suggestions WebServices | target/remote/data/GetFeatures/library/suggestionsWS/ | master       | test/features    |
     And the server "target/remote/data/GetFeatures" host under the project "library/suggestionsWS" on the branch "master" the file "test/features/provide_book_suggestions.feature"
@@ -169,8 +171,7 @@ Feature: As a user Tim, I want some book suggestions so that I can do some disco
 
   @level_1_specification @nominal_case @valid
   Scenario: transform a scenario with parameters in Gherkin language to theGardener representation
-    Given No project is checkout
-    And we have the following projects
+    Given we have the following projects
       | id            | name                    | repositoryUrl                                         | stableBranch | featuresRootPath |
       | suggestionsWS | Suggestions WebServices | target/remote/data/GetFeatures/library/suggestionsWS/ | master       | test/features    |
     And the server "target/remote/data/GetFeatures" host under the project "library/suggestionsWS" on the branch "master" the file "test/features/provide_book_suggestions.feature"
@@ -230,8 +231,7 @@ Feature: As a user Tim, I want some book suggestions so that I can do some disco
 
   @level_1_specification @nominal_case @valid
   Scenario: transform a multi lines scenario with parameters in Gherkin language to theGardener representation
-    Given No project is checkout
-    And we have the following projects
+    Given we have the following projects
       | id            | name                    | repositoryUrl                                         | stableBranch | featuresRootPath |
       | suggestionsWS | Suggestions WebServices | target/remote/data/GetFeatures/library/suggestionsWS/ | master       | test/features    |
     And the server "target/remote/data/GetFeatures" host under the project "library/suggestionsWS" on the branch "master" the file "test/features/provide_book_suggestions.feature"
@@ -322,8 +322,7 @@ Feature: As a user Tim, I want some book suggestions so that I can do some disco
 
   @level_1_specification @nominal_case @valid
   Scenario: transform a outline scenario with parameters in Gherkin language to theGardener representation
-    Given No project is checkout
-    And we have the following projects
+    Given we have the following projects
       | id            | name                    | repositoryUrl                                         | stableBranch | featuresRootPath |
       | suggestionsWS | Suggestions WebServices | target/remote/data/GetFeatures/library/suggestionsWS/ | master       | test/features    |
     And the server "target/remote/data/GetFeatures" host under the project "library/suggestionsWS" on the branch "master" the file "test/features/provide_book_suggestions.feature"

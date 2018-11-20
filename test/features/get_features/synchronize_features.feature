@@ -7,6 +7,7 @@ Feature: Synchronize BDD features from a project on a remote server
   Background:
     Given No project is checkout
     And the database is empty
+    And the cache is empty
 
 
   @level_1_specification @nominal_case @valid
