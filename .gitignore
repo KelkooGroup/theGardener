@@ -5,3 +5,4 @@
 target
 logs
 public/dist/
+local-conf/kkg.sql
