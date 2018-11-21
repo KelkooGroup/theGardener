@@ -7,9 +7,10 @@ import models._
 import play.api.libs.json._
 import play.api.mvc._
 import repository._
+import services.CriteriaService
 
 @Api(value = "HierarchyController", produces = "application/json")
-class HierarchyController @Inject()(hierarchyRepository: HierarchyRepository) extends InjectedController {
+class HierarchyController @Inject()(hierarchyRepository: HierarchyRepository, criteriaService: CriteriaService) extends InjectedController {
 
   implicit val hierarchyFormat = Json.format[HierarchyNode]
 
@@ -24,6 +25,9 @@ class HierarchyController @Inject()(hierarchyRepository: HierarchyRepository) ex
 
     } else {
       val addHierarchy = hierarchyRepository.save(hierarchy)
+
+      criteriaService.refreshCache()
+
       Created(Json.toJson(addHierarchy))
     }
   }
@@ -49,6 +53,8 @@ class HierarchyController @Inject()(hierarchyRepository: HierarchyRepository) ex
       if (hierarchyRepository.existsById(id)) {
         hierarchyRepository.save(hierarchy)
 
+        criteriaService.refreshCache()
+
         Ok(Json.toJson(hierarchyRepository.findById(id)))
 
       } else {
@@ -63,6 +69,8 @@ class HierarchyController @Inject()(hierarchyRepository: HierarchyRepository) ex
 
     if (hierarchyRepository.existsById(id)) {
       hierarchyRepository.deleteById(id)
+
+      criteriaService.refreshCache()
 
       Ok
 

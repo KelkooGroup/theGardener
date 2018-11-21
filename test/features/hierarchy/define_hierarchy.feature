@@ -5,6 +5,7 @@ Feature: Define hierarchy
 
   Background:
     Given the database is empty
+    And the cache is empty
 
 
   @level_2_technical_details @nominal_case @valid

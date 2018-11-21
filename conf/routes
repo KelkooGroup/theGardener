@@ -4,13 +4,13 @@
 
 
 # Angular App routes
-GET           /                                                                             controllers.Application.index
-GET           /app/                                                                         controllers.Application.app(path= "")
-GET           /app/*path                                                                    controllers.Application.app(path: String)
+GET           /                                               controllers.Application.index
+GET           /app/                                           controllers.Application.app(path= "")
+GET           /app/*path                                      controllers.Application.app(path: String)
 
 # Map static resources from the /public folder to the /assets URL path
-GET           /assets/images/*file                                                          controllers.Application.imageAssets(file: Asset)
-GET           /assets/*file                                                                 controllers.Application.assets(file:Asset)
+GET           /assets/images/*file                            controllers.Application.imageAssets(file: Asset)
+GET           /assets/*file                                   controllers.Application.assets(file:Asset)
 
 # API
 POST          /api/projects                                   controllers.ProjectController.registerProject()
@@ -30,6 +30,7 @@ PUT           /api/hierarchy/:id                              controllers.Hierar
 DELETE        /api/hierarchy/:id                              controllers.HierarchyController.deleteHierarchy(id: String)
 
 GET           /api/criterias                                  controllers.CriteriasController.getCriterias()
+GET           /api/criterias/tree                             controllers.CriteriasController.getCriteriasTree()
 GET           /api/generateDocumentation                      controllers.DocumentationController.generateDocumentation()
 
 # API DOCUMENTATION

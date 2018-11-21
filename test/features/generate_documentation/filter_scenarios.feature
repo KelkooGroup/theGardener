@@ -5,6 +5,7 @@ Feature: Generate documentation
 
   Background:
     Given the database is empty
+    And the cache is empty
     And No project is checkout
     And the hierarchy nodes are
       | id         | slugName   | name                 | childrenLabel | childLabel   |

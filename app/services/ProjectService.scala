@@ -13,7 +13,7 @@ import repository._
 import scala.concurrent._
 import scala.concurrent.duration._
 
-class ProjectService @Inject()(projectRepository: ProjectRepository, gitService: GitService, config: Config, actorSystem: ActorSystem, featureService: FeatureService, featureRepository: FeatureRepository, branchRepository: BranchRepository)(implicit ec: ExecutionContext) {
+class ProjectService @Inject()(projectRepository: ProjectRepository, gitService: GitService, config: Config, actorSystem: ActorSystem, featureService: FeatureService, featureRepository: FeatureRepository, branchRepository: BranchRepository, criteriaService: CriteriaService)(implicit ec: ExecutionContext) {
   val projectsRootDirectory = config.getString("projects.root.directory")
   val synchronizeInterval = config.getInt("projects.synchronize.interval")
   val synchronizeInitialDelay = config.getInt("projects.synchronize.initial.delay")
@@ -67,7 +67,7 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
     )
   }
 
-  private def deleteBranches(project: Project, branches: Set[String]) = {
+  def deleteBranches(project: Project, branches: Set[String]) = {
     Logger.debug(s"delete ${project.id} branches ${branches.mkString(",")}")
 
     Future {
@@ -80,14 +80,14 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
     }
   }
 
-  def synchronizeAll(): Future[Seq[Unit]] = {
+  def synchronizeAll(): Future[Unit] = {
     Logger.info("Start synchronizing projects")
 
     val projects = projectRepository.findAll()
 
     Future.sequence(
       projects.map(synchronize)
-    )
+    ).map(_ => criteriaService.refreshCache())
   }
 
   def synchronize(project: Project): Future[Unit] = {

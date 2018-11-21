@@ -21,6 +21,7 @@ import org.scalatest.mockito._
 import org.scalatestplus.play._
 import org.scalatestplus.play.guice._
 import play.api._
+import play.api.cache.{AsyncCacheApi, SyncCacheApi}
 import play.api.db._
 import play.api.inject._
 import play.api.inject.guice._
@@ -30,7 +31,10 @@ import play.api.test.Helpers._
 import play.api.test._
 import repository._
 import services._
+import services.CriteriaService._
+import utils.InMemoryCache
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.collection.JavaConverters._
 import scala.concurrent._
 import scala.io.Source
@@ -56,7 +60,9 @@ object CommonSteps extends PlaySpec with GuiceOneServerPerSuite with BeforeAndAf
 
   var projects: Map[String, Project] = _
 
-  val applicationBuilder = new GuiceApplicationBuilder().in(Mode.Test)
+  val cache = new InMemoryCache()
+
+  val applicationBuilder = new GuiceApplicationBuilder().overrides(bind[AsyncCacheApi].toInstance(cache)).in(Mode.Test)
 
   override def fakeApplication(): Application = applicationBuilder.build()
 
@@ -189,6 +195,11 @@ Scenario: providing several book suggestions
 
   Given("""^we have those branches in the database$""") { branches: util.List[Branch] =>
     branchRepository.saveAll(branches.asScala)
+  }
+
+  Given("""^the cache is empty$"""){ () =>
+    cache.remove(criteriasListCacheKey)
+    cache.remove(criteriasTreeCacheKey)
   }
 
   When("^we go in a browser to url \"([^\"]*)\"$") { url: String =>

@@ -35,7 +35,7 @@ libraryDependencies ++= Seq(
   guice,
   evolutions,
   jdbc,
-  //ehcache,
+  cacheApi,
   "com.kelkoo.common" %% "playScalaCommon" % "2.1.2",
   "ch.qos.logback" % "logback-access" % "1.2.3",
   "net.logstash.logback" % "logstash-logback-encoder" % "4.11",
@@ -54,7 +54,6 @@ libraryDependencies ++= Seq(
   "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % Test,
   "org.mockito" % "mockito-all" % "1.10.19" % Test
 )
-
 
 evictionWarningOptions in update := EvictionWarningOptions.empty
 

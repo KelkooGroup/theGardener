@@ -26,6 +26,7 @@ export class DocumentationFeatureApi {
   public tags: Array<string>;
   public comments: Array<string>;
   public keyword: string;
+  public background : DocumentationScenarioApi ;
   public scenarios: Array<DocumentationScenarioApi>;
 }
 
@@ -63,8 +64,13 @@ export class DocumentationStepRow{
 }
 
 export class DocumentationStepTable{
-  public headers = new  Array<string>();
-  public rows    = new Array<DocumentationStepRow>();
+  public headers   : { [key:string]:string; } = {};
+  public headerIds = new  Array<string>();
+  public rows      = new Array<DocumentationStepRow>();
+
+  public getHeader(headerId: string):string {
+    return this.headers[headerId] ;
+  }
 }
 
 
@@ -72,7 +78,10 @@ export class DocumentationStepTextFragment{
   constructor(public text: string, public isParameter: boolean){}
 }
 
-export class DocumentationStep {
+export class DocumentationStep  implements ExpandableNode {
+  public type : string ;
+  public nodeId : string ;
+  public localId : string ;
   public data: DocumentationStepApi;
   public text = new  Array<DocumentationStepTextFragment>();
   public hasTable: boolean;
@@ -88,11 +97,14 @@ export class DocumentationStep {
       for (var j = 0; j < dataApi.argument.length; j++) {
         var currentRowValues = dataApi.argument[j];
         if (j ==0) {
-          instance.table.headers = currentRowValues;
+          for (var l = 0; l < currentRowValues.length; l++) {
+            instance.table.headerIds.push( l+ '' );
+            instance.table.headers[l] = currentRowValues[l];
+          }
         }else{
           var row = new DocumentationStepRow() ;
           for (var k = 0; k < currentRowValues.length; k++) {
-            row.values[instance.table.headers[k]] = currentRowValues[k] ;
+            row.values[instance.table.headerIds[k]] = currentRowValues[k] ;
           }
           instance.table.rows.push(row);
         }
@@ -111,6 +123,14 @@ export class DocumentationStep {
       }
     }
     return instance;
+  }
+
+  getChilden() : Array<ExpandableNode>{
+      return new Array<ExpandableNode>();
+  }
+
+  hasChilden(): boolean {
+    return this.getChilden().length > 0 ;
   }
 }
 
@@ -135,8 +155,9 @@ export class DocumentationScenario  implements ExpandableNode {
   public level : number;
   public steps: Array<DocumentationStep>;
 
-  public static newFromApi(parentNodeId: string,dataApi: DocumentationScenarioApi, level: number): DocumentationScenario {
+  public static newFromApi(type: string,   parentNodeId: string,dataApi: DocumentationScenarioApi, level: number): DocumentationScenario {
     var instance = new DocumentationScenario( );
+    instance.type = type ;
     instance.data = dataApi ;
     instance.localId =  DocumentationNode.toAnchor( dataApi.name) ;
     instance.nodeId  = `${parentNodeId}_${instance.localId}` ;
@@ -149,7 +170,11 @@ export class DocumentationScenario  implements ExpandableNode {
   }
 
   getChilden() : Array<ExpandableNode>{
-    return new Array<ExpandableNode>();
+    if (  this.type == "scenario" ) {
+      return new Array<ExpandableNode>();
+    }else{
+      return this.steps ;
+    }
   }
 
   hasChilden(): boolean {
@@ -164,7 +189,9 @@ export class DocumentationFeature implements ExpandableNode{
   public localId : string ;
   public data: DocumentationFeatureApi;
   public level : number;
+  public background : DocumentationScenario ;
   public scenarios: Array<DocumentationScenario>;
+  public children:  Array<DocumentationScenario>;
 
   public static newFromApi(parentNodeId: string, dataApi: DocumentationFeatureApi, level: number): DocumentationFeature {
     var instance = new DocumentationFeature( );
@@ -172,15 +199,31 @@ export class DocumentationFeature implements ExpandableNode{
     instance.localId = DocumentationNode.toAnchor( dataApi.path);
     instance.nodeId  = `${parentNodeId}_${instance.localId}` ;
     instance.level = level ;
+    if( dataApi.background ){
+      instance.background   = DocumentationScenario.newFromApi("background", instance.nodeId+"_background",dataApi.background, level+1)
+    }
+
     instance.scenarios = new Array<DocumentationScenario>() ;
     for (let scenario of dataApi.scenarios) {
-      instance.scenarios.push( DocumentationScenario.newFromApi(instance.nodeId,scenario, level+1)   );
+      instance.scenarios.push( DocumentationScenario.newFromApi("scenario", instance.nodeId,scenario, level+1)   );
     }
+
+    instance.children = new Array<DocumentationScenario>() ;
+    if ( instance.background  ){
+      instance.children.push(instance.background)
+    }
+    for (let scenario of instance.scenarios) {
+      // TODO Provide an output for outline scenario
+      if (scenario.data.keyword != "Scenario Outline") {
+        instance.children.push(scenario);
+      }
+    }
+
     return instance;
   }
 
   getChilden() : Array<ExpandableNode>{
-    return this.scenarios;
+    return this.children;
   }
 
   hasChilden(): boolean {

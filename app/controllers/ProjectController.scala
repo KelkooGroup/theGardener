@@ -12,7 +12,7 @@ import services._
 import scala.concurrent._
 
 @Api(value = "ProjectController", produces = "application/json")
-class ProjectController @Inject()(projectRepository: ProjectRepository, projectService: ProjectService, hierarchyRepository: HierarchyRepository)(implicit ec: ExecutionContext) extends InjectedController {
+class ProjectController @Inject()(projectRepository: ProjectRepository, projectService: ProjectService, hierarchyRepository: HierarchyRepository, branchRepository: BranchRepository, criteriaService: CriteriaService)(implicit ec: ExecutionContext) extends InjectedController {
 
   implicit val branchFormat = Json.format[Branch]
   implicit val hierarchyFormat = Json.format[HierarchyNode]
@@ -31,6 +31,8 @@ class ProjectController @Inject()(projectRepository: ProjectRepository, projectS
       val savedProject = projectRepository.save(project)
 
       projectService.checkoutRemoteBranches(savedProject)
+
+      criteriaService.refreshCache()
 
       Created(Json.toJson(savedProject))
     }
@@ -71,6 +73,8 @@ class ProjectController @Inject()(projectRepository: ProjectRepository, projectS
       if (projectRepository.existsById(id)) {
         projectRepository.save(project)
 
+        criteriaService.refreshCache()
+
         Ok(Json.toJson(projectRepository.findById(id)))
 
       } else {
@@ -84,7 +88,10 @@ class ProjectController @Inject()(projectRepository: ProjectRepository, projectS
   def deleteProject(@ApiParam("Project id") id: String): Action[AnyContent] = Action {
 
     if (projectRepository.existsById(id)) {
+      projectService.deleteBranches(projectRepository.findById(id).get, branchRepository.findAllByProjectId(id).map(_.name).toSet)
       projectRepository.deleteById(id)
+
+      criteriaService.refreshCache()
 
       Ok
 
@@ -100,6 +107,9 @@ class ProjectController @Inject()(projectRepository: ProjectRepository, projectS
       if (hierarchyRepository.existsById(hierarchyId)) {
         projectRepository.linkHierarchy(id, hierarchyId)
         val hierarchy = hierarchyRepository.findAllByProjectId(id)
+
+        criteriaService.refreshCache()
+
         Created(Json.toJson(hierarchy))
 
       } else {
@@ -117,6 +127,8 @@ class ProjectController @Inject()(projectRepository: ProjectRepository, projectS
     if (projectRepository.existsLinkByIds(id, hierarchyId)) {
       projectRepository.unlinkHierarchy(id, hierarchyId)
 
+      criteriaService.refreshCache()
+
       Ok(Json.toJson(hierarchyRepository.findAllByProjectId(id)))
 
     } else {
@@ -128,7 +140,7 @@ class ProjectController @Inject()(projectRepository: ProjectRepository, projectS
   @ApiResponses(Array(new ApiResponse(code = 404, message = "Project not found")))
   def synchronizeProject(@ApiParam("Project id") id: String): Action[AnyContent] = Action.async {
     projectRepository.findById(id)
-      .map(projectService.synchronize(_).map(_ => Ok))
+      .map(projectService.synchronize(_).map(_ => criteriaService.refreshCache()).map(_ => Ok))
       .getOrElse(Future.successful(NotFound(s"No project $id")))
 
   }

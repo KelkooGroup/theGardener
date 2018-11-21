@@ -3,6 +3,7 @@ Feature: Provide criterias
   @level_2_technical_details @nominal_case @valid
   Scenario: provide criterias - json output
     Given the database is empty
+    And the cache is empty
     And the hierarchy nodes are
       | id         | slugName   | name                 | childrenLabel | childLabel   |
       | .          | root       | Hierarchy root       | Views         | View         |

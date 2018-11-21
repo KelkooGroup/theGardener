@@ -61,7 +61,6 @@
   font-family: "courier";
   font-size: $font-size-text-x-small;
   width: 50%;
-  max-width: 600px;
   padding-left: 10px;
 }
 
@@ -69,6 +68,16 @@
   margin-top: 5px;
   font-size: $font-size-h4;
 }
+
+.feature-description{
+  margin-top: 5px;
+  font-size: $font-size-text;
+}
+
+.background {
+  padding-left: 50px;
+}
+
 
 
 .scenario{
