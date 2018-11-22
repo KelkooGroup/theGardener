@@ -34,7 +34,7 @@ Scenario: providing several book suggestions
       | 1  | master | true     | suggestionsWS |
     And we have now those features in the database
       | id | path                                                                                | name                                                                        | description | branchId |
-      | 1  | target/data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature | As a user Tim, I want some book suggestions so that I can do some discovery |             | 1        |
+      | 1  | test/features/provide_book_suggestions.feature | As a user Tim, I want some book suggestions so that I can do some discovery |             | 1        |
     And we have now those scenario in the database
       | id | name                               | keyword  | workflowStep               | caseType               | abstractionLevel               | description |
       | 1  | providing several book suggestions | Scenario | <considered_workflow_step> | <considered_case_type> | <considered_abstraction_level> |             |
@@ -85,7 +85,7 @@ Scenario: providing several book suggestions
       | 1  | master | true     | suggestionsWS |
     And we have now those features in the database
       | id | path                                                                                | name                                                                        | description | branchId |
-      | 1  | target/data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature | As a user Tim, I want some book suggestions so that I can do some discovery |             | 1        |
+      | 1  | test/features/provide_book_suggestions.feature | As a user Tim, I want some book suggestions so that I can do some discovery |             | 1        |
     And we have now those scenario in the database
       | id | name                               | keyword  | workflowStep               | caseType               | abstractionLevel               | description |
       | 1  | providing several book suggestions | Scenario | <considered_workflow_step> | <considered_case_type> | <considered_abstraction_level> |             |
@@ -141,7 +141,7 @@ Feature: As a user Tim, I want some book suggestions so that I can do some disco
       | 1  | master | true     | suggestionsWS |
     And we have now those features in the database
       | id | path                                                                                | name                                                                        | description | branchId |
-      | 1  | target/data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature | As a user Tim, I want some book suggestions so that I can do some discovery |             | 1        |
+      | 1  | test/features/provide_book_suggestions.feature | As a user Tim, I want some book suggestions so that I can do some discovery |             | 1        |
     And we have now those scenario in the database
       | id | name                               | keyword  | workflowStep | caseType     | abstractionLevel   | description |
       | 1  | providing several book suggestions | Scenario | draft        | nominal_case | level_0_high_level |             |
@@ -195,7 +195,7 @@ Feature: As a user Tim, I want some book suggestions so that I can do some disco
       | 1  | master | true     | suggestionsWS |
     And we have now those features in the database
       | id | path                                                                                | name                                                                        | description | branchId |
-      | 1  | target/data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature | As a user Tim, I want some book suggestions so that I can do some discovery |             | 1        |
+      | 1  | test/features/provide_book_suggestions.feature | As a user Tim, I want some book suggestions so that I can do some discovery |             | 1        |
     And we have now those scenario in the database
       | id | name                                                          | keyword  | workflowStep | caseType   | abstractionLevel      | description |
       | 1  | one service on which the suggestion system depends on is down | Scenario | valid        | error_case | level_1_specification |             |
@@ -261,7 +261,7 @@ Feature: As a user Tim, I want some book suggestions so that I can do some disco
       | 1  | master | true     | suggestionsWS |
     And we have now those features in the database
       | id | path                                                                                | name                                                                        | description | branchId |
-      | 1  | target/data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature | As a user Tim, I want some book suggestions so that I can do some discovery |             | 1        |
+      | 1  | test/features/provide_book_suggestions.feature | As a user Tim, I want some book suggestions so that I can do some discovery |             | 1        |
 
 #     TODO The Feature name should be "Provide book suggestions"  based on the name of the file provide_book_suggestions.feature
     And we have now those scenario in the database
@@ -352,7 +352,7 @@ Feature: As a user Tim, I want some book suggestions so that I can do some disco
       | 1  | master | true     | suggestionsWS |
     And we have now those features in the database
       | id | path                                                                                | name                                                                        | description | branchId |
-      | 1  | target/data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature | As a user Tim, I want some book suggestions so that I can do some discovery |             | 1        |
+      | 1  | test/features/provide_book_suggestions.feature | As a user Tim, I want some book suggestions so that I can do some discovery |             | 1        |
     And we have now those scenario outline in the database
       | id | name                        | keyword          | workflowStep | caseType   | abstractionLevel      | description |
       | 1  | unknown user, no suggestion | Scenario Outline | valid        | error_case | level_1_specification |             |
