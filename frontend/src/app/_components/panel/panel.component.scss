@@ -1,24 +1,23 @@
 @import "../../../stylesheets/backoffice";
 
-
 .panel-default {
 
   padding: 5px;
   margin: 5px;
 
-h3 {
-  color: $color-text-invert;
-  text-transform: uppercase;
-  font-weight: 600;
-  font-size: $font-size-h3;
-}
+  h3 {
+    color: $color-text-invert;
+    text-transform: uppercase;
+    font-weight: 600;
+    font-size: $font-size-h3;
+  }
 
-h4 {
-  text-transform: uppercase;
-  font-size: $font-size-h4;
-  font-weight: 600;
-  margin: 10px 0;
-}
+  h4 {
+    text-transform: uppercase;
+    font-size: $font-size-h4;
+    font-weight: 600;
+    margin: 10px 0;
+  }
 
 }
 
@@ -27,55 +26,55 @@ h4 {
   border: 1px solid $color-border-light;
   background-color: white !important;
 
-.panel-top {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  line-height: 30px;
-  margin-left: 5px;
+  .panel-top {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    line-height: 30px;
+    margin-left: 5px;
+  }
+
+  .panel-icon {
+    font-size: $font-size-h1;
+    padding: 0 10px 0 10px;
+    color: $color-main;
+  }
+
+  .panel-body {
+    padding: 0 10px 10px 10px;
+  }
+
+  .panel-actions {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+  }
+
+  .panel-actions-float {
+    float: right;
+  }
+
+  .mini-fab-wrapper {
+    float: right;
+    padding-top: 8px;
+  }
+
+  .fab-pull-bottom {
+    padding-top: 35px;
+  }
+
+  .fab-pull-top {
+    padding-top: 0;
+  }
+
+  .field-loading {
+    color: $color-text-invert;
+    font-style: italic;
+  }
 }
 
-.panel-icon {
-  font-size: $font-size-h1;
-  padding: 0 10px 0 10px;
-  color: $color-main;
-}
-
-.panel-body {
-  padding: 0px 10px 10px 10px;
-}
-
-.panel-actions {
-  position: absolute;
-  bottom: 20px;
-  right: 20px;
-}
-
-.panel-actions-float {
-  float: right;
-}
-
-.mini-fab-wrapper {
-  float: right;
-  padding-top: 8px;
-}
-
-.fab-pull-bottom {
-  padding-top: 35px;
-}
-
-.fab-pull-top {
-  padding-top: 0;
-}
-
-.field-loading {
-  color: $color-text-invert;
-  font-style: italic;
-}
-}
-
-.collapse{
+.collapse {
   padding-right: 5px;
 }
 

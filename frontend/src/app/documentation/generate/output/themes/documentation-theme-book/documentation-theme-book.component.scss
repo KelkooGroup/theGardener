@@ -11,7 +11,7 @@
   list-style-type: none;
 }
 
-.pull-right{
+.pull-right {
   margin-left: 5px;
   padding-left: 5px;
 }
@@ -48,14 +48,13 @@
   font-size: $font-size-h7;
 }
 
-.project, .branch, .feature, .scenario, .step, .table{
+.project, .branch, .feature, .scenario, .step, .table {
   color: $color-text-darker;
 }
 
-.project{
+.project {
   font-size: $font-size-h3;
 }
-
 
 .branch {
   font-family: "courier";
@@ -64,12 +63,12 @@
   padding-left: 10px;
 }
 
-.feature{
+.feature {
   margin-top: 5px;
   font-size: $font-size-h4;
 }
 
-.feature-description{
+.feature-description {
   margin-top: 5px;
   font-size: $font-size-text;
 }
@@ -78,21 +77,19 @@
   padding-left: 50px;
 }
 
-
-
-.scenario{
+.scenario {
   margin-top: 6px;
   font-size: $font-size-h5;
 }
 
-.tag{
+.tag {
   color: $color-text-invert;
   font-weight: lighter;
   padding-right: 4px;
   font-size: $font-size-text-big;
 }
 
-.tags{
+.tags {
   font-style: italic;
   font-weight: lighter;
   font-size: $font-size-text-x-small;
@@ -100,33 +97,33 @@
   color: $color-text-darker;
 }
 
-.steps{
+.steps {
   margin-top: 2px;
   margin-bottom: 2px;
 }
 
-.step{
+.step {
   margin-top: 6px;
   font-size: $font-size-text;
 }
 
-.table{
+.table {
   margin-top: 2px;
 }
 
-.stepKeyword{
+.stepKeyword {
   font-weight: 600;
   color: $color-text-dark;
 }
 
-.stepParameter{
+.stepParameter {
   background-color: $color-text-lighter;
   color: $color-text;
   font-size: $font-size-text;
   font-weight: 500;
 }
 
-.stepText{
+.stepText {
   color: $color-text-dark;
 }
 

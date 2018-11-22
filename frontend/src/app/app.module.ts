@@ -23,14 +23,14 @@ import {
   MatDialogModule,
   MatDividerModule,
   MatFormFieldModule,
-  MatSelectModule,
-  MatInputModule,
-  MatTableModule,
-  MatListModule,
-  MatTreeModule,
   MatIconModule,
-  MatTabsModule,
+  MatInputModule,
+  MatListModule,
   MatProgressSpinnerModule,
+  MatSelectModule,
+  MatTableModule,
+  MatTabsModule,
+  MatTreeModule,
 } from "@angular/material";
 import {MatCardModule} from '@angular/material/card';
 import {PanelComponent} from './_components/panel/panel.component';
@@ -39,9 +39,9 @@ import {OutputComponent} from './documentation/generate/output/output.component'
 import {CriteriasService} from "./_services/criterias.service";
 import {DocumentationService} from "./_services/documentation.service";
 import {CriteriasTreeSelectorComponent} from './documentation/generate/criterias/criterias-tree-selector/criterias-tree-selector.component';
-import { DocumentationThemeBookComponent } from './documentation/generate/output/themes/documentation-theme-book/documentation-theme-book.component';
-import { DocumentationThemeBookTableComponent } from './documentation/generate/output/themes/documentation-theme-book/documentation-theme-book-table/documentation-theme-book-table.component';
-import { FooterComponent } from './_components/page/footer/footer.component';
+import {DocumentationThemeBookComponent} from './documentation/generate/output/themes/documentation-theme-book/documentation-theme-book.component';
+import {DocumentationThemeBookTableComponent} from './documentation/generate/output/themes/documentation-theme-book/documentation-theme-book-table/documentation-theme-book-table.component';
+import {FooterComponent} from './_components/page/footer/footer.component';
 
 const nonProductionProviders = [{
   provide: HTTP_INTERCEPTORS,

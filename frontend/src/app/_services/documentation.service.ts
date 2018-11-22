@@ -12,19 +12,18 @@ export class DocumentationService {
   constructor(private http: HttpClient) {
   }
 
-  generateDocumentation(httpParams : string): Observable<DocumentationNodeApi> {
+  generateDocumentation(httpParams: string): Observable<DocumentationNodeApi> {
     const url = `api/generateDocumentation?${httpParams}`;
     return this.http.get<DocumentationNodeApi>(url);
   }
 
-  public  decorate(apiResult: DocumentationNodeApi): Array<DocumentationNode> {
-    var decoratedDataArray = new Array<DocumentationNode>();
+  public decorate(apiResult: DocumentationNodeApi): Array<DocumentationNode> {
+    let decoratedDataArray = [];
     for (let node of apiResult.children) {
-      decoratedDataArray.push( DocumentationNode.newFromApi("", node,1) )  ;
+      decoratedDataArray.push(DocumentationNode.newFromApi("", node, 1));
     }
     return decoratedDataArray;
   }
-
 
 
 }

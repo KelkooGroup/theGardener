@@ -1,11 +1,8 @@
-import {Component, Input, Output, EventEmitter} from '@angular/core';
-import {
-  CriteriasDisplay,
-  CriteriasSelector,
-  HierarchyNodeSelector, } from "../../../_services/criteriasSelection";
+import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {CriteriasDisplay, CriteriasSelector, HierarchyNodeSelector,} from "../../../_services/criteriasSelection";
 import {HierarchyNodeApi} from "../../../_models/criterias";
 import {CriteriasService} from "../../../_services/criterias.service";
-import {ActivatedRoute, Params} from "@angular/router";
+import {ActivatedRoute} from "@angular/router";
 import {HttpParams} from "@angular/common/http";
 
 @Component({
@@ -13,60 +10,60 @@ import {HttpParams} from "@angular/common/http";
   templateUrl: './criterias.component.html',
   styleUrls: ['./criterias.component.scss']
 })
-export class CriteriasComponent  {
+export class CriteriasComponent {
 
   @Input()
-  isCriteriaSelection : boolean = false;
+  isCriteriaSelection: boolean = false;
 
   @Input()
-  isCriteriaDisplay   : boolean = false;
+  isCriteriaDisplay: boolean = false;
 
   @Output()
   onGenerateDocumentationRequest: EventEmitter<HttpParams> = new EventEmitter();
 
   @Output()
-  criteriasSelector = new CriteriasSelector() ;
+  criteriasSelector = new CriteriasSelector();
 
   @Output()
-  views : HierarchyNodeSelector[] ;
+  views: HierarchyNodeSelector[];
 
   @Output()
-  criteriaDisplay: CriteriasDisplay ;
+  criteriaDisplay: CriteriasDisplay;
 
   constructor(private criteriasService: CriteriasService, private route: ActivatedRoute) {
     this.criteriasService.criterias().subscribe(
       (result: Array<HierarchyNodeApi>) => {
-        this.criteriasSelector.hierarchyNodesSelector = criteriasService.buildHierarchyNodeSelectorAsTree(CriteriasService.buildHierarchyNodeSelector(result)).children ;
-        this.views = this.criteriasSelector.hierarchyNodesSelector ;
+        this.criteriasSelector.hierarchyNodesSelector = criteriasService.buildHierarchyNodeSelectorAsTree(CriteriasService.buildHierarchyNodeSelector(result)).children;
+        this.views = this.criteriasSelector.hierarchyNodesSelector;
 
       },
-      err => {
+      () => {
       });
 
     this.route.queryParams.subscribe(httpParams => {
-       this.displayCriteria(httpParams["node"],httpParams["project"]);
+      this.displayCriteria(httpParams["node"], httpParams["project"]);
     });
   }
 
-  displayCriteria(nodes: string[], projects: string[]   ){
-    var nodesArray = nodes;
-    if (! (nodesArray instanceof Array)){
+  displayCriteria(nodes: string[], projects: string[]) {
+    let nodesArray = nodes;
+    if (!(nodesArray instanceof Array)) {
       nodesArray = new Array(nodesArray);
     }
-    var projectsArray = projects ;
-    if (! (projectsArray instanceof Array)){
+    let projectsArray = projects;
+    if (!(projectsArray instanceof Array)) {
       projectsArray = new Array(projectsArray);
     }
 
     this.criteriaDisplay = this.criteriasSelector.humanizeHttpParams(nodesArray,projectsArray);
-    this.isCriteriaSelection = false ;
-    this.isCriteriaDisplay = true ;
+    this.isCriteriaSelection = false;
+    this.isCriteriaDisplay = true;
   }
 
-  generateDocumentation(){
-    var httpParams = this.criteriasSelector.buildHttpParams() ;
-    this.onGenerateDocumentationRequest.emit(httpParams) ;
-    this.displayCriteria(httpParams.getAll("node"),httpParams.getAll("project"));
+  generateDocumentation() {
+    let httpParams = this.criteriasSelector.buildHttpParams();
+    this.onGenerateDocumentationRequest.emit(httpParams);
+    this.displayCriteria(httpParams.getAll("node"), httpParams.getAll("project"));
   }
 
 }

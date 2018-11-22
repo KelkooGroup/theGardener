@@ -1,14 +1,16 @@
-<li  *ngIf="implemented" class="menu-item" routerLinkActive="active" >
-  <div   >
+<li *ngIf="implemented" class="menu-item" routerLinkActive="active">
+  <div>
     <a [routerLink]="routerlink">
-      <i *ngIf="icon"     class="fas {{icon}}"></i><i *ngIf="!icon"></i>{{label}}
+      <em *ngIf="icon" class="fas {{icon}}"></em>
+      <em *ngIf="!icon"></em>{{label}}
     </a>
   </div>
 </li>
-<li *ngIf="!implemented"  class="menu-item disabled" routerLinkActive="active-disabled" >
-  <div   >
+<li *ngIf="!implemented" class="menu-item disabled" routerLinkActive="active-disabled">
+  <div>
     <a [routerLink]="routerlink">
-      <i *ngIf="icon"     class="fas {{icon}}"></i><i *ngIf="!icon"></i>{{label}}
+      <em *ngIf="icon" class="fas {{icon}}"></em>
+      <em *ngIf="!icon"></em>{{label}}
     </a>
   </div>
 </li>

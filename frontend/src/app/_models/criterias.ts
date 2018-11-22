@@ -1,5 +1,3 @@
-
-
 export class ProjectApi {
   public id: string;
   public label: string;

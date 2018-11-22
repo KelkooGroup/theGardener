@@ -25,15 +25,15 @@ export class CriteriasService {
   }
 
   static buildHierarchyNodeSelector(apiResult: Array<HierarchyNodeApi>): Array<HierarchyNodeSelector> {
-    var hierarchyNodeSelectorArray = new Array<HierarchyNodeSelector>();
-    for (var i = 0; i < apiResult.length; i++) {
-      var loopNodeApi = apiResult[i];
-      var currentNodeSelector = HierarchyNodeSelector.newFromApi(loopNodeApi);
+    let hierarchyNodeSelectorArray = [];
+    for (let i = 0; i < apiResult.length; i++) {
+      let loopNodeApi = apiResult[i];
+      let currentNodeSelector = HierarchyNodeSelector.newFromApi(loopNodeApi);
       hierarchyNodeSelectorArray.push(currentNodeSelector);
       if (loopNodeApi.projects != null) {
-        for (var j = 0; j < loopNodeApi.projects.length; j++) {
-          var loopProjectApi = loopNodeApi.projects[j];
-          var currentProjectSelector = ProjectSelector.newFromApi(loopProjectApi);
+        for (let j = 0; j < loopNodeApi.projects.length; j++) {
+          let loopProjectApi = loopNodeApi.projects[j];
+          let currentProjectSelector = ProjectSelector.newFromApi(loopProjectApi);
           currentNodeSelector.projects.push(currentProjectSelector);
           currentProjectSelector.relatedHierarchyNode = currentNodeSelector;
         }
@@ -44,12 +44,12 @@ export class CriteriasService {
 
 
   public buildHierarchyNodeSelectorAsTree(listNode: Array<HierarchyNodeSelector>): HierarchyNodeSelector {
-    var root: HierarchyNodeSelector = null;
+    let root: HierarchyNodeSelector = null;
     if (listNode.length > 0) {
       root = listNode[0];
       root.path = "";
       root.open = true;
-      var tuple = this.build(root, listNode, root);
+      let tuple = this.build(root, listNode, root);
       root.children = tuple.taken;
     }
     return root;
@@ -58,12 +58,12 @@ export class CriteriasService {
 
   private build(node: HierarchyNodeSelector, children: Array<HierarchyNodeSelector>, root: HierarchyNodeSelector): TupleHierarchyNodeSelector {
 
-    var taken = new Array<HierarchyNodeSelector>();
-    var left = new Array<HierarchyNodeSelector>();
+    let taken = [];
+    let left = [];
 
     if (children.length > 0) {
-      for (var i = 0; i < children.length; i++) {
-        var loopNode = children[i];
+      for (let i = 0; i < children.length; i++) {
+        let loopNode = children[i];
         if (loopNode.id.startsWith(node.id)) {
           loopNode.root = root;
           if (loopNode.id.length == node.id.length + 3) {
@@ -77,9 +77,9 @@ export class CriteriasService {
       }
     }
     if (taken.length > 0) {
-      for (var i = 0; i < taken.length; i++) {
-        var loopTaken = taken[i];
-        var tuple = this.build(loopTaken, Object.assign([], left), root);
+      for (let i = 0; i < taken.length; i++) {
+        let loopTaken = taken[i];
+        let tuple = this.build(loopTaken, Object.assign([], left), root);
         loopTaken.children = tuple.taken;
       }
     }

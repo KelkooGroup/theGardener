@@ -12,66 +12,66 @@ import {DocumentationThemeBookComponent} from "./themes/documentation-theme-book
 export class OutputComponent implements OnInit {
 
   @Input()
-  display = false ;
+  display = false;
 
   @Output()
-  documentationData : DocumentationNode[]
+  documentationData: DocumentationNode[];
 
-  showSpinner : boolean = true ;
+  showSpinner: boolean = true;
 
   @ViewChild(DocumentationThemeBookComponent)
   documentationTheme: DocumentationThemeBookComponent;
 
-  constructor(private documentationService: DocumentationService,  private route: ActivatedRoute) {
+  constructor(private documentationService: DocumentationService, private route: ActivatedRoute) {
 
   }
 
   ngOnInit() {
 
     this.route.queryParams.subscribe(httpParams => {
-      var httpParamsAsString = this.buildHttpParams(httpParams["node"],httpParams["project"] );
+      let httpParamsAsString = this.buildHttpParams(httpParams["node"],httpParams["project"] );
       this.generateDocumentation(httpParamsAsString);
     });
   }
 
   buildHttpParams(nodes: string[], projects: string[]   ) : string{
-    var nodesArray = nodes;
-    if (! (nodesArray instanceof Array)){
+    let nodesArray = nodes;
+    if (!(nodesArray instanceof Array)) {
       nodesArray = new Array(nodesArray);
     }
-    var projectsArray = projects ;
-    if (! (projectsArray instanceof Array)){
+    let projectsArray = projects;
+    if (!(projectsArray instanceof Array)) {
       projectsArray = new Array(projectsArray);
     }
-    var httpParams = "" ;
-    for (var i = 0; i < nodesArray.length; i++) {
-      if(nodesArray[i] != null) {
+    let httpParams = "";
+    for (let i = 0; i < nodesArray.length; i++) {
+      if (nodesArray[i] != null) {
         httpParams += `node=${nodesArray[i]}&`;
       }
     }
-    for (var i = 0; i < projectsArray.length; i++) {
-      if(projectsArray[i] != null) {
+    for (let i = 0; i < projectsArray.length; i++) {
+      if (projectsArray[i] != null) {
         httpParams += `project=${projectsArray[i]}&`;
       }
     }
     return httpParams;
   }
 
-  generateDocumentation(httpParams : string){
-    this.showSpinner = true ;
+  generateDocumentation(httpParams: string) {
+    this.showSpinner = true;
     this.documentationService.generateDocumentation(httpParams).subscribe(
       (result: DocumentationNodeApi) => {
         this.documentationData = this.documentationService.decorate(result) ;
-        this.showSpinner = false ;
-        new Promise(resolve => {
+        this.showSpinner = false;
+        new Promise(() => {
           setTimeout(() => {
-            if (this.documentationTheme){
-               this.documentationTheme.selectHash();
+            if (this.documentationTheme) {
+              this.documentationTheme.selectHash();
             }
           }, 1000);
         });
       },
-      err => {
+      () => {
       });
   }
 
