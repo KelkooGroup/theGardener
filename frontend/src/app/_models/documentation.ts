@@ -6,6 +6,14 @@ export class DocumentationStepApi {
   public argument: Array<Array<string>>;
 }
 
+export class DocumentationExamplesApi {
+  public id: string;
+  public keyword: string;
+  public description: string;
+  public tableBody: Array<Array<string>>;
+  public tableHeader: Array<string>;
+}
+
 export class DocumentationScenarioApi {
   public id: string;
   public name: string;
@@ -16,6 +24,7 @@ export class DocumentationScenarioApi {
   public description: string;
   public tags: Array<string>;
   public steps: Array<DocumentationStepApi>;
+  public examples: Array<DocumentationExamplesApi>;
 }
 
 export class DocumentationFeatureApi {
@@ -134,6 +143,34 @@ export class DocumentationStep  implements ExpandableNode {
   }
 }
 
+export class  DocumentationExamples{
+
+  public data: DocumentationExamplesApi;
+  public table : DocumentationStepTable;
+
+  public static newFromApi(dataApi: DocumentationExamplesApi): DocumentationExamples {
+    var instance = new DocumentationExamples( );
+    instance.data = dataApi ;
+    instance.table = new DocumentationStepTable();
+
+    for (var j = 0; j < dataApi.tableHeader.length; j++) {
+      instance.table.headerIds.push( j + '');
+      instance.table.headers[j] = dataApi.tableHeader[j] ;
+    }
+    for (var k = 0; k < dataApi.tableBody.length; k++) {
+      var row = new DocumentationStepRow() ;
+      for (var l = 0; l < dataApi.tableBody[k].length; l++) {
+        row.values[instance.table.headerIds[l]] = dataApi.tableBody[k][l] ;
+      }
+      instance.table.rows.push(row);
+    }
+
+    return instance;
+  }
+
+}
+
+
 export interface ExpandableNode {
 
   type : string ;
@@ -154,6 +191,7 @@ export class DocumentationScenario  implements ExpandableNode {
   public data: DocumentationScenarioApi;
   public level : number;
   public steps: Array<DocumentationStep>;
+  public examples: DocumentationExamples;
 
   public static newFromApi(type: string,   parentNodeId: string,dataApi: DocumentationScenarioApi, level: number): DocumentationScenario {
     var instance = new DocumentationScenario( );
@@ -166,11 +204,15 @@ export class DocumentationScenario  implements ExpandableNode {
     for (let step of dataApi.steps) {
       instance.steps.push( DocumentationStep.newFromApi(step)   );
     }
+    if ( dataApi.examples &&  dataApi.examples.length > 0 ){
+      instance.examples = DocumentationExamples.newFromApi(dataApi.examples[0]);
+    }
+
     return instance;
   }
 
   getChilden() : Array<ExpandableNode>{
-    if (  this.type == "scenario" ) {
+    if (  this.type != "background" ) {
       return new Array<ExpandableNode>();
     }else{
       return this.steps ;
@@ -213,10 +255,7 @@ export class DocumentationFeature implements ExpandableNode{
       instance.children.push(instance.background)
     }
     for (let scenario of instance.scenarios) {
-      // TODO Provide an output for outline scenario
-      if (scenario.data.keyword != "Scenario Outline") {
         instance.children.push(scenario);
-      }
     }
 
     return instance;
@@ -274,7 +313,11 @@ export class DocumentationProject implements ExpandableNode{
   }
 
   getChilden() : Array<ExpandableNode>{
-    return this.branch.features ;
+    if (this.branch ){
+      return this.branch.features ;
+    }else{
+      return new Array<ExpandableNode>();
+    }
   }
 
   hasChilden(): boolean {
