@@ -1,7 +1,7 @@
 import {Component, OnInit, Output, ViewChild} from '@angular/core';
-import {ActivatedRoute, Params, Router} from "@angular/router";
-import {HttpParams} from "@angular/common/http";
-import {OutputComponent} from "./output/output.component";
+import {ActivatedRoute, Params, Router} from '@angular/router';
+import {HttpParams} from '@angular/common/http';
+import {OutputComponent} from './output/output.component';
 
 @Component({
   selector: 'app-generate',
@@ -26,9 +26,9 @@ export class GenerateComponent implements OnInit {
   ngOnInit() {
     this.route.params
       .subscribe((params: Params) => {
-        let type = params['type'];
-        this.isCriterias = type == "criterias";
-        this.isOutput = type == "output";
+        const type = params['type'];
+        this.isCriterias = type === 'criterias';
+        this.isOutput = type === 'output';
         this.outputComponent.display = this.isOutput;
       });
 
@@ -36,7 +36,7 @@ export class GenerateComponent implements OnInit {
   }
 
   generateDocumentationRequest(httpParams: HttpParams) {
-    let httpParamsAsString = httpParams.toString();
+    const httpParamsAsString = httpParams.toString();
     this.router.navigateByUrl(`app/documentation/generate/output?${httpParamsAsString}`);
     this.outputComponent.display = true;
     this.outputComponent.showSpinner = true;

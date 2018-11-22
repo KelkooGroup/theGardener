@@ -17,7 +17,7 @@ export class MenuItemComponent implements OnInit {
   label: string;
 
   @Input()
-  implemented: boolean = true;
+  implemented = true;
 
   constructor() {
   }

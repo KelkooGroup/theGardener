@@ -1,9 +1,9 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {CriteriasDisplay, CriteriasSelector, HierarchyNodeSelector,} from "../../../_services/criteriasSelection";
-import {HierarchyNodeApi} from "../../../_models/criterias";
-import {CriteriasService} from "../../../_services/criterias.service";
-import {ActivatedRoute} from "@angular/router";
-import {HttpParams} from "@angular/common/http";
+import {CriteriasDisplay, CriteriasSelector, HierarchyNodeSelector, } from '../../../_services/criteriasSelection';
+import {HierarchyNodeApi} from '../../../_models/criterias';
+import {CriteriasService} from '../../../_services/criterias.service';
+import {ActivatedRoute} from '@angular/router';
+import {HttpParams} from '@angular/common/http';
 
 @Component({
   selector: 'app-generate-documentation-criterias',
@@ -13,13 +13,13 @@ import {HttpParams} from "@angular/common/http";
 export class CriteriasComponent {
 
   @Input()
-  isCriteriaSelection: boolean = false;
+  isCriteriaSelection = false;
 
   @Input()
-  isCriteriaDisplay: boolean = false;
+  isCriteriaDisplay = false;
 
   @Output()
-  onGenerateDocumentationRequest: EventEmitter<HttpParams> = new EventEmitter();
+  generateDocumentationRequestEventEmitter: EventEmitter<HttpParams> = new EventEmitter();
 
   @Output()
   criteriasSelector = new CriteriasSelector();
@@ -33,7 +33,7 @@ export class CriteriasComponent {
   constructor(private criteriasService: CriteriasService, private route: ActivatedRoute) {
     this.criteriasService.criterias().subscribe(
       (result: Array<HierarchyNodeApi>) => {
-        this.criteriasSelector.hierarchyNodesSelector = criteriasService.buildHierarchyNodeSelectorAsTree(CriteriasService.buildHierarchyNodeSelector(result)).children;
+        this.criteriasSelector.hierarchyNodesSelector = criteriasService.buildHierarchyNodeSelectorAsTree(criteriasService.buildHierarchyNodeSelector(result)).children;
         this.views = this.criteriasSelector.hierarchyNodesSelector;
 
       },
@@ -41,7 +41,7 @@ export class CriteriasComponent {
       });
 
     this.route.queryParams.subscribe(httpParams => {
-      this.displayCriteria(httpParams["node"], httpParams["project"]);
+      this.displayCriteria(httpParams['node'], httpParams['project']);
     });
   }
 
@@ -55,15 +55,15 @@ export class CriteriasComponent {
       projectsArray = new Array(projectsArray);
     }
 
-    this.criteriaDisplay = this.criteriasSelector.humanizeHttpParams(nodesArray,projectsArray);
+    this.criteriaDisplay = this.criteriasSelector.humanizeHttpParams(nodesArray, projectsArray);
     this.isCriteriaSelection = false;
     this.isCriteriaDisplay = true;
   }
 
   generateDocumentation() {
-    let httpParams = this.criteriasSelector.buildHttpParams();
-    this.onGenerateDocumentationRequest.emit(httpParams);
-    this.displayCriteria(httpParams.getAll("node"), httpParams.getAll("project"));
+    const httpParams = this.criteriasSelector.buildHttpParams();
+    this.generateDocumentationRequestEventEmitter.emit(httpParams);
+    this.displayCriteria(httpParams.getAll('node'), httpParams.getAll('project'));
   }
 
 }

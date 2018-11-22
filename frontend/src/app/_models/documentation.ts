@@ -62,6 +62,64 @@ export class DocumentationNodeApi {
   public projects: Array<DocumentationProjectApi>;
 }
 
+export interface ExpandableNode {
+
+  type: string;
+  nodeId: string;
+  localId: string;
+
+  getChilden(): Array<ExpandableNode>;
+
+  hasChilden(): boolean;
+}
+
+export class DocumentationNode implements ExpandableNode {
+  public type = 'node';
+  public nodeId: string;
+  public localId: string;
+  public data: DocumentationNodeApi;
+  public level: number;
+  public children: Array<DocumentationNode>;
+  public projects: Array<DocumentationProject>;
+
+  public static toAnchor(id: string): string {
+    return id.split(' ').join('_').split('/').join('-').split('.').join('-').split('#').join('-').toLocaleLowerCase();
+  }
+
+  public static newFromApi(parentNodeId: string, dataApi: DocumentationNodeApi, level: number): DocumentationNode {
+    const instance = new DocumentationNode();
+    instance.data = dataApi;
+    instance.localId = DocumentationNode.toAnchor(dataApi.slugName);
+    instance.nodeId = `${parentNodeId}_${instance.localId}`;
+    instance.level = level;
+    instance.children = [];
+    for (const child of dataApi.children) {
+      instance.children.push(DocumentationNode.newFromApi(instance.nodeId, child, level + 1));
+    }
+    instance.projects = [];
+    for (const project of dataApi.projects) {
+      instance.projects.push(DocumentationProject.newFromApi(instance.nodeId, project, level + 1));
+    }
+    return instance;
+  }
+
+  getChilden(): Array<ExpandableNode> {
+    const all = [];
+    for (const child of this.children) {
+      all.push(child);
+    }
+    for (const project of this.projects) {
+      all.push(project);
+    }
+    return all;
+  }
+
+  hasChilden(): boolean {
+    return this.getChilden().length > 0;
+  }
+
+
+}
 
 export class DocumentationStepRow {
   public values: { [key: string]: string; } = {};
@@ -98,20 +156,20 @@ export class DocumentationStep implements ExpandableNode {
 
 
   public static newFromApi(dataApi: DocumentationStepApi): DocumentationStep {
-    let instance = new DocumentationStep();
+    const instance = new DocumentationStep();
     instance.data = dataApi;
     instance.hasTable = dataApi.argument != null && dataApi.argument.length > 0;
     if (instance.hasTable) {
       instance.table = new DocumentationStepTable();
       for (let j = 0; j < dataApi.argument.length; j++) {
-        let currentRowValues = dataApi.argument[j];
-        if (j == 0) {
+        const currentRowValues = dataApi.argument[j];
+        if (j === 0) {
           for (let l = 0; l < currentRowValues.length; l++) {
             instance.table.headerIds.push(l + '');
             instance.table.headers[l] = currentRowValues[l];
           }
         } else {
-          let row = new DocumentationStepRow();
+          const row = new DocumentationStepRow();
           for (let k = 0; k < currentRowValues.length; k++) {
             row.values[instance.table.headerIds[k]] = currentRowValues[k];
           }
@@ -119,9 +177,9 @@ export class DocumentationStep implements ExpandableNode {
         }
       }
     }
-    let fragments = instance.data.text.split('"');
+    const fragments = instance.data.text.split('"');
     if (fragments.length > 0) {
-      if (fragments.length == 1) {
+      if (fragments.length === 1) {
         instance.text.push(new DocumentationStepTextFragment(instance.data.text, false));
       } else {
         let isParameter = false;
@@ -149,7 +207,7 @@ export class DocumentationExamples {
   public table: DocumentationStepTable;
 
   public static newFromApi(dataApi: DocumentationExamplesApi): DocumentationExamples {
-    let instance = new DocumentationExamples();
+    const instance = new DocumentationExamples();
     instance.data = dataApi;
     instance.table = new DocumentationStepTable();
 
@@ -158,7 +216,7 @@ export class DocumentationExamples {
       instance.table.headers[j] = dataApi.tableHeader[j];
     }
     for (let k = 0; k < dataApi.tableBody.length; k++) {
-      let row = new DocumentationStepRow();
+      const row = new DocumentationStepRow();
       for (let l = 0; l < dataApi.tableBody[k].length; l++) {
         row.values[instance.table.headerIds[l]] = dataApi.tableBody[k][l];
       }
@@ -170,22 +228,8 @@ export class DocumentationExamples {
 
 }
 
-
-export interface ExpandableNode {
-
-  type: string;
-  nodeId: string;
-  localId: string;
-
-  getChilden(): Array<ExpandableNode>;
-
-  hasChilden(): boolean;
-
-}
-
-
 export class DocumentationScenario implements ExpandableNode {
-  public type = "scenario";
+  public type = 'scenario';
   public nodeId: string;
   public localId: string;
   public data: DocumentationScenarioApi;
@@ -194,14 +238,14 @@ export class DocumentationScenario implements ExpandableNode {
   public examples: DocumentationExamples;
 
   public static newFromApi(type: string, parentNodeId: string, dataApi: DocumentationScenarioApi, level: number): DocumentationScenario {
-    let instance = new DocumentationScenario();
+    const instance = new DocumentationScenario();
     instance.type = type;
     instance.data = dataApi;
     instance.localId = DocumentationNode.toAnchor(dataApi.name);
     instance.nodeId = `${parentNodeId}_${instance.localId}`;
     instance.level = level;
     instance.steps = [];
-    for (let step of dataApi.steps) {
+    for (const step of dataApi.steps) {
       instance.steps.push(DocumentationStep.newFromApi(step));
     }
     if (dataApi.examples && dataApi.examples.length > 0) {
@@ -212,7 +256,7 @@ export class DocumentationScenario implements ExpandableNode {
   }
 
   getChilden(): Array<ExpandableNode> {
-    if (this.type != "background") {
+    if (this.type !== 'background') {
       return [];
     } else {
       return this.steps;
@@ -226,7 +270,7 @@ export class DocumentationScenario implements ExpandableNode {
 
 
 export class DocumentationFeature implements ExpandableNode {
-  public type = "feature";
+  public type = 'feature';
   public nodeId: string;
   public localId: string;
   public data: DocumentationFeatureApi;
@@ -236,25 +280,25 @@ export class DocumentationFeature implements ExpandableNode {
   public children: Array<DocumentationScenario>;
 
   public static newFromApi(parentNodeId: string, dataApi: DocumentationFeatureApi, level: number): DocumentationFeature {
-    let instance = new DocumentationFeature();
+    const instance = new DocumentationFeature();
     instance.data = dataApi;
     instance.localId = DocumentationNode.toAnchor(dataApi.path);
     instance.nodeId = `${parentNodeId}_${instance.localId}`;
     instance.level = level;
     if (dataApi.background) {
-      instance.background = DocumentationScenario.newFromApi("background", instance.nodeId + "_background", dataApi.background, level + 1)
+      instance.background = DocumentationScenario.newFromApi('background', instance.nodeId + '_background', dataApi.background, level + 1);
     }
 
     instance.scenarios = [];
-    for (let scenario of dataApi.scenarios) {
-      instance.scenarios.push(DocumentationScenario.newFromApi("scenario", instance.nodeId, scenario, level + 1));
+    for (const scenario of dataApi.scenarios) {
+      instance.scenarios.push(DocumentationScenario.newFromApi('scenario', instance.nodeId, scenario, level + 1));
     }
 
     instance.children = [];
     if (instance.background) {
-      instance.children.push(instance.background)
+      instance.children.push(instance.background);
     }
-    for (let scenario of instance.scenarios) {
+    for (const scenario of instance.scenarios) {
       instance.children.push(scenario);
     }
 
@@ -278,13 +322,13 @@ export class DocumentationBranch {
   public features: Array<DocumentationFeature>;
 
   public static newFromApi(parentNodeId: string, dataApi: DocumentationBranchApi, level: number): DocumentationBranch {
-    let instance = new DocumentationBranch();
+    const instance = new DocumentationBranch();
     instance.data = dataApi;
     instance.localId = DocumentationNode.toAnchor(dataApi.name);
     instance.nodeId = `${parentNodeId}_${instance.localId}`;
     instance.level = level;
     instance.features = [];
-    for (let feature of dataApi.features) {
+    for (const feature of dataApi.features) {
       instance.features.push(DocumentationFeature.newFromApi(instance.nodeId, feature, level + 1));
     }
     return instance;
@@ -293,7 +337,7 @@ export class DocumentationBranch {
 
 
 export class DocumentationProject implements ExpandableNode {
-  public type = "project";
+  public type = 'project';
   public nodeId: string;
   public localId: string;
   public data: DocumentationProjectApi;
@@ -301,12 +345,12 @@ export class DocumentationProject implements ExpandableNode {
   public branch: DocumentationBranch;
 
   public static newFromApi(parentNodeId: string, dataApi: DocumentationProjectApi, level: number): DocumentationProject {
-    let instance = new DocumentationProject();
+    const instance = new DocumentationProject();
     instance.data = dataApi;
     instance.localId = DocumentationNode.toAnchor(dataApi.name);
     instance.nodeId = `${parentNodeId}_${instance.localId}`;
     instance.level = level;
-    for (let branch of dataApi.branches) {
+    for (const branch of dataApi.branches) {
       instance.branch = DocumentationBranch.newFromApi(instance.nodeId, branch, level);
     }
     return instance;
@@ -323,54 +367,6 @@ export class DocumentationProject implements ExpandableNode {
   hasChilden(): boolean {
     return this.getChilden().length > 0;
   }
-}
-
-export class DocumentationNode implements ExpandableNode {
-  public type = "node";
-  public nodeId: string;
-  public localId: string;
-  public data: DocumentationNodeApi;
-  public level: number;
-  public children: Array<DocumentationNode>;
-  public projects: Array<DocumentationProject>;
-
-  public static toAnchor(id: string): string {
-    return id.split(' ').join('_').split('/').join('-').split('.').join('-').split('#').join('-').toLocaleLowerCase()
-  }
-
-  public static newFromApi(parentNodeId: string, dataApi: DocumentationNodeApi, level: number): DocumentationNode {
-    let instance = new DocumentationNode();
-    instance.data = dataApi;
-    instance.localId = DocumentationNode.toAnchor(dataApi.slugName);
-    instance.nodeId = `${parentNodeId}_${instance.localId}`;
-    instance.level = level;
-    instance.children = [];
-    for (let child of dataApi.children) {
-      instance.children.push(DocumentationNode.newFromApi(instance.nodeId, child, level + 1));
-    }
-    instance.projects = [];
-    for (let project of dataApi.projects) {
-      instance.projects.push(DocumentationProject.newFromApi(instance.nodeId, project, level + 1));
-    }
-    return instance;
-  }
-
-  getChilden(): Array<ExpandableNode> {
-    let all = [];
-    for (let child of this.children) {
-      all.push(child);
-    }
-    for (let project of this.projects) {
-      all.push(project);
-    }
-    return all;
-  }
-
-  hasChilden(): boolean {
-    return this.getChilden().length > 0;
-  }
-
-
 }
 
 

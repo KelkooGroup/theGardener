@@ -1,8 +1,8 @@
 import {Component, Input, OnInit, Output, ViewChild} from '@angular/core';
-import {DocumentationService} from "../../../_services/documentation.service";
-import {DocumentationNode, DocumentationNodeApi} from "../../../_models/documentation";
-import {ActivatedRoute} from "@angular/router";
-import {DocumentationThemeBookComponent} from "./themes/documentation-theme-book/documentation-theme-book.component";
+import {DocumentationService} from '../../../_services/documentation.service';
+import {DocumentationNode, DocumentationNodeApi} from '../../../_models/documentation';
+import {ActivatedRoute} from '@angular/router';
+import {DocumentationThemeBookComponent} from './themes/documentation-theme-book/documentation-theme-book.component';
 
 @Component({
   selector: 'app-generate-documentation-output',
@@ -17,7 +17,7 @@ export class OutputComponent implements OnInit {
   @Output()
   documentationData: DocumentationNode[];
 
-  showSpinner: boolean = true;
+  showSpinner = true;
 
   @ViewChild(DocumentationThemeBookComponent)
   documentationTheme: DocumentationThemeBookComponent;
@@ -29,12 +29,12 @@ export class OutputComponent implements OnInit {
   ngOnInit() {
 
     this.route.queryParams.subscribe(httpParams => {
-      let httpParamsAsString = this.buildHttpParams(httpParams["node"],httpParams["project"] );
+      const httpParamsAsString = this.buildHttpParams(httpParams['node'], httpParams['project'] );
       this.generateDocumentation(httpParamsAsString);
     });
   }
 
-  buildHttpParams(nodes: string[], projects: string[]   ) : string{
+  buildHttpParams(nodes: string[], projects: string[]   ): string {
     let nodesArray = nodes;
     if (!(nodesArray instanceof Array)) {
       nodesArray = new Array(nodesArray);
@@ -43,7 +43,7 @@ export class OutputComponent implements OnInit {
     if (!(projectsArray instanceof Array)) {
       projectsArray = new Array(projectsArray);
     }
-    let httpParams = "";
+    let httpParams = '';
     for (let i = 0; i < nodesArray.length; i++) {
       if (nodesArray[i] != null) {
         httpParams += `node=${nodesArray[i]}&`;

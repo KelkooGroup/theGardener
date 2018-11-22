@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {BranchSelector, HierarchyNodeSelector, ProjectSelector} from "../../../../_services/criteriasSelection";
-import {MatTreeNestedDataSource} from "@angular/material/tree";
-import {NestedTreeControl} from "@angular/cdk/tree";
+import {BranchSelector, HierarchyNodeSelector, ProjectSelector} from '../../../../_services/criteriasSelection';
+import {MatTreeNestedDataSource} from '@angular/material/tree';
+import {NestedTreeControl} from '@angular/cdk/tree';
 
 
 @Component({
@@ -32,18 +32,18 @@ export class CriteriasTreeSelectorComponent implements OnInit {
 
 
   selectHierarchyNode(event) {
-    var source = event.source.value as HierarchyNodeSelector;
+    const source = event.source.value as HierarchyNodeSelector;
     source.selection(event.checked);
     source.refreshIndeterminateStatus();
   }
 
   selectProject(event) {
-    var source = event.source.value as ProjectSelector;
+    const source = event.source.value as ProjectSelector;
     source.selection(event.checked);
   }
 
   selectBranch(event) {
-    var source = event.source.value as BranchSelector;
+    const source = event.source.value as BranchSelector;
     source.selection();
   }
 }

@@ -1,5 +1,5 @@
-import {HttpParams} from "@angular/common/http";
-import {HierarchyNodeApi, ProjectApi} from "../_models/criterias";
+import {HttpParams} from '@angular/common/http';
+import {HierarchyNodeApi, ProjectApi} from '../_models/criterias';
 
 
 export class TupleHierarchyNodeSelector {
@@ -27,7 +27,7 @@ export class BranchSelector {
 
 export class ProjectSelector {
 
-  public selected: boolean = false;
+  public selected = false;
   public selectedBranch: BranchSelector;
   public relatedHierarchyNode: HierarchyNodeSelector;
 
@@ -39,16 +39,11 @@ export class ProjectSelector {
   ) {
   }
 
-  public selection(selected: boolean) {
-    this.selected = selected;
-    this.relatedHierarchyNode.root.updateIndeterminateStatus();
-  }
-
   public static newFromApi(projectApi: ProjectApi): ProjectSelector {
 
-    let branches = [];
-    let stableBranch = new BranchSelector(projectApi.stableBranch, null);
-    let instance = new ProjectSelector(
+    const branches = [];
+    const stableBranch = new BranchSelector(projectApi.stableBranch, null);
+    const instance = new ProjectSelector(
       projectApi.id,
       projectApi.label,
       stableBranch,
@@ -63,14 +58,16 @@ export class ProjectSelector {
     return instance;
   }
 
+  public selection(selected: boolean) {
+    this.selected = selected;
+    this.relatedHierarchyNode.root.updateIndeterminateStatus();
+  }
 }
 
 export class HierarchyNodeSelector {
-
-
-  public selected: boolean = false;
-  public indeterminate: boolean = false;
-  public open: boolean = false;
+  public selected = false;
+  public indeterminate = false;
+  public open = false;
   public level: number;
   public path: string;
   public children = [];
@@ -83,7 +80,17 @@ export class HierarchyNodeSelector {
     public name: string,
     public childrenLabel: string,
     public childLabel: string) {
-    this.level = this.id.split(".").length - 1;
+    this.level = this.id.split('.').length - 1;
+  }
+
+  public static newFromApi(nodeApi: HierarchyNodeApi): HierarchyNodeSelector {
+    return new HierarchyNodeSelector(
+      nodeApi.id,
+      nodeApi.slugName,
+      nodeApi.name,
+      nodeApi.childrenLabel,
+      nodeApi.childLabel
+    );
   }
 
   public hasChilden(): boolean {
@@ -95,7 +102,7 @@ export class HierarchyNodeSelector {
   }
 
   public clone(): HierarchyNodeSelector {
-    let instance = new HierarchyNodeSelector(
+    const instance = new HierarchyNodeSelector(
       this.id,
       this.slugName,
       this.name,
@@ -124,7 +131,7 @@ export class HierarchyNodeSelector {
 
   public updateIndeterminateStatus(): string {
 
-    let localStatus: string = "na";
+    let localStatus = 'na';
 
     if (!this.hasChilden() && !this.hasProjects()) {
       this.indeterminate = false;
@@ -135,93 +142,80 @@ export class HierarchyNodeSelector {
       let nbSelected = 0;
 
       for (let j = 0; j < this.projects.length; j++) {
-        let loopProjectApi = this.projects[j];
+        const loopProjectApi = this.projects[j];
         if (loopProjectApi.selected) {
           nbSelected++;
         }
       }
-      if (nbSelected == this.projects.length) {
-        localStatus = "selected";
+      if (nbSelected === this.projects.length) {
+        localStatus = 'selected';
       } else {
-        if (nbSelected == 0) {
-          localStatus = "notSelected";
+        if (nbSelected === 0) {
+          localStatus = 'notSelected';
         } else {
-          localStatus = "indeterminate";
+          localStatus = 'indeterminate';
         }
       }
     }
 
     if (!this.hasChilden()) {
-      this.indeterminate = (localStatus == "indeterminate");
-      this.selected = (localStatus == "selected");
+      this.indeterminate = (localStatus === 'indeterminate');
+      this.selected = (localStatus === 'selected');
       return localStatus;
     }
 
-    let status = "na";
+    let status = 'na';
 
     let nbChildrenSelected = 0;
     let nbChildrenNotSelected = 0;
     let nbChildrenIndeterminate = 0;
 
     for (let i = 0; i < this.children.length; i++) {
-      let loopNode = this.children[i];
-      let loopStatus = loopNode.updateIndeterminateStatus();
+      const loopNode = this.children[i];
+      const loopStatus = loopNode.updateIndeterminateStatus();
       switch (loopStatus) {
-        case "notSelected" :
+        case 'notSelected' :
           nbChildrenNotSelected++;
           break;
-        case "indeterminate" :
+        case 'indeterminate' :
           nbChildrenIndeterminate++;
           break;
-        case "selected" :
+        case 'selected' :
           nbChildrenSelected++;
           break;
       }
     }
 
     switch (localStatus) {
-      case "na" :
+      case 'na' :
         if (nbChildrenIndeterminate > 0 || (nbChildrenSelected > 0 && nbChildrenNotSelected > 0)) {
-          status = "indeterminate";
+          status = 'indeterminate';
         } else {
           if (nbChildrenNotSelected > 0) {
-            status = "notSelected";
+            status = 'notSelected';
           } else {
-            status = "selected";
+            status = 'selected';
           }
         }
         break;
-      case "selected" :
+      case 'selected' :
         if (nbChildrenIndeterminate > 0 || nbChildrenNotSelected > 0) {
-          status = "indeterminate";
+          status = 'indeterminate';
         }
         break;
-      case "notSelected" :
+      case 'notSelected' :
         if (nbChildrenIndeterminate > 0 || nbChildrenSelected > 0) {
-          status = "indeterminate";
+          status = 'indeterminate';
         }
         break;
-      case "indeterminate" :
+      case 'indeterminate' :
         break;
     }
 
-    this.indeterminate = (status == "indeterminate");
-    this.selected = (status == "selected");
+    this.indeterminate = (status === 'indeterminate');
+    this.selected = (status === 'selected');
     return status;
   }
-
-
-  public static newFromApi(nodeApi: HierarchyNodeApi): HierarchyNodeSelector {
-    return new HierarchyNodeSelector(
-      nodeApi.id,
-      nodeApi.slugName,
-      nodeApi.name,
-      nodeApi.childrenLabel,
-      nodeApi.childLabel
-    );
-  }
-
-
 }
 
 
@@ -251,7 +245,7 @@ export class ProjectDisplay {
   }
 
   public toString() {
-    let project = `On ${this.node} only ${this.name}`;
+    const project = `On ${this.node} only ${this.name}`;
     if (this.specificBranch) {
       return `${project} at ${this.specificBranch } branch`;
     } else {
@@ -268,40 +262,39 @@ export class CriteriasDisplay {
 
 export class CriteriasSelector {
 
-  public hierarchyNodesSelector: HierarchyNodeSelector[];
-
-
   static PARAM_PROJECT = 'project';
   static PARAM_NODE = 'node';
 
   static SEP_PATH = '_';
   static SPLIT_PROJECT = '>';
 
+  public hierarchyNodesSelector: HierarchyNodeSelector[];
+
   humanizeHttpParams(nodes: string[], projects: string[]): CriteriasDisplay {
-    let criteriasDisplay = new CriteriasDisplay();
+    const criteriasDisplay = new CriteriasDisplay();
 
 
     if (nodes != null) {
       for (let i = 0; i < nodes.length; i++) {
-        let path = nodes[i];
-        let hierarchyNode = new HierarchyNodeDisplay(path, this.humanizeNodePath(path));
+        const path = nodes[i];
+        const hierarchyNode = new HierarchyNodeDisplay(path, this.humanizeNodePath(path));
         criteriasDisplay.hierarchyNodes.push(hierarchyNode);
       }
     }
     if (projects != null) {
       for (let i = 0; i < projects.length; i++) {
-        let projectSelectorString = projects[i];
+        const projectSelectorString = projects[i];
         if (projectSelectorString != null) {
-          let projectSelectorParams = projectSelectorString.split(CriteriasSelector.SPLIT_PROJECT);
+          const projectSelectorParams = projectSelectorString.split(CriteriasSelector.SPLIT_PROJECT);
 
           if (projectSelectorParams.length > 0) {
-            let path = projectSelectorParams[0];
-            let hierarchyNode = new HierarchyNodeDisplay(path, this.humanizeNodePath(path));
-            if (projectSelectorParams.length == 1) {
+            const path = projectSelectorParams[0];
+            const hierarchyNode = new HierarchyNodeDisplay(path, this.humanizeNodePath(path));
+            if (projectSelectorParams.length === 1) {
               criteriasDisplay.hierarchyNodes.push(hierarchyNode);
             } else {
-              let projectParam = projectSelectorParams[1];
-              let project = new ProjectDisplay(hierarchyNode, projectParam, this.humanizeProjectId(projectParam));
+              const projectParam = projectSelectorParams[1];
+              const project = new ProjectDisplay(hierarchyNode, projectParam, this.humanizeProjectId(projectParam));
               if (projectSelectorParams.length > 2) {
                 project.specificBranch = projectSelectorParams[2];
               }
@@ -329,7 +322,7 @@ export class CriteriasSelector {
 
     let httpParams = new HttpParams();
     for (let i = 0; i < this.hierarchyNodesSelector.length; i++) {
-      let loopNode = this.hierarchyNodesSelector[i];
+      const loopNode = this.hierarchyNodesSelector[i];
       httpParams = this._buildHttpParams(httpParams, loopNode);
     }
     return httpParams;
@@ -353,11 +346,11 @@ export class CriteriasSelector {
     }
     if (hierarchyNodeSelector.hasProjects()) {
       for (let i = 0; i < hierarchyNodeSelector.projects.length; i++) {
-        let loopProject: ProjectSelector = hierarchyNodeSelector.projects[i];
+        const loopProject: ProjectSelector = hierarchyNodeSelector.projects[i];
         if (loopProject.selected) {
           let loopHttpParams = `${hierarchyNodeSelector.path}${CriteriasSelector.SPLIT_PROJECT}${loopProject.id}`;
-          if (loopProject.selectedBranch != null && loopProject.selectedBranch.name != loopProject.stableBranch.name) {
-            loopHttpParams += `${CriteriasSelector.SPLIT_PROJECT}${loopProject.selectedBranch.name}`
+          if (loopProject.selectedBranch !== null && loopProject.selectedBranch.name !== loopProject.stableBranch.name) {
+            loopHttpParams += `${CriteriasSelector.SPLIT_PROJECT}${loopProject.selectedBranch.name}`;
           }
           httpParams = httpParams.append(CriteriasSelector.PARAM_PROJECT, loopHttpParams);
         }
@@ -369,10 +362,10 @@ export class CriteriasSelector {
   private _buildHttpParamsForSpecificBranches(httpParams: HttpParams, hierarchyNodeSelector: HierarchyNodeSelector): HttpParams {
     if (hierarchyNodeSelector.hasProjects()) {
       for (let i = 0; i < hierarchyNodeSelector.projects.length; i++) {
-        let loopProject: ProjectSelector = hierarchyNodeSelector.projects[i];
+        const loopProject: ProjectSelector = hierarchyNodeSelector.projects[i];
         if (loopProject.selected) {
-          if (loopProject.selectedBranch != null && loopProject.selectedBranch.name != loopProject.stableBranch.name) {
-            let loopHttpParams = `${hierarchyNodeSelector.path}${CriteriasSelector.SPLIT_PROJECT}${loopProject.id}${CriteriasSelector.SPLIT_PROJECT}${loopProject.selectedBranch.name}`;
+          if (loopProject.selectedBranch != null && loopProject.selectedBranch.name !== loopProject.stableBranch.name) {
+            const loopHttpParams = `${hierarchyNodeSelector.path}${CriteriasSelector.SPLIT_PROJECT}${loopProject.id}${CriteriasSelector.SPLIT_PROJECT}${loopProject.selectedBranch.name}`;
             httpParams = httpParams.append(CriteriasSelector.PARAM_PROJECT, loopHttpParams);
           }
         }

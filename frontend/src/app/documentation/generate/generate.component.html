@@ -1,7 +1,7 @@
 <app-page pageTitle="Generate documentation">
   <app-generate-documentation-criterias [isCriteriaSelection]="isCriterias"
                                         [isCriteriaDisplay]="isOutput"
-                                        (onGenerateDocumentationRequest)="generateDocumentationRequest($event)">
+                                        (generateDocumentationRequestEventEmitter)="generateDocumentationRequest($event)">
 
   </app-generate-documentation-criterias>
   <app-generate-documentation-output ngShow="isOutput"></app-generate-documentation-output>
