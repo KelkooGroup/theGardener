@@ -42,9 +42,9 @@ before_script:
     - 'sh -e /etc/init.d/xvfb start'
     
 script:
-#    - 'npm run lint'
-#    - 'npm run test --watch=false --progress=false'
-#    - 'npm run e2e'
+    - 'ng lint --force=true'
+    - 'ng test --watch=false --progress=false'
+    - 'ng e2e'
     - 'ng build --no-progress --prod --deploy-url /assets/dist/'
     - 'cd ..'
     - 'sbt ++$TRAVIS_SCALA_VERSION clean +test dist'
