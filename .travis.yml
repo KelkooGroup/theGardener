@@ -48,4 +48,5 @@ script:
     - 'ng build --no-progress --prod --deploy-url /assets/dist/'
     - 'cd ..'
     - 'sbt ++$TRAVIS_SCALA_VERSION clean coverage test dist'
+    - 'cat target/scala-2.12/scoverage-data/scoverage.coverage.xml'
     - sonar-scanner
