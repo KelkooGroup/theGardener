@@ -1,13 +1,16 @@
-<app-panel  [isClosable]="false"   *ngIf="isCriteriaSelection"   [showSpinner]="! views"  class="criterias" panelTitle="Criterias" panelIcon="fas fa-sliders-h">
-  <mat-tab-group  >
-    <mat-tab  *ngFor="let view of views;"  label="{{view.name}}"  >
-      <app-criterias-tree-selector [data]="view.children"  [childrenLabel]="view.childrenLabel"  ></app-criterias-tree-selector>
+<app-panel [isClosable]="false" *ngIf="isCriteriaSelection" [showSpinner]="! views" class="criterias"
+           panelTitle="Criterias" panelIcon="fas fa-sliders-h">
+  <mat-tab-group>
+    <mat-tab *ngFor="let view of views;" label="{{view.name}}">
+      <app-criterias-tree-selector [data]="view.children"
+                                   [childrenLabel]="view.childrenLabel"></app-criterias-tree-selector>
     </mat-tab>
   </mat-tab-group>
-  <button class="generate" (click)="generateDocumentation()"  mat-stroked-button>Generate documentation</button>
+  <button class="generate" (click)="generateDocumentation()" mat-stroked-button>Generate documentation</button>
 </app-panel>
 
-<app-panel  [isClosable]="true" [isClosed]="true"   *ngIf="isCriteriaDisplay && criteriaDisplay"   class="criterias" panelTitle="Criterias" panelIcon="fas fa-sliders-h">
+<app-panel [isClosable]="true" [isClosed]="true" *ngIf="isCriteriaDisplay && criteriaDisplay" class="criterias"
+           panelTitle="Criterias" panelIcon="fas fa-sliders-h">
   <div *ngIf="criteriaDisplay.hierarchyNodes.length > 0">
     All projects from sections:
     <ul>

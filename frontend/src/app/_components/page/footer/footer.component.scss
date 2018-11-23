@@ -6,9 +6,7 @@
   padding-top: 10px;
   min-height: 60px;
 
-  border-top-color: $color-main;
-  border-top-style: solid;
-  border-top-width: 1px;
+  border-top: 1px solid $color-main;
 
 }
 
@@ -21,7 +19,7 @@
   font-size: 17px;
 }
 
-.space{
-  width: 50px ;
+.space {
+  width: 50px;
 }
 

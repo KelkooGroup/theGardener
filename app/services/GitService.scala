@@ -5,6 +5,8 @@ import java.io.File
 import javax.inject.Inject
 import org.eclipse.jgit.api.CreateBranchCommand.SetupUpstreamMode._
 import org.eclipse.jgit.api.Git
+import org.eclipse.jgit.diff.DiffEntry.ChangeType
+import org.eclipse.jgit.treewalk.CanonicalTreeParser
 import play.api.Logger
 
 import scala.collection.JavaConverters._
@@ -33,11 +35,33 @@ class GitService @Inject()(implicit ec: ExecutionContext) {
     }
   }
 
-  def pull(localRepository: String): Future[Unit] = {
-    Future {
-      Git.open(new File(localRepository)).pull().call()
-      Logger.info(s"git pull in $localRepository")
-    }
+  def pull(localRepository: String): Future[(Seq[String], Seq[String], Seq[String])] = Future {
+
+    val git = Git.open(new File(localRepository))
+
+    val oldHead = git.getRepository.resolve("HEAD^{tree}")
+
+    git.pull().call()
+
+    val head = git.getRepository.resolve("HEAD^{tree}")
+
+    val reader = git.getRepository.newObjectReader()
+
+    val oldTreeIter = new CanonicalTreeParser()
+    oldTreeIter.reset(reader, oldHead)
+
+    val newTreeIter = new CanonicalTreeParser()
+    newTreeIter.reset(reader, head)
+
+    val diffs = git.diff.setNewTree(newTreeIter).setOldTree(oldTreeIter).call().asScala
+
+    val created = diffs.filter(diff => diff.getChangeType == ChangeType.ADD || diff.getChangeType == ChangeType.RENAME || diff.getChangeType == ChangeType.COPY).map(_.getNewPath)
+    val updated = diffs.filter(_.getChangeType == ChangeType.MODIFY).map(_.getOldPath)
+    val deleted = diffs.filter(diff => diff.getChangeType == ChangeType.DELETE || diff.getChangeType == ChangeType.RENAME).map(_.getOldPath)
+
+    Logger.info(s"git pull in $localRepository created : ${created.mkString(",")}, updated : ${updated.mkString(",")}, deleted : ${deleted.mkString(",")} ")
+
+    (created, updated, deleted)
   }
 
   def getRemoteBranches(url: String): Future[Seq[String]] = {

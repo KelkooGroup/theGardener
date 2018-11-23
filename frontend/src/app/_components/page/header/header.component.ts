@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import {Component, Input} from '@angular/core';
 
 @Component({
   selector: 'app-header',
@@ -8,10 +8,10 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 export class HeaderComponent {
 
   @Input()
-  logoSrc: string ;
+  logoSrc: string;
 
   @Input()
-  appTitle?: string ;
+  appTitle?: string;
 
   constructor() {
   }

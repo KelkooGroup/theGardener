@@ -57,7 +57,7 @@ Feature: As a user Tim, I want some book suggestions so that I can do some disco
 				"features": [{
 					"id": 1,
 					"branchId": 1,
-					"path": "target/data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature",
+					"path": "test/features/provide_book_suggestions.feature",
 					"tags": [],
 					"language": "en",
 					"keyword": "Feature",
@@ -140,7 +140,7 @@ Scenario: one service on which the suggestion system depends on is down
 				"features": [{
 					"id": 1,
 					"branchId": 1,
-					"path": "target/data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature",
+					"path": "test/features/provide_book_suggestions.feature",
 					"tags": [],
 					"language": "en",
 					"keyword": "Feature",
@@ -231,7 +231,7 @@ Feature: As a user, I want some book suggestions so that I can do some discovery
 				"features": [{
 					"id": 1,
 					"branchId": 1,
-					"path": "target/data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature",
+					"path": "test/features/provide_book_suggestions.feature",
 					"tags": [],
 					"language": "en",
 					"keyword": "Feature",
@@ -333,7 +333,7 @@ Examples:
 				"features": [{
 					"id": 1,
 					"branchId": 1,
-					"path": "target/data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature",
+					"path": "test/features/provide_book_suggestions.feature",
 					"tags": [],
 					"language": "en",
 					"keyword": "Feature",
