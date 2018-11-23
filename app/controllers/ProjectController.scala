@@ -87,8 +87,10 @@ class ProjectController @Inject()(projectRepository: ProjectRepository, projectS
   @ApiResponses(Array(new ApiResponse(code = 404, message = "Project not found")))
   def deleteProject(@ApiParam("Project id") id: String): Action[AnyContent] = Action {
 
+    projectService.deleteBranches(id, branchRepository.findAllByProjectId(id).map(_.name).toSet)
+
     if (projectRepository.existsById(id)) {
-      projectService.deleteBranches(projectRepository.findById(id).get, branchRepository.findAllByProjectId(id).map(_.name).toSet)
+
       projectRepository.deleteById(id)
 
       criteriaService.refreshCache()

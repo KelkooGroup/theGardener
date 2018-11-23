@@ -6,9 +6,9 @@ import java.util
 import cucumber.api.DataTable
 import cucumber.api.scala._
 import models._
-import models.Feature.stepFormat
 import org.scalatest.mockito._
 import play.api.libs.json.Json
+import play.api.mvc.Result
 import play.api.test.Helpers._
 import play.api.test._
 
@@ -19,7 +19,7 @@ class RegisterProjectSteps extends ScalaDsl with EN with MockitoSugar {
 
   import CommonSteps._
 
-  def registerProject(project: Project) = {
+  def registerProject(project: Project): Result = {
     response = route(app, FakeRequest("POST", "/api/projects").withJsonBody(Json.toJson(project))).get
     await(response)
   }

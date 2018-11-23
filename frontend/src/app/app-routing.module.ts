@@ -1,10 +1,10 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {GenerateComponent} from "./documentation/generate/generate.component";
-import {AdminPageComponent} from "./next/admin-page/admin-page.component";
-import {DashboardPageComponent} from "./next/dashboard-page/dashboard-page.component";
-import {ProfilePageComponent} from "./next/profile-page/profile-page.component";
-import {SearchPageComponent} from "./next/search-page/search-page.component";
+import {GenerateComponent} from './documentation/generate/generate.component';
+import {AdminPageComponent} from './next/admin-page/admin-page.component';
+import {DashboardPageComponent} from './next/dashboard-page/dashboard-page.component';
+import {ProfilePageComponent} from './next/profile-page/profile-page.component';
+import {SearchPageComponent} from './next/search-page/search-page.component';
 
 
 const routes: Routes = [

@@ -1,4 +1,4 @@
-import { browser, by, element } from 'protractor';
+import {browser} from 'protractor';
 
 export class AppPage {
   navigateTo() {
@@ -6,6 +6,6 @@ export class AppPage {
   }
 
   getTitle() {
-    return element(by.tagName('title')).getText();
+    return browser.getTitle();
   }
 }

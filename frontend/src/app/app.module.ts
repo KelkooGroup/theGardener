@@ -1,20 +1,20 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
-import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
-import {APIInterceptor} from "./http-interceptor";
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
+import {APIInterceptor} from './http-interceptor';
 import {AppComponent} from './app.component';
-import {environment} from "../environments/environment";
+import {environment} from '../environments/environment';
 import {HeaderComponent} from './_components/page/header/header.component';
 import {AppRoutingModule} from './app-routing.module';
 import {MenuComponent} from './_components/page/menu/menu.component';
 import {MenuItemComponent} from './_components/page/menu-item/menu-item.component';
 import {GenerateComponent} from './documentation/generate/generate.component';
 import {PageComponent} from './_components/page/page/page.component';
-import {AdminPageComponent} from "./next/admin-page/admin-page.component";
-import {DashboardPageComponent} from "./next/dashboard-page/dashboard-page.component";
-import {ProfilePageComponent} from "./next/profile-page/profile-page.component";
-import {SearchPageComponent} from "./next/search-page/search-page.component";
-import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {AdminPageComponent} from './next/admin-page/admin-page.component';
+import {DashboardPageComponent} from './next/dashboard-page/dashboard-page.component';
+import {ProfilePageComponent} from './next/profile-page/profile-page.component';
+import {SearchPageComponent} from './next/search-page/search-page.component';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {FormsModule} from '@angular/forms';
 import {
   MatButtonModule,
@@ -23,25 +23,25 @@ import {
   MatDialogModule,
   MatDividerModule,
   MatFormFieldModule,
-  MatSelectModule,
-  MatInputModule,
-  MatTableModule,
-  MatListModule,
-  MatTreeModule,
   MatIconModule,
-  MatTabsModule,
+  MatInputModule,
+  MatListModule,
   MatProgressSpinnerModule,
-} from "@angular/material";
+  MatSelectModule,
+  MatTableModule,
+  MatTabsModule,
+  MatTreeModule,
+} from '@angular/material';
 import {MatCardModule} from '@angular/material/card';
 import {PanelComponent} from './_components/panel/panel.component';
 import {CriteriasComponent} from './documentation/generate/criterias/criterias.component';
 import {OutputComponent} from './documentation/generate/output/output.component';
-import {CriteriasService} from "./_services/criterias.service";
-import {DocumentationService} from "./_services/documentation.service";
+import {CriteriasService} from './_services/criterias.service';
+import {DocumentationService} from './_services/documentation.service';
 import {CriteriasTreeSelectorComponent} from './documentation/generate/criterias/criterias-tree-selector/criterias-tree-selector.component';
-import { DocumentationThemeBookComponent } from './documentation/generate/output/themes/documentation-theme-book/documentation-theme-book.component';
-import { DocumentationThemeBookTableComponent } from './documentation/generate/output/themes/documentation-theme-book/documentation-theme-book-table/documentation-theme-book-table.component';
-import { FooterComponent } from './_components/page/footer/footer.component';
+import {DocumentationThemeBookComponent} from './documentation/generate/output/themes/documentation-theme-book/documentation-theme-book.component';
+import {DocumentationThemeBookTableComponent} from './documentation/generate/output/themes/documentation-theme-book/documentation-theme-book-table/documentation-theme-book-table.component';
+import {FooterComponent} from './_components/page/footer/footer.component';
 
 const nonProductionProviders = [{
   provide: HTTP_INTERCEPTORS,

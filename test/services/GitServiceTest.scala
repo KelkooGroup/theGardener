@@ -76,7 +76,12 @@ class GitServiceTest extends WordSpec with MustMatchers with BeforeAndAfter with
 
       val future = new GitService().pull(localRepositoryDirectory)
 
-      whenReady(future) { _ =>
+      whenReady(future) { case (created, updated, deleted) =>
+
+        created mustBe Seq("test2.txt")
+        updated mustBe Seq()
+        deleted mustBe Seq()
+
         readFileToString(remoteFile2, encoding) mustBe readFileToString(new File(localRepositoryDirectory, "test2.txt"), encoding)
       }
     }

@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import { DocumentationStepTable} from "../../../../../../_models/documentation";
+import {DocumentationStepTable} from '../../../../../../_models/documentation';
 
 @Component({
   selector: 'app-documentation-theme-book-table',
@@ -9,9 +9,10 @@ import { DocumentationStepTable} from "../../../../../../_models/documentation";
 export class DocumentationThemeBookTableComponent implements OnInit {
 
   @Input()
-  table : DocumentationStepTable;
+  table: DocumentationStepTable;
 
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit() {
   }

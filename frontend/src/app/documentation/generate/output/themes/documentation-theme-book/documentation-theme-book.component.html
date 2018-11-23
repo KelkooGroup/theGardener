@@ -1,4 +1,4 @@
-<mat-tree [dataSource]="nestedDataSource" [treeControl]="nestedTreeControl" class="documentation-tree">
+<mat-tree  *ngIf="documentationData"  [dataSource]="nestedDataSource" [treeControl]="nestedTreeControl" class="documentation-tree">
 
   <mat-nested-tree-node *matTreeNodeDef="let node; when: hasNestedChild">
     <li   id="{{node.nodeId}}">
@@ -20,7 +20,7 @@
             {{nestedTreeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
           </mat-icon>
         </button>
-        {{node.data.name}}  <span class="branch" >({{node.branch.data.name}})</span>
+        {{node.data.name}}  <span *ngIf="node.branch"  class="branch" >({{node.branch.data.name}})</span>
         <a  href="{{url}}#{{node.nodeId}}"  target="_blank" class="bookLink"   ><li class="fas fa-link fa-sm" ></li></a>
       </div>
 
@@ -94,15 +94,8 @@
                   </div>
                 </li>
             </div>
-
-
-
           </li>
         </ul>
-
-
-
-
       </div>
 
       <div  *ngIf="node.type == 'scenario'" class="mat-tree-node scenario">
@@ -157,6 +150,18 @@
 
 
       </div>
+
+
+    <div *ngIf="node.type == 'scenario'  && node.examples"   [class.documentation-tree-invisible]="!nestedTreeControl.isExpanded(node)">
+            <li>
+              <div class="step" >
+                <span class="stepKeyword" >Examples</span>&nbsp;
+              </div>
+            </li>
+            <div class="table pull-right" >
+              <app-documentation-theme-book-table [table]="node.examples.table" ></app-documentation-theme-book-table>
+            </div>
+    </div>
 
 
 

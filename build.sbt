@@ -13,8 +13,10 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala).enablePlugins(Sb
 // specify the source and target jdk for Java compiler
 javacOptions ++= Seq("-source", jdkVersion, "-target", jdkVersion)
 
-// specify the target jdk for Scala compiler
-scalacOptions += s"-feature"
+scalacOptions ++= Seq("-feature", "-deprecation", "-Xfatal-warnings")
+
+// Add option to enable anorm stack traces
+javaOptions += "-Dscala.control.noTraceSuppression=true"
 
 // add directory for test configuration files
 unmanagedClasspath in Test += baseDirectory.value / "local-conf"
@@ -54,6 +56,11 @@ libraryDependencies ++= Seq(
   "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % Test,
   "org.mockito" % "mockito-all" % "1.10.19" % Test
 )
+
+scapegoatVersion in ThisBuild := "1.3.8"
+scapegoatDisabledInspections := Seq("FinalModifierOnCaseClass", "PreferSeqEmpty", "PreferSetEmpty", "CatchException")
+scapegoatIgnoredFiles := Seq(".*/*Routes.scala")
+scalacOptions in Scapegoat += "-P:scapegoat:overrideLevels:TraversableHead=Warning:OptionGet=Warning"
 
 evictionWarningOptions in update := EvictionWarningOptions.empty
 

@@ -1,11 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {
-  BranchSelector,
-  HierarchyNodeSelector,
-  ProjectSelector
-} from "../../../../_services/criteriasSelection";
-import {MatTreeNestedDataSource} from "@angular/material/tree";
-import {NestedTreeControl} from "@angular/cdk/tree";
+import {BranchSelector, HierarchyNodeSelector, ProjectSelector} from '../../../../_services/criteriasSelection';
+import {MatTreeNestedDataSource} from '@angular/material/tree';
+import {NestedTreeControl} from '@angular/cdk/tree';
 
 
 @Component({
@@ -13,16 +9,16 @@ import {NestedTreeControl} from "@angular/cdk/tree";
   templateUrl: './criterias-tree-selector.component.html',
   styleUrls: ['./criterias-tree-selector.component.scss']
 })
-export class CriteriasTreeSelectorComponent  implements OnInit {
+export class CriteriasTreeSelectorComponent implements OnInit {
 
   nestedTreeControl: NestedTreeControl<HierarchyNodeSelector>;
   nestedDataSource: MatTreeNestedDataSource<HierarchyNodeSelector>;
 
   @Input()
-  data : HierarchyNodeSelector[] ;
+  data: HierarchyNodeSelector[];
 
   @Input()
-  childrenLabel : string ;
+  childrenLabel: string;
 
   ngOnInit() {
     this.nestedTreeControl = new NestedTreeControl<HierarchyNodeSelector>(this._getChildren);
@@ -36,18 +32,18 @@ export class CriteriasTreeSelectorComponent  implements OnInit {
 
 
   selectHierarchyNode(event) {
-    var source = event.source.value as HierarchyNodeSelector;
-    source.selection( event.checked );
+    const source = event.source.value as HierarchyNodeSelector;
+    source.selection(event.checked);
     source.refreshIndeterminateStatus();
   }
 
   selectProject(event) {
-    var source = event.source.value as ProjectSelector;
-    source.selection( event.checked );
+    const source = event.source.value as ProjectSelector;
+    source.selection(event.checked);
   }
 
   selectBranch(event) {
-    var source = event.source.value as BranchSelector;
+    const source = event.source.value as BranchSelector;
     source.selection();
   }
 }

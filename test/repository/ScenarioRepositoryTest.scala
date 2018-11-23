@@ -39,7 +39,8 @@ class ScenarioRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with I
         case scenarioOutline: ScenarioOutline =>
           val featureId = scenarioOutline.id
           SQL"""INSERT INTO scenario(description, workflowStep, caseType, abstractionLevel, stepsAsJson, keyword, name, featureId, examplesAsJson)
-              VALUES(${scenarioOutline.description}, ${scenarioOutline.workflowStep}, ${scenarioOutline.caseType}, ${scenarioOutline.abstractionLevel}, ${Json.toJson(scenarioOutline.steps).toString()}, ${scenarioOutline.keyword}, ${scenarioOutline.name}, $featureId, ${Json.toJson(scenarioOutline.examples).toString()})"""
+              VALUES(${scenarioOutline.description}, ${scenarioOutline.workflowStep}, ${scenarioOutline.caseType}, ${scenarioOutline.abstractionLevel},
+            ${Json.toJson(scenarioOutline.steps).toString()}, ${scenarioOutline.keyword}, ${scenarioOutline.name}, $featureId, ${Json.toJson(scenarioOutline.examples).toString()})"""
             .executeInsert()
           scenarioOutline.tags.foreach { tag =>
             SQL"REPLACE INTO tag(name) VALUES ($tag)".executeUpdate()

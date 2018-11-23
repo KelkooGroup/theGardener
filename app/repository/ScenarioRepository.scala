@@ -47,7 +47,7 @@ class ScenarioRepository @Inject()(db: Database, tagRepository: TagRepository) {
     }
   }
 
-  def deleteAllByFeatureId(featureId: Long) = {
+  def deleteAllByFeatureId(featureId: Long): Unit = {
     findAllByFeatureId(featureId).foreach(delete)
   }
 

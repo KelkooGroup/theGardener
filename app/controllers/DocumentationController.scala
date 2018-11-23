@@ -9,11 +9,7 @@ import play.api.mvc._
 import repository._
 import services.CriteriaService
 
-case class BranchDocumentationDTO(id: Long, name: String, isStable: Boolean, features: Seq[Feature]) {
-  def merge(other: BranchDocumentationDTO): BranchDocumentationDTO = {
-    if (id == other.id) this.copy(features = (features ++ other.features).distinct) else this
-  }
-}
+case class BranchDocumentationDTO(id: Long, name: String, isStable: Boolean, features: Seq[Feature])
 
 object BranchDocumentationDTO {
   def apply(branch: Branch, features: Seq[Feature]): BranchDocumentationDTO = {
@@ -21,11 +17,7 @@ object BranchDocumentationDTO {
   }
 }
 
-case class ProjectDocumentationDTO(id: String, name: String, branches: Seq[BranchDocumentationDTO]) {
-  def merge(other: ProjectDocumentationDTO): ProjectDocumentationDTO = {
-    if (id == other.id) this.copy(branches = branches.flatMap(b => other.branches.map(_.merge(b))).distinct) else this
-  }
-}
+case class ProjectDocumentationDTO(id: String, name: String, branches: Seq[BranchDocumentationDTO])
 
 object ProjectDocumentationDTO {
   def apply(project: Project, branches: Seq[BranchDocumentationDTO]): ProjectDocumentationDTO = {
@@ -35,8 +27,15 @@ object ProjectDocumentationDTO {
 
 case class Documentation(id: String, slugName: String, name: String, childrenLabel: String, childLabel: String, projects: Seq[ProjectDocumentationDTO], children: Seq[Documentation]) {
 
-  def merge(other: Documentation): Documentation = {
-    if (id == other.id) this.copy(projects = (projects ++ other.projects).distinct, children = children.flatMap(c => other.children.map(_.merge(c))).distinct) else this
+  def merge(other: Documentation): Option[Documentation] = {
+    if (id == other.id) {
+      val (childrenCommonLeft, childrenOnlyLeft) = children.partition(c => other.children.exists(_.id == c.id))
+      val (childrenCommonRight, childrenOnlyRight) = other.children.partition(c => children.exists(_.id == c.id))
+      val childrenCommonMerged = childrenCommonLeft.flatMap(c => childrenCommonRight.flatMap(c.merge)).distinct
+
+      Some(this.copy(projects = (projects ++ other.projects).distinct, children = childrenOnlyLeft ++ childrenOnlyRight ++ childrenCommonMerged))
+
+    } else None
   }
 }
 
@@ -68,7 +67,7 @@ class DocumentationController @Inject()(documentationRepository: DocumentationRe
       val criteriasTree = criteriaService.getCriteriasTree()
       val criteriaMap = criteriaService.getCriterias().map(c => c.id -> CriteriaService.findCriteriasSubtree(c.id)(criteriasTree)).toMap
 
-      val projectDocumentations = request.queryString.getOrElse("project", Seq()).map { projectParam =>
+      val projectDocumentations = request.queryString.getOrElse("project", Seq()).flatMap { projectParam =>
         val hierarchy = projectParam.split(">")(0).split("_").toSeq.filterNot(_.isEmpty).flatMap(hierarchyRepository.findBySlugName)
         val projectId = projectParam.split(">")(1)
         val project = projectRepository.findById(projectId)
@@ -76,13 +75,17 @@ class DocumentationController @Inject()(documentationRepository: DocumentationRe
 
         val branchName = projectParam.split(">").lift(2).getOrElse(project.map(_.stableBranch).getOrElse("master"))
 
-        buildDocumentation(hierarchy, Seq(documentationRepository.buildProjectDocumentation(ProjectCriteria(projectId, projectName, branchName))))
+        hierarchy.lastOption.flatMap { hierarchyNode =>
+          criteriaMap.get(hierarchyNode.id).flatten.map { criteria =>
+              buildDocumentation(criteria.hierarchy, Seq(documentationRepository.buildProjectDocumentation(ProjectCriteria(projectId, projectName, branchName))))
+          }
+        }
       }
 
       val nodeDocumentations = request.queryString.getOrElse("node", Seq()).flatMap { nodeParam =>
         val hierarchy = nodeParam.split("_").toSeq.filterNot(_.isEmpty).flatMap(hierarchyRepository.findBySlugName)
 
-        criteriaMap.get(hierarchy.last.id).flatten.map(CriteriaService.mergeChildrenHierarchy).getOrElse(Seq()).flatMap { hierarchyNode =>
+        hierarchy.lastOption.map(_.id).flatMap(criteriaMap.get).flatten.map(CriteriaService.mergeChildrenHierarchy).getOrElse(Seq()).flatMap { hierarchyNode =>
           criteriaMap.get(hierarchyNode.id).flatten.map { criteria =>
             criteria.projects.map { project =>
               buildDocumentation(criteria.hierarchy, Seq(documentationRepository.buildProjectDocumentation(ProjectCriteria(project.id, project.name, project.stableBranch))))
@@ -94,7 +97,7 @@ class DocumentationController @Inject()(documentationRepository: DocumentationRe
       val documentations = projectDocumentations ++ nodeDocumentations
 
       if (documentations.nonEmpty) {
-        Ok(Json.toJson(documentations.reduceLeft((acc: Documentation, current: Documentation) => acc.merge(current))))
+        Ok(Json.toJson(documentations.reduceLeft((acc: Documentation, current: Documentation) => acc.merge(current).getOrElse(acc))))
 
       } else {
         NotFound
@@ -108,7 +111,7 @@ class DocumentationController @Inject()(documentationRepository: DocumentationRe
 
   def buildDocumentation(hierarchy: Seq[HierarchyNode], projects: Seq[ProjectDocumentationDTO]): Documentation = {
     hierarchy.toList match {
-      case Nil => Documentation(hierarchyRepository.findAll().head, projects, Seq())
+      case Nil => Documentation(hierarchyRepository.findAll().headOption.getOrElse(HierarchyNode("", "", "", "", "")), projects, Seq())
       case h :: Nil => Documentation(h, projects, Seq())
       case h :: tail => Documentation(h, Seq(), Seq(buildDocumentation(tail, projects)))
     }

@@ -14,13 +14,14 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.reflect.ClassTag
 
 class CacheModule extends AbstractModule {
-  def configure() = {
+  def configure(): Unit = {
     bind(classOf[AsyncCacheApi]).to(classOf[InMemoryCache])
     bind(classOf[SyncCacheApi]).to(classOf[DefaultSyncCacheApi])
   }
 }
 
 @Singleton
+@SuppressWarnings(Array("AsInstanceOf"))
 class InMemoryCache @Inject()(implicit ec: ExecutionContext) extends AsyncCacheApi {
 
   val cache: concurrent.Map[String, Any] = new ConcurrentHashMap[String, Any]().asScala

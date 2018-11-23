@@ -4,9 +4,10 @@ import controllers.Assets.Asset
 import javax.inject.Inject
 import play.api.mvc._
 
+@SuppressWarnings(Array("UnusedMethodParameter"))
 class Application @Inject()(assets: Assets) extends InjectedController {
 
-  def index = Action {
+  def index: Action[AnyContent] = Action {
     Redirect("/app/")
   }
 
