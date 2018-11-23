@@ -34,7 +34,7 @@ export class DocumentationThemeBookComponent implements OnInit, AfterViewChecked
     });
   }
 
-  updateGeneratedDocumentation(documentationData: DocumentationNode[]){
+  updateGeneratedDocumentation(documentationData: DocumentationNode[]) {
     this.documentationData = documentationData;
     this.nestedTreeControl = new NestedTreeControl<ExpandableNode>(this._getChildren);
     this.nestedDataSource = new MatTreeNestedDataSource();
