@@ -13,14 +13,14 @@ addons:
         packages:
             - google-chrome-stable
             - nodejs
-            
+
 node_js:
     - 8.12.0
 jdk:
     - oraclejdk8
 scala:
     - 2.12.7
-    
+
 cache:
     directories:
         - $HOME/.m2
@@ -31,7 +31,7 @@ cache:
         - $HOME/frontend/node_modules
 git:
     depth: false
-    
+
 before_script:
     - 'set -e'
     - 'cd frontend'
@@ -40,12 +40,12 @@ before_script:
     - 'npm install'
     - 'export DISPLAY=:99.0'
     - 'sh -e /etc/init.d/xvfb start'
-    
+
 script:
     - 'ng lint --force=true'
-    - 'ng test --watch=false --progress=false'
+    - 'ng test --watch=false --progress=false --code-coverage'
     - 'ng e2e'
     - 'ng build --no-progress --prod --deploy-url /assets/dist/'
     - 'cd ..'
-    - 'sbt ++$TRAVIS_SCALA_VERSION clean +test dist'
+    - 'sbt ++$TRAVIS_SCALA_VERSION clean jacoco dist'
     - sonar-scanner
