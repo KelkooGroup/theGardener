@@ -7,28 +7,6 @@
 
 }
 
-.active-disabled {
-  position: relative;
-  display: block;
-
-  background-color: $color-border-light;
-  a {
-    color: $color-text-opposite;
-  }
-  a:hover {
-    color: $color-text-opposite;
-  }
-}
-
-.disabled {
-  a {
-    color: $color-disabled;
-  }
-  a:hover {
-    color: $color-disabled;
-  }
-}
-
 li {
 
   position: relative;
@@ -59,6 +37,28 @@ li {
     color: #10353d;
   }
 
+}
+
+.active-disabled {
+  position: relative;
+  display: block;
+
+  background-color: $color-border-light;
+  a {
+    color: $color-text-opposite;
+  }
+  a:hover {
+    color: $color-text-opposite;
+  }
+}
+
+.disabled {
+  a {
+    color: $color-disabled;
+  }
+  a:hover {
+    color: $color-disabled;
+  }
 }
 
 li > a:hover,
