@@ -29,12 +29,12 @@ export class OutputComponent implements OnInit {
   ngOnInit() {
 
     this.route.queryParams.subscribe(httpParams => {
-      const httpParamsAsString = this.buildHttpParams(httpParams['node'], httpParams['project'] );
+      const httpParamsAsString = this.buildHttpParams(httpParams['node'], httpParams['project']);
       this.generateDocumentation(httpParamsAsString);
     });
   }
 
-  buildHttpParams(nodes: string[], projects: string[]   ): string {
+  buildHttpParams(nodes: string[], projects: string[]): string {
     let nodesArray = nodes;
     if (!(nodesArray instanceof Array)) {
       nodesArray = new Array(nodesArray);
@@ -58,13 +58,13 @@ export class OutputComponent implements OnInit {
   }
 
   generateDocumentation(httpParams: string) {
-    if (httpParams != ""){
+    if (httpParams !== '') {
       this.showSpinner = true;
       this.documentationService.generateDocumentation(httpParams).subscribe(
         (result: DocumentationNodeApi) => {
-          this.documentationData = this.documentationService.decorate(result) ;
+          this.documentationData = this.documentationService.decorate(result);
           if (this.documentationTheme) {
-            this.documentationTheme.updateGeneratedDocumentation(this.documentationData ) ;
+            this.documentationTheme.updateGeneratedDocumentation(this.documentationData);
           }
           this.showSpinner = false;
           new Promise(() => {
