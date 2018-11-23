@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 
 @Component({
   selector: 'app-menu-item',
@@ -16,7 +16,11 @@ export class MenuItemComponent implements OnInit {
   @Input()
   label: string;
 
-  constructor() { }
+  @Input()
+  implemented = true;
+
+  constructor() {
+  }
 
   ngOnInit() {
   }

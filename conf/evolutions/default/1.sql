@@ -25,7 +25,9 @@ create table project(
 create table hierarchyNode(
   id varchar(255) not null,
   slugName varchar(255) not null,
-  name varchar (255) not null,
+  name varchar(255) not null,
+  childrenLabel varchar(255) not null,
+  childLabel varchar(255) not null,
   constraint pk_hierarchyNode primary key(id)
  );
 
@@ -50,9 +52,9 @@ create table feature(
   backgroundAsJson text,
   language varchar (255),
   keyword varchar(255) not null,
-  name varchar(255) not null,
-  description varchar(255) not null,
-  comments varchar(255) not null,
+  name text not null,
+  description text not null,
+  comments text not null,
   constraint pk_feature primary key(id)
 );
 
@@ -73,8 +75,8 @@ create table scenario(
   caseType varchar(255) not null,
   workflowStep varchar(255) not null,
   keyword varchar(255) not null,
-  name varchar(255) not null,
-  description varchar(255) not null,
+  name text not null,
+  description text not null,
   stepsAsJson text,
   examplesAsJson text,
   featureId bigint not null,

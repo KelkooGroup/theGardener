@@ -5,14 +5,16 @@ Feature: Generate documentation
 
   Background:
     Given the database is empty
+    And the cache is empty
+    And No project is checkout
     And the hierarchy nodes are
-      | id         | slugName   | name                 |
-      | .          | root       | Hierarchy root       |
-      | .01.       | eng        | Engineering view     |
-      | .01.01.    | library    | Library system group |
-      | .01.01.01. | suggestion | Suggestion system    |
-      | .01.01.02. | user       | User system          |
-      | .01.01.03. | search     | Search system        |
+      | id         | slugName   | name                 | childrenLabel | childLabel   |
+      | .          | root       | Hierarchy root       | Views         | View         |
+      | .01.       | eng        | Engineering view     | System groups | System group |
+      | .01.01.    | library    | Library system group | Systems       | System       |
+      | .01.01.01. | suggestion | Suggestion system    | Projects      | Project      |
+      | .01.01.02. | user       | User system          | Projects      | Project      |
+      | .01.01.03. | search     | Search system        | Projects      | Project      |
     And we have the following projects
       | id                 | name                    | repositoryUrl                                              | stableBranch | featuresRootPath |
       | suggestionsWS      | Suggestions WebServices | target/remote/data/GetFeatures/library/suggestionsWS/      | master       | test/features    |
@@ -79,35 +81,24 @@ Feature: As an admin, I want register a user
     And the database is synchronized on the project "usersWS"
 
 
-  @level_1_specification @nominal_case @ready
+  @level_1_specification @nominal_case @valid
   Scenario: generate documentation with all scenarios of a project
-    When I perform a "GET" on following URL "/api/generateDocumentation?project=_eng_library_suggestion>suggestionWS"
+    When I perform a "GET" on following URL "/api/generateDocumentation?project=_eng_library_suggestion>suggestionsWS"
     Then I get the following scenarios
       | hierarchy  | project       | feature                          | scenario                                                                  |
       | .01.01.01. | suggestionsWS | provide_book_suggestions.feature | providing several book suggestions                                        |
       | .01.01.01. | suggestionsWS | provide_book_suggestions.feature | one service on which the suggestion system depends on is down             |
       | .01.01.01. | suggestionsWS | provide_book_suggestions.feature | suggestions of popular and available books adapted to the age of the user |
 
-  @level_1_specification @nominal_case @ready
-  Scenario: generate documentation with all scenarios of all projects under a hierarchy
-    When I perform a "GET" on following URL "/api/generateDocumentation?node=_eng_library_suggestion"
+  @level_1_specification @nominal_case @valid
+  Scenario: generate documentation with all scenarios of a project
+    When I perform a "GET" on following URL "/api/generateDocumentation?project=_eng_library_suggestion>suggestionsWS&project=_eng_library_suggestion>suggestionsReports"
     Then I get the following scenarios
-      | hierarchy               | project            | feature                             | scenario                                                                  |
-      | _eng_library_suggestion | suggestionsWS      | provide_book_suggestions.feature    | providing several book suggestions                                        |
-      | _eng_library_suggestion | suggestionsWS      | provide_book_suggestions.feature    | one service on which the suggestion system depends on is down             |
-      | _eng_library_suggestion | suggestionsWS      | provide_book_suggestions.feature    | suggestions of popular and available books adapted to the age of the user |
-      | _eng_library_suggestion | suggestionsReports | provide_suggestions_reports.feature | providing suggestions reports                                             |
-
-  @level_1_specification @nominal_case @ready
-  Scenario: generate documentation with all scenarios of all projects under a high level hierarchy
-    When I perform a "GET" on following URL "/api/generateDocumentation?node=_eng_library"
-    Then I get the following scenarios
-      | hierarchy               | project            | feature                             | scenario                                                                  |
-      | _eng_library_suggestion | suggestionsWS      | provide_book_suggestions.feature    | providing several book suggestions                                        |
-      | _eng_library_suggestion | suggestionsWS      | provide_book_suggestions.feature    | one service on which the suggestion system depends on is down             |
-      | _eng_library_suggestion | suggestionsWS      | provide_book_suggestions.feature    | suggestions of popular and available books adapted to the age of the user |
-      | _eng_library_suggestion | suggestionsReports | provide_suggestions_reports.feature | providing suggestions reports                                             |
-      | _eng_library_user       | usersWS            | register_user.feature               | register a user                                                           |
+      | hierarchy  | project            | feature                             | scenario                                                                  |
+      | .01.01.01. | suggestionsWS      | provide_book_suggestions.feature    | providing several book suggestions                                        |
+      | .01.01.01. | suggestionsWS      | provide_book_suggestions.feature    | one service on which the suggestion system depends on is down             |
+      | .01.01.01. | suggestionsWS      | provide_book_suggestions.feature    | suggestions of popular and available books adapted to the age of the user |
+      | .01.01.01. | suggestionsReports | provide_suggestions_reports.feature | providing suggestions reports                                             |
 
 
 # TODO ADD a scenario to select a specific branch

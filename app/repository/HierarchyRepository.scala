@@ -12,11 +12,13 @@ class HierarchyRepository @Inject()(db: Database) {
     id <- str("id")
     slugName <- str("slugName")
     name <- str("name")
-  } yield HierarchyNode(id, slugName, name)
+    childrenLabel <- str("childrenLabel")
+    childLabel <- str("childLabel")
+  } yield HierarchyNode(id, slugName, name, childrenLabel, childLabel)
 
   def save(hierarchy: HierarchyNode): HierarchyNode = {
     db.withConnection { implicit connection =>
-      SQL"""REPLACE INTO hierarchyNode (id, slugName, name)               VALUES (${hierarchy.id}, ${hierarchy.slugName}, ${hierarchy.name})""".executeUpdate()
+      SQL"REPLACE INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel) VALUES (${hierarchy.id}, ${hierarchy.slugName}, ${hierarchy.name}, ${hierarchy.childrenLabel}, ${hierarchy.childLabel})".executeUpdate()
       SQL"SELECT * FROM hierarchyNode WHERE id = ${hierarchy.id}".as(parser.single)
     }
   }
@@ -52,6 +54,12 @@ class HierarchyRepository @Inject()(db: Database) {
   def findById(id: String): Option[HierarchyNode] = {
     db.withConnection { implicit connection =>
       SQL"SELECT * FROM hierarchyNode WHERE id = $id".as(parser.singleOpt)
+    }
+  }
+
+  def findBySlugName(slugName: String): Option[HierarchyNode] = {
+    db.withConnection { implicit connection =>
+      SQL"SELECT * FROM hierarchyNode WHERE slugName = $slugName".as(parser.singleOpt)
     }
   }
 

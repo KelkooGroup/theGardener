@@ -1,8 +1,9 @@
 Feature: Provide criterias
 
-  @level_2_technical_details @nominal_case @ready
+  @level_2_technical_details @nominal_case @valid
   Scenario: provide criterias - json output
     Given the database is empty
+    And the cache is empty
     And the hierarchy nodes are
       | id         | slugName   | name                 | childrenLabel | childLabel   |
       | .          | root       | Hierarchy root       | Views         | View         |
@@ -47,7 +48,7 @@ Feature: Provide criterias
       "slugName":"eng",
       "name":"Engineering view",
       "childrenLabel":"System groups",
-      "childLabel":"System groups",
+      "childLabel":"System group",
       "projects":[]
    },
    {
@@ -66,20 +67,20 @@ Feature: Provide criterias
       "childLabel":"Project",
       "projects":[
          {
-            "id":"suggestionWS",
-            "label":"Suggestion WebService",
-            "stableBranch":"master",
-            "branches":[
-               "master",
-               "bugfix/351"
-            ]
-         },
-         {
             "id":"suggestionsReports",
             "label":"Suggestions Reports",
             "stableBranch":"master",
             "branches":[
                "master"
+            ]
+         },
+         {
+            "id":"suggestionsWS",
+            "label":"Suggestions WebServices",
+            "stableBranch":"master",
+            "branches":[
+               "master",
+               "bugfix/351"
             ]
          }
       ]
@@ -103,8 +104,8 @@ Feature: Provide criterias
    },
    {
       "id":".01.01.03.",
-      "slugName":"user",
-      "name":"User system",
+      "slugName":"search",
+      "name":"Search system",
       "childrenLabel":"Projects",
       "childLabel":"Project",
       "projects":[]
@@ -117,8 +118,8 @@ Feature: Provide criterias
       "childLabel":"Unit",
       "projects":[
          {
-            "id":"suggestionWS",
-            "label":"Suggestion WebService",
+            "id":"suggestionsWS",
+            "label":"Suggestions WebServices",
             "stableBranch":"master",
             "branches":[
                "master",

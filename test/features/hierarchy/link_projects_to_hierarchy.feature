@@ -5,16 +5,18 @@ Feature: Link a project to the hierarchy
 
   Background:
     Given the database is empty
+    And the cache is empty
     And the hierarchy nodes are
-      | id         | slugName   | name                 |
-      | .          | root       | Hierarchy root       |
-      | .01.       | eng        | Engineering view     |
-      | .01.01.    | library    | Library system group |
-      | .01.01.01. | suggestion | Suggestion system    |
-      | .01.01.02. | user       | User system          |
-      | .01.01.03. | search     | Search system        |
-      | .01.02.    | bakery     | Bakery system group  |
-      | .02.       | product    | Product view         |
+      | id         | slugName   | name                 | childrenLabel | childLabel   |
+      | .          | root       | Hierarchy root       | Views         | View         |
+      | .01.       | eng        | Engineering view     | System groups | System group |
+      | .01.01.    | library    | Library system group | Systems       | System       |
+      | .01.01.01. | suggestion | Suggestion system    | Projects      | Project      |
+      | .01.01.02. | user       | User system          | Projects      | Project      |
+      | .01.01.03. | search     | Search system        | Projects      | Project      |
+      | .01.02.    | other      | Other system group   | Systems       | System       |
+      | .01.03.    | another    | Another system group | Systems       | System       |
+      | .02.       | product    | Product view         | System groups | System group |
     And we have the following projects
       | id                 | name                    | repositoryUrl                                             | stableBranch | featuresRootPath |
       | suggestionsWS      | Suggestions WebServices | git@gitlab.corp.kelkoo.net:library/suggestionsWS.git      | master       | test/features    |
@@ -32,7 +34,9 @@ Feature: Link a project to the hierarchy
     {
 		"id": ".01.01.01.",
 		"slugName": "suggestion",
-		"name": "Suggestion system"
+		"name": "Suggestion system",
+		"childrenLabel": "Projects",
+		"childLabel": "Project"
 	}
 ]
   """
@@ -53,12 +57,16 @@ Feature: Link a project to the hierarchy
     {
 		"id": ".01.01.01.",
 		"slugName": "suggestion",
-		"name": "Suggestion system"
+		"name": "Suggestion system",
+		"childrenLabel": "Projects",
+		"childLabel": "Project"
 	},
     {
 		"id": ".02.",
 		"slugName": "product",
-		"name": "Product view"
+		"name": "Product view",
+		"childrenLabel": "System groups",
+		"childLabel": "System group"
 	}
 ]
   """
@@ -86,12 +94,16 @@ Feature: Link a project to the hierarchy
 	"hierarchy": [{
 			"id": ".01.01.01.",
 			"slugName": "suggestion",
-			"name": "Suggestion system"
+			"name": "Suggestion system",
+			"childrenLabel": "Projects",
+			"childLabel": "Project"
 		},
 		{
 			"id": ".02.",
 			"slugName": "product",
-			"name": "Product view"
+			"name": "Product view",
+			"childrenLabel": "System groups",
+			"childLabel": "System group"
 		}
 	]
 }
@@ -111,12 +123,16 @@ Feature: Link a project to the hierarchy
     {
 		"id": ".01.01.01.",
 		"slugName": "suggestion",
-		"name": "Suggestion system"
+		"name": "Suggestion system",
+		"childrenLabel": "Projects",
+		"childLabel": "Project"
 	},
     {
 		"id": ".02.",
 		"slugName": "product",
-		"name": "Product view"
+		"name": "Product view",
+		"childrenLabel": "System groups",
+		"childLabel": "System group"
 	}
 ]
   """
@@ -136,7 +152,9 @@ Feature: Link a project to the hierarchy
     {
 		"id": ".01.01.01.",
 		"slugName": "suggestion",
-		"name": "Suggestion system"
+		"name": "Suggestion system",
+		"childrenLabel": "Projects",
+		"childLabel": "Project"
 	}
 ]
   """

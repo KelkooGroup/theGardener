@@ -1,5 +1,8 @@
 import { AppPage } from './app.po';
 
+const chai = require('chai').use(require('chai-as-promised'));
+const expect = chai.expect;
+
 describe('workspace-project App', () => {
   let page: AppPage;
 
@@ -7,8 +10,8 @@ describe('workspace-project App', () => {
     page = new AppPage();
   });
 
-  it('should display welcome message', () => {
+  it('should display title', () => {
     page.navigateTo();
-    expect(page.getParagraphText()).toEqual('Welcome to frontend!');
+    expect(page.getTitle()).to.be.eventually.equal('theGardener');
   });
 });

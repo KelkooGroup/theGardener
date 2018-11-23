@@ -71,7 +71,7 @@ class ScenarioRepository @Inject()(db: Database, tagRepository: TagRepository) {
 
   def findById(scenarioId: Long): Option[ScenarioDefinition] = {
     db.withConnection { implicit connection =>
-      SQL"SELECT * FROM scenario WHERE id = $scenarioId ".as(parser.singleOpt)
+      SQL"SELECT * FROM scenario WHERE id = $scenarioId".as(parser.singleOpt)
     }
   }
 

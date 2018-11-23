@@ -31,14 +31,15 @@ class ProjectServiceTest extends WordSpec with MustMatchers with BeforeAndAfter 
   val featureRepository = mock[FeatureRepository]
   val branchRepository = mock[BranchRepository]
   val featureService = mock[FeatureService]
+  val criteriaService = mock[CriteriaService]
 
-  val projectService = new ProjectService(projectRepository, gitService, ConfigFactory.load(), ActorSystem(), featureService, featureRepository, branchRepository)
+  val projectService = new ProjectService(projectRepository, gitService, ConfigFactory.load(), ActorSystem(), featureService, featureRepository, branchRepository, criteriaService)
 
   val project = Project("suggestionsWS", "Suggestions WebServices", "git@gitlab.corp.kelkoo.net:library/suggestionsWS.git", "master", "test/features")
   val masterDirectory = projectService.getLocalRepository(project.id, project.stableBranch)
   val featureBranchDirectory = projectService.getLocalRepository(project.id, featureBranch)
   val bugfixBranchDirectory = projectService.getLocalRepository(project.id, bugfixBranch)
-  val masterBranch  = Branch(1, project.stableBranch, isStable = true, project.id)
+  val masterBranch = Branch(1, project.stableBranch, isStable = true, project.id)
 
 
   before {
@@ -61,7 +62,7 @@ class ProjectServiceTest extends WordSpec with MustMatchers with BeforeAndAfter 
       when(gitService.clone(project.repositoryUrl, bugfixBranchDirectory)).thenReturn(Future.successful(()))
       when(gitService.checkout(bugfixBranch, bugfixBranchDirectory)).thenReturn(Future.successful(()))
 
-      when(featureService.parseBranchDirectory(any[Project], any[Long], any[String])).thenReturn(Seq())
+      when(featureService.parseBranchDirectory(any[Project], any[Branch], any[String])).thenReturn(Seq())
       when(featureRepository.saveAll(any[Seq[Feature]])).thenReturn(Seq())
       when(featureRepository.findByBranchIdAndPath(any[Long], any[String])).thenReturn(None)
 
@@ -89,7 +90,7 @@ class ProjectServiceTest extends WordSpec with MustMatchers with BeforeAndAfter 
       when(gitService.getRemoteBranches(project.repositoryUrl)).thenReturn(Future.successful(Seq(project.stableBranch, featureBranch)))
 
       when(gitService.pull(anyString())).thenReturn(Future.failed(new Exception()))
-      when(gitService.pull(masterDirectory)).thenReturn(Future.successful(()))
+      when(gitService.pull(masterDirectory)).thenReturn(Future.successful((Seq(), Seq(), Seq())))
 
       when(gitService.clone(anyString(), anyString())).thenReturn(Future.failed(new Exception()))
       when(gitService.checkout(anyString(), anyString(), anyBoolean())).thenReturn(Future.failed(new Exception()))
@@ -97,7 +98,7 @@ class ProjectServiceTest extends WordSpec with MustMatchers with BeforeAndAfter 
       when(gitService.clone(project.repositoryUrl, featureBranchDirectory)).thenReturn(Future.successful(()))
       when(gitService.checkout(featureBranch, featureBranchDirectory)).thenReturn(Future.successful(()))
 
-      when(featureService.parseBranchDirectory(any[Project], any[Long], any[String])).thenReturn(Seq())
+      when(featureService.parseBranchDirectory(any[Project], any[Branch], any[String])).thenReturn(Seq())
       when(featureRepository.saveAll(any[Seq[Feature]])).thenReturn(Seq())
       when(featureRepository.findByBranchIdAndPath(any[Long], any[String])).thenReturn(None)
 

@@ -7,6 +7,7 @@ Feature: Retrieve BDD features from a project on a remote server
   Background:
     Given No project is checkout
     And the database is empty
+    And the cache is empty
 
 
   @level_0_high_level @nominal_case @valid
@@ -43,8 +44,8 @@ Scenario: providing several book suggestions
       | id | name   | isStable | projectId     |
       | 1  | master | true     | suggestionsWS |
     And we have now those features in the database
-      | id | path                                                                                | name                                                                        | description | branchId |
-      | 1  | target/data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature | As a user Tim, I want some book suggestions so that I can do some discovery |             | 1        |
+      | id | path                                           | name                                                                        | description | branchId |
+      | 1  | test/features/provide_book_suggestions.feature | As a user Tim, I want some book suggestions so that I can do some discovery |             | 1        |
     And we have now those scenario in the database
       | id | name                               | description | keyword  | workflowStep | caseType     | abstractionLevel   |
       | 1  | providing several book suggestions |             | Scenario | ready        | nominal_case | level_0_high_level |
@@ -113,8 +114,8 @@ Scenario: providing several book suggestions
       | id | name   | isStable | projectId     |
       | 1  | master | true     | suggestionsWS |
     And we have those features in the database
-      | id | path                                                                                | name                                                                        | description | branchId | keyword  |
-      | 1  | target/data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature | As a user Tim, I want some book suggestions so that I can do some discovery |             | 1        | Scenario |
+      | id | path                                           | name                                                                        | description | branchId | keyword  |
+      | 1  | test/features/provide_book_suggestions.feature | As a user Tim, I want some book suggestions so that I can do some discovery |             | 1        | Scenario |
     And we have those scenario for the feature "1" in the database
       | id | name                               | description | keyword  | workflowStep | caseType     | abstractionLevel   |
       | 1  | providing several book suggestions |             | Scenario | ready        | nominal_case | level_0_high_level |
@@ -174,8 +175,8 @@ Scenario: providing several book suggestions
       | id | name   | isStable | projectId     |
       | 1  | master | true     | suggestionsWS |
     And we have now those features in the database
-      | id | path                                                                                | name                                                                        | description | branchId | keyword  |
-      | 2  | target/data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature | As a user Tim, I want some book suggestions so that I can do some discovery |             | 1        | Scenario |
+      | id | path                                      | name                                                                        | description | branchId | keyword  |
+      | 2  | test/features/provide_book_suggestions.feature | As a user Tim, I want some book suggestions so that I can do some discovery |             | 1        | Scenario |
     And we have now those scenario in the database
       | id | name                               | description | keyword  | workflowStep | caseType     | abstractionLevel   |
       | 2  | providing several book suggestions |             | Scenario | ongoing      | nominal_case | level_0_high_level |

@@ -5,6 +5,7 @@ import anorm._
 import javax.inject.Inject
 import models.Feature.backgroundFormat
 import models._
+import play.api.Logger
 import play.api.db.Database
 import play.api.libs.json.Json
 
@@ -22,7 +23,7 @@ class FeatureRepository @Inject()(db: Database, tagRepository: TagRepository, sc
     comments <- str("comments")
   } yield Feature(id, branchId, path, backgroundAsJson.map(Json.parse(_).as[Background]),
     tagRepository.findAllByFeatureId(id), language, keyword, name, description,
-    scenarioRepository.findAllByFeatureId(id), comments.split("\n"))
+    scenarioRepository.findAllByFeatureId(id), comments.split("\n").filterNot(_.isEmpty))
 
   def findAll(): Seq[Feature] = {
     db.withConnection { implicit connection =>
@@ -38,29 +39,34 @@ class FeatureRepository @Inject()(db: Database, tagRepository: TagRepository, sc
   }
 
   def save(feature: Feature): Option[Feature] = {
-    db.withConnection { implicit connection =>
-      val id : Option[Long] = if (existsById(feature.id)) {
-        SQL"""REPLACE INTO feature(id, branchId, path, backgroundAsJson, language, keyword, name, description, comments)
+    try {
+      db.withConnection { implicit connection =>
+        val id: Option[Long] = if (existsById(feature.id)) {
+          SQL"""REPLACE INTO feature(id, branchId, path, backgroundAsJson, language, keyword, name, description, comments)
              VALUES (${feature.id}, ${feature.branchId}, ${feature.path}, ${feature.background.map(Json.toJson(_).toString)}, ${feature.language}, ${feature.keyword}, ${feature.name}, ${feature.description}, ${feature.comments.mkString("\n")})"""
-          .executeUpdate()
-        Some(feature.id)
+            .executeUpdate()
+          Some(feature.id)
 
-      } else {
-        SQL"""INSERT INTO feature(branchId, path, backgroundAsJson, language, keyword, name, description, comments)
+        } else {
+          SQL"""INSERT INTO feature(branchId, path, backgroundAsJson, language, keyword, name, description, comments)
              VALUES (${feature.branchId}, ${feature.path}, ${feature.background.map(Json.toJson(_).toString())}, ${feature.language}, ${feature.keyword}, ${feature.name}, ${feature.description}, ${feature.comments.mkString("\n")})"""
-          .executeInsert()
+            .executeInsert()
+        }
+
+        if (id.isDefined) {
+          scenarioRepository.deleteAllByFeatureId(id.get)
+          scenarioRepository.saveAll(id.get, feature.scenarios)
+
+          tagRepository.deleteAllByFeatureId(id.get)
+          tagRepository.saveAllByFeatureId(id.get, feature.tags)
+        }
+
+
+        SQL"SELECT * FROM feature WHERE id = $id".as(parser.singleOpt)
       }
-
-      if (id.isDefined) {
-        scenarioRepository.deleteAllByFeatureId(id.get)
-        scenarioRepository.saveAll(id.get, feature.scenarios)
-
-        tagRepository.deleteAllByFeatureId(id.get)
-        tagRepository.saveAllByFeatureId(id.get, feature.tags)
-      }
-
-
-      SQL"SELECT * FROM feature WHERE id = $id".as(parser.singleOpt)
+    } catch {
+      case e: Exception => Logger.error(s"Error while saving feature ${feature.name}", e)
+        None
     }
   }
 

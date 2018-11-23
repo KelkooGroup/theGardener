@@ -5,6 +5,7 @@ Feature: Register a project
 
   Background:
     Given the database is empty
+    And the cache is empty
 
   @level_0_high_level @nominal_case @valid
   Scenario: register a project

@@ -1,4 +1,7 @@
+@import "../../../../stylesheets/backoffice";
+
 .header {
+  min-width: $min-width;
   width: 100%;
   padding-left: 10px;
   min-height: 60px;
@@ -6,7 +9,13 @@
 }
 
 .header-logo img {
-  height: 70px;
+  height: 100px;
+}
+
+.header-title div {
+  min-height: 28px;
+  padding-top: 40px;
+  font-size: $font-size-text;
 }
 
 
