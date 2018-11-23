@@ -58,21 +58,26 @@ export class OutputComponent implements OnInit {
   }
 
   generateDocumentation(httpParams: string) {
-    this.showSpinner = true;
-    this.documentationService.generateDocumentation(httpParams).subscribe(
-      (result: DocumentationNodeApi) => {
-        this.documentationData = this.documentationService.decorate(result) ;
-        this.showSpinner = false;
-        new Promise(() => {
-          setTimeout(() => {
-            if (this.documentationTheme) {
-              this.documentationTheme.selectHash();
-            }
-          }, 1000);
+    if (httpParams != ""){
+      this.showSpinner = true;
+      this.documentationService.generateDocumentation(httpParams).subscribe(
+        (result: DocumentationNodeApi) => {
+          this.documentationData = this.documentationService.decorate(result) ;
+          if (this.documentationTheme) {
+            this.documentationTheme.updateGeneratedDocumentation(this.documentationData ) ;
+          }
+          this.showSpinner = false;
+          new Promise(() => {
+            setTimeout(() => {
+              if (this.documentationTheme) {
+                this.documentationTheme.selectHash();
+              }
+            }, 1000);
+          });
+        },
+        () => {
         });
-      },
-      () => {
-      });
+    }
   }
 
 }

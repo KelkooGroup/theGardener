@@ -12,7 +12,6 @@ import {Location} from '@angular/common';
 })
 export class DocumentationThemeBookComponent implements OnInit, AfterViewChecked {
 
-  @Input()
   documentationData: DocumentationNode[];
 
   nestedTreeControl: NestedTreeControl<ExpandableNode>;
@@ -25,24 +24,25 @@ export class DocumentationThemeBookComponent implements OnInit, AfterViewChecked
   }
 
   ngOnInit() {
-    this.nestedTreeControl = new NestedTreeControl<ExpandableNode>(this._getChildren);
-    this.nestedDataSource = new MatTreeNestedDataSource();
-    this.nestedDataSource.data = this.documentationData;
-    this.nestedTreeControl.dataNodes = this.documentationData;
-    this.nestedTreeControl.expandAll();
-
     this.route.url.subscribe(() => {
       this.url = this.location.path();
     });
-
-
     this.route.fragment.subscribe((hash: string) => {
       if (hash) {
         this.hash = hash;
       }
     });
-
   }
+
+  updateGeneratedDocumentation(documentationData: DocumentationNode[]){
+    this.documentationData = documentationData;
+    this.nestedTreeControl = new NestedTreeControl<ExpandableNode>(this._getChildren);
+    this.nestedDataSource = new MatTreeNestedDataSource();
+    this.nestedDataSource.data = this.documentationData;
+    this.nestedTreeControl.dataNodes = this.documentationData;
+    this.nestedTreeControl.expandAll();
+  }
+
 
   ngAfterViewChecked() {
     this.selectHash();
