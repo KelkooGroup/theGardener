@@ -91,7 +91,7 @@ Feature: As an admin, I want register a user
       | .01.01.01. | suggestionsWS | provide_book_suggestions.feature | suggestions of popular and available books adapted to the age of the user |
 
   @level_1_specification @nominal_case @valid
-  Scenario: generate documentation with all scenarios of a project
+  Scenario: generate documentation with all scenarios of two projects
     When I perform a "GET" on following URL "/api/generateDocumentation?project=_eng_library_suggestion>suggestionsWS&project=_eng_library_suggestion>suggestionsReports"
     Then I get the following scenarios
       | hierarchy  | project            | feature                             | scenario                                                                  |
@@ -100,6 +100,48 @@ Feature: As an admin, I want register a user
       | .01.01.01. | suggestionsWS      | provide_book_suggestions.feature    | suggestions of popular and available books adapted to the age of the user |
       | .01.01.01. | suggestionsReports | provide_suggestions_reports.feature | providing suggestions reports                                             |
 
+  @level_1_specification @nominal_case @valid
+  Scenario: generate documentation with all scenarios of all projects under a hierarchy
+    When I perform a "GET" on following URL "/api/generateDocumentation?node=_eng_library_suggestion"
+    Then I get the following scenarios
+      | hierarchy  | project            | feature                             | scenario                                                                  |
+      | .01.01.01. | suggestionsWS      | provide_book_suggestions.feature    | providing several book suggestions                                        |
+      | .01.01.01. | suggestionsWS      | provide_book_suggestions.feature    | one service on which the suggestion system depends on is down             |
+      | .01.01.01. | suggestionsWS      | provide_book_suggestions.feature    | suggestions of popular and available books adapted to the age of the user |
+      | .01.01.01. | suggestionsReports | provide_suggestions_reports.feature | providing suggestions reports                                             |
+
+  @level_1_specification @nominal_case @valid
+  Scenario: generate documentation with all scenarios of all projects under a high level hierarchy
+    When I perform a "GET" on following URL "/api/generateDocumentation?node=_eng_library"
+    Then I get the following scenarios
+      | hierarchy  | project            | feature                             | scenario                                                                  |
+      | .01.01.01. | suggestionsWS      | provide_book_suggestions.feature    | providing several book suggestions                                        |
+      | .01.01.01. | suggestionsWS      | provide_book_suggestions.feature    | one service on which the suggestion system depends on is down             |
+      | .01.01.01. | suggestionsWS      | provide_book_suggestions.feature    | suggestions of popular and available books adapted to the age of the user |
+      | .01.01.01. | suggestionsReports | provide_suggestions_reports.feature | providing suggestions reports                                             |
+      | .01.01.02. | usersWS            | register_user.feature               | register a user                                                           |
+
+  @level_1_specification @nominal_case @valid
+  Scenario: generate documentation with all scenarios of all projects under two hierarchies
+    When I perform a "GET" on following URL "/api/generateDocumentation?node=_eng_library_suggestion&node=_eng_library_user"
+    Then I get the following scenarios
+      | hierarchy  | project            | feature                             | scenario                                                                  |
+      | .01.01.01. | suggestionsWS      | provide_book_suggestions.feature    | providing several book suggestions                                        |
+      | .01.01.01. | suggestionsWS      | provide_book_suggestions.feature    | one service on which the suggestion system depends on is down             |
+      | .01.01.01. | suggestionsWS      | provide_book_suggestions.feature    | suggestions of popular and available books adapted to the age of the user |
+      | .01.01.01. | suggestionsReports | provide_suggestions_reports.feature | providing suggestions reports                                             |
+      | .01.01.02. | usersWS            | register_user.feature               | register a user                                                           |
+
+  @level_1_specification @nominal_case @valid
+  Scenario: generate documentation with all scenarios of all projects under a hierarchy plus a single project
+    When I perform a "GET" on following URL "/api/generateDocumentation?node=_eng_library_suggestion&project=_eng_library_user>usersWS"
+    Then I get the following scenarios
+      | hierarchy  | project            | feature                             | scenario                                                                  |
+      | .01.01.01. | suggestionsWS      | provide_book_suggestions.feature    | providing several book suggestions                                        |
+      | .01.01.01. | suggestionsWS      | provide_book_suggestions.feature    | one service on which the suggestion system depends on is down             |
+      | .01.01.01. | suggestionsWS      | provide_book_suggestions.feature    | suggestions of popular and available books adapted to the age of the user |
+      | .01.01.01. | suggestionsReports | provide_suggestions_reports.feature | providing suggestions reports                                             |
+      | .01.01.02. | usersWS            | register_user.feature               | register a user                                                           |
 
 # TODO ADD a scenario to select a specific branch
 # TODO ADD a scenario to select a specific tag

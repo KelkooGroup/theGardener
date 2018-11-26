@@ -18,6 +18,7 @@ case class DocumentationRowJoin(branchId: Long, branchName: String, branchIsStab
 
 case class DocumentationTagRowJoin(branchId: Long, featureId: Long, featureTagName: Option[String], scenarioId: Option[Long], scenarioTagName: Option[String])
 
+@SuppressWarnings(Array("TraversableHead"))
 class DocumentationRepository @Inject()(db: Database) {
 
   private val parserDocumentationRowJoin = for {
