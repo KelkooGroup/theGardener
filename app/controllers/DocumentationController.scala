@@ -82,7 +82,7 @@ class DocumentationController @Inject()(documentationRepository: DocumentationRe
       val nodeDocumentations = request.queryString.getOrElse("node", Seq()).flatMap { nodeParam =>
         val hierarchy = nodeParam.split("_").toSeq.filterNot(_.isEmpty).flatMap(hierarchyRepository.findBySlugName)
 
-        criteriaMap.get(hierarchy.last.id).flatten.map(CriteriaService.mergeChildrenHierarchy).getOrElse(Seq()).flatMap { hierarchyNode =>
+        hierarchy.lastOption.map(_.id).flatMap(criteriaMap.get).flatten.map(CriteriaService.mergeChildrenHierarchy).getOrElse(Seq()).flatMap { hierarchyNode =>
           criteriaMap.get(hierarchyNode.id).flatten.map { criteria =>
             criteria.projects.map { project =>
               buildDocumentation(criteria.hierarchy, Seq(documentationRepository.buildProjectDocumentation(ProjectCriteria(project.id, project.name, project.stableBranch))))
@@ -108,7 +108,7 @@ class DocumentationController @Inject()(documentationRepository: DocumentationRe
 
   def buildDocumentation(hierarchy: Seq[HierarchyNode], projects: Seq[ProjectDocumentationDTO]): Documentation = {
     hierarchy.toList match {
-      case Nil => Documentation(hierarchyRepository.findAll().head, projects, Seq())
+      case Nil => Documentation(hierarchyRepository.findAll().headOption.getOrElse(HierarchyNode("", "", "", "", "")), projects, Seq())
       case h :: Nil => Documentation(h, projects, Seq())
       case h :: tail => Documentation(h, Seq(), Seq(buildDocumentation(tail, projects)))
     }

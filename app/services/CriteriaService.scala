@@ -34,13 +34,9 @@ class CriteriaService @Inject()(hierarchyRepository: HierarchyRepository, projec
 
       val criterias = getCriterias(refresh)
 
-      if (criterias.nonEmpty) {
-        val root = criterias.head
-
-        root.copy(children = buildTree(root, criterias.tail))
-      } else {
-        Criteria("", Seq())
-      }
+      criterias.headOption
+        .map(c => c.copy(children = buildTree(c, criterias.tail)))
+        .getOrElse(Criteria("", Seq()))
     }
   }
 }

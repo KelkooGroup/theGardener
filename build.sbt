@@ -55,6 +55,11 @@ libraryDependencies ++= Seq(
   "org.mockito" % "mockito-all" % "1.10.19" % Test
 )
 
+scapegoatVersion in ThisBuild := "1.3.8"
+scapegoatDisabledInspections := Seq("FinalModifierOnCaseClass", "PreferSeqEmpty", "PreferSetEmpty", "CatchException")
+scapegoatIgnoredFiles := Seq(".*/*Routes.scala")
+scalacOptions in Scapegoat += "-P:scapegoat:overrideLevels:TraversableHead=Warning:OptionGet=Warning"
+
 evictionWarningOptions in update := EvictionWarningOptions.empty
 
 routesGenerator := InjectedRoutesGenerator

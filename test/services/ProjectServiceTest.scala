@@ -33,7 +33,7 @@ class ProjectServiceTest extends WordSpec with MustMatchers with BeforeAndAfter 
   val featureService = mock[FeatureService]
   val criteriaService = mock[CriteriaService]
 
-  val projectService = new ProjectService(projectRepository, gitService, ConfigFactory.load(), ActorSystem(), featureService, featureRepository, branchRepository, criteriaService)
+  val projectService = new ProjectService(projectRepository, gitService, featureService, featureRepository, branchRepository, criteriaService, ConfigFactory.load(), ActorSystem())
 
   val project = Project("suggestionsWS", "Suggestions WebServices", "git@gitlab.corp.kelkoo.net:library/suggestionsWS.git", "master", "test/features")
   val masterDirectory = projectService.getLocalRepository(project.id, project.stableBranch)
