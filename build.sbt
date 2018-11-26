@@ -1,9 +1,13 @@
 name := "the_gardener"
 
+val pom = xml.XML.load("pom.xml")
+
+version := { pom \  "version" text}
+
 val jdkVersion = "1.8"
 scalaVersion := "2.12.7"
 
-lazy val root = (project in file(".")).enablePlugins(PlayScala)
+lazy val root = (project in file(".")).enablePlugins(PlayScala).enablePlugins(SbtWeb)
 
 
 // specify the source and target jdk for Java compiler
@@ -32,6 +36,7 @@ libraryDependencies ++= Seq(
   evolutions,
   jdbc,
   cacheApi,
+  "com.kelkoo.common" %% "playScalaCommon" % "2.1.2",
   "ch.qos.logback" % "logback-access" % "1.2.3",
   "net.logstash.logback" % "logstash-logback-encoder" % "4.11",
   "com.typesafe.play" %% "play-json" % "2.6.10",
@@ -53,3 +58,7 @@ libraryDependencies ++= Seq(
 evictionWarningOptions in update := EvictionWarningOptions.empty
 
 routesGenerator := InjectedRoutesGenerator
+
+JsEngineKeys.npmNodeModules in Assets := Nil
+
+JsEngineKeys.npmNodeModules in TestAssets := Nil
