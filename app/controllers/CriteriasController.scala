@@ -19,7 +19,10 @@ case class CriteriaDTO(id: String, slugName: String, name: String, childrenLabel
 
 object CriteriaDTO {
   def apply(criteria: Criteria): CriteriaDTO = {
-    CriteriaDTO(criteria.id, criteria.hierarchy.last.slugName, criteria.hierarchy.last.name, criteria.hierarchy.last.childrenLabel, criteria.hierarchy.last.childLabel,
+
+    val hierarchyNode = criteria.hierarchy.lastOption.getOrElse(HierarchyNode("", "", "", "", ""))
+
+    CriteriaDTO(criteria.id, hierarchyNode.slugName, hierarchyNode.name, hierarchyNode.childrenLabel, hierarchyNode.childLabel,
       criteria.projects.map(ProjectCriteriasDTO(_)), Some(criteria.children.map(CriteriaDTO(_))))
   }
 }

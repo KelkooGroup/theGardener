@@ -5,5 +5,6 @@ logLevel := Level.Warn
 addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.6.20")
 addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.6.0-M5")
 addSbtPlugin("org.scalastyle" %% "scalastyle-sbt-plugin" % "1.0.0")
+addSbtPlugin("com.sksamuel.scapegoat" %% "sbt-scapegoat" % "1.0.9")
 
 evictionWarningOptions in update := EvictionWarningOptions.empty

@@ -55,36 +55,36 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
 
   def filterFeatureFile(filePaths: Seq[String]): Seq[String] = filePaths.filter(_.endsWith(".feature"))
 
-  private def updateBranches(project: Project, branches: Set[String]) = {
-    if (branches.nonEmpty) Logger.debug(s"git pull ${project.id} branches ${branches.mkString(",")}")
+  private def updateBranches(projectId: String, branches: Set[String]) = {
+    if (branches.nonEmpty) Logger.debug(s"git pull $projectId branches ${branches.mkString(",")}")
 
     Future.sequence(
       branches.map { branchName =>
-        gitService.pull(getLocalRepository(project.id, branchName)).map { case (created, updated, deleted) =>
+        gitService.pull(getLocalRepository(projectId, branchName)).map { case (created, updated, deleted) =>
           (filterFeatureFile(created), filterFeatureFile(updated), filterFeatureFile(deleted))
         }.map { case (created, updated, deleted) =>
-          branchRepository.findByProjectIdAndName(project.id, branchName).foreach { branch =>
+          branchRepository.findByProjectIdAndName(projectId, branchName).foreach { branch =>
             (updated ++ deleted).flatMap(path => featureRepository.findByBranchIdAndPath(branch.id, path)).foreach(featureRepository.delete)
 
-            (created ++ updated).flatMap(filePath => featureService.parseFeatureFile(project.id, branch, getLocalRepository(project.id, branchName) + filePath)).foreach(featureRepository.save)
+            (created ++ updated).flatMap(filePath => featureService.parseFeatureFile(projectId, branch, getLocalRepository(projectId, branchName) + filePath)).foreach(featureRepository.save)
 
-            Logger.debug(s"${created.size} features created, ${updated.size} features updated and ${deleted.size} features deleted, for project ${project.id} on branch ${branch.name}")
+            Logger.debug(s"${created.size} features created, ${updated.size} features updated and ${deleted.size} features deleted, for project $projectId on branch ${branch.name}")
           }
         }
       }
     )
   }
 
-  def deleteBranches(project: Project, branches: Set[String]): Future[Unit] = {
-    if (branches.nonEmpty) Logger.debug(s"delete ${project.id} branches ${branches.mkString(",")}")
+  def deleteBranches(projectId: String, branches: Set[String]): Future[Unit] = {
+    if (branches.nonEmpty) Logger.debug(s"delete $projectId branches ${branches.mkString(",")}")
 
     Future {
       for (branch <- branches) {
-        deleteDirectory(new File(getLocalRepository(project.id, branch)))
-        branchRepository.findByProjectIdAndName(project.id, branch).map(_.id).foreach(featureRepository.deleteAllByBranchId)
+        deleteDirectory(new File(getLocalRepository(projectId, branch)))
+        branchRepository.findByProjectIdAndName(projectId, branch).map(_.id).foreach(featureRepository.deleteAllByBranchId)
       }
 
-      branchRepository.deleteAll(branchRepository.findAllByProjectId(project.id).filter(b => branches.contains(b.name)))
+      branchRepository.deleteAll(branchRepository.findAllByProjectId(projectId).filter(b => branches.contains(b.name)))
     }
   }
 
@@ -115,9 +115,9 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
       Logger.info(s"Project ${project.id}, branches to update: ${branchesToUpdate.mkString(",")}, branches to checkout: ${branchesToCheckout.mkString(",")}, branches to delete: ${branchesToDelete.mkString(",")}")
 
       for {
-        _ <- updateBranches(project, branchesToUpdate)
+        _ <- updateBranches(project.id, branchesToUpdate)
         _ <- checkoutBranches(project, branchesToCheckout)
-      } yield deleteBranches(project, branchesToDelete)
+      } yield deleteBranches(project.id, branchesToDelete)
     }
   }
 }
