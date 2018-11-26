@@ -24,7 +24,7 @@ play.i18n.langs=["en"]
 # Disable filters for Swagger
 play.filters.disabled += "play.filters.headers.SecurityHeadersFilter"
 play.filters.disabled += "play.filters.csrf.CSRFFilter"
-play.filters.enabled += play.filters.hosts.AllowedHostsFilter
+play.filters.disabled += play.filters.hosts.AllowedHostsFilter
 # Swagger
 play.modules.enabled += "play.modules.swagger.SwaggerModule"
 
