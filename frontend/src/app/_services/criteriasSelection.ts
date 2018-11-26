@@ -349,7 +349,7 @@ export class CriteriasSelector {
         const loopProject: ProjectSelector = hierarchyNodeSelector.projects[i];
         if (loopProject.selected) {
           let loopHttpParams = `${hierarchyNodeSelector.path}${CriteriasSelector.SPLIT_PROJECT}${loopProject.id}`;
-          if (loopProject.selectedBranch !== null && loopProject.selectedBranch.name !== loopProject.stableBranch.name) {
+          if (loopProject.selectedBranch !== undefined && loopProject.selectedBranch.name !== loopProject.stableBranch.name) {
             loopHttpParams += `${CriteriasSelector.SPLIT_PROJECT}${loopProject.selectedBranch.name}`;
           }
           httpParams = httpParams.append(CriteriasSelector.PARAM_PROJECT, loopHttpParams);
@@ -364,7 +364,7 @@ export class CriteriasSelector {
       for (let i = 0; i < hierarchyNodeSelector.projects.length; i++) {
         const loopProject: ProjectSelector = hierarchyNodeSelector.projects[i];
         if (loopProject.selected) {
-          if (loopProject.selectedBranch != null && loopProject.selectedBranch.name !== loopProject.stableBranch.name) {
+          if (loopProject.selectedBranch != undefined && loopProject.selectedBranch.name !== loopProject.stableBranch.name) {
             const loopHttpParams = `${hierarchyNodeSelector.path}${CriteriasSelector.SPLIT_PROJECT}${loopProject.id}${CriteriasSelector.SPLIT_PROJECT}${loopProject.selectedBranch.name}`;
             httpParams = httpParams.append(CriteriasSelector.PARAM_PROJECT, loopHttpParams);
           }
