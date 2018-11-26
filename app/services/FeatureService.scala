@@ -18,7 +18,7 @@ import scala.util.Try
 class FeatureService @Inject()(config: Config, featureRepository: FeatureRepository) {
   val projectsRootDirectory = config.getString("projects.root.directory")
 
-  def getLocalRepository(projectId: String, branch: String) = s"$projectsRootDirectory$projectId/$branch/"
+  def getLocalRepository(projectId: String, branch: String): String = s"$projectsRootDirectory$projectId/$branch/"
 
   def parseBranchDirectory(project: Project, branch: Branch, directoryPath: String): Seq[Feature] = {
     new File(directoryPath).listFiles().flatMap {

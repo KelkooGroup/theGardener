@@ -6,7 +6,7 @@ import play.api.mvc._
 
 class Application @Inject()(assets: Assets) extends InjectedController {
 
-  def index = Action {
+  def index: Action[AnyContent] = Action {
     Redirect("/app/")
   }
 

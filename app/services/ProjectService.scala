@@ -13,14 +13,15 @@ import repository._
 import scala.concurrent._
 import scala.concurrent.duration._
 
-class ProjectService @Inject()(projectRepository: ProjectRepository, gitService: GitService, config: Config, actorSystem: ActorSystem, featureService: FeatureService, featureRepository: FeatureRepository, branchRepository: BranchRepository, criteriaService: CriteriaService)(implicit ec: ExecutionContext) {
+class ProjectService @Inject()(projectRepository: ProjectRepository, gitService: GitService, featureService: FeatureService, featureRepository: FeatureRepository, branchRepository: BranchRepository, criteriaService: CriteriaService,
+                               config: Config, actorSystem: ActorSystem)(implicit ec: ExecutionContext) {
   val projectsRootDirectory = config.getString("projects.root.directory")
   val synchronizeInterval = config.getInt("projects.synchronize.interval")
   val synchronizeInitialDelay = config.getInt("projects.synchronize.initial.delay")
 
   actorSystem.scheduler.schedule(initialDelay = synchronizeInitialDelay.seconds, interval = synchronizeInterval.seconds)(synchronizeAll())
 
-  def getLocalRepository(projectId: String, branch: String) = s"$projectsRootDirectory$projectId/$branch/"
+  def getLocalRepository(projectId: String, branch: String): String = s"$projectsRootDirectory$projectId/$branch/"
 
   def checkoutRemoteBranches(project: Project): Future[Unit] = {
     for {
@@ -74,7 +75,7 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
     )
   }
 
-  def deleteBranches(project: Project, branches: Set[String]) = {
+  def deleteBranches(project: Project, branches: Set[String]): Future[Unit] = {
     if (branches.nonEmpty) Logger.debug(s"delete ${project.id} branches ${branches.mkString(",")}")
 
     Future {
