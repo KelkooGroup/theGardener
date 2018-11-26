@@ -21,6 +21,7 @@ class CacheModule extends AbstractModule {
 }
 
 @Singleton
+@SuppressWarnings(Array("AsInstanceOf"))
 class InMemoryCache @Inject()(implicit ec: ExecutionContext) extends AsyncCacheApi {
 
   val cache: concurrent.Map[String, Any] = new ConcurrentHashMap[String, Any]().asScala
