@@ -1,6 +1,6 @@
 Feature: Provide criterias
 
-  @level_2_technical_details @nominal_case @valid
+  @level_2_technical_details @nominal_case @ongoing
   Scenario: provide criterias - json output
     Given the database is empty
     And the cache is empty
@@ -31,6 +31,11 @@ Feature: Provide criterias
       | 2  | bugfix/351 | false    | suggestionsWS      |
       | 3  | master     | true     | suggestionsReports |
       | 4  | master     | true     | usersWS            |
+    And we have those features in the database
+      | id | path                                      | name | description | branchId | keyword  |
+      | 1  | provide/provide_book_suggestions.feature  |      |             | 1        | Scenario |
+      | 2  | provide/provide_other_suggestions.feature |      |             | 1        | Scenario |
+      | 3  | admin/admin_book_suggestions.feature      |      |             | 1        | Scenario |
     When I perform a "GET" on following URL "/api/criterias"
     Then I get the following json response body
 """
@@ -71,7 +76,11 @@ Feature: Provide criterias
             "label":"Suggestions Reports",
             "stableBranch":"master",
             "branches":[
-               "master"
+               {
+                 "name":"master",
+                 "features":[
+                 ]
+               }
             ]
          },
          {
@@ -79,8 +88,19 @@ Feature: Provide criterias
             "label":"Suggestions WebServices",
             "stableBranch":"master",
             "branches":[
-               "master",
-               "bugfix/351"
+               {
+                 "name":"master",
+                 "features":[
+                    "provide/provide_book_suggestions.feature",
+                    "provide/provide_other_suggestions.feature",
+                    "admin/admin_book_suggestions.feature"
+                 ]
+               },
+               {
+                 "name":"bugfix/351",
+                 "features":[
+                 ]
+               }
             ]
          }
       ]
@@ -97,7 +117,11 @@ Feature: Provide criterias
             "label":"Users WebServices",
             "stableBranch":"master",
             "branches":[
-               "master"
+               {
+                 "name":"master",
+                 "features":[
+                 ]
+               }
             ]
          }
       ]
@@ -122,8 +146,19 @@ Feature: Provide criterias
             "label":"Suggestions WebServices",
             "stableBranch":"master",
             "branches":[
-               "master",
-               "bugfix/351"
+               {
+                 "name":"master",
+                 "features":[
+                    "provide/provide_book_suggestions.feature",
+                    "provide/provide_other_suggestions.feature",
+                    "admin/admin_book_suggestions.feature"
+                 ]
+               },
+               {
+                 "name":"bugfix/351",
+                 "features":[
+                 ]
+               }
             ]
          }
       ]

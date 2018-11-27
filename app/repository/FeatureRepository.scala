@@ -82,9 +82,10 @@ class FeatureRepository @Inject()(db: Database, tagRepository: TagRepository, sc
   }
 
   def findAllByBranchId(branchId: Long): Seq[Feature] = {
-    db.withConnection { implicit connection =>
+    val s =  db.withConnection { implicit connection =>
       SQL"SELECT * FROM feature WHERE branchId = $branchId".as(parser.*)
     }
+    s
   }
 
   def saveAll(features: Seq[Feature]): Seq[Option[Feature]] = {
