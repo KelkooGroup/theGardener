@@ -9,7 +9,7 @@ import services.CriteriaService._
 
 import scala.util.Try
 
-class CriteriaService @Inject()(hierarchyRepository: HierarchyRepository, projectRepository: ProjectRepository, branchRepository: BranchRepository, cache: SyncCacheApi) {
+class CriteriaService @Inject()(hierarchyRepository: HierarchyRepository, projectRepository: ProjectRepository, branchRepository: BranchRepository, featureRepository: FeatureRepository, cache: SyncCacheApi) {
 
   def refreshCache(): Unit = Try(getCriteriasTree(true))
 
@@ -17,11 +17,17 @@ class CriteriaService @Inject()(hierarchyRepository: HierarchyRepository, projec
     if (refresh) cache.remove(criteriasListCacheKey)
 
     cache.getOrElseUpdate(criteriasListCacheKey) {
+      // TODO : Use a new repository to do the join between projects, branches, features
       hierarchyRepository.findAll().map { hierarchyNode =>
         val projects = projectRepository.findAllByHierarchyId(hierarchyNode.id).map { project =>
-          project.copy(branches = Some(branchRepository.findAllByProjectId(project.id)))
+          val projectWithBranches = project.copy(branches = Some(
+            branchRepository.findAllByProjectId(project.id).map { branch =>
+              val branchWithFeatures = branch.copy(features = featureRepository.findAllByBranchId(branch.id).map(_.path))
+              branchWithFeatures
+            }
+          ))
+          projectWithBranches
         }
-
         Criteria(hierarchyNode.id, Seq(hierarchyNode), projects.sortBy(_.id))
       }.sortBy(_.id)
     }
