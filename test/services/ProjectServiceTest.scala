@@ -51,7 +51,7 @@ class ProjectServiceTest extends WordSpec with MustMatchers with BeforeAndAfter 
       when(gitService.getRemoteBranches(project.repositoryUrl)).thenReturn(Future.successful(Seq(project.stableBranch, featureBranch, bugfixBranch)))
 
       when(gitService.clone(anyString(), anyString())).thenReturn(Future.failed(new Exception()))
-      when(gitService.checkout(anyString(), anyString(), anyBoolean())).thenReturn(Future.failed(new Exception()))
+      when(gitService.checkout(anyString(), anyString())).thenReturn(Future.failed(new Exception()))
 
       when(gitService.clone(project.repositoryUrl, masterDirectory)).thenReturn(Future.successful(()))
       when(gitService.checkout(project.stableBranch, masterDirectory)).thenReturn(Future.successful(()))
@@ -93,7 +93,7 @@ class ProjectServiceTest extends WordSpec with MustMatchers with BeforeAndAfter 
       when(gitService.pull(masterDirectory)).thenReturn(Future.successful((Seq(), Seq(), Seq())))
 
       when(gitService.clone(anyString(), anyString())).thenReturn(Future.failed(new Exception()))
-      when(gitService.checkout(anyString(), anyString(), anyBoolean())).thenReturn(Future.failed(new Exception()))
+      when(gitService.checkout(anyString(), anyString())).thenReturn(Future.failed(new Exception()))
 
       when(gitService.clone(project.repositoryUrl, featureBranchDirectory)).thenReturn(Future.successful(()))
       when(gitService.checkout(featureBranch, featureBranchDirectory)).thenReturn(Future.successful(()))
