@@ -9,8 +9,7 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala)
 // specify the source and target jdk for Java compiler
 javacOptions ++= Seq("-source", jdkVersion, "-target", jdkVersion)
 
-// specify the target jdk for Scala compiler
-scalacOptions += s"-feature"
+scalacOptions ++= Seq("-feature", "-deprecation", "-Xfatal-warnings")
 
 // Add option to enable anorm stack traces
 javaOptions += "-Dscala.control.noTraceSuppression=true"
