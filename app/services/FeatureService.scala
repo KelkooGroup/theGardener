@@ -23,12 +23,12 @@ class FeatureService @Inject()(config: Config, featureRepository: FeatureReposit
   def parseBranchDirectory(project: Project, branch: Branch, directoryPath: String): Seq[Feature] = {
     new File(directoryPath).listFiles().flatMap {
       case d if d.isDirectory => parseBranchDirectory(project, branch, d.getPath)
-      case f if f.isFile && f.getName.endsWith(".feature") => parseFeatureFile(project.id, branch, f.getPath)
+      case f if f.isFile && f.getName.endsWith(".feature") => parseFeatureFile(project.id, branch, f.getPath).toOption
       case _ => None
     }
   }
 
-  def parseFeatureFile(projectId: String, branch: Branch, filePath: String): Option[Feature] = {
+  def parseFeatureFile(projectId: String, branch: Branch, filePath: String): Try[Feature] = {
     Try {
       val featureFile = new File(filePath)
 
@@ -68,7 +68,7 @@ class FeatureService @Inject()(config: Config, featureRepository: FeatureReposit
 
       Feature(featureId, branch.id, relativeFilePath, backgroundOption, tags, Option(feature.getLanguage), feature.getKeyword, feature.getName, trim(feature.getDescription), scenarios, comments)
 
-    }.logError(s"Error while parsing file $filePath").toOption
+    }.logError(s"Error while parsing file $filePath")
   }
 
   private def mapGherkinSteps(gherkinSteps: JList[ast.Step]): Seq[Step] = {

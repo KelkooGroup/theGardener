@@ -7,8 +7,9 @@ import com.typesafe.config._
 import javax.inject._
 import models._
 import org.apache.commons.io.FileUtils._
-import play._
+import play.api.Logger
 import repository._
+import utils._
 
 import scala.concurrent._
 import scala.concurrent.duration._
@@ -37,55 +38,63 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
   }
 
   private def checkoutBranches(project: Project, branches: Set[String]) = {
-    if (branches.nonEmpty) Logger.debug(s"git checkout ${project.id} branches ${branches.mkString(",")}")
+    if (branches.nonEmpty) {
+      Logger.debug(s"checkout ${project.id} branches ${branches.mkString(", ")}")
 
-    Future.sequence(
-      branches.map { name =>
-        val localRepository = getLocalRepository(project.id, name)
+      FutureExt.sequentially(branches.toSeq) { branchName =>
+        val localRepository = getLocalRepository(project.id, branchName)
 
-        val branch = branchRepository.save(Branch(-1, name, name == project.stableBranch, project.id))
+        val branch = branchRepository.save(Branch(-1, branchName, branchName == project.stableBranch, project.id))
 
         for {
           _ <- gitService.clone(project.repositoryUrl, localRepository)
-          _ <- gitService.checkout(name, localRepository)
+          _ <- gitService.checkout(branchName, localRepository)
         } yield parseAndSaveFeatures(project, branch)
       }
-    )
+    } else Future.successful(())
   }
 
   def filterFeatureFile(filePaths: Seq[String]): Seq[String] = filePaths.filter(_.endsWith(".feature"))
 
-  private def updateBranches(projectId: String, branches: Set[String]) = {
-    if (branches.nonEmpty) Logger.debug(s"git pull $projectId branches ${branches.mkString(",")}")
+  private def updateBranches(project: Project, branches: Set[String]) = {
+    if (branches.nonEmpty) {
+      Logger.debug(s"update ${project.id} branches ${branches.mkString(", ")}")
 
-    Future.sequence(
-      branches.map { branchName =>
-        gitService.pull(getLocalRepository(projectId, branchName)).map { case (created, updated, deleted) =>
+      FutureExt.sequentially(branches.toSeq) { branchName =>
+        gitService.pull(getLocalRepository(project.id, branchName)).map { case (created, updated, deleted) =>
           (filterFeatureFile(created), filterFeatureFile(updated), filterFeatureFile(deleted))
         }.map { case (created, updated, deleted) =>
-          branchRepository.findByProjectIdAndName(projectId, branchName).foreach { branch =>
-            (updated ++ deleted).flatMap(path => featureRepository.findByBranchIdAndPath(branch.id, path)).foreach(featureRepository.delete)
+          branchRepository.findByProjectIdAndName(project.id, branchName).foreach { branch =>
+            if (featureRepository.findAllByBranchId(branch.id).nonEmpty) {
+              (updated ++ deleted).flatMap(path => featureRepository.findByBranchIdAndPath(branch.id, path)).foreach(featureRepository.delete)
 
-            (created ++ updated).flatMap(filePath => featureService.parseFeatureFile(projectId, branch, getLocalRepository(projectId, branchName) + filePath)).foreach(featureRepository.save)
+              (created ++ updated).flatMap(filePath => featureService.parseFeatureFile(project.id, branch, getLocalRepository(project.id, branchName) + filePath).toOption).foreach(featureRepository.save)
 
-            Logger.debug(s"${created.size} features created, ${updated.size} features updated and ${deleted.size} features deleted, for project $projectId on branch ${branch.name}")
+              Logger.debug(s"${created.size} features created, ${updated.size} features updated and ${deleted.size} features deleted, for project ${project.id} on branch ${branch.name}")
+            } else {
+              parseAndSaveFeatures(project, branch)
+            }
           }
         }
       }
-    )
+    } else Future.successful(())
   }
 
   def deleteBranches(projectId: String, branches: Set[String]): Future[Unit] = {
-    if (branches.nonEmpty) Logger.debug(s"delete $projectId branches ${branches.mkString(",")}")
+    if (branches.nonEmpty) {
+      Logger.debug(s"delete $projectId branches ${branches.mkString(", ")}")
 
-    Future {
-      for (branch <- branches) {
-        deleteDirectory(new File(getLocalRepository(projectId, branch)))
-        branchRepository.findByProjectIdAndName(projectId, branch).map(_.id).foreach(featureRepository.deleteAllByBranchId)
-      }
+      Future {
+        for (branch <- branches) {
+          deleteDirectory(new File(getLocalRepository(projectId, branch)))
+          branchRepository.findByProjectIdAndName(projectId, branch).map(_.id).foreach(featureRepository.deleteAllByBranchId)
+        }
 
-      branchRepository.deleteAll(branchRepository.findAllByProjectId(projectId).filter(b => branches.contains(b.name)))
-    }
+        branchRepository.deleteAll(branchRepository.findAllByProjectId(projectId).filter(b => branches.contains(b.name)))
+
+      }.logError(s"Error while deleting project $projectId branches ${branches.mkString(", ")}")
+
+    } else Future.successful(())
   }
 
   def synchronizeAll(): Future[Unit] = {
@@ -93,9 +102,7 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
 
     val projects = projectRepository.findAll()
 
-    Future.sequence(
-      projects.map(synchronize)
-    ).map(_ => criteriaService.refreshCache())
+    FutureExt.sequentially(projects)(synchronize).map(_ => criteriaService.refreshCache())
   }
 
   def synchronize(project: Project): Future[Unit] = {
@@ -103,19 +110,19 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
 
     val localBranches = branchRepository.findAllByProjectId(project.id).map(_.name).toSet
 
-    Logger.debug(s"Local branches of project ${project.id} : ${localBranches.mkString(",")}")
+    Logger.debug(s"Local branches of project ${project.id} : ${localBranches.mkString(", ")}")
 
     gitService.getRemoteBranches(project.repositoryUrl).map(_.toSet).flatMap { remoteBranches =>
-      Logger.debug(s"Remotes branches of project ${project.id} : ${remoteBranches.mkString(",")}")
+      Logger.debug(s"Remotes branches of project ${project.id} : ${remoteBranches.mkString(", ")}")
 
       val branchesToUpdate = localBranches.intersect(remoteBranches)
       val branchesToCheckout = remoteBranches -- localBranches
       val branchesToDelete = localBranches -- remoteBranches
 
-      Logger.info(s"Project ${project.id}, branches to update: ${branchesToUpdate.mkString(",")}, branches to checkout: ${branchesToCheckout.mkString(",")}, branches to delete: ${branchesToDelete.mkString(",")}")
+      Logger.info(s"Project ${project.id}, branches to update: ${branchesToUpdate.mkString(", ")}, branches to checkout: ${branchesToCheckout.mkString(", ")}, branches to delete: ${branchesToDelete.mkString(", ")}")
 
       for {
-        _ <- updateBranches(project.id, branchesToUpdate)
+        _ <- updateBranches(project, branchesToUpdate)
         _ <- checkoutBranches(project, branchesToCheckout)
       } yield deleteBranches(project.id, branchesToDelete)
     }
