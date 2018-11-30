@@ -1,0 +1,26 @@
+<ul class="flex-container flex-direction-row flex-align-items-start">
+  <li>
+    <ul class="flex-container flex-direction-column flex-align-items-start">
+      <li><div class="branch-text"  >Branch: </div></li>
+      <li>
+        <mat-select class="branches"  placeholder="Stable branch by default"  (selectionChange)="selectBranch($event)" >
+          <mat-option [class.stable-branch]="branch.name == project.stableBranch.name"
+                      *ngFor="let branch of project.branches" [value]="branch">{{branch.name}}
+          </mat-option>
+        </mat-select>
+      </li>
+      <li>
+        <mat-radio-group class="features" (change)="selectFeature($event)"  >
+          <mat-radio-button    [className]="'feature feature-level' +  feature.level" *ngFor="let feature of project.selectedBranch.features" [value]="feature">
+            {{feature.display}}
+          </mat-radio-button>
+        </mat-radio-group>
+      </li>
+    </ul>
+  </li>
+
+</ul>
+
+
+
+

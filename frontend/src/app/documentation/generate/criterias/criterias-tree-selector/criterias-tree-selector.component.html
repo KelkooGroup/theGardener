@@ -38,11 +38,7 @@
               </mat-checkbox>
             </li>
             <li>
-              <mat-select class="pull-right branch"  placeholder="Stable branch by default"  (selectionChange)="selectBranch($event)" >
-                <mat-option [class.stable-branch]="branch.name == project.stableBranch.name"
-                            *ngFor="let branch of project.branches" [value]="branch">{{branch.name}}
-                </mat-option>
-              </mat-select>
+              <app-criterias-branch-feature-selector [project]="project" ></app-criterias-branch-feature-selector>
             </li>
           </ul>
         </div>

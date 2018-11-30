@@ -11,30 +11,72 @@ export class TupleHierarchyNodeSelector {
   }
 }
 
+export class FeatureSelector {
+  constructor(
+    public level: number,
+    public value: string,
+    public display: string,
+  ) {
+
+  }
+
+}
+
 export class BranchSelector {
+
+  public featureFilter: FeatureSelector;
+  public features: Array<FeatureSelector>;
 
   constructor(
     public name: string,
+    public featureRowPath: Array<string>,
     public project: ProjectSelector
   ) {
+    this.features= new Array<FeatureSelector>();
+    this.featureFilter = new FeatureSelector( 0, '*', 'All' )
+    this.features.push( this.featureFilter )
+    var lastDirectory = "";
+    for (let k = 0; k < featureRowPath.length; k++) {
+      var currentPath = featureRowPath[k];
+      var split = currentPath.split('/') ;
+      if ( split.length == 1 ){
+        this.features.push( new FeatureSelector( split.length, currentPath, currentPath )  ) ;
+      }else{
+        if ( split.length == 2 ){
+          var currentDirectory = split[0] ;
+          if (currentDirectory != lastDirectory){
+            this.features.push( new FeatureSelector( split.length - 1, currentDirectory, currentDirectory  +  ' :' )  ) ;
+            lastDirectory = currentDirectory  ;
+          }
+          this.features.push( new FeatureSelector( split.length, currentPath, split[1] )  ) ;
+        }else{
+          this.features.push( new FeatureSelector( split.length, currentPath, currentPath )  ) ;
+        }
+      }
+    }
   }
 
   public selection() {
     this.project.selectedBranch = this;
+    this.project.selection(true) ;
   }
 
+  public selectFeature( feature: FeatureSelector ) {
+    this.featureFilter = feature;
+    this.project.selection(true) ;
+  }
 }
 
 export class ProjectSelector {
 
   public selected = false;
   public selectedBranch: BranchSelector;
+  public stableBranch: BranchSelector;
   public relatedHierarchyNode: HierarchyNodeSelector;
 
   constructor(
     public id: string,
     public label: string,
-    public stableBranch: BranchSelector,
     public branches: Array<BranchSelector>,
   ) {
   }
@@ -42,19 +84,23 @@ export class ProjectSelector {
   public static newFromApi(projectApi: ProjectApi): ProjectSelector {
 
     const branches = [];
-    const stableBranch = new BranchSelector(projectApi.stableBranch, null);
+    let mapBranchNameBranch = new Map();
     const instance = new ProjectSelector(
       projectApi.id,
       projectApi.label,
-      stableBranch,
       branches
     );
-    stableBranch.project = instance;
     if (projectApi.branches != null) {
       for (let k = 0; k < projectApi.branches.length; k++) {
-        branches.push(new BranchSelector(projectApi.branches[k], instance));
+        var currentBranch = new BranchSelector(projectApi.branches[k].name,projectApi.branches[k].features, instance);
+        branches.push(currentBranch);
+        mapBranchNameBranch.set(currentBranch.name,currentBranch);
       }
     }
+
+    instance.stableBranch = mapBranchNameBranch.get(projectApi.stableBranch);
+    instance.stableBranch.project = instance;
+    instance.selectedBranch = instance.stableBranch;
     return instance;
   }
 
