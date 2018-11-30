@@ -1,8 +1,8 @@
 package services
 
 import javax.inject.Inject
+import models._
 import models.HierarchyNode._
-import models.{Criteria, HierarchyNode}
 import play.api.cache._
 import repository._
 import services.CriteriaService._
@@ -17,12 +17,35 @@ class CriteriaService @Inject()(hierarchyRepository: HierarchyRepository, projec
     if (refresh) cache.remove(criteriasListCacheKey)
 
     cache.getOrElseUpdate(criteriasListCacheKey) {
-      // TODO : Use a new repository to do the join between projects, branches, features
+
+      val mapProjectIdProject = projectRepository.findAll().foldLeft(Map[String, Project]()) { (mapProjectIdProject, project) =>
+        mapProjectIdProject + (project.id -> project)
+      }
+
+      val branches = branchRepository.findAll()
+      val mapProjectIdBranches = branches.groupBy(r => r.projectId).foldLeft(Map[String, Seq[Branch]]()) { (mapProjectIdBranches, branch) =>
+        val branches = branch._2.foldLeft(Seq[Branch]())((branches, b) => branches :+ b)
+        mapProjectIdBranches + (branch._1 -> branches)
+      }
+
+      val mapBranchIdProjectFeaturePath = branches.foldLeft(Map[Long, String]()) { (mapBranchIdProjectFeaturePath, branch) =>
+        mapBranchIdProjectFeaturePath + (branch.id -> mapProjectIdProject.get(branch.projectId).get.featuresRootPath )
+      }
+
+      val mapBranchIdFeaturePaths = featureRepository.findAllFeaturePaths().groupBy(r => r.branchId).foldLeft(Map[Long, Set[String]]()) { (mapBranchIdFeaturePaths, branchAndPath) =>
+        val paths = branchAndPath._2.foldLeft(Set[String]()){(paths, p) =>
+          val projectFeaturePath = mapBranchIdProjectFeaturePath.get(branchAndPath._1).get
+          val relativePath = p.path.substring(p.path.indexOf(projectFeaturePath)+projectFeaturePath.size+1)
+          paths + relativePath
+        }
+        mapBranchIdFeaturePaths + (branchAndPath._1 -> paths)
+      }
+
       hierarchyRepository.findAll().map { hierarchyNode =>
         val projects = projectRepository.findAllByHierarchyId(hierarchyNode.id).map { project =>
           val projectWithBranches = project.copy(branches = Some(
-            branchRepository.findAllByProjectId(project.id).map { branch =>
-              val branchWithFeatures = branch.copy(features = featureRepository.findAllByBranchId(branch.id).map(_.path))
+            mapProjectIdBranches.getOrElse(project.id,Seq()).map { branch =>
+              val branchWithFeatures = branch.copy(features = mapBranchIdFeaturePaths.getOrElse( branch.id,  Set()).toList.sorted   )
               branchWithFeatures
             }
           ))

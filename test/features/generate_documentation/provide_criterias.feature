@@ -32,10 +32,10 @@ Feature: Provide criterias
       | 3  | master     | true     | suggestionsReports |
       | 4  | master     | true     | usersWS            |
     And we have those features in the database
-      | id | path                                      | name | description | branchId | keyword  |
-      | 1  | provide/provide_book_suggestions.feature  |      |             | 1        | Scenario |
-      | 2  | provide/provide_other_suggestions.feature |      |             | 1        | Scenario |
-      | 3  | admin/admin_book_suggestions.feature      |      |             | 1        | Scenario |
+      | id | path                                                    | name | description | branchId | keyword  |
+      | 1  | test/features/provide/provide_book_suggestions.feature  |      |             | 1        | Scenario |
+      | 2  | test/features/provide/provide_other_suggestions.feature |      |             | 1        | Scenario |
+      | 3  | test/features/admin/admin_book_suggestions.feature      |      |             | 1        | Scenario |
     When I perform a "GET" on following URL "/api/criterias"
     Then I get the following json response body
 """
@@ -91,9 +91,9 @@ Feature: Provide criterias
                {
                  "name":"master",
                  "features":[
+                    "admin/admin_book_suggestions.feature",
                     "provide/provide_book_suggestions.feature",
-                    "provide/provide_other_suggestions.feature",
-                    "admin/admin_book_suggestions.feature"
+                    "provide/provide_other_suggestions.feature"
                  ]
                },
                {
@@ -149,9 +149,9 @@ Feature: Provide criterias
                {
                  "name":"master",
                  "features":[
+                    "admin/admin_book_suggestions.feature",
                     "provide/provide_book_suggestions.feature",
-                    "provide/provide_other_suggestions.feature",
-                    "admin/admin_book_suggestions.feature"
+                    "provide/provide_other_suggestions.feature"
                  ]
                },
                {
