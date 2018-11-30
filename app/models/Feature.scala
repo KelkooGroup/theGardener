@@ -35,3 +35,5 @@ object Feature {
   val workflowSteps = Set("draft", "ready", "ongoing", "valid")
 
 }
+
+case class FeaturePath (branchId: Long, path: String)

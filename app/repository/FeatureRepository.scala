@@ -25,12 +25,24 @@ class FeatureRepository @Inject()(db: Database, tagRepository: TagRepository, sc
     tagRepository.findAllByFeatureId(id), language, keyword, name, description,
     scenarioRepository.findAllByFeatureId(id), comments.split("\n").filterNot(_.isEmpty))
 
+  val parserFeaturePath = for {
+    branchId <- long("branchId")
+    path <- str("path")
+  } yield FeaturePath(branchId, path)
+
   def findAll(): Seq[Feature] = {
     db.withConnection { implicit connection =>
       SQL"SELECT * FROM feature".as(parser.*)
         .map(feature => feature.copy(tags = SQL"SELECT name FROM feature_tag WHERE featureId = ${feature.id}".as(scalar[String].*)))
     }
   }
+
+  def findAllFeaturePaths(): Seq[FeaturePath] = {
+    db.withConnection { implicit connection =>
+      SQL"SELECT branchId, path FROM feature".as(parserFeaturePath.*)
+    }
+  }
+
 
   def existsById(id: Long): Boolean = {
     db.withConnection { implicit connection =>

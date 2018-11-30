@@ -45,12 +45,12 @@ class CriteriasController @Inject()(criteriaService: CriteriaService) extends In
   @ApiOperation(value = "Get all criterias", response = classOf[CriteriaDTO], responseContainer = "list")
   def getCriterias(): Action[AnyContent] = Action {
 
-    Ok(Json.toJson(criteriaService.getCriterias(true).map(CriteriaDTO(_).copy(children = None))))
+    Ok(Json.toJson(criteriaService.getCriterias().map(CriteriaDTO(_).copy(children = None))))
   }
 
   @ApiOperation(value = "Get all criterias in a tree", response = classOf[CriteriaDTO])
   def getCriteriasTree(): Action[AnyContent] = Action {
 
-    Ok(Json.toJson(CriteriaDTO(criteriaService.getCriteriasTree(true))))
+    Ok(Json.toJson(CriteriaDTO(criteriaService.getCriteriasTree())))
   }
 }
