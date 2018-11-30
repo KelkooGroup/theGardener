@@ -42,8 +42,5 @@ export class CriteriasTreeSelectorComponent implements OnInit {
     source.selection(event.checked);
   }
 
-  selectBranch(event) {
-    const source = event.source.value as BranchSelector;
-    source.selection();
-  }
+
 }

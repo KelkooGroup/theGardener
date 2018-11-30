@@ -1,8 +1,13 @@
+export class BranchApi {
+  public name: string;
+  public features: Array<string>;
+}
+
 export class ProjectApi {
   public id: string;
   public label: string;
   public stableBranch: string;
-  public branches: Array<string>;
+  public branches: Array<BranchApi>;
 }
 
 export class HierarchyNodeApi {

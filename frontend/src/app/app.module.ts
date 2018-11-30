@@ -32,6 +32,7 @@ import {
   MatTabsModule,
   MatTreeModule,
 } from '@angular/material';
+import {MatRadioModule} from '@angular/material/radio';
 import {MatCardModule} from '@angular/material/card';
 import {PanelComponent} from './_components/panel/panel.component';
 import {CriteriasComponent} from './documentation/generate/criterias/criterias.component';
@@ -42,6 +43,7 @@ import {CriteriasTreeSelectorComponent} from './documentation/generate/criterias
 import {DocumentationThemeBookComponent} from './documentation/generate/output/themes/documentation-theme-book/documentation-theme-book.component';
 import {DocumentationThemeBookTableComponent} from './documentation/generate/output/themes/documentation-theme-book/documentation-theme-book-table/documentation-theme-book-table.component';
 import {FooterComponent} from './_components/page/footer/footer.component';
+import { CriteriasBranchFeatureSelectorComponent } from './documentation/generate/criterias/criterias-branch-feature-selector/criterias-branch-feature-selector.component';
 
 const nonProductionProviders = [{
   provide: HTTP_INTERCEPTORS,
@@ -69,6 +71,7 @@ const nonProductionProviders = [{
     ProfilePageComponent,
     SearchPageComponent,
     FooterComponent,
+    CriteriasBranchFeatureSelectorComponent,
   ],
   imports: [
     HttpClientModule,
@@ -86,6 +89,7 @@ const nonProductionProviders = [{
     MatListModule,
     MatTableModule,
     MatSelectModule,
+    MatRadioModule,
     MatTabsModule,
     MatTreeModule,
     MatIconModule,
