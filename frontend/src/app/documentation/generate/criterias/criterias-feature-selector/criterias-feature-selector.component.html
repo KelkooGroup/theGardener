@@ -1,0 +1,16 @@
+<div [className]="'feature feature-level' +  feature.level" (click)="selectFeature()">
+
+
+  <ul class="flex-container flex-direction-row flex-align-items-center ">
+    <li *ngIf="selected">
+      <i class="material-icons md-18">check</i>
+    </li>
+    <li>
+      <div [className]="selected ? 'selected' : 'notSelected'  ">
+        {{feature.display}}
+      </div>
+    </li>
+  </ul>
+
+
+</div>
