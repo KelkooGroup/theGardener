@@ -33,8 +33,8 @@ export class BranchSelector {
     public project: ProjectSelector
   ) {
     this.features= new Array<FeatureSelector>();
-    this.featureFilter = new FeatureSelector( 0, '*', 'All' )
-    this.features.push( this.featureFilter )
+    this.featureFilter = new FeatureSelector( 0, '~', 'None features'  )
+    this.features.push( new FeatureSelector( 0, '*', 'All features' ))
     var lastDirectory = "";
     for (let k = 0; k < featureRowPath.length; k++) {
       var currentPath = featureRowPath[k];
@@ -65,6 +65,14 @@ export class BranchSelector {
     this.featureFilter = feature;
     this.project.selection(true) ;
   }
+
+  public selectAllFeatures( ) {
+    this.featureFilter = this.features[0];
+  }
+  public selectNoneFeatures( ) {
+    this.featureFilter = new FeatureSelector( 0, '~', 'None features' );
+  }
+
 }
 
 export class ProjectSelector {
@@ -106,8 +114,11 @@ export class ProjectSelector {
 
   public selection(selected: boolean) {
     this.selected = selected;
+    this.selectedBranch.selectAllFeatures();
     this.relatedHierarchyNode.root.updateIndeterminateStatus();
   }
+
+
 }
 
 export class HierarchyNodeSelector {

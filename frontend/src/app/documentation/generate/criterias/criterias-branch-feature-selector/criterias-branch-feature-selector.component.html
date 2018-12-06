@@ -10,15 +10,12 @@
         </mat-select>
       </li>
       <li>
-        <mat-radio-group class="features" (change)="selectFeature($event)"  >
-          <mat-radio-button    [className]="'feature feature-level' +  feature.level" *ngFor="let feature of project.selectedBranch.features" [value]="feature">
-            {{feature.display}}
-          </mat-radio-button>
-        </mat-radio-group>
+        <div class="features">
+            <app-criterias-feature-selector  *ngFor="let feature of project.selectedBranch.features" [feature]="feature" (featureSelected)="selectFeature($event)" ></app-criterias-feature-selector>
+        </div>
       </li>
     </ul>
   </li>
-
 </ul>
 
 

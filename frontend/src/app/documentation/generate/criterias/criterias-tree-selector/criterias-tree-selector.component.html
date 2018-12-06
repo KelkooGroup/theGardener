@@ -33,12 +33,12 @@
               <mat-checkbox class="project"
                             [checked]="project.selected"
                             [value]="project"
-                             (change)="selectProject($event)"
+                             (change)="selectProject($event) ; branchFeaturesSelector.updateFeaturesSelection($event.checked)"
               >{{project.label}}
               </mat-checkbox>
             </li>
             <li>
-              <app-criterias-branch-feature-selector [project]="project" ></app-criterias-branch-feature-selector>
+              <app-criterias-branch-feature-selector [project]="project" #branchFeaturesSelector ></app-criterias-branch-feature-selector>
             </li>
           </ul>
         </div>
