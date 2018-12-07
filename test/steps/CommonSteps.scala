@@ -12,7 +12,6 @@ import cucumber.api.DataTable
 import cucumber.api.scala._
 import julienrf.json.derived
 import models._
-import models.Feature._
 import net.ruippeixotog.scalascraper.browser._
 import org.apache.commons.io._
 import org.eclipse.jgit.api._
@@ -21,7 +20,7 @@ import org.scalatest.mockito._
 import org.scalatestplus.play._
 import org.scalatestplus.play.guice._
 import play.api._
-import play.api.cache.{AsyncCacheApi, SyncCacheApi}
+import play.api.cache.AsyncCacheApi
 import play.api.db._
 import play.api.inject._
 import play.api.inject.guice._
@@ -30,12 +29,12 @@ import play.api.mvc._
 import play.api.test.Helpers._
 import play.api.test._
 import repository._
-import services._
 import services.CriteriaService._
+import services._
 import utils.InMemoryCache
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.collection.JavaConverters._
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent._
 import scala.io.Source
 import scala.reflect._
@@ -82,9 +81,9 @@ object CommonSteps extends PlaySpec with GuiceOneServerPerSuite with BeforeAndAf
 
   val browser = HtmlUnitBrowser.typed()
 
-  override def beforeAll() = server.start()
+  override def beforeAll(): Unit = server.start()
 
-  override def afterAll() = server.stop()
+  override def afterAll(): Unit = server.stop()
 
   def cleanHtmlWhitespaces(content: String): String = content.split('\n').map(_.trim.filter(_ >= ' ')).mkString.replaceAll(" +", " ")
 
@@ -197,7 +196,7 @@ Scenario: providing several book suggestions
     branchRepository.saveAll(branches.asScala)
   }
 
-  Given("""^the cache is empty$"""){ () =>
+  Given("""^the cache is empty$""") { () =>
     cache.remove(criteriasListCacheKey)
     cache.remove(criteriasTreeCacheKey)
   }
