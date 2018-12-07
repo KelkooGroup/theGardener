@@ -12,6 +12,7 @@ import cucumber.api.DataTable
 import cucumber.api.scala._
 import julienrf.json.derived
 import models._
+import models.Feature._
 import net.ruippeixotog.scalascraper.browser._
 import org.apache.commons.io._
 import org.eclipse.jgit.api._
