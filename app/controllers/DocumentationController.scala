@@ -68,16 +68,22 @@ class DocumentationController @Inject()(documentationRepository: DocumentationRe
       val criteriaMap = criteriaService.getCriterias().map(c => c.id -> CriteriaService.findCriteriasSubtree(c.id)(criteriasTree)).toMap
 
       val projectDocumentations = request.queryString.getOrElse("project", Seq()).flatMap { projectParam =>
-        val hierarchy = projectParam.split(">")(0).split("_").toSeq.filterNot(_.isEmpty).flatMap(hierarchyRepository.findBySlugName)
-        val projectId = projectParam.split(">")(1)
+        val params = projectParam.split(">")
+        val hierarchy = params(0).split("_").toSeq.filterNot(_.isEmpty).flatMap(hierarchyRepository.findBySlugName)
+        val projectId = params(1)
         val project = projectRepository.findById(projectId)
         val projectName = project.map(_.name).getOrElse("")
+        val branchName = params.lift(2) match {
+          case Some(branchParam) if (! branchParam.isEmpty)  => branchParam
+          case _ => project.map(_.stableBranch).getOrElse("master")
+        }
 
-        val branchName = projectParam.split(">").lift(2).getOrElse(project.map(_.stableBranch).getOrElse("master"))
+        val mayFeatureFilter = params.lift(3)
+        val mayTagsFilter = params.lift(4).map(tagsAsString => tagsAsString.split(",").toSeq  )
 
         hierarchy.lastOption.flatMap { hierarchyNode =>
           criteriaMap.get(hierarchyNode.id).flatten.map { criteria =>
-              buildDocumentation(criteria.hierarchy, Seq(documentationRepository.buildProjectDocumentation(ProjectCriteria(projectId, projectName, branchName))))
+              buildDocumentation(criteria.hierarchy, Seq(documentationRepository.buildProjectDocumentation(ProjectCriteria(projectId, projectName, branchName,mayFeatureFilter,mayTagsFilter))))
           }
         }
       }

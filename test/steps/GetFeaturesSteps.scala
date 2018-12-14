@@ -33,7 +33,7 @@ class GetFeaturesSteps extends ScalaDsl with EN with MockitoSugar {
 
 
   Given("""^a project in theGardener hosted on a remote server$""") { () =>
-    val git = initRemoteRepository("master", "target/data/GetFeatures/library/suggestionsWS/")
+    val git = initRemoteRepositoryIfNeeded("master", "target/data/GetFeatures/library/suggestionsWS/")
     addFile(git, "target/data/GetFeatures/library/suggestionsWS/", "test/features/suggestions/provide_book_suggestions.feature", featureContent)
 
     val project = Project("suggestionsWS", "Suggestions WebServices", new URL(new URL("file:"), new File("target/data/GetFeatures/library/suggestionsWS/").getAbsolutePath).toURI.toString, "master", "test/features")

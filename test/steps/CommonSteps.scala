@@ -1,6 +1,7 @@
 package steps
 
 
+import controllers.{BranchDocumentationDTO, _}
 import java.io._
 import java.net._
 import java.nio.file._
@@ -12,6 +13,7 @@ import cucumber.api.DataTable
 import cucumber.api.scala._
 import julienrf.json.derived
 import models._
+import controllers.Documentation
 import models.Feature._
 import net.ruippeixotog.scalascraper.browser._
 import org.apache.commons.io._
@@ -20,8 +22,8 @@ import org.scalatest._
 import org.scalatest.mockito._
 import org.scalatestplus.play._
 import org.scalatestplus.play.guice._
-import play.api._
-import play.api.cache.AsyncCacheApi
+import play.api.{controllers, _}
+import play.api.cache.{AsyncCacheApi, SyncCacheApi}
 import play.api.db._
 import play.api.inject._
 import play.api.inject.guice._
@@ -64,7 +66,7 @@ object CommonSteps extends PlaySpec with GuiceOneServerPerSuite with BeforeAndAf
 
   val applicationBuilder = new GuiceApplicationBuilder().overrides(bind[AsyncCacheApi].toInstance(cache)).in(Mode.Test)
 
-  override def fakeApplication(): Application = applicationBuilder.build()
+  override def fakeApplication(): play.api.Application = applicationBuilder.build()
 
   val db = Injector.inject[Database]
   val scenarioRepository = Injector.inject[ScenarioRepository]
@@ -88,14 +90,15 @@ object CommonSteps extends PlaySpec with GuiceOneServerPerSuite with BeforeAndAf
 
   def cleanHtmlWhitespaces(content: String): String = content.split('\n').map(_.trim.filter(_ >= ' ')).mkString.replaceAll(" +", " ")
 
-  def initRemoteRepository(branchName: String, projectRepositoryPath: String): Git = {
-    FileUtils.deleteDirectory(new File(projectRepositoryPath))
-
-    val git = Git.init().setDirectory(new File(projectRepositoryPath)).call()
-
-    if (branchName != "master") git.checkout().setCreateBranch(true).setName(branchName).call()
-
-    git
+  def initRemoteRepositoryIfNeeded(branchName: String, projectRepositoryPath: String): Git = {
+    val projectRepositoryDir = new File(projectRepositoryPath)
+    if (!projectRepositoryDir.exists()) {
+      val git = Git.init().setDirectory(new File(projectRepositoryPath)).call()
+      if (branchName != "master") git.checkout().setCreateBranch(true).setName(branchName).call()
+      git
+    } else {
+      Git.open(projectRepositoryDir)
+    }
   }
 
   def addFile(git: Git, projectRepositoryPath: String, file: String, content: String): Any = {
@@ -244,12 +247,70 @@ Scenario: providing several book suggestions
   }
 
   Then("""^I get the following scenarios$""") { dataTable: DataTable =>
-    dataTable.asScala.map { columns =>
-      contentType(response) mustBe Some(JSON)
-      contentAsString(response) must include(columns("hierarchy"))
-      contentAsString(response) must include(columns("project"))
-      contentAsString(response) must include(columns("feature"))
-      contentAsString(response) must include(columns("scenario"))
+
+    implicit val branchFormat = Json.format[BranchDocumentationDTO]
+    implicit val projectFormat = Json.format[ProjectDocumentationDTO]
+    implicit val documentationFormat = Json.format[Documentation]
+
+    val documentation = Json.parse(contentAsString(response)).as[Documentation]
+    val expectedScenarios = dataTable.asMaps(classOf[String], classOf[String]).asScala.toSeq
+
+    expectedScenarios.length mustBe nbRealScenario(documentation)
+
+    expectedScenarios.map { columns =>
+
+      val nodeName = columns.get("hierarchy")
+      val projectId = columns.get("project")
+      val featurePath = columns.get("feature")
+      val scenarioName = columns.get("scenario")
+
+      val node = getHierarchy(nodeName, documentation)
+      node.isDefined mustBe true
+
+
+      val project = node.get.projects.filter(_.id == projectId)
+      project.size mustBe 1
+      project(0).branches.length mustBe 1
+
+      val branch = project(0).branches.head
+
+      val features = branch.features.filter(_.path == featurePath)
+      features.size mustBe 1
+
+      val scenario = features.head.scenarios.filter(_.name == scenarioName)
+      scenario.size mustBe 1
     }
   }
+
+  def nbRealScenario(documentation: Documentation): Int = {
+    documentation.projects.foldLeft(0) { (acc, current) =>
+      if (current.branches.isEmpty) {
+        acc
+      } else {
+        acc + nbRealScenario(current.branches.head)
+      }
+    } + documentation.children.foldLeft(0) { (acc, current) =>
+      acc + nbRealScenario(current)
+    }
+  }
+
+  def nbRealScenario(branch: BranchDocumentationDTO): Int = {
+    branch.features.foldLeft(0) { (acc, current) =>
+      acc + current.scenarios.length
+    }
+  }
+
+  def getHierarchy(hierarchy: String, source: Documentation): Option[Documentation] = {
+    if (source.id == hierarchy) {
+      return Some(source)
+    }
+    source.children.foreach { d =>
+      val current = getHierarchy(hierarchy, d)
+      if (current.isDefined) {
+        return current
+      }
+    }
+    None
+  }
+
 }
