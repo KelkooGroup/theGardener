@@ -8,8 +8,9 @@ import models.Feature.{backgroundFormat, examplesFormat, stepFormat}
 import models._
 import play.api.db.Database
 import play.api.libs.json.Json
+import scala.language.postfixOps
 
-case class ProjectCriteria(projectId: String, projectName: String, branchName: String)
+case class ProjectCriteria(projectId: String, projectName: String, branchName: String, mayFeatureFilter: Option[String] = None, mayTagsFilter: Option[Seq[String]] = None)
 
 case class DocumentationRowJoin(branchId: Long, branchName: String, branchIsStable: Boolean, featureId: Long, featurePath: String, featureBackgroundAsJson: Option[String], featureLanguage: Option[String],
                                 featureKeyword: String, featureName: String, featureDescription: String, featureComments: String,
@@ -89,7 +90,10 @@ class DocumentationRepository @Inject()(db: Database) {
     }
 
     val rows: Seq[DocumentationRowJoin] = db.withConnection { implicit connection =>
-      SQL"""  SELECT b.id AS branch_id,
+
+      val queryBuilder = new StringBuilder(
+        s"""
+        SELECT b.id AS branch_id,
                    b.name AS branch_name,
                    b.isStable AS branch_isStable,
                    f.id AS   feature_id,
@@ -112,10 +116,15 @@ class DocumentationRepository @Inject()(db: Database) {
             FROM branch   b
               JOIN feature  f      ON f.branchId  = b.id
               JOIN scenario s      ON s.featureId = f.id
-            WHERE b.projectId = ${projectCriteria.projectId}  AND b.name = ${projectCriteria.branchName}
-            ORDER BY f.id, s.id;
+            WHERE b.projectId = '${projectCriteria.projectId}'  AND b.name = '${projectCriteria.branchName}'
+        """)
 
-         """.as(parserDocumentationRowJoin.*)
+      if (projectCriteria.mayFeatureFilter.isDefined) {
+        queryBuilder.append(s" AND f.path like '%${projectCriteria.mayFeatureFilter.get}%'")
+      }
+      queryBuilder.append(" ORDER BY f.id, s.id;")
+      val query = queryBuilder.toString()
+      SQL(query).as(parserDocumentationRowJoin *)
     }
 
     val branchDocumentation = if (rows.nonEmpty) {

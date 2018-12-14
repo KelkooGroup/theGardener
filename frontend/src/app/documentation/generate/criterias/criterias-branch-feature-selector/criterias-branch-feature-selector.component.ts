@@ -47,9 +47,10 @@ export class CriteriasBranchFeatureSelectorComponent implements OnInit, AfterVie
     }else{
       this.project.selectedBranch.selectNoneFeatures();
     }
+    this.featureComponents.forEach( f=> f.filterBy(this.project.selectedBranch.featureFilter)  );
   }
 
   ngAfterViewChecked() {
-    this.featureComponents.forEach( f=> f.filterBy(this.project.selectedBranch.featureFilter)  );
+
   }
 }

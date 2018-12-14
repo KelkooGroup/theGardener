@@ -32,7 +32,7 @@ class RegisterProjectSteps extends ScalaDsl with EN with MockitoSugar {
   Given("""^the server "([^"]*)" host under the project "([^"]*)" on the branch "([^"]*)" the file "([^"]*)"$""") { (remoteRepository: String, project: String, branch: String, file: String, content: String) =>
     val projectRepositoryPath = s"$remoteRepository/$project"
 
-    val git = initRemoteRepository(branch, projectRepositoryPath)
+    val git = initRemoteRepositoryIfNeeded(branch, projectRepositoryPath)
 
     addFile(git, projectRepositoryPath, file, content)
   }
@@ -40,7 +40,7 @@ class RegisterProjectSteps extends ScalaDsl with EN with MockitoSugar {
   Given("""^the server "([^"]*)" host under the project "([^"]*)" on the branch "([^"]*)" the files$""") { (remoteRepository: String, project: String, branch: String, files: DataTable) =>
     val projectRepositoryPath = s"$remoteRepository/$project"
 
-    val git = initRemoteRepository(branch, projectRepositoryPath)
+    val git = initRemoteRepositoryIfNeeded(branch, projectRepositoryPath)
 
     files.asScala.map { line =>
       val file = line("file")
