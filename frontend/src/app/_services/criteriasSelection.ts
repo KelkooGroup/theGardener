@@ -59,29 +59,32 @@ export class BranchSelector {
     }
   }
 
-  public selection() {
-    this.project.selectedBranch = this;
-    this.project.selection(true) ;
+  public selectBranch() {
+    this.project.branchSelection(this) ;
+    this.selectAllFeatures();
   }
 
   public selectFeature( feature: FeatureSelector ) {
-    this.project.selectedBranch = this;
-    this.project.selection(true) ;
-    this.featureFilter = feature;
+    this.project.featureSelection( feature ) ;
   }
 
   public selectAllFeatures( ) {
     this.featureFilter = ALL_FEATURES_FILTER;
   }
+
   public selectNoneFeatures( ) {
     this.featureFilter = NO_FEATURE_FILTER;
   }
 
+  public hasFilter() : boolean {
+    return this.featureFilter != ALL_FEATURES_FILTER && this.featureFilter != NO_FEATURE_FILTER ;
+  }
 }
 
 export class ProjectSelector {
 
   public selected = false;
+  public indeterminate = false;
   public selectedBranch: BranchSelector;
   public stableBranch: BranchSelector;
   public relatedHierarchyNode: HierarchyNodeSelector;
@@ -118,8 +121,38 @@ export class ProjectSelector {
 
   public selection(selected: boolean) {
     this.selected = selected;
-    this.selectedBranch.selectAllFeatures();
+    this.selectedBranch = this.stableBranch;
+    if ( this.selected ){
+      this.selectedBranch.selectAllFeatures();
+    }else{
+      this.selectedBranch.selectNoneFeatures();
+    }
     this.relatedHierarchyNode.root.updateIndeterminateStatus();
+  }
+
+  public featureSelection( selectedFeature: FeatureSelector ){
+    this.selected = true;
+    this.selectedBranch.featureFilter = selectedFeature ;
+    this.relatedHierarchyNode.root.updateIndeterminateStatus();
+  }
+
+  public branchSelection( selectedBranch: BranchSelector ){
+    this.selected = true;
+    this.selectedBranch= selectedBranch ;
+    this.relatedHierarchyNode.root.updateIndeterminateStatus();
+  }
+
+  public isIndeterminate() : boolean {
+    this.indeterminate = false;
+    if (  ! this.selectedBranch  ||
+          (this.selectedBranch &&  this.selectedBranch.name != this.stableBranch.name) ){
+      this.indeterminate = true ;
+    }
+    if (  this.selectedBranch && this.selectedBranch.hasFilter() ){
+      this.indeterminate = true ;
+    }
+
+    return this.indeterminate  ;
   }
 
 
@@ -201,14 +234,18 @@ export class HierarchyNodeSelector {
 
     if (this.hasProjects()) {
       let nbSelected = 0;
+      let nbIndeterminate = 0;
 
       for (let j = 0; j < this.projects.length; j++) {
         const loopProjectApi = this.projects[j];
         if (loopProjectApi.selected) {
           nbSelected++;
         }
+        if (loopProjectApi.isIndeterminate()) {
+          nbIndeterminate++;
+        }
       }
-      if (nbSelected === this.projects.length) {
+      if (nbSelected === this.projects.length && nbIndeterminate === 0 ) {
         localStatus = 'selected';
       } else {
         if (nbSelected === 0) {

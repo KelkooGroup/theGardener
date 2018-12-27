@@ -32,8 +32,9 @@
             <li>
               <mat-checkbox class="project"
                             [checked]="project.selected"
+                            [indeterminate]="project.indeterminate"
                             [value]="project"
-                             (change)="selectProject($event) ; branchFeaturesSelector.updateFeaturesSelection($event.checked)"
+                            (change)="selectProject($event) ; branchFeaturesSelector.updateFeaturesSelection($event.checked)"
               >{{project.label}}
               </mat-checkbox>
             </li>

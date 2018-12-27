@@ -5,11 +5,12 @@ import {
   Input,
   OnInit,
   Output,
-  QueryList,
+  QueryList, ViewChild,
   ViewChildren
 } from '@angular/core';
 import {BranchSelector, FeatureSelector, ProjectSelector} from "../../../../_services/criteriasSelection";
 import {CriteriasFeatureSelectorComponent} from "../criterias-feature-selector/criterias-feature-selector.component";
+import {MatSelect} from "@angular/material";
 
 @Component({
   selector: 'app-criterias-branch-feature-selector',
@@ -24,15 +25,18 @@ export class CriteriasBranchFeatureSelectorComponent implements OnInit, AfterVie
   @ViewChildren(CriteriasFeatureSelectorComponent)
   featureComponents: QueryList<CriteriasFeatureSelectorComponent>;
 
+
   constructor() {
   }
 
   ngOnInit() {
   }
 
+
+
   selectBranch(event) {
-    const source = event.source.value as BranchSelector;
-    source.selection();
+    const branch = event.source.value as BranchSelector;
+    branch.selectBranch();
     this.updateFeaturesSelection(true);
   }
 
