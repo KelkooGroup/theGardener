@@ -42,7 +42,7 @@ before_script:
     - 'sh -e /etc/init.d/xvfb start'
 
 script:
-    - './node_modules/tslint/bin/tslint -t json -o report.json --project .'
+    - './node_modules/tslint/bin/tslint -t json -o report.json --project . --force'
     - 'ng test --watch=false --progress=false --code-coverage'
     - 'ng e2e'
     - 'ng build --no-progress --prod --deploy-url /assets/dist/'
