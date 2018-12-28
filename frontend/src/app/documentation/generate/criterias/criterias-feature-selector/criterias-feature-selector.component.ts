@@ -47,6 +47,7 @@ export class CriteriasFeatureSelectorComponent implements OnInit {
     }else{
       this.selected = this.feature.value.includes( filter.value) ;
     }
+    //console.log(`Filtering ${this.feature.value} by ${filter.value} => ${this.selected}`);
   }
 
 }

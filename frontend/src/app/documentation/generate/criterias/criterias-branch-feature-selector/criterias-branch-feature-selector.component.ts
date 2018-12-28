@@ -37,6 +37,8 @@ export class CriteriasBranchFeatureSelectorComponent implements OnInit, AfterVie
   selectBranch(event) {
     const branch = event.source.value as BranchSelector;
     branch.selectBranch();
+
+    // console.log(`Select  ${branch.name}`)
     this.updateFeaturesSelection(true);
   }
 
@@ -52,9 +54,9 @@ export class CriteriasBranchFeatureSelectorComponent implements OnInit, AfterVie
       this.project.selectedBranch.selectNoneFeatures();
     }
     this.featureComponents.forEach( f=> f.filterBy(this.project.selectedBranch.featureFilter)  );
+
   }
 
   ngAfterViewChecked() {
-
   }
 }
