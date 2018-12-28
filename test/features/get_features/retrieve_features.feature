@@ -8,6 +8,7 @@ Feature: Retrieve BDD features from a project on a remote server
     Given No project is checkout
     And the database is empty
     And the cache is empty
+    And the remote projects are empty
 
 
   @level_0_high_level @nominal_case @valid

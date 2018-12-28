@@ -128,7 +128,7 @@ class GetFeaturesSteps extends ScalaDsl with EN with MockitoSugar {
   }
 
   Then("""^we have now those branches in the database$""") { branches: util.List[Branch] =>
-    val expectedBranches = branches.asScala
+    val expectedBranches = branches.asScala.map( b => new Branch( b.id, b.name,b.isStable,b.projectId, List()  ) )
     val actualBranches = branchRepository.findAll()
     actualBranches must contain theSameElementsAs expectedBranches
   }
