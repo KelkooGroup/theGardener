@@ -79,6 +79,7 @@ object CommonSteps extends PlaySpec with GuiceOneServerPerSuite with BeforeAndAf
   val config = Injector.inject[Config]
 
   val projectsRootDirectory = config.getString("projects.root.directory")
+  val remoteRootDirectory = "target/remote/data/"
 
   var server = TestServer(port, app)
 
@@ -152,6 +153,11 @@ class CommonSteps extends ScalaDsl with EN with MockitoSugar {
     FileUtils.deleteDirectory(new File("target/data/"))
     FileUtils.deleteDirectory(new File(projectsRootDirectory))
     Files.createDirectories(Paths.get(projectsRootDirectory))
+  }
+
+  Given("""^the remote projects are empty$""") { () =>
+    FileUtils.deleteDirectory(new File(remoteRootDirectory))
+    Files.createDirectories(Paths.get(remoteRootDirectory))
   }
 
   Given("""^a git server that host a project$""") { () =>

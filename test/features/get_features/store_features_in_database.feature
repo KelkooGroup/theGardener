@@ -7,6 +7,7 @@ Feature: Store the feature files in the database
     Given No project is checkout
     And the database is empty
     And the cache is empty
+    And the remote projects are empty
 
 
   @level_1_specification @nominal_case @valid

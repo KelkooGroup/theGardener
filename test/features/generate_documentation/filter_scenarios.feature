@@ -1,4 +1,3 @@
-@ongoing
 Feature: Generate documentation
   As a user,
   I want generate documentation based on the criterias I provide
@@ -8,6 +7,7 @@ Feature: Generate documentation
     Given the database is empty
     And the cache is empty
     And No project is checkout
+    And the remote projects are empty
     And the hierarchy nodes are
       | id         | slugName   | name                 | childrenLabel | childLabel   |
       | .          | root       | Hierarchy root       | Views         | View         |

@@ -7,6 +7,7 @@ Feature: Generate documentation
     Given the database is empty
     And the cache is empty
     And No project is checkout
+    And the remote projects are empty
     And the hierarchy nodes are
       | id   | slugName   | name              | childrenLabel | childLabel |
       | .    | root       | Hierarchy root    | Views         | View       |
@@ -18,7 +19,7 @@ Feature: Generate documentation
       | projectId     | hierarchyId |
       | suggestionsWS | .01.        |
 
-  @level_2_technical_details @nominal_case @valid
+  @level_2_technical_details @nominal_case @valid @ongoing
   Scenario: generate documentation with a simple feature - json output
     Given the server "target/remote/data/GetFeatures" host under the project "library/suggestionsWS" on the branch "master" the file "test/features/provide_book_suggestions.feature"
     """
@@ -31,7 +32,7 @@ Feature: As a user Tim, I want some book suggestions so that I can do some disco
     Then the suggestions are popular and available books adapted to the age of the user
     """
     And the database is synchronized on the project "suggestionsWS"
-    When I perform a "GET" on following URL "/api/generateDocumentation?project=_root_suggestion>suggestionsWS"
+    When I perform a "GET" on following URL "/api/generateDocumentation?project=_root_suggestion>suggestionsWS>master>provide_book_suggestions.feature"
     Then I get the following json response body
 """
 {
