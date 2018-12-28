@@ -1,11 +1,11 @@
 @import "../../../../../stylesheets/backoffice";
 
 .feature {
-  padding-top: 3px;
-  padding-bottom: 2px;
+  padding-top: 0px;
+  padding-bottom: 0px;
   cursor: pointer;
   color: $color-text;
-  height: 20px;
+  height: 25px;
 }
 
 .feature-level0 {
@@ -13,40 +13,48 @@
 }
 
 .feature-level1 {
-  padding-left: 50px;
+  padding-left: 35px;
 }
 
 .feature-level2 {
-  padding-left: 100px;
+  padding-left: 70px;
 }
 
 .feature-level3 {
-  padding-left: 150px;
+  padding-left: 105px;
 }
 
 .feature-level4 {
-  padding-left: 200px;
+  padding-left: 140px;
 }
 
 .feature-level5 {
-  padding-left: 250px;
+  padding-left: 175px;
 }
 
 
 .selected{
   font-weight: normal;
   color: $color-text;
+  padding-top: 0px;
+  padding-bottom: 7px;
+  
+
 }
 
 .notSelected{
   font-weight: lighter;
   color: $color-disabled;
+  padding-left: 16px;
+  padding-top: 1px;
+  padding-bottom: 0px;
 }
 
 .icon{
   color: $color-text;
   font-size: $font-size-text-small;
-  width: 15px;
-  height: 15px;
-  margin-right: 10px;
+  width: 12px;
+  height: 12px;
+  margin-right: 4px;
+  padding-bottom: 7px;
 }
