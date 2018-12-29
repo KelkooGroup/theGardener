@@ -57,9 +57,6 @@
             <div class="collapse navbar-collapse text-center" id="navbar">
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
-                        <a class="nav-link page-scroll" href="#intern">theIntern</a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link page-scroll" href="#context">theContext</a>
                     </li>
                     <li class="nav-item">
