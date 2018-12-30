@@ -78,6 +78,7 @@ class FeatureService @Inject()(config: Config, featureRepository: FeatureReposit
       val argument = step.getArgument match {
         case dataTable: ast.DataTable => dataTable.getRows.asScala.map(_.getCells.asScala.map(_.getValue))
         case tableRow: ast.TableRow => Seq(tableRow.getCells.asScala.map(_.getValue))
+        case docString: ast.DocString => Seq(Seq(docString.getContent))
         case _ => Seq()
       }
 
