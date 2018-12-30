@@ -446,7 +446,7 @@ export class CriteriasSelector {
       for (let i = 0; i < hierarchyNodeSelector.projects.length; i++) {
         const loopProject: ProjectSelector = hierarchyNodeSelector.projects[i];
         if (loopProject.selected) {
-          let loopHttpParams = this._buildHttpParamsForAProject(loopProject);
+          const loopHttpParams = this._buildHttpParamsForAProject(loopProject);
           httpParams = httpParams.append(CriteriasSelector.PARAM_PROJECT, loopHttpParams);
         }
       }
@@ -465,7 +465,7 @@ export class CriteriasSelector {
               || (loopProject.selectedBranch.featureFilter.value !== ALL_FEATURES_FILTER.value)
             )
           ) {
-            let loopHttpParams = this._buildHttpParamsForAProject(loopProject);
+            const loopHttpParams = this._buildHttpParamsForAProject(loopProject);
             httpParams = httpParams.append(CriteriasSelector.PARAM_PROJECT, loopHttpParams);
           }
         }
@@ -482,7 +482,7 @@ export class CriteriasSelector {
 
   private _buildHttpParamsForAProject(project: ProjectSelector): string {
     let projectHttpParams = `${project.relatedHierarchyNode.path}${CriteriasSelector.SPLIT_PROJECT}${project.id}`;
-    let selectedBranch = project.selectedBranch;
+    const selectedBranch = project.selectedBranch;
     if (selectedBranch !== undefined) {
       projectHttpParams += `${CriteriasSelector.SPLIT_PROJECT}${project.selectedBranch.name}`;
       if (selectedBranch.featureFilter !== undefined) {
