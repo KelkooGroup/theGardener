@@ -74,16 +74,16 @@ class DocumentationController @Inject()(documentationRepository: DocumentationRe
         val project = projectRepository.findById(projectId)
         val projectName = project.map(_.name).getOrElse("")
         val branchName = params.lift(2) match {
-          case Some(branchParam) if (!branchParam.isEmpty) => branchParam
+          case Some(branchParam) if branchParam.nonEmpty => branchParam
           case _ => project.map(_.stableBranch).getOrElse("master")
         }
 
-        val mayFeatureFilter = params.lift(3)
-        val mayTagsFilter = params.lift(4).map(tagsAsString => tagsAsString.split(",").toSeq)
+        val featureFilter = params.lift(3)
+        val tagsFilter = params.lift(4).map(tagsAsString => tagsAsString.split(",").toSeq)
 
         hierarchy.lastOption.flatMap { hierarchyNode =>
           criteriaMap.get(hierarchyNode.id).flatten.map { criteria =>
-            buildDocumentation(criteria.hierarchy, Seq(documentationRepository.buildProjectDocumentation(ProjectCriteria(projectId, projectName, branchName, mayFeatureFilter, mayTagsFilter))))
+            buildDocumentation(criteria.hierarchy, Seq(documentationRepository.buildProjectDocumentation(ProjectCriteria(projectId, projectName, branchName, featureFilter, tagsFilter))))
           }
         }
       }

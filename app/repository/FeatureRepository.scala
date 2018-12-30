@@ -5,11 +5,10 @@ import anorm._
 import javax.inject.Inject
 import models.Feature.backgroundFormat
 import models._
-import utils._
-
 import play.api.Logger
 import play.api.db.Database
 import play.api.libs.json.Json
+import utils._
 
 class FeatureRepository @Inject()(db: Database, tagRepository: TagRepository, scenarioRepository: ScenarioRepository) {
 
@@ -95,10 +94,9 @@ class FeatureRepository @Inject()(db: Database, tagRepository: TagRepository, sc
   }
 
   def findAllByBranchId(branchId: Long): Seq[Feature] = {
-    val s = db.withConnection { implicit connection =>
+    db.withConnection { implicit connection =>
       SQL"SELECT * FROM feature WHERE branchId = $branchId".as(parser.*)
     }
-    s
   }
 
   def saveAll(features: Seq[Feature]): Seq[Option[Feature]] = {
