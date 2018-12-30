@@ -1,3 +1,4 @@
+@ongoing
 Feature: Retrieve BDD features from a project on a remote server
   As a user,
   I want theGardener to retrieve all features related to BDD of my project on a remote server

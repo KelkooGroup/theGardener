@@ -19,7 +19,7 @@ Feature: Generate documentation
       | projectId     | hierarchyId |
       | suggestionsWS | .01.        |
 
-  @level_2_technical_details @nominal_case @valid @ongoing
+  @level_2_technical_details @nominal_case @valid
   Scenario: generate documentation with a simple feature - json output
     Given the server "target/remote/data/GetFeatures" host under the project "library/suggestionsWS" on the branch "master" the file "test/features/provide_book_suggestions.feature"
     """

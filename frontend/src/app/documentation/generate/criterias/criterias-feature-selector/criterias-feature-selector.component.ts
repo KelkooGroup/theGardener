@@ -24,12 +24,12 @@ export class CriteriasFeatureSelectorComponent implements OnInit {
 
 
   @Input()
-  feature : FeatureSelector;
+  feature: FeatureSelector;
 
   @ViewChild(MatCheckbox)
   checkBox: MatCheckbox;
 
-  selected : boolean = false;
+  selected: boolean = false;
 
   constructor() {
   }
@@ -41,11 +41,11 @@ export class CriteriasFeatureSelectorComponent implements OnInit {
     this.featureSelected.emit(this.feature);
   }
 
-  filterBy(filter : FeatureSelector){
-    if (filter.value == "*"){
-      this.selected = true ;
-    }else{
-      this.selected = this.feature.value.includes( filter.value) ;
+  filterBy(filter: FeatureSelector) {
+    if (filter.value == "*") {
+      this.selected = true;
+    } else {
+      this.selected = this.feature.value.includes(filter.value);
     }
     //console.log(`Filtering ${this.feature.value} by ${filter.value} => ${this.selected}`);
   }

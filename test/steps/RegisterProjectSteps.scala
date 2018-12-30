@@ -11,6 +11,8 @@ import play.api.libs.json.Json
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import play.api.test._
+import resource._
+import utils._
 
 import scala.collection.JavaConverters._
 
@@ -30,23 +32,26 @@ class RegisterProjectSteps extends ScalaDsl with EN with MockitoSugar {
   }
 
   Given("""^the server "([^"]*)" host under the project "([^"]*)" on the branch "([^"]*)" the file "([^"]*)"$""") { (remoteRepository: String, project: String, branch: String, file: String, content: String) =>
-    val projectRepositoryPath = s"$remoteRepository/$project"
+    val projectRepositoryPath = s"$remoteRepository/$project".fixPathSeparator
 
-    val git = initRemoteRepositoryIfNeeded(branch, projectRepositoryPath)
+    managed(initRemoteRepositoryIfNeeded(branch, projectRepositoryPath)).acquireAndGet { git =>
 
-    addFile(git, projectRepositoryPath, file, content)
+      addFile(git, projectRepositoryPath, file.fixPathSeparator, content)
+    }
   }
 
   Given("""^the server "([^"]*)" host under the project "([^"]*)" on the branch "([^"]*)" the files$""") { (remoteRepository: String, project: String, branch: String, files: DataTable) =>
-    val projectRepositoryPath = s"$remoteRepository/$project"
+    val projectRepositoryPath = s"$remoteRepository/$project".fixPathSeparator
 
-    val git = initRemoteRepositoryIfNeeded(branch, projectRepositoryPath)
+    managed(initRemoteRepositoryIfNeeded(branch, projectRepositoryPath)).acquireAndGet { git =>
 
-    files.asScala.map { line =>
-      val file = line("file")
-      val content = line("content")
+      files.asScala.map { line =>
+        val file = line("file").fixPathSeparator
+        val content = line("content")
 
-      addFile(git, projectRepositoryPath, file, content)
+        addFile(git, projectRepositoryPath, file, content)
+      }
+
     }
   }
 
@@ -55,7 +60,7 @@ class RegisterProjectSteps extends ScalaDsl with EN with MockitoSugar {
   }
 
   Given("""^the root data path is "([^"]*)"$""") { path: String =>
-    val fullPath = Paths.get("target/" + path)
+    val fullPath = Paths.get(s"target/$path".fixPathSeparator)
     Files.createDirectories(fullPath.getParent)
   }
 

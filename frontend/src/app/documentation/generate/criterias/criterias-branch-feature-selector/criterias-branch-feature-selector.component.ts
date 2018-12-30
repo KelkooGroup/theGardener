@@ -5,7 +5,8 @@ import {
   Input,
   OnInit,
   Output,
-  QueryList, ViewChild,
+  QueryList,
+  ViewChild,
   ViewChildren
 } from '@angular/core';
 import {BranchSelector, FeatureSelector, ProjectSelector} from "../../../../_services/criteriasSelection";
@@ -33,7 +34,6 @@ export class CriteriasBranchFeatureSelectorComponent implements OnInit, AfterVie
   }
 
 
-
   selectBranch(event) {
     const branch = event.source.value as BranchSelector;
     branch.selectBranch();
@@ -42,18 +42,18 @@ export class CriteriasBranchFeatureSelectorComponent implements OnInit, AfterVie
     this.updateFeaturesSelection(true);
   }
 
-  selectFeature(feature : FeatureSelector) {
-    this.project.selectedBranch.selectFeature( feature  );
-    this.featureComponents.forEach( f=> f.filterBy(feature)  );
+  selectFeature(feature: FeatureSelector) {
+    this.project.selectedBranch.selectFeature(feature);
+    this.featureComponents.forEach(f => f.filterBy(feature));
   }
 
   updateFeaturesSelection(selected: boolean) {
-    if (selected){
+    if (selected) {
       this.project.selectedBranch.selectAllFeatures();
-    }else{
+    } else {
       this.project.selectedBranch.selectNoneFeatures();
     }
-    this.featureComponents.forEach( f=> f.filterBy(this.project.selectedBranch.featureFilter)  );
+    this.featureComponents.forEach(f => f.filterBy(this.project.selectedBranch.featureFilter));
 
   }
 

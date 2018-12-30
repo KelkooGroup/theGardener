@@ -78,8 +78,7 @@ Feature: Provide criterias
             "branches":[
                {
                  "name":"master",
-                 "features":[
-                 ]
+                 "features":[]
                }
             ]
          },
@@ -90,16 +89,11 @@ Feature: Provide criterias
             "branches":[
                {
                  "name":"master",
-                 "features":[
-                    "admin/admin_book_suggestions.feature",
-                    "provide/provide_book_suggestions.feature",
-                    "provide/provide_other_suggestions.feature"
-                 ]
+                 "features": ["admin/admin_book_suggestions.feature", "provide/provide_book_suggestions.feature", "provide/provide_other_suggestions.feature"]
                },
                {
                  "name":"bugfix/351",
-                 "features":[
-                 ]
+                 "features":[]
                }
             ]
          }
@@ -119,8 +113,7 @@ Feature: Provide criterias
             "branches":[
                {
                  "name":"master",
-                 "features":[
-                 ]
+                 "features":[]
                }
             ]
          }
@@ -148,16 +141,11 @@ Feature: Provide criterias
             "branches":[
                {
                  "name":"master",
-                 "features":[
-                    "admin/admin_book_suggestions.feature",
-                    "provide/provide_book_suggestions.feature",
-                    "provide/provide_other_suggestions.feature"
-                 ]
+                 "features": ["admin/admin_book_suggestions.feature", "provide/provide_book_suggestions.feature", "provide/provide_other_suggestions.feature"]
                },
                {
                  "name":"bugfix/351",
-                 "features":[
-                 ]
+                 "features":[]
                }
             ]
          }

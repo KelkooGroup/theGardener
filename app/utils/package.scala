@@ -1,3 +1,5 @@
+import java.io.File
+
 import play.api.Logger
 
 import scala.concurrent._
@@ -18,5 +20,9 @@ package object utils {
       case NonFatal(e) => Logger.error(msg, e)
         Future.failed(e)
     }
+  }
+
+  implicit class PathExt(path: String) {
+    def fixPathSeparator: String = path.replace('/', File.separatorChar)
   }
 }

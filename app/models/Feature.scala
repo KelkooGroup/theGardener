@@ -36,4 +36,4 @@ object Feature {
 
 }
 
-case class FeaturePath (branchId: Long, path: String)
+case class FeaturePath(branchId: Long, path: String)

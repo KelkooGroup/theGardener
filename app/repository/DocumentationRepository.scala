@@ -8,9 +8,10 @@ import models.Feature.{backgroundFormat, examplesFormat, stepFormat}
 import models._
 import play.api.db.Database
 import play.api.libs.json.Json
+
 import scala.language.postfixOps
 
-case class ProjectCriteria(projectId: String, projectName: String, branchName: String, mayFeatureFilter: Option[String] = None, mayTagsFilter: Option[Seq[String]] = None)
+case class ProjectCriteria(projectId: String, projectName: String, branchName: String, featureFilter: Option[String] = None, tagsFilter: Option[Seq[String]] = None)
 
 case class DocumentationRowJoin(branchId: Long, branchName: String, branchIsStable: Boolean, featureId: Long, featurePath: String, featureBackgroundAsJson: Option[String], featureLanguage: Option[String],
                                 featureKeyword: String, featureName: String, featureDescription: String, featureComments: String,
@@ -119,9 +120,9 @@ class DocumentationRepository @Inject()(db: Database) {
             WHERE b.projectId = '${projectCriteria.projectId}'  AND b.name = '${projectCriteria.branchName}'
         """)
 
-      if (projectCriteria.mayFeatureFilter.isDefined) {
-        queryBuilder.append(s" AND f.path like '%${projectCriteria.mayFeatureFilter.get}%'")
-      }
+
+      projectCriteria.featureFilter.foreach(filter => queryBuilder.append(s" AND f.path like '%$filter%'"))
+
       queryBuilder.append(" ORDER BY f.id, s.id;")
       val query = queryBuilder.toString()
       SQL(query).as(parserDocumentationRowJoin *)
@@ -156,7 +157,7 @@ class DocumentationRepository @Inject()(db: Database) {
           featureRow.featureName, featureRow.featureDescription, scenarios) :: features
       }
 
-       Seq(BranchDocumentationDTO(branch, features))
+      Seq(BranchDocumentationDTO(branch, features))
 
     } else Seq()
 

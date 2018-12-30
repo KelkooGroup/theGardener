@@ -5,6 +5,8 @@ import anorm._
 import javax.inject.Inject
 import models.Feature.backgroundFormat
 import models._
+import utils._
+
 import play.api.Logger
 import play.api.db.Database
 import play.api.libs.json.Json
@@ -21,14 +23,14 @@ class FeatureRepository @Inject()(db: Database, tagRepository: TagRepository, sc
     name <- str("name")
     description <- str("description")
     comments <- str("comments")
-  } yield Feature(id, branchId, path, backgroundAsJson.map(Json.parse(_).as[Background]),
+  } yield Feature(id, branchId, path.fixPathSeparator, backgroundAsJson.map(Json.parse(_).as[Background]),
     tagRepository.findAllByFeatureId(id), language, keyword, name, description,
     scenarioRepository.findAllByFeatureId(id), comments.split("\n").filterNot(_.isEmpty))
 
   val parserFeaturePath = for {
     branchId <- long("branchId")
     path <- str("path")
-  } yield FeaturePath(branchId, path)
+  } yield FeaturePath(branchId, path.fixPathSeparator)
 
   def findAll(): Seq[Feature] = {
     db.withConnection { implicit connection =>
@@ -42,7 +44,6 @@ class FeatureRepository @Inject()(db: Database, tagRepository: TagRepository, sc
       SQL"SELECT branchId, path FROM feature".as(parserFeaturePath.*)
     }
   }
-
 
   def existsById(id: Long): Boolean = {
     db.withConnection { implicit connection =>
@@ -94,7 +95,7 @@ class FeatureRepository @Inject()(db: Database, tagRepository: TagRepository, sc
   }
 
   def findAllByBranchId(branchId: Long): Seq[Feature] = {
-    val s =  db.withConnection { implicit connection =>
+    val s = db.withConnection { implicit connection =>
       SQL"SELECT * FROM feature WHERE branchId = $branchId".as(parser.*)
     }
     s

@@ -33,16 +33,16 @@
 }
 
 
-.selected{
+.selected {
   font-weight: normal;
   color: $color-text;
   padding-top: 0px;
   padding-bottom: 7px;
-  
+
 
 }
 
-.notSelected{
+.notSelected {
   font-weight: lighter;
   color: $color-disabled;
   padding-left: 16px;
@@ -50,7 +50,7 @@
   padding-bottom: 0px;
 }
 
-.icon{
+.icon {
   color: $color-text;
   font-size: $font-size-text-small;
   width: 12px;

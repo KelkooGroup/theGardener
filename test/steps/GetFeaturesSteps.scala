@@ -1,7 +1,7 @@
 package steps
 
+import java.io.File.separator
 import java.io._
-import java.net._
 import java.nio.file._
 import java.util
 
@@ -14,7 +14,9 @@ import org.scalatest.mockito.MockitoSugar
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.api.test._
+import resource._
 import services._
+import utils._
 
 import scala.collection.JavaConverters._
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -33,32 +35,36 @@ class GetFeaturesSteps extends ScalaDsl with EN with MockitoSugar {
 
 
   Given("""^a project in theGardener hosted on a remote server$""") { () =>
-    val git = initRemoteRepositoryIfNeeded("master", "target/data/GetFeatures/library/suggestionsWS/")
-    addFile(git, "target/data/GetFeatures/library/suggestionsWS/", "test/features/suggestions/provide_book_suggestions.feature", featureContent)
+    managed(initRemoteRepositoryIfNeeded("master", "target/data/GetFeatures/library/suggestionsWS/".fixPathSeparator)).acquireAndGet { git =>
 
-    val project = Project("suggestionsWS", "Suggestions WebServices", new URL(new URL("file:"), new File("target/data/GetFeatures/library/suggestionsWS/").getAbsolutePath).toURI.toString, "master", "test/features")
+      addFile(git, "target/data/GetFeatures/library/suggestionsWS/".fixPathSeparator, "test/features/suggestions/provide_book_suggestions.feature".fixPathSeparator, featureContent)
+    }
+
+    val project = Project("suggestionsWS", "Suggestions WebServices", Paths.get("target/data/GetFeatures/library/suggestionsWS/".fixPathSeparator).toUri.toString, "master", "test" + separator + "features")
     projectRepository.save(project)
     CommonSteps.projects = Map(project.id -> project)
   }
 
   Given("""^the branch "([^"]*)" of the project "([^"]*)" is already checkout$""") { (branch: String, projectId: String) =>
-    val localRepository = s"$projectsRootDirectory/$projectId/$branch"
+    val localRepository = s"$projectsRootDirectory/$projectId/$branch".fixPathSeparator
 
     Await.result(gitService.clone(projects(projectId).repositoryUrl, localRepository)
       .flatMap(_ => gitService.checkout(branch, localRepository)), 30.seconds)
   }
 
   Given("""^the file "([^"]*)" of the server "([^"]*)" in the project "([^"]*)" on the branch "([^"]*)" is updated with content$""") { (file: String, remoteRepository: String, project: String, branch: String, content: String) =>
-    val projectRepositoryPath = s"$remoteRepository/$project"
+    val projectRepositoryPath = s"$remoteRepository/$project".fixPathSeparator
 
-    val git = Git.open(new File(projectRepositoryPath))
-    git.checkout.setName(branch).call()
+    managed(Git.open(new File(projectRepositoryPath))).acquireAndGet { git =>
 
-    Files.write(Paths.get(s"$projectRepositoryPath/$file"), content.getBytes("UTF-8"))
+      git.checkout.setName(branch).call()
 
-    git.add().addFilepattern(".").call()
+      Files.write(Paths.get(s"$projectRepositoryPath/$file".fixPathSeparator), content.getBytes("UTF-8"))
 
-    git.commit().setMessage(s"Update file $file").call()
+      git.add().addFilepattern(".").call()
+
+      git.commit().setMessage(s"Update file $file").call()
+    }
   }
 
   Given("""^we have no branch in the database$""") { () =>
@@ -124,17 +130,17 @@ class GetFeaturesSteps extends ScalaDsl with EN with MockitoSugar {
   }
 
   Then("""^the project BDD features of this project are retrieved from the remote server$""") { () =>
-    Source.fromFile("target/data/git/suggestionsWS/master/test/features/suggestions/provide_book_suggestions.feature").mkString mustBe featureContent
+    managed(Source.fromFile("target/data/git/suggestionsWS/master/test/features/suggestions/provide_book_suggestions.feature".fixPathSeparator)).acquireAndGet(_.mkString mustBe featureContent)
   }
 
   Then("""^we have now those branches in the database$""") { branches: util.List[Branch] =>
-    val expectedBranches = branches.asScala.map( b => new Branch( b.id, b.name,b.isStable,b.projectId, List()  ) )
+    val expectedBranches = branches.asScala.map(b => new Branch(b.id, b.name, b.isStable, b.projectId, List()))
     val actualBranches = branchRepository.findAll()
     actualBranches must contain theSameElementsAs expectedBranches
   }
 
   Then("""^we have now those features in the database$""") { features: util.List[Feature] =>
-    val expectedFeatures = features.asScala.toList.map(_.copy(background = None, tags = Seq(), language = None, scenarios = Seq(), comments = Seq(), keyword = "Feature"))
+    val expectedFeatures = features.asScala.toList.map(f => f.copy(path = f.path.fixPathSeparator, background = None, tags = Seq(), language = None, scenarios = Seq(), comments = Seq(), keyword = "Feature"))
     val actualFeatures = featureRepository.findAll().map(_.copy(background = None, tags = Seq(), language = None, scenarios = Seq(), comments = Seq()))
     actualFeatures must contain theSameElementsAs expectedFeatures
   }

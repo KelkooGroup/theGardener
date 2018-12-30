@@ -1,11 +1,12 @@
 package services
 
 import javax.inject.Inject
-import models._
 import models.HierarchyNode._
+import models._
 import play.api.cache._
 import repository._
 import services.CriteriaService._
+import utils._
 
 import scala.util.Try
 
@@ -29,13 +30,13 @@ class CriteriaService @Inject()(hierarchyRepository: HierarchyRepository, projec
       }
 
       val mapBranchIdProjectFeaturePath = branches.foldLeft(Map[Long, String]()) { (mapBranchIdProjectFeaturePath, branch) =>
-        mapBranchIdProjectFeaturePath + (branch.id -> mapProjectIdProject.get(branch.projectId).get.featuresRootPath )
+        mapBranchIdProjectFeaturePath + (branch.id -> mapProjectIdProject(branch.projectId).featuresRootPath)
       }
 
       val mapBranchIdFeaturePaths = featureRepository.findAllFeaturePaths().groupBy(r => r.branchId).foldLeft(Map[Long, Set[String]]()) { (mapBranchIdFeaturePaths, branchAndPath) =>
-        val paths = branchAndPath._2.foldLeft(Set[String]()){(paths, p) =>
-          val projectFeaturePath = mapBranchIdProjectFeaturePath.get(branchAndPath._1).get
-          val relativePath = p.path.substring(p.path.indexOf(projectFeaturePath)+projectFeaturePath.size+1)
+        val paths = branchAndPath._2.foldLeft(Set[String]()) { (paths, p) =>
+          val projectFeaturePath = mapBranchIdProjectFeaturePath(branchAndPath._1).fixPathSeparator
+          val relativePath = p.path.substring(p.path.indexOf(projectFeaturePath) + projectFeaturePath.length + 1)
           paths + relativePath
         }
         mapBranchIdFeaturePaths + (branchAndPath._1 -> paths)
@@ -44,8 +45,8 @@ class CriteriaService @Inject()(hierarchyRepository: HierarchyRepository, projec
       hierarchyRepository.findAll().map { hierarchyNode =>
         val projects = projectRepository.findAllByHierarchyId(hierarchyNode.id).map { project =>
           val projectWithBranches = project.copy(branches = Some(
-            mapProjectIdBranches.getOrElse(project.id,Seq()).map { branch =>
-              val branchWithFeatures = branch.copy(features = mapBranchIdFeaturePaths.getOrElse( branch.id,  Set()).toList.sorted   )
+            mapProjectIdBranches.getOrElse(project.id, Seq()).map { branch =>
+              val branchWithFeatures = branch.copy(features = mapBranchIdFeaturePaths.getOrElse(branch.id, Set()).toList.sorted)
               branchWithFeatures
             }
           ))

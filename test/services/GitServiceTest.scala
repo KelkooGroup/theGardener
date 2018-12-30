@@ -1,6 +1,8 @@
 package services
 
 import java.io.File
+import java.io.File.separator
+
 
 import org.apache.commons.io.FileUtils._
 import org.eclipse.jgit.api._
@@ -16,8 +18,8 @@ class GitServiceTest extends WordSpec with MustMatchers with BeforeAndAfter with
 
   val encoding = "UTF-8"
 
-  val remoteRepositoryDirectory = new File("target/data/gitService/remote")
-  val localRepositoryDirectory = "target/data/gitService/local"
+  val remoteRepositoryDirectory = new File(s"target${separator}data${separator}gitService${separator}remote")
+  val localRepositoryDirectory = s"target${separator}data${separator}gitService${separator}local"
 
   val remoteFile = new File(remoteRepositoryDirectory, "test.txt")
   val localFile = new File(localRepositoryDirectory, "test.txt")
@@ -25,6 +27,8 @@ class GitServiceTest extends WordSpec with MustMatchers with BeforeAndAfter with
   var remoteGit: Git = _
 
   before {
+    deleteDirectory(new File(localRepositoryDirectory))
+    deleteDirectory(remoteRepositoryDirectory)
     remoteGit = Git.init().setDirectory(remoteRepositoryDirectory).call()
     addFileToRemote(remoteGit, remoteFile, "commit test.txt")
   }
@@ -57,9 +61,9 @@ class GitServiceTest extends WordSpec with MustMatchers with BeforeAndAfter with
       val fileName = "test1.txt"
       val remoteFile1 = new File(remoteRepositoryDirectory, fileName)
 
-      createBranch(branchName, remoteFile1)
+      Git.cloneRepository().setURI(remoteRepositoryDirectory.toURI.toString).setDirectory(new File(localRepositoryDirectory)).call().close()
 
-      Git.cloneRepository().setURI(remoteRepositoryDirectory.toURI.toString).setDirectory(new File(localRepositoryDirectory)).call()
+      createBranch(branchName, remoteFile1)
 
       val future = new GitService().checkout(branchName, localRepositoryDirectory)
 
@@ -69,7 +73,7 @@ class GitServiceTest extends WordSpec with MustMatchers with BeforeAndAfter with
     }
 
     "pull the updates from remote" in {
-      Git.cloneRepository().setURI(remoteRepositoryDirectory.toURI.toString).setDirectory(new File(localRepositoryDirectory)).call()
+      Git.cloneRepository().setURI(remoteRepositoryDirectory.toURI.toString).setDirectory(new File(localRepositoryDirectory)).call().close()
 
       val remoteFile2 = new File(remoteRepositoryDirectory, "test2.txt")
       addFileToRemote(remoteGit, remoteFile2, "commit test2.txt")
