@@ -7,3 +7,4 @@ logs
 public/dist/
 local-conf/kkg.sql
 .scannerwork/
+local-conf/application-dev.conf

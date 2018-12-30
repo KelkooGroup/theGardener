@@ -8,6 +8,7 @@ import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.diff.DiffEntry.ChangeType
 import org.eclipse.jgit.treewalk.CanonicalTreeParser
 import play.api.Logger
+import resource._
 import utils._
 
 import scala.collection.JavaConverters._
@@ -20,7 +21,7 @@ class GitService @Inject()(implicit ec: ExecutionContext) {
 
   def clone(url: String, localDirectory: String): Future[Unit] = {
     Future {
-      Git.cloneRepository().setURI(url).setDirectory(new File(localDirectory)).call()
+      Git.cloneRepository().setURI(url).setDirectory(new File(localDirectory)).call().close()
       Logger.info(s"Cloning $url to $localDirectory")
 
     }.logError(s"Error while cloning repository $url in $localDirectory")
@@ -28,12 +29,15 @@ class GitService @Inject()(implicit ec: ExecutionContext) {
 
   def checkout(branch: String, localRepository: String): Future[Unit] = {
     Future {
-      val git = Git.open(new File(localRepository))
+      managed(Git.open(new File(localRepository))).acquireAndGet { git =>
 
-      Try(git.branchCreate().setName(branch).setUpstreamMode(SET_UPSTREAM).setStartPoint(s"origin/$branch").setForce(true).call())
-        .logError(s"Error while creating the local branch $branch in $localRepository")
+        Try(git.fetch().call())
 
-      git.checkout.setName(branch).call()
+        Try(git.branchCreate().setName(branch).setUpstreamMode(SET_UPSTREAM).setStartPoint(s"origin/$branch").setForce(true).call())
+          .logError(s"Error while creating the local branch $branch in $localRepository")
+
+        git.checkout.setName(branch).call()
+      }
 
       Logger.info(s"git checkout $localRepository to branch $branch")
 
@@ -43,41 +47,42 @@ class GitService @Inject()(implicit ec: ExecutionContext) {
   def pull(localRepository: String): Future[(Seq[String], Seq[String], Seq[String])] = {
     Future {
 
-      val git = Git.open(new File(localRepository))
+      managed(Git.open(new File(localRepository))).acquireAndGet { git =>
 
-      val oldHead = git.getRepository.resolve("HEAD^{tree}")
+        val oldHead = git.getRepository.resolve("HEAD^{tree}")
 
-      git.pull().call()
+        git.pull().call()
 
-      val head = git.getRepository.resolve("HEAD^{tree}")
+        val head = git.getRepository.resolve("HEAD^{tree}")
 
-      val reader = git.getRepository.newObjectReader()
+        val reader = git.getRepository.newObjectReader()
 
-      val oldTreeIter = new CanonicalTreeParser()
-      oldTreeIter.reset(reader, oldHead)
+        val oldTreeIter = new CanonicalTreeParser()
+        oldTreeIter.reset(reader, oldHead)
 
-      val newTreeIter = new CanonicalTreeParser()
-      newTreeIter.reset(reader, head)
+        val newTreeIter = new CanonicalTreeParser()
+        newTreeIter.reset(reader, head)
 
-      val diffs = git.diff.setNewTree(newTreeIter).setOldTree(oldTreeIter).call().asScala
+        val diffs = git.diff.setNewTree(newTreeIter).setOldTree(oldTreeIter).call().asScala
 
-      val created = diffs.filter(diff => diff.getChangeType == ChangeType.ADD || diff.getChangeType == ChangeType.RENAME || diff.getChangeType == ChangeType.COPY).map(_.getNewPath)
-      val updated = diffs.filter(_.getChangeType == ChangeType.MODIFY).map(_.getOldPath)
-      val deleted = diffs.filter(diff => diff.getChangeType == ChangeType.DELETE || diff.getChangeType == ChangeType.RENAME).map(_.getOldPath)
+        val created = diffs.filter(diff => diff.getChangeType == ChangeType.ADD || diff.getChangeType == ChangeType.RENAME || diff.getChangeType == ChangeType.COPY).map(_.getNewPath)
+        val updated = diffs.filter(_.getChangeType == ChangeType.MODIFY).map(_.getOldPath)
+        val deleted = diffs.filter(diff => diff.getChangeType == ChangeType.DELETE || diff.getChangeType == ChangeType.RENAME).map(_.getOldPath)
 
-      val logMessage = if (created.isEmpty && updated.isEmpty && deleted.isEmpty) "no changes"
-      else {
-        val changes = ListBuffer[String]()
-        if (created.nonEmpty) changes += "created : " + created.mkString(", ")
-        if (updated.nonEmpty) changes += "updated : " + updated.mkString(", ")
-        if (deleted.nonEmpty) changes += "deleted : " + updated.mkString(", ")
+        val logMessage = if (created.isEmpty && updated.isEmpty && deleted.isEmpty) "no changes"
+        else {
+          val changes = ListBuffer[String]()
+          if (created.nonEmpty) changes += "created : " + created.mkString(", ")
+          if (updated.nonEmpty) changes += "updated : " + updated.mkString(", ")
+          if (deleted.nonEmpty) changes += "deleted : " + updated.mkString(", ")
 
-        changes.mkString(", ")
+          changes.mkString(", ")
+        }
+
+        Logger.info(s"git pull in $localRepository : $logMessage")
+
+        (created, updated, deleted)
       }
-
-      Logger.info(s"git pull in $localRepository : $logMessage")
-
-      (created, updated, deleted)
 
     }.logError(s"Error while pull updates in $localRepository")
   }

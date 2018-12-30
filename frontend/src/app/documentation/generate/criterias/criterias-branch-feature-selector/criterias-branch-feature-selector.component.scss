@@ -1,0 +1,27 @@
+@import "../../../../../stylesheets/backoffice";
+
+
+.branch-text {
+  padding-top: 5px;
+  padding-left: 30px;
+}
+
+.branches {
+  padding-top: 5px;
+  padding-left: 50px;
+  font-family: "courier", serif;
+  font-size: $font-size-text-small;
+  width: 50%;
+  max-width: 600px;
+}
+
+.stable-branch {
+  font-weight: bold;
+}
+
+.features {
+  padding-top: 5px;
+  padding-left: 80px;
+  display: inline-flex;
+  flex-direction: column;
+}

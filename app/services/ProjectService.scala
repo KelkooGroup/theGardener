@@ -22,7 +22,7 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
 
   actorSystem.scheduler.schedule(initialDelay = synchronizeInitialDelay.seconds, interval = synchronizeInterval.seconds)(synchronizeAll())
 
-  def getLocalRepository(projectId: String, branch: String): String = s"$projectsRootDirectory$projectId/$branch/"
+  def getLocalRepository(projectId: String, branch: String): String = s"$projectsRootDirectory$projectId/$branch/".fixPathSeparator
 
   def checkoutRemoteBranches(project: Project): Future[Unit] = {
     for {

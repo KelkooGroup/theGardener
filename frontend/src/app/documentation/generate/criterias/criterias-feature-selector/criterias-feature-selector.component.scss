@@ -1,0 +1,60 @@
+@import "../../../../../stylesheets/backoffice";
+
+.feature {
+  padding-top: 0;
+  padding-bottom: 0;
+  cursor: pointer;
+  color: $color-text;
+  height: 25px;
+}
+
+.feature-level0 {
+  padding-left: 15px;
+}
+
+.feature-level1 {
+  padding-left: 35px;
+}
+
+.feature-level2 {
+  padding-left: 70px;
+}
+
+.feature-level3 {
+  padding-left: 105px;
+}
+
+.feature-level4 {
+  padding-left: 140px;
+}
+
+.feature-level5 {
+  padding-left: 175px;
+}
+
+
+.selected {
+  font-weight: normal;
+  color: $color-text;
+  padding-top: 0;
+  padding-bottom: 7px;
+
+
+}
+
+.notSelected {
+  font-weight: lighter;
+  color: $color-disabled;
+  padding-left: 16px;
+  padding-top: 1px;
+  padding-bottom: 0;
+}
+
+.icon {
+  color: $color-text;
+  font-size: $font-size-text-small;
+  width: 12px;
+  height: 12px;
+  margin-right: 4px;
+  padding-bottom: 7px;
+}

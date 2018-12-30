@@ -18,8 +18,7 @@
     </ul>
   </div>
   <div *ngIf="criteriaDisplay.projects.length > 0">
-    <span *ngIf="criteriaDisplay.hierarchyNodes.length ==0">Projects:</span>
-    <span *ngIf="criteriaDisplay.hierarchyNodes.length > 0">Additional projects:</span>
+    <span>Projects:</span>
     <ul>
       <li *ngFor="let project of criteriaDisplay.projects;">{{project}}</li>
     </ul>

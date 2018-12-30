@@ -7,6 +7,7 @@ Feature: Generate documentation
     Given the database is empty
     And the cache is empty
     And No project is checkout
+    And the remote projects are empty
     And the hierarchy nodes are
       | id   | slugName   | name              | childrenLabel | childLabel |
       | .    | root       | Hierarchy root    | Views         | View       |
@@ -31,7 +32,7 @@ Feature: As a user Tim, I want some book suggestions so that I can do some disco
     Then the suggestions are popular and available books adapted to the age of the user
     """
     And the database is synchronized on the project "suggestionsWS"
-    When I perform a "GET" on following URL "/api/generateDocumentation?project=_root_suggestion>suggestionsWS"
+    When I perform a "GET" on following URL "/api/generateDocumentation?project=_root_suggestion>suggestionsWS>master>provide_book_suggestions.feature"
     Then I get the following json response body
 """
 {

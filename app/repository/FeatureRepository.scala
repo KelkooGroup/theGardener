@@ -8,6 +8,7 @@ import models._
 import play.api.Logger
 import play.api.db.Database
 import play.api.libs.json.Json
+import utils._
 
 class FeatureRepository @Inject()(db: Database, tagRepository: TagRepository, scenarioRepository: ScenarioRepository) {
 
@@ -21,14 +22,25 @@ class FeatureRepository @Inject()(db: Database, tagRepository: TagRepository, sc
     name <- str("name")
     description <- str("description")
     comments <- str("comments")
-  } yield Feature(id, branchId, path, backgroundAsJson.map(Json.parse(_).as[Background]),
+  } yield Feature(id, branchId, path.fixPathSeparator, backgroundAsJson.map(Json.parse(_).as[Background]),
     tagRepository.findAllByFeatureId(id), language, keyword, name, description,
     scenarioRepository.findAllByFeatureId(id), comments.split("\n").filterNot(_.isEmpty))
+
+  val parserFeaturePath = for {
+    branchId <- long("branchId")
+    path <- str("path")
+  } yield FeaturePath(branchId, path.fixPathSeparator)
 
   def findAll(): Seq[Feature] = {
     db.withConnection { implicit connection =>
       SQL"SELECT * FROM feature".as(parser.*)
         .map(feature => feature.copy(tags = SQL"SELECT name FROM feature_tag WHERE featureId = ${feature.id}".as(scalar[String].*)))
+    }
+  }
+
+  def findAllFeaturePaths(): Seq[FeaturePath] = {
+    db.withConnection { implicit connection =>
+      SQL"SELECT branchId, path FROM feature".as(parserFeaturePath.*)
     }
   }
 
