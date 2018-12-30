@@ -9,8 +9,8 @@ import {
   ViewChild,
   ViewChildren
 } from '@angular/core';
-import {FeatureSelector} from "../../../../_services/criteriasSelection";
-import {MatCheckbox} from "@angular/material";
+import {FeatureSelector} from '../../../../_services/criteriasSelection';
+import {MatCheckbox} from '@angular/material';
 
 @Component({
   selector: 'app-criterias-feature-selector',
@@ -29,7 +29,7 @@ export class CriteriasFeatureSelectorComponent implements OnInit {
   @ViewChild(MatCheckbox)
   checkBox: MatCheckbox;
 
-  selected: boolean = false;
+  selected = false;
 
   constructor() {
   }
@@ -42,12 +42,11 @@ export class CriteriasFeatureSelectorComponent implements OnInit {
   }
 
   filterBy(filter: FeatureSelector) {
-    if (filter.value == "*") {
+    if (filter.value === '*') {
       this.selected = true;
     } else {
       this.selected = this.feature.value.includes(filter.value);
     }
-    //console.log(`Filtering ${this.feature.value} by ${filter.value} => ${this.selected}`);
   }
 
 }

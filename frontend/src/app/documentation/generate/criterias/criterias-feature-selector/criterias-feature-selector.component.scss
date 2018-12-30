@@ -1,8 +1,8 @@
 @import "../../../../../stylesheets/backoffice";
 
 .feature {
-  padding-top: 0px;
-  padding-bottom: 0px;
+  padding-top: 0;
+  padding-bottom: 0;
   cursor: pointer;
   color: $color-text;
   height: 25px;
@@ -36,7 +36,7 @@
 .selected {
   font-weight: normal;
   color: $color-text;
-  padding-top: 0px;
+  padding-top: 0;
   padding-bottom: 7px;
 
 
@@ -47,7 +47,7 @@
   color: $color-disabled;
   padding-left: 16px;
   padding-top: 1px;
-  padding-bottom: 0px;
+  padding-bottom: 0;
 }
 
 .icon {

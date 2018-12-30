@@ -9,9 +9,9 @@ import {
   ViewChild,
   ViewChildren
 } from '@angular/core';
-import {BranchSelector, FeatureSelector, ProjectSelector} from "../../../../_services/criteriasSelection";
-import {CriteriasFeatureSelectorComponent} from "../criterias-feature-selector/criterias-feature-selector.component";
-import {MatSelect} from "@angular/material";
+import {BranchSelector, FeatureSelector, ProjectSelector} from '../../../../_services/criteriasSelection';
+import {CriteriasFeatureSelectorComponent} from '../criterias-feature-selector/criterias-feature-selector.component';
+import {MatSelect} from '@angular/material';
 
 @Component({
   selector: 'app-criterias-branch-feature-selector',

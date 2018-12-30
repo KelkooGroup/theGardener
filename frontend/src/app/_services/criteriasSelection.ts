@@ -38,16 +38,16 @@ export class BranchSelector {
     this.features = new Array<FeatureSelector>();
     this.featureFilter = NO_FEATURE_FILTER;
     this.features.push(ALL_FEATURES_FILTER);
-    var lastDirectory = "";
+    let lastDirectory = '';
     for (let k = 0; k < featureRowPath.length; k++) {
-      var currentPath = featureRowPath[k];
-      var split = currentPath.split('/');
-      if (split.length == 1) {
+      const currentPath = featureRowPath[k];
+      const split = currentPath.split('/');
+      if (split.length === 1) {
         this.features.push(new FeatureSelector(split.length, currentPath, currentPath));
       } else {
-        if (split.length == 2) {
-          var currentDirectory = split[0];
-          if (currentDirectory != lastDirectory) {
+        if (split.length === 2) {
+          const currentDirectory = split[0];
+          if (currentDirectory !== lastDirectory) {
             this.features.push(new FeatureSelector(split.length - 1, currentDirectory, currentDirectory + ' :'));
             lastDirectory = currentDirectory;
           }
@@ -77,7 +77,7 @@ export class BranchSelector {
   }
 
   public hasFilter(): boolean {
-    return this.featureFilter != ALL_FEATURES_FILTER && this.featureFilter != NO_FEATURE_FILTER;
+    return this.featureFilter !== ALL_FEATURES_FILTER && this.featureFilter !== NO_FEATURE_FILTER;
   }
 }
 
@@ -99,15 +99,15 @@ export class ProjectSelector {
   public static newFromApi(projectApi: ProjectApi): ProjectSelector {
 
     const branches = [];
-    let mapBranchNameBranch = new Map();
+    const mapBranchNameBranch = new Map();
     const instance = new ProjectSelector(
       projectApi.id,
       projectApi.label,
       branches
     );
-    if (projectApi.branches != null) {
+    if (projectApi.branches !== null) {
       for (let k = 0; k < projectApi.branches.length; k++) {
-        var currentBranch = new BranchSelector(projectApi.branches[k].name, projectApi.branches[k].features, instance);
+        const currentBranch = new BranchSelector(projectApi.branches[k].name, projectApi.branches[k].features, instance);
         branches.push(currentBranch);
         mapBranchNameBranch.set(currentBranch.name, currentBranch);
       }
@@ -145,7 +145,7 @@ export class ProjectSelector {
   public isIndeterminate(): boolean {
     this.indeterminate = false;
     if (!this.selectedBranch ||
-      (this.selectedBranch && this.selectedBranch.name != this.stableBranch.name)) {
+      (this.selectedBranch && this.selectedBranch.name !== this.stableBranch.name)) {
       this.indeterminate = true;
     }
     if (this.selectedBranch && this.selectedBranch.hasFilter()) {
@@ -372,17 +372,17 @@ export class CriteriasSelector {
     const criteriasDisplay = new CriteriasDisplay();
 
 
-    if (nodes != null) {
+    if (nodes !== null) {
       for (let i = 0; i < nodes.length; i++) {
         const path = nodes[i];
         const hierarchyNode = new HierarchyNodeDisplay(path, this.humanizeNodePath(path));
         criteriasDisplay.hierarchyNodes.push(hierarchyNode);
       }
     }
-    if (projects != null) {
+    if (projects !== null) {
       for (let i = 0; i < projects.length; i++) {
         const projectSelectorString = projects[i];
-        if (projectSelectorString != null) {
+        if (projectSelectorString !== null) {
           const projectSelectorParams = projectSelectorString.split(CriteriasSelector.SPLIT_PROJECT);
 
           if (projectSelectorParams.length > 0) {
@@ -462,10 +462,10 @@ export class CriteriasSelector {
           if (loopProject.selectedBranch !== undefined
             && (
               (loopProject.selectedBranch.name !== loopProject.stableBranch.name)
-              || (loopProject.selectedBranch.featureFilter.value != ALL_FEATURES_FILTER.value)
+              || (loopProject.selectedBranch.featureFilter.value !== ALL_FEATURES_FILTER.value)
             )
           ) {
-            var loopHttpParams = this._buildHttpParamsForAProject(loopProject);
+            let loopHttpParams = this._buildHttpParamsForAProject(loopProject);
             httpParams = httpParams.append(CriteriasSelector.PARAM_PROJECT, loopHttpParams);
           }
         }
@@ -481,7 +481,7 @@ export class CriteriasSelector {
 
 
   private _buildHttpParamsForAProject(project: ProjectSelector): string {
-    var projectHttpParams = `${project.relatedHierarchyNode.path}${CriteriasSelector.SPLIT_PROJECT}${project.id}`;
+    let projectHttpParams = `${project.relatedHierarchyNode.path}${CriteriasSelector.SPLIT_PROJECT}${project.id}`;
     let selectedBranch = project.selectedBranch;
     if (selectedBranch !== undefined) {
       projectHttpParams += `${CriteriasSelector.SPLIT_PROJECT}${project.selectedBranch.name}`;
