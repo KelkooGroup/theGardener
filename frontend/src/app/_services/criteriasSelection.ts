@@ -372,17 +372,17 @@ export class CriteriasSelector {
     const criteriasDisplay = new CriteriasDisplay();
 
 
-    if (nodes !== null) {
+    if (nodes !== undefined) {
       for (let i = 0; i < nodes.length; i++) {
         const path = nodes[i];
         const hierarchyNode = new HierarchyNodeDisplay(path, this.humanizeNodePath(path));
         criteriasDisplay.hierarchyNodes.push(hierarchyNode);
       }
     }
-    if (projects !== null) {
+    if (projects !== undefined) {
       for (let i = 0; i < projects.length; i++) {
         const projectSelectorString = projects[i];
-        if (projectSelectorString !== null) {
+        if (projectSelectorString !== undefined) {
           const projectSelectorParams = projectSelectorString.split(CriteriasSelector.SPLIT_PROJECT);
 
           if (projectSelectorParams.length > 0) {
