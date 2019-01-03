@@ -33,7 +33,8 @@ export class CriteriasComponent {
   constructor(private criteriasService: CriteriasService, private route: ActivatedRoute) {
     this.criteriasService.criterias().subscribe(
       (result: Array<HierarchyNodeApi>) => {
-        this.criteriasSelector.hierarchyNodesSelector = criteriasService.buildHierarchyNodeSelectorAsTree(criteriasService.buildHierarchyNodeSelector(result)).children;
+        const hierarchyNodeSelectorTree = criteriasService.buildHierarchyNodeSelectorAsTree(criteriasService.buildHierarchyNodeSelector(result));
+        this.criteriasSelector.hierarchyNodesSelector = hierarchyNodeSelectorTree && hierarchyNodeSelectorTree.children;
         this.views = this.criteriasSelector.hierarchyNodesSelector;
 
       },
