@@ -3,7 +3,7 @@ import {Component, Input, OnInit} from '@angular/core';
 @Component({
   selector: 'app-documentation-theme-book-long-text',
   templateUrl: './documentation-theme-book-long-text.component.html',
-  styleUrls: ['./documentation-theme-book-long-text.component.css']
+  styleUrls: ['./documentation-theme-book-long-text.component.scss']
 })
 export class DocumentationThemeBookLongTextComponent implements OnInit {
 
