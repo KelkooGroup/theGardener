@@ -38,6 +38,7 @@
     "moment": "^2.23.0",
     "ngx-moment": "^3.3.0",
     "ngx-numeral": "0.0.1-beta.0",
+    "ngx-json-viewer": "2.4.0",
     "rxjs": "^6.3.3",
     "rxjs-compat": "^6.3.3",
     "ts-option": "^1.1.5",

@@ -153,12 +153,27 @@ export class DocumentationStep implements ExpandableNode {
   public text = [];
   public hasTable: boolean;
   public table: DocumentationStepTable;
+  public hasLongText: boolean;
+  public longText: string;
 
 
   public static newFromApi(dataApi: DocumentationStepApi): DocumentationStep {
     const instance = new DocumentationStep();
     instance.data = dataApi;
-    instance.hasTable = dataApi.argument != null && dataApi.argument.length > 0;
+    instance.hasTable = false ;
+    instance.hasLongText = false ;
+
+    if (dataApi.argument != null && dataApi.argument.length > 0){
+
+      if (dataApi.argument.length > 1){
+        instance.hasTable = true ;
+      }else{
+        instance.hasLongText = dataApi.argument[0].length == 1 ;
+        instance.longText = dataApi.argument[0][0];
+      }
+
+    }
+
     if (instance.hasTable) {
       instance.table = new DocumentationStepTable();
       for (let j = 0; j < dataApi.argument.length; j++) {
