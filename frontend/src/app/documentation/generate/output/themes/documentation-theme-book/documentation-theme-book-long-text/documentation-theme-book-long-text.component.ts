@@ -11,7 +11,7 @@ export class DocumentationThemeBookLongTextComponent implements OnInit {
   longText: string;
 
   isJson: boolean;
-  json : any;
+  json: any;
 
   constructor() { }
 
@@ -20,11 +20,10 @@ export class DocumentationThemeBookLongTextComponent implements OnInit {
   }
 
   set jsonText (text) {
-    try{
+    try {
       this.json = JSON.parse(text);
       this.isJson = true ;
-    }
-    catch(e) {
+    } catch (e) {
       this.isJson = false ;
     }
   }
