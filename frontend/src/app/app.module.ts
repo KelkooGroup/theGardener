@@ -15,6 +15,7 @@ import {DashboardPageComponent} from './next/dashboard-page/dashboard-page.compo
 import {ProfilePageComponent} from './next/profile-page/profile-page.component';
 import {SearchPageComponent} from './next/search-page/search-page.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { NgxJsonViewerModule } from 'ngx-json-viewer';
 import {FormsModule} from '@angular/forms';
 import {
   MatButtonModule,
@@ -45,6 +46,7 @@ import {DocumentationThemeBookTableComponent} from './documentation/generate/out
 import {FooterComponent} from './_components/page/footer/footer.component';
 import {CriteriasBranchFeatureSelectorComponent} from './documentation/generate/criterias/criterias-branch-feature-selector/criterias-branch-feature-selector.component';
 import {CriteriasFeatureSelectorComponent} from './documentation/generate/criterias/criterias-feature-selector/criterias-feature-selector.component';
+import { DocumentationThemeBookLongTextComponent } from './documentation/generate/output/themes/documentation-theme-book/documentation-theme-book-long-text/documentation-theme-book-long-text.component';
 
 const nonProductionProviders = [{
   provide: HTTP_INTERCEPTORS,
@@ -74,6 +76,7 @@ const nonProductionProviders = [{
     FooterComponent,
     CriteriasBranchFeatureSelectorComponent,
     CriteriasFeatureSelectorComponent,
+    DocumentationThemeBookLongTextComponent,
   ],
   imports: [
     HttpClientModule,
@@ -96,7 +99,8 @@ const nonProductionProviders = [{
     MatTreeModule,
     MatIconModule,
     MatProgressSpinnerModule,
-    FormsModule
+    FormsModule,
+    NgxJsonViewerModule,
   ],
   providers: [
     ...!environment.production ? nonProductionProviders : [],
