@@ -64,8 +64,8 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
 
         val localRepo = getLocalRepository(project.id, branchName)
         val localRepoFile = new File(localRepo)
-        if (!localRepoFile.exists()){
-          checkoutBranches(project, List(branchName).toSet)
+        if (!localRepoFile.exists()) {
+          checkoutBranches(project, Set(branchName))
         }
 
         gitService.pull(localRepo).map { case (created, updated, deleted) =>

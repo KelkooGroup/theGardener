@@ -165,10 +165,10 @@ export class DocumentationStep implements ExpandableNode {
 
     if (dataApi.argument != null && dataApi.argument.length > 0){
 
-      if (dataApi.argument.length > 1){
-        instance.hasTable = true ;
-      }else{
-        instance.hasLongText = dataApi.argument[0].length == 1 ;
+      if (dataApi.argument.length > 1) {
+        instance.hasTable = true;
+      } else {
+        instance.hasLongText = dataApi.argument[0].length == 1;
         instance.longText = dataApi.argument[0][0];
       }
 
