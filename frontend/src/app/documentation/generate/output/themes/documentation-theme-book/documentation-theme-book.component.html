@@ -132,7 +132,9 @@
                               <div  *ngIf="step.hasTable"  class="table pull-right" >
                                 <app-documentation-theme-book-table [table]="step.table" ></app-documentation-theme-book-table>
                               </div>
-
+                              <div  *ngIf="step.hasLongText"  class="table pull-right" >
+                                <app-documentation-theme-book-long-text [longText]="step.longText" ></app-documentation-theme-book-long-text>
+                              </div>
 
                             </li>
 

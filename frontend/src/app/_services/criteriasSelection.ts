@@ -11,30 +11,87 @@ export class TupleHierarchyNodeSelector {
   }
 }
 
+export class FeatureSelector {
+  constructor(
+    public level: number,
+    public value: string,
+    public display: string,
+  ) {
+
+  }
+
+}
+
+const NO_FEATURE_FILTER = new FeatureSelector(0, '~', 'None features');
+const ALL_FEATURES_FILTER = new FeatureSelector(0, '*', 'All features');
+
 export class BranchSelector {
+
+  public featureFilter: FeatureSelector;
+  public features: Array<FeatureSelector>;
 
   constructor(
     public name: string,
+    public featureRowPath: Array<string>,
     public project: ProjectSelector
   ) {
+    this.features = new Array<FeatureSelector>();
+    this.featureFilter = NO_FEATURE_FILTER;
+    this.features.push(ALL_FEATURES_FILTER);
+    let lastDirectory = '';
+    for (let k = 0; k < featureRowPath.length; k++) {
+      const currentPath = featureRowPath[k];
+      const split = currentPath.split('/');
+      if (split.length === 1) {
+        this.features.push(new FeatureSelector(split.length, currentPath, currentPath));
+      } else {
+        if (split.length === 2) {
+          const currentDirectory = split[0];
+          if (currentDirectory !== lastDirectory) {
+            this.features.push(new FeatureSelector(split.length - 1, currentDirectory, currentDirectory + ' :'));
+            lastDirectory = currentDirectory;
+          }
+          this.features.push(new FeatureSelector(split.length, currentPath, split[1]));
+        } else {
+          this.features.push(new FeatureSelector(split.length, currentPath, currentPath));
+        }
+      }
+    }
   }
 
-  public selection() {
-    this.project.selectedBranch = this;
+  public selectBranch() {
+    this.project.branchSelection(this);
+    this.selectAllFeatures();
   }
 
+  public selectFeature(feature: FeatureSelector) {
+    this.project.featureSelection(feature);
+  }
+
+  public selectAllFeatures() {
+    this.featureFilter = ALL_FEATURES_FILTER;
+  }
+
+  public selectNoneFeatures() {
+    this.featureFilter = NO_FEATURE_FILTER;
+  }
+
+  public hasFilter(): boolean {
+    return this.featureFilter !== ALL_FEATURES_FILTER && this.featureFilter !== NO_FEATURE_FILTER;
+  }
 }
 
 export class ProjectSelector {
 
   public selected = false;
+  public indeterminate = false;
   public selectedBranch: BranchSelector;
+  public stableBranch: BranchSelector;
   public relatedHierarchyNode: HierarchyNodeSelector;
 
   constructor(
     public id: string,
     public label: string,
-    public stableBranch: BranchSelector,
     public branches: Array<BranchSelector>,
   ) {
   }
@@ -42,26 +99,63 @@ export class ProjectSelector {
   public static newFromApi(projectApi: ProjectApi): ProjectSelector {
 
     const branches = [];
-    const stableBranch = new BranchSelector(projectApi.stableBranch, null);
+    const mapBranchNameBranch = new Map();
     const instance = new ProjectSelector(
       projectApi.id,
       projectApi.label,
-      stableBranch,
       branches
     );
-    stableBranch.project = instance;
-    if (projectApi.branches != null) {
+    if (projectApi.branches !== null) {
       for (let k = 0; k < projectApi.branches.length; k++) {
-        branches.push(new BranchSelector(projectApi.branches[k], instance));
+        const currentBranch = new BranchSelector(projectApi.branches[k].name, projectApi.branches[k].features, instance);
+        branches.push(currentBranch);
+        mapBranchNameBranch.set(currentBranch.name, currentBranch);
       }
     }
+
+    instance.stableBranch = mapBranchNameBranch.get(projectApi.stableBranch);
+    instance.stableBranch.project = instance;
+    instance.selectedBranch = instance.stableBranch;
     return instance;
   }
 
   public selection(selected: boolean) {
     this.selected = selected;
+    this.selectedBranch = this.stableBranch;
+    if (this.selected) {
+      this.selectedBranch.selectAllFeatures();
+    } else {
+      this.selectedBranch.selectNoneFeatures();
+    }
     this.relatedHierarchyNode.root.updateIndeterminateStatus();
   }
+
+  public featureSelection(selectedFeature: FeatureSelector) {
+    this.selected = true;
+    this.selectedBranch.featureFilter = selectedFeature;
+    this.relatedHierarchyNode.root.updateIndeterminateStatus();
+  }
+
+  public branchSelection(selectedBranch: BranchSelector) {
+    this.selected = true;
+    this.selectedBranch = selectedBranch;
+    this.relatedHierarchyNode.root.updateIndeterminateStatus();
+  }
+
+  public isIndeterminate(): boolean {
+    this.indeterminate = false;
+    if (!this.selectedBranch ||
+      (this.selectedBranch && this.selectedBranch.name !== this.stableBranch.name)) {
+      this.indeterminate = true;
+    }
+    if (this.selectedBranch && this.selectedBranch.hasFilter()) {
+      this.indeterminate = true;
+    }
+
+    return this.indeterminate;
+  }
+
+
 }
 
 export class HierarchyNodeSelector {
@@ -140,14 +234,18 @@ export class HierarchyNodeSelector {
 
     if (this.hasProjects()) {
       let nbSelected = 0;
+      let nbIndeterminate = 0;
 
       for (let j = 0; j < this.projects.length; j++) {
         const loopProjectApi = this.projects[j];
         if (loopProjectApi.selected) {
           nbSelected++;
         }
+        if (loopProjectApi.isIndeterminate()) {
+          nbIndeterminate++;
+        }
       }
-      if (nbSelected === this.projects.length) {
+      if (nbSelected === this.projects.length && nbIndeterminate === 0) {
         localStatus = 'selected';
       } else {
         if (nbSelected === 0) {
@@ -247,7 +345,7 @@ export class ProjectDisplay {
   public toString() {
     const project = `On ${this.node} only ${this.name}`;
     if (this.specificBranch) {
-      return `${project} at ${this.specificBranch } branch`;
+      return `${project} at ${this.specificBranch} branch`;
     } else {
       return project;
     }
@@ -274,17 +372,17 @@ export class CriteriasSelector {
     const criteriasDisplay = new CriteriasDisplay();
 
 
-    if (nodes != null) {
+    if (nodes !== undefined) {
       for (let i = 0; i < nodes.length; i++) {
         const path = nodes[i];
         const hierarchyNode = new HierarchyNodeDisplay(path, this.humanizeNodePath(path));
         criteriasDisplay.hierarchyNodes.push(hierarchyNode);
       }
     }
-    if (projects != null) {
+    if (projects !== undefined) {
       for (let i = 0; i < projects.length; i++) {
         const projectSelectorString = projects[i];
-        if (projectSelectorString != null) {
+        if (projectSelectorString !== undefined) {
           const projectSelectorParams = projectSelectorString.split(CriteriasSelector.SPLIT_PROJECT);
 
           if (projectSelectorParams.length > 0) {
@@ -336,7 +434,7 @@ export class CriteriasSelector {
     }
     if (hierarchyNodeSelector.selected) {
       httpParams = httpParams.append(CriteriasSelector.PARAM_NODE, hierarchyNodeSelector.path);
-      return this._buildHttpParamsForSpecificBranches(httpParams, hierarchyNodeSelector);
+      return this._buildHttpParamsForSpecificProjectSelection(httpParams, hierarchyNodeSelector);
     }
 
     if (hierarchyNodeSelector.hasChilden()) {
@@ -348,10 +446,7 @@ export class CriteriasSelector {
       for (let i = 0; i < hierarchyNodeSelector.projects.length; i++) {
         const loopProject: ProjectSelector = hierarchyNodeSelector.projects[i];
         if (loopProject.selected) {
-          let loopHttpParams = `${hierarchyNodeSelector.path}${CriteriasSelector.SPLIT_PROJECT}${loopProject.id}`;
-          if (loopProject.selectedBranch !== undefined && loopProject.selectedBranch.name !== loopProject.stableBranch.name) {
-            loopHttpParams += `${CriteriasSelector.SPLIT_PROJECT}${loopProject.selectedBranch.name}`;
-          }
+          const loopHttpParams = this._buildHttpParamsForAProject(loopProject);
           httpParams = httpParams.append(CriteriasSelector.PARAM_PROJECT, loopHttpParams);
         }
       }
@@ -359,13 +454,18 @@ export class CriteriasSelector {
     return httpParams;
   }
 
-  private _buildHttpParamsForSpecificBranches(httpParams: HttpParams, hierarchyNodeSelector: HierarchyNodeSelector): HttpParams {
+  private _buildHttpParamsForSpecificProjectSelection(httpParams: HttpParams, hierarchyNodeSelector: HierarchyNodeSelector): HttpParams {
     if (hierarchyNodeSelector.hasProjects()) {
       for (let i = 0; i < hierarchyNodeSelector.projects.length; i++) {
         const loopProject: ProjectSelector = hierarchyNodeSelector.projects[i];
         if (loopProject.selected) {
-          if (loopProject.selectedBranch !== undefined && loopProject.selectedBranch.name !== loopProject.stableBranch.name) {
-            const loopHttpParams = `${hierarchyNodeSelector.path}${CriteriasSelector.SPLIT_PROJECT}${loopProject.id}${CriteriasSelector.SPLIT_PROJECT}${loopProject.selectedBranch.name}`;
+          if (loopProject.selectedBranch !== undefined
+            && (
+              (loopProject.selectedBranch.name !== loopProject.stableBranch.name)
+              || (loopProject.selectedBranch.featureFilter.value !== ALL_FEATURES_FILTER.value)
+            )
+          ) {
+            const loopHttpParams = this._buildHttpParamsForAProject(loopProject);
             httpParams = httpParams.append(CriteriasSelector.PARAM_PROJECT, loopHttpParams);
           }
         }
@@ -373,9 +473,22 @@ export class CriteriasSelector {
     }
     if (hierarchyNodeSelector.hasChilden()) {
       for (let i = 0; i < hierarchyNodeSelector.children.length; i++) {
-        httpParams = this._buildHttpParamsForSpecificBranches(httpParams, hierarchyNodeSelector.children[i]);
+        httpParams = this._buildHttpParamsForSpecificProjectSelection(httpParams, hierarchyNodeSelector.children[i]);
       }
     }
     return httpParams;
+  }
+
+
+  private _buildHttpParamsForAProject(project: ProjectSelector): string {
+    let projectHttpParams = `${project.relatedHierarchyNode.path}${CriteriasSelector.SPLIT_PROJECT}${project.id}`;
+    const selectedBranch = project.selectedBranch;
+    if (selectedBranch !== undefined) {
+      projectHttpParams += `${CriteriasSelector.SPLIT_PROJECT}${project.selectedBranch.name}`;
+      if (selectedBranch.featureFilter !== undefined) {
+        projectHttpParams += `${CriteriasSelector.SPLIT_PROJECT}${selectedBranch.featureFilter.value}`;
+      }
+    }
+    return projectHttpParams;
   }
 }

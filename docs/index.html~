@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>theGardener</title>
+
+    <!-- mobile responsive meta -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <!-- themefy-icon -->
+    <link rel="stylesheet" href="css/themify-icons.css">
+    <!-- slick slider -->
+    <link rel="stylesheet" href="css/slick.css">
+    <!-- venobox popup -->
+    <link rel="stylesheet" href="css/venobox.css">
+
+    <!-- Main Stylesheet -->
+    <link href="css/style.css" rel="stylesheet">
+
+    <!--Favicon-->
+    <link rel="icon" type="image/png" href="favicon/favicon-196x196.png" sizes="196x196">
+    <link rel="icon" type="image/png" href="favicon/favicon-96x96.png" sizes="96x96">
+    <link rel="icon" type="image/png" href="favicon/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="favicon/favicon-16x16.png" sizes="16x16">
+    <link rel="icon" type="image/png" href="favicon/favicon-128x128.png" sizes="128x128">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-131476478-1"></script>
+    <script>
+     window.dataLayer = window.dataLayer || [];
+     function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+     gtag('config', 'UA-131476478-1');
+   </script>
+
+
+</head>
+
+<body>
+
+
+<!-- navigation -->
+<section class="fixed-top navigation">
+    <div class="container">
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <a class="navbar-brand" href="#"><img src="images/logo.png" alt="logo"></a>
+            <button class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#navbar"
+                    aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <!-- navbar -->
+            <div class="collapse navbar-collapse text-center" id="navbar">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link page-scroll" href="#context">theContext</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link page-scroll" href="#problem">theProblem</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link page-scroll" href="#solution">theSolution</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link page-scroll" href="#project">theProject</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link page-scroll" href="#links">theLinks</a>
+                    </li>
+                 </ul>
+                <a href="https://github.com/KelkooGroup/theGardener/blob/master/README.md" target="_blank" class="btn btn-primary btn-sm primary-shadow">Try It</a>
+            </div>
+        </nav>
+    </div>
+</section>
+<!-- /navigation -->
+
+<!-- hero area -->
+<section class="hero-section" data-background="" style="background-image: url(images/banner-bg.png);">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <h1 class="mb-3">Behaviour Driven Development
+                </h1>
+                <p class="mb-4">Speed the overall development time, enshure product owner and developers really
+                    understand each other's,<br>
+                    and the team is confident about its product and its development
+                </p>
+                <a href="https://github.com/KelkooGroup/theGardener/wiki" target="_blank" class="btn btn-secondary btn-lg mb-5">explore us</a>
+                <!-- banner image -->
+                <img class="img-fluid" src="images/banner.png" alt="banner-img">
+            </div>
+        </div>
+    </div>
+</section>
+<!-- /hero-area -->
+
+
+<!-- Intern -->
+<section  id="intern"  class="section-m ">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 order-2 order-md-1">
+                <h2 class="section-title">Intern </h2>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- /Intern -->
+
+
+<!-- discussion -->
+<section class="section-lg seo">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <img class="img-fluid" src="images/job.png" alt="form-img">
+            </div>
+            <div class="col-md-5">
+                <h4 class="section-title">We are looking for an intern to work on the project</h4>
+                <p>We are searching for one intern for Spring 2019. This is at <a href="https://www.kelkoogroup.com/" target="_blank">kelkoogroup</a> office in Grenoble, we are working with Play Scala Angular TDD and BBD.<br>Not necessarily need to know them all: you will learn alongside our engineers <br><a href="https://www.kelkoogroup.com/fr/jobs/" >To apply </a>.
+                    
+                </p>
+            </div>
+        </div>
+    </div>
+    <!-- background image -->
+    <img class="img-fluid seo-bg" src="images/seo-bg.png" alt="seo-bg">
+    <!-- background-shape -->
+    <img class="seo-bg-shape-1" src="images/seo-ball-1.png" alt="bg-shape">
+    <img class="seo-bg-shape-2" src="images/seo-half-cycle.png" alt="bg-shape">
+    <img class="seo-bg-shape-3" src="images/seo-ball-2.png" alt="bg-shape">
+</section>
+<!-- /discussion -->
+
+<!-- context -->
+<section  id="context"  class="section-m ">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 order-2 order-md-1">
+                <h2 class="section-title">Context </h2>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- /context -->
+
+<!-- discussion -->
+<section class="section-lg seo">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <img class="img-fluid" src="images/context-a-good-way.png" alt="form-img">
+            </div>
+            <div class="col-md-5">
+                <h4 class="section-title">Open the discussion with your product owner</h4>
+                <p>BBD is a good way to open the discussion with your product owner<br>
+                    This is a contract between the product owner and dev team
+                </p>
+            </div>
+        </div>
+    </div>
+    <!-- background image -->
+    <img class="img-fluid seo-bg" src="images/seo-bg.png" alt="seo-bg">
+    <!-- background-shape -->
+    <img class="seo-bg-shape-1" src="images/seo-ball-1.png" alt="bg-shape">
+    <img class="seo-bg-shape-2" src="images/seo-half-cycle.png" alt="bg-shape">
+    <img class="seo-bg-shape-3" src="images/seo-ball-2.png" alt="bg-shape">
+</section>
+<!-- /discussion -->
+
+<!-- velocity -->
+<section class="section-lg seo">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-5">
+                <h4 class="section-title">Improve the velocity of the team</h4>
+                <p>Instead to have a 2 weeks loop of feedback, you have a 2 hours loop of feedback
+                </p>
+            </div>
+            <div class="col-md-6 ">
+                <img class="img-fluid" src="images/context-velocity.png" alt="form-img">
+            </div>
+        </div>
+    </div>
+    <img class="seo-bg-shape-1" src="images/seo-ball-1.png" alt="bg-shape">
+    <img class="seo-bg-shape-2" src="images/seo-half-cycle.png" alt="bg-shape">
+    <img class="seo-bg-shape-3" src="images/seo-ball-2.png" alt="bg-shape">
+
+    <!-- background image -->
+    <img class="img-fluid seo-bg" src="images/seo-bg.png" alt="seo-bg">
+    <!-- background-shape -->
+</section>
+<!-- /velocity -->
+
+
+<!-- rails -->
+<section class="section-lg seo">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <img class="img-fluid" src="images/context-rails.png" alt="form-img">
+            </div>
+            <div class="col-md-5">
+                <h4 class="section-title">Dev are on rails</h4>
+                <p>BDD scenarios guide the dev in the implementation of the feature
+                </p>
+            </div>
+        </div>
+    </div>
+    <!-- background image -->
+    <img class="img-fluid seo-bg" src="images/seo-bg.png" alt="seo-bg">
+    <!-- background-shape -->
+    <img class="seo-bg-shape-1" src="images/seo-ball-1.png" alt="bg-shape">
+    <img class="seo-bg-shape-2" src="images/seo-half-cycle.png" alt="bg-shape">
+    <img class="seo-bg-shape-3" src="images/seo-ball-2.png" alt="bg-shape">
+</section>
+<!-- /rails -->
+
+
+<!-- refactoring -->
+<section class="section-lg seo">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-5">
+                <h4 class="section-title">Refactoring</h4>
+                <p>To have the features defined at compoent level make the refactoring at component level possible and easy</p>
+            </div>
+            <div class="col-md-6">
+                <img class="img-fluid" src="images/context-refactoring.png" alt="form-img">
+            </div>
+
+        </div>
+    </div>
+
+    <img class="seo-bg-shape-1" src="images/seo-ball-1.png" alt="bg-shape">
+    <img class="seo-bg-shape-2" src="images/seo-half-cycle.png" alt="bg-shape">
+    <img class="seo-bg-shape-3" src="images/seo-ball-2.png" alt="bg-shape">
+</section>
+<!-- /refactoring -->
+
+
+<!-- reference -->
+<section class="section-lg seo">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <img class="img-fluid" src="images/context-the-book.jpg" alt="form-img">
+            </div>
+            <div class="col-md-5">
+                <h4 class="section-title">The reference</h4>
+                <p>You have now an exhaustive accurate and executable documentation </p>
+            </div>
+        </div>
+    </div>
+    <!-- background image -->
+    <img class="img-fluid seo-bg" src="images/seo-bg.png" alt="seo-bg">
+    <!-- background-shape -->
+    <img class="seo-bg-shape-1" src="images/seo-ball-1.png" alt="bg-shape">
+    <img class="seo-bg-shape-2" src="images/seo-half-cycle.png" alt="bg-shape">
+    <img class="seo-bg-shape-3" src="images/seo-ball-2.png" alt="bg-shape">
+</section>
+<!-- /reference -->
+
+<!-- problem -->
+<section  id="problem"  class="section-m ">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 order-2 order-md-1">
+                <h2 class="section-title">Problem </h2>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- /problem -->
+
+
+<!-- problem -->
+<section class="section-lg seo">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <img class="img-fluid" src="images/problem.png" alt="form-img">
+            </div>
+            <div class="col-md-5">
+                <h4 class="section-title">We should improve the process</h4>
+                <p>The exhaustive accurate and executable documentation is not really accessible<br>
+                    The interactions with the product owner are not always easy
+                </p>
+            </div>
+        </div>
+    </div>
+    <!-- background image -->
+    <img class="img-fluid seo-bg" src="images/seo-bg.png" alt="seo-bg">
+    <!-- background-shape -->
+    <img class="seo-bg-shape-1" src="images/seo-ball-1.png" alt="bg-shape">
+    <img class="seo-bg-shape-2" src="images/seo-half-cycle.png" alt="bg-shape">
+    <img class="seo-bg-shape-3" src="images/seo-ball-2.png" alt="bg-shape">
+</section>
+<!-- /problem -->
+
+
+<!-- solution -->
+<section  id="solution"  class="section-m ">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 order-2 order-md-1">
+                <h2 class="section-title">Solution </h2>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- /solution -->
+
+
+<!-- solution -->
+<section class="section-lg seo">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <img class="img-fluid" src="images/solution.png" alt="form-img">
+            </div>
+            <div class="col-md-5">
+                <h4 class="section-title">Use theGardener</h4>
+                <p>Give an easy access to the exhaustive accurate and executable documentation<br>
+                    Write scenarios through an application shared with all members of the team
+
+                </p>
+            </div>
+        </div>
+    </div>
+    <!-- background image -->
+    <img class="img-fluid seo-bg" src="images/seo-bg.png" alt="seo-bg">
+    <!-- background-shape -->
+    <img class="seo-bg-shape-1" src="images/seo-ball-1.png" alt="bg-shape">
+    <img class="seo-bg-shape-2" src="images/seo-half-cycle.png" alt="bg-shape">
+    <img class="seo-bg-shape-3" src="images/seo-ball-2.png" alt="bg-shape">
+</section>
+<!-- /solution -->
+
+
+<!-- project -->
+<section  id="project"  class="section-m ">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 order-2 order-md-1">
+                <h2 class="section-title">Project </h2>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- /project -->
+
+
+<!-- features -->
+<section class="section-lg seo">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-5">
+                <h4 class="section-title">Features</h4>
+                <ul class="pl-0 service-list">
+                    <li><i class="ti-angle-right"></i>Generation of the documentation <br>&nbsp;&nbsp;(almost done) </li>
+                    <li><i class="ti-angle-right"></i>Write scenario through a workflow  <br>&nbsp;&nbsp;(planned)</li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <img class="img-fluid" src="favicon/favicon-196x196.png" alt="form-img">
+            </div>
+
+        </div>
+    </div>
+    <img class="seo-bg-shape-1" src="images/seo-ball-1.png" alt="bg-shape">
+    <img class="seo-bg-shape-2" src="images/seo-half-cycle.png" alt="bg-shape">
+    <img class="seo-bg-shape-3" src="images/seo-ball-2.png" alt="bg-shape">
+</section>
+<!-- /features -->
+
+<!-- stack -->
+<section class="section-lg seo">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <img class="img-fluid" src="images/project-stack.png" alt="form-img">
+            </div>
+            <div class="col-md-5">
+                <h4 class="section-title">Technical stack</h4>
+                <ul class="pl-0 service-list">
+                    <li><i class="ti-angle-right"></i>Play / Scala on the back</li>
+                    <li><i class="ti-angle-right"></i>Angular on the front</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- background image -->
+    <img class="img-fluid service-bg" src="images/service-bg.png" alt="service-bg">
+    <!-- background shapes -->
+    <img class="service-bg-shape-1" src="images/service-half-cycle.png" alt="background-shape">
+    <img class="service-bg-shape-2" src="images/feature-bg-2.png" alt="background-shape">
+</section>
+<!-- /stack -->
+
+
+
+<!-- links -->
+<section id="links" class="section feature mb-0" id="feature">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <h2 class="section-title">Links</h2>
+            </div>
+
+
+            <!-- feature item -->
+            <div class="col-md-6 mb-80">
+                <div class="d-flex feature-item">
+                    <div>
+                        <i class="ti-pencil-alt feature-icon mr-4"></i>
+                    </div>
+                    <div>
+                        <h4>Licence</h4>
+                        <p>Open source project on <a href="https://github.com/KelkooGroup/theGardener/blob/master/LICENSE" target="_blank" >Apache Licence 2.0</a></p>
+                    </div>
+                </div>
+            </div>
+            <!-- feature item -->
+            <div class="col-md-6 mb-80">
+                <div class="d-flex feature-item">
+                    <div>
+                        <i class="ti-home feature-icon mr-4"></i>
+                    </div>
+                    <div>
+                        <h4>Host</h4>
+                        <p>Hosted on <a href="https://github.com/KelkooGroup/theGardener" target="_blank">GitHub</a></p>
+                    </div>
+                </div>
+            </div>
+            <!-- feature item -->
+            <div class="col-md-6 mb-80">
+                <div class="d-flex feature-item">
+                    <div>
+                        <i class="ti-info feature-icon mr-4"></i>
+                    </div>
+                    <div>
+                        <h4>Discussion</h4>
+                        <p><a href="https://discordapp.com/channels/417704230531366923/417704230976225281" target="_blank">Channel for discussion</a></p>
+                    </div>
+                </div>
+            </div>
+            <!-- feature item -->
+            <div class="col-md-6 mb-80">
+                <div class="d-flex feature-item">
+                    <div>
+                        <i class="ti-list feature-icon mr-4"></i>
+                    </div>
+                    <div>
+                        <h4>Kanban</h4>
+                        <p><a href="https://github.com/KelkooGroup/theGardener/projects/1" target="_blank">Kanban</a></p>
+                    </div>
+                </div>
+            </div>
+            <!-- feature item -->
+            <div class="col-md-6 offset-md-6 mb-80">
+                <div class="d-flex feature-item">
+                    <div>
+                        <i class="ti-arrow-right feature-icon mr-4"></i>
+                    </div>
+                    <div>
+                        <h4>Milestones</h4>
+                        <p><a href="https://github.com/KelkooGroup/theGardener/milestones" target="_blank">Milestones</a></p>
+                    </div>
+                </div>
+            </div>
+            <!-- feature item -->
+            <div class="col-md-6 offset-md-6 mb-80">
+                <div class="d-flex feature-item">
+                    <div>
+                        <i class="ti-volume feature-icon mr-4"></i>
+                    </div>
+                    <div>
+                        <h4>Issues</h4>
+                        <p><a href="https://github.com/KelkooGroup/theGardener/issues" target="_blank">Issues</a></p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!--  <img class="feature-bg-1" src="images/feature-bg-1.png" alt="bg-shape"> -->
+    <!--   <img class="feature-bg-2" src="images/feature-bg-2.png" alt="bg-shape"> -->
+</section>
+<!-- /links -->
+
+
+
+
+<!-- newsletter -->
+<section class="newsletter">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <h3>Original idea and main contributors from</h3><br>
+
+            </div>
+            <div class="col-lg-12 text-center">
+                <a href="https://www.kelkoogroup.com/" class="text-center "  target="_blank" style="width: 230px;" tabindex="0"><img class=""
+                                                                                         src="images/kg-logo.png"
+                                                                                         alt="client-logo"></a>
+                <!-- <form action="#">
+                  <div class="input-wrapper position-relative">
+                    <input type="email" class="newsletter-form" id="newsletter" placeholder="Enter your email">
+                    <button type="submit" value="send" class="btn newsletter-btn">subscribe</button>
+                  </div>
+                </form> -->
+            </div>
+        </div>
+    </div>
+    <!-- background shapes -->
+    <img class="newsletter-bg-shape" src="images/seo-ball-2.png" alt="background-shape">
+</section>
+<!-- /newsletter -->
+
+<!-- footer -->
+<footer class="section-lg footer pb-100" style="background-image: url(images/footer-bg.png);">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 text-center text-lg-left mb-4 mb-lg-0">
+                <!-- logo -->
+                <a href="http://demo.themefisher.com/themefisher/dtox/index.html">
+                    <img class="img-fluid" src="images/logo.png" alt="logo">
+                </a>
+            </div>
+            <!-- footer menu -->
+            <nav class="col-lg-8 align-self-center mb-5">
+                <ul class="list-inline text-lg-right text-center footer-menu">
+
+                    <li class="list-inline-item page-scroll">
+                        <a  href="#context">theContext</a>
+                    </li>
+                    <li class="list-inline-item page-scroll">
+                        <a  href="#problem">theProblem</a>
+                    </li>
+                    <li class="list-inline-item page-scroll">
+                        <a  href="#solution">theSolution</a>
+                    </li>
+                    <li class="list-inline-item page-scroll">
+                        <a  href="#project">theProject</a>
+                    </li>
+                    <li class="list-inline-item page-scroll">
+                        <a  href="#links">theLinks</a>
+                    </li>
+                </ul>
+            </nav>
+
+        </div>
+    </div>
+</footer>
+<!-- /footer -->
+
+<!-- jQuery -->
+<script src="js/jquery.js"></script>
+<!-- Bootstrap JS -->
+<script src="js/bootstrap.js"></script>
+<!-- slick slider -->
+<script src="js/slick.js"></script>
+<!-- venobox -->
+<script src="js/venobox.js"></script>
+
+<!-- Main Script -->
+<script src="js/script.js"></script>
+
+
+</body>
+</html>

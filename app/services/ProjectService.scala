@@ -22,7 +22,7 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
 
   actorSystem.scheduler.schedule(initialDelay = synchronizeInitialDelay.seconds, interval = synchronizeInterval.seconds)(synchronizeAll())
 
-  def getLocalRepository(projectId: String, branch: String): String = s"$projectsRootDirectory$projectId/$branch/"
+  def getLocalRepository(projectId: String, branch: String): String = s"$projectsRootDirectory$projectId/$branch/".fixPathSeparator
 
   def checkoutRemoteBranches(project: Project): Future[Unit] = {
     for {
@@ -61,7 +61,14 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
       Logger.debug(s"update ${project.id} branches ${branches.mkString(", ")}")
 
       FutureExt.sequentially(branches.toSeq) { branchName =>
-        gitService.pull(getLocalRepository(project.id, branchName)).map { case (created, updated, deleted) =>
+
+        val localRepo = getLocalRepository(project.id, branchName)
+        val localRepoFile = new File(localRepo)
+        if (!localRepoFile.exists()) {
+          checkoutBranches(project, Set(branchName))
+        }
+
+        gitService.pull(localRepo).map { case (created, updated, deleted) =>
           (filterFeatureFile(created), filterFeatureFile(updated), filterFeatureFile(deleted))
         }.map { case (created, updated, deleted) =>
           branchRepository.findByProjectIdAndName(project.id, branchName).foreach { branch =>
@@ -122,8 +129,8 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
       Logger.info(s"Project ${project.id}, branches to update: ${branchesToUpdate.mkString(", ")}, branches to checkout: ${branchesToCheckout.mkString(", ")}, branches to delete: ${branchesToDelete.mkString(", ")}")
 
       for {
-        _ <- updateBranches(project, branchesToUpdate)
         _ <- checkoutBranches(project, branchesToCheckout)
+        _ <- updateBranches(project, branchesToUpdate)
       } yield deleteBranches(project.id, branchesToDelete)
     }
   }

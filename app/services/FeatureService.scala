@@ -9,6 +9,7 @@ import gherkin.{AstBuilder, Parser, ast}
 import javax.inject.Inject
 import models._
 import repository.FeatureRepository
+import resource._
 import utils._
 
 import scala.collection.JavaConverters._
@@ -18,7 +19,7 @@ import scala.util.Try
 class FeatureService @Inject()(config: Config, featureRepository: FeatureRepository) {
   val projectsRootDirectory = config.getString("projects.root.directory")
 
-  def getLocalRepository(projectId: String, branch: String): String = s"$projectsRootDirectory$projectId/$branch/"
+  def getLocalRepository(projectId: String, branch: String): String = s"$projectsRootDirectory$projectId/$branch/".fixPathSeparator
 
   def parseBranchDirectory(project: Project, branch: Branch, directoryPath: String): Seq[Feature] = {
     new File(directoryPath).listFiles().flatMap {
@@ -36,38 +37,39 @@ class FeatureService @Inject()(config: Config, featureRepository: FeatureReposit
 
       val featureId = featureRepository.findByBranchIdAndPath(branch.id, relativeFilePath).map(_.id).getOrElse(0L)
       val parser = new Parser[GherkinDocument](new AstBuilder())
-      val gherkinDocument = parser.parse(new FileReader(featureFile))
 
-      val comments = gherkinDocument.getComments.asScala.map(_.getText)
-      val feature = gherkinDocument.getFeature
+      managed(new FileReader(featureFile)).acquireAndGet { featureReader =>
+        val gherkinDocument = parser.parse(featureReader)
 
-      val (tags, _, _, _) = mapGherkinTags(feature.getTags)
-      var backgroundOption: Option[Background] = None
+        val comments = gherkinDocument.getComments.asScala.map(_.getText)
+        val feature = gherkinDocument.getFeature
+
+        val (tags, _, _, _) = mapGherkinTags(feature.getTags)
+        var backgroundOption: Option[Background] = None
+
+        val scenarios = feature.getChildren.asScala.flatMap {
+
+          case background: ast.Background =>
+            backgroundOption = Some(Background(0, background.getKeyword, background.getName, trim(background.getDescription), mapGherkinSteps(background.getSteps)))
+            backgroundOption
+
+          case scenario: ast.Scenario =>
+
+            val (tags, abstractionLevel, caseType, workflowStep) = mapGherkinTags(scenario.getTags)
+
+            Some(Scenario(0, tags, abstractionLevel, caseType, workflowStep, scenario.getKeyword, scenario.getName, trim(scenario.getDescription), mapGherkinSteps(scenario.getSteps)))
 
 
-      val scenarios = feature.getChildren.asScala.flatMap {
+          case scenario: ast.ScenarioOutline =>
+            val (tags, abstractionLevel, caseType, workflowStep) = mapGherkinTags(scenario.getTags)
 
-        case background: ast.Background =>
-          backgroundOption = Some(Background(0, background.getKeyword, background.getName, trim(background.getDescription), mapGherkinSteps(background.getSteps)))
-          backgroundOption
+            Some(ScenarioOutline(0, tags, abstractionLevel, caseType, workflowStep, scenario.getKeyword, scenario.getName, trim(scenario.getDescription), mapGherkinSteps(scenario.getSteps), mapGherkinExamples(scenario.getExamples)))
 
-        case scenario: ast.Scenario =>
+          case _ => None
+        }
 
-          val (tags, abstractionLevel, caseType, workflowStep) = mapGherkinTags(scenario.getTags)
-
-          Some(Scenario(0, tags, abstractionLevel, caseType, workflowStep, scenario.getKeyword, scenario.getName, trim(scenario.getDescription), mapGherkinSteps(scenario.getSteps)))
-
-
-        case scenario: ast.ScenarioOutline =>
-          val (tags, abstractionLevel, caseType, workflowStep) = mapGherkinTags(scenario.getTags)
-
-          Some(ScenarioOutline(0, tags, abstractionLevel, caseType, workflowStep, scenario.getKeyword, scenario.getName, trim(scenario.getDescription), mapGherkinSteps(scenario.getSteps), mapGherkinExamples(scenario.getExamples)))
-
-        case _ => None
+        Feature(featureId, branch.id, relativeFilePath, backgroundOption, tags, Option(feature.getLanguage), feature.getKeyword, feature.getName, trim(feature.getDescription), scenarios, comments)
       }
-
-      Feature(featureId, branch.id, relativeFilePath, backgroundOption, tags, Option(feature.getLanguage), feature.getKeyword, feature.getName, trim(feature.getDescription), scenarios, comments)
-
     }.logError(s"Error while parsing file $filePath")
   }
 
@@ -76,6 +78,7 @@ class FeatureService @Inject()(config: Config, featureRepository: FeatureReposit
       val argument = step.getArgument match {
         case dataTable: ast.DataTable => dataTable.getRows.asScala.map(_.getCells.asScala.map(_.getValue))
         case tableRow: ast.TableRow => Seq(tableRow.getCells.asScala.map(_.getValue))
+        case docString: ast.DocString => Seq(Seq(docString.getContent))
         case _ => Seq()
       }
 

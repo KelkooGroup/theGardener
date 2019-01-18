@@ -2,12 +2,14 @@ package steps
 
 
 import java.io._
+import java.io.File.separator
 import java.net._
 import java.nio.file._
 import java.util
 
 import anorm._
 import com.typesafe.config._
+import controllers._
 import cucumber.api.DataTable
 import cucumber.api.scala._
 import julienrf.json.derived
@@ -21,21 +23,22 @@ import org.scalatest.mockito._
 import org.scalatestplus.play._
 import org.scalatestplus.play.guice._
 import play.api._
-import play.api.cache.{AsyncCacheApi, SyncCacheApi}
+import play.api.cache.AsyncCacheApi
 import play.api.db._
 import play.api.inject._
 import play.api.inject.guice._
-import play.api.libs.json.{Json, __}
+import play.api.libs.json._
 import play.api.mvc._
 import play.api.test.Helpers._
 import play.api.test._
 import repository._
-import services._
+import resource._
 import services.CriteriaService._
-import utils.InMemoryCache
+import services._
+import utils._
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.collection.JavaConverters._
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent._
 import scala.io.Source
 import scala.reflect._
@@ -64,7 +67,7 @@ object CommonSteps extends PlaySpec with GuiceOneServerPerSuite with BeforeAndAf
 
   val applicationBuilder = new GuiceApplicationBuilder().overrides(bind[AsyncCacheApi].toInstance(cache)).in(Mode.Test)
 
-  override def fakeApplication(): Application = applicationBuilder.build()
+  override def fakeApplication(): play.api.Application = applicationBuilder.build()
 
   val db = Injector.inject[Database]
   val scenarioRepository = Injector.inject[ScenarioRepository]
@@ -76,30 +79,32 @@ object CommonSteps extends PlaySpec with GuiceOneServerPerSuite with BeforeAndAf
   val tagRepository = Injector.inject[TagRepository]
   val config = Injector.inject[Config]
 
-  val projectsRootDirectory = config.getString("projects.root.directory")
+  val projectsRootDirectory = config.getString("projects.root.directory").fixPathSeparator
+  val remoteRootDirectory = "target/remote/data/".fixPathSeparator
 
   var server = TestServer(port, app)
 
   val browser = HtmlUnitBrowser.typed()
 
-  override def beforeAll() = server.start()
+  override def beforeAll(): Unit = server.start()
 
-  override def afterAll() = server.stop()
+  override def afterAll(): Unit = server.stop()
 
   def cleanHtmlWhitespaces(content: String): String = content.split('\n').map(_.trim.filter(_ >= ' ')).mkString.replaceAll(" +", " ")
 
-  def initRemoteRepository(branchName: String, projectRepositoryPath: String): Git = {
-    FileUtils.deleteDirectory(new File(projectRepositoryPath))
-
-    val git = Git.init().setDirectory(new File(projectRepositoryPath)).call()
-
-    if (branchName != "master") git.checkout().setCreateBranch(true).setName(branchName).call()
-
-    git
+  def initRemoteRepositoryIfNeeded(branchName: String, projectRepositoryPath: String): Git = {
+    val projectRepositoryDir = new File(projectRepositoryPath)
+    if (!projectRepositoryDir.exists()) {
+      val git = Git.init().setDirectory(new File(projectRepositoryPath)).call()
+      if (branchName != "master") git.checkout().setCreateBranch(true).setName(branchName).call()
+      git
+    } else {
+      Git.open(projectRepositoryDir)
+    }
   }
 
-  def addFile(git: Git, projectRepositoryPath: String, file: String, content: String): Any = {
-    val filePath = Paths.get(s"$projectRepositoryPath/$file")
+  def addFile(git: Git, projectRepositoryPath: String, file: String, content: String): Unit = {
+    val filePath = Paths.get(s"$projectRepositoryPath/$file".fixPathSeparator)
 
     Files.createDirectories(filePath.getParent)
     Files.write(filePath, content.getBytes("UTF-8"))
@@ -146,9 +151,14 @@ class CommonSteps extends ScalaDsl with EN with MockitoSugar {
   }
 
   Given("""^No project is checkout$""") { () =>
-    FileUtils.deleteDirectory(new File("target/data/"))
+    FileUtils.deleteDirectory(new File("target/data/".fixPathSeparator))
     FileUtils.deleteDirectory(new File(projectsRootDirectory))
     Files.createDirectories(Paths.get(projectsRootDirectory))
+  }
+
+  Given("""^the remote projects are empty$""") { () =>
+    FileUtils.deleteDirectory(new File(remoteRootDirectory))
+    Files.createDirectories(Paths.get(remoteRootDirectory))
   }
 
   Given("""^a git server that host a project$""") { () =>
@@ -156,7 +166,7 @@ class CommonSteps extends ScalaDsl with EN with MockitoSugar {
   }
 
   Given("""^a simple feature is available in my project$""") { () =>
-    val fullPath = Paths.get("target/data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature")
+    val fullPath = Paths.get("target/data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature".fixPathSeparator)
     Files.createDirectories(fullPath.getParent)
 
     val content =
@@ -177,14 +187,16 @@ Scenario: providing several book suggestions
   }
 
   Given("""^the file "([^"]*)"$""") { (path: String, content: String) =>
-    val fullPath = Paths.get("target/" + path)
+    val fullPath = Paths.get(s"target/$path".fixPathSeparator)
     Files.createDirectories(fullPath.getParent)
     Files.write(fullPath, content.getBytes())
   }
 
   Given("""^we have the following projects$""") { projects: util.List[Project] =>
     val projectsWithAbsoluteUrl = projects.asScala.map { project =>
-      if (project.repositoryUrl.contains("target/")) project.copy(repositoryUrl = new URL(new URL("file:"), new File(project.repositoryUrl).getAbsolutePath).toURI.toString)
+      if (project.repositoryUrl.contains("target/")) project.copy(
+        repositoryUrl = Paths.get(project.repositoryUrl).toUri.toString,
+        featuresRootPath = project.featuresRootPath.fixPathSeparator)
       else project
     }
 
@@ -197,7 +209,7 @@ Scenario: providing several book suggestions
     branchRepository.saveAll(branches.asScala)
   }
 
-  Given("""^the cache is empty$"""){ () =>
+  Given("""^the cache is empty$""") { () =>
     cache.remove(criteriasListCacheKey)
     cache.remove(criteriasTreeCacheKey)
   }
@@ -222,7 +234,7 @@ Scenario: providing several book suggestions
 
   Then("""^I get the following json response body$""") { expectedJson: String =>
     contentType(response) mustBe Some(JSON)
-    contentAsJson(response) mustBe Json.parse(expectedJson)
+    contentAsJson(response) mustBe Json.parse(expectedJson.lines.map(l => if (separator == "\\" && (l.contains(""""path":""") || l.contains(""""features":""")) ) l.replace("/", """\\""") else l).mkString("\n"))
   }
 
   Then("""^the page contains$""") { expectedPageContentPart: String =>
@@ -231,7 +243,7 @@ Scenario: providing several book suggestions
   }
 
   Then("""^the file system store now the file "([^"]*)"$""") { (file: String, content: String) =>
-    Source.fromFile(file).mkString mustBe content
+    managed(Source.fromFile(file.fixPathSeparator)).acquireAndGet(_.mkString mustBe content)
   }
 
   Then("""^the file system store now the files$""") { files: DataTable =>
@@ -239,17 +251,57 @@ Scenario: providing several book suggestions
       val file = line("file")
       val content = line("content")
 
-      Source.fromFile(file).mkString mustBe content
+      managed(Source.fromFile(file.fixPathSeparator)).acquireAndGet(_.mkString mustBe content)
     }
   }
 
   Then("""^I get the following scenarios$""") { dataTable: DataTable =>
-    dataTable.asScala.map { columns =>
-      contentType(response) mustBe Some(JSON)
-      contentAsString(response) must include(columns("hierarchy"))
-      contentAsString(response) must include(columns("project"))
-      contentAsString(response) must include(columns("feature"))
-      contentAsString(response) must include(columns("scenario"))
+
+    implicit val branchFormat = Json.format[BranchDocumentationDTO]
+    implicit val projectFormat = Json.format[ProjectDocumentationDTO]
+    implicit val documentationFormat = Json.format[Documentation]
+
+    val documentation = Json.parse(contentAsString(response)).as[Documentation]
+    val expectedScenarios = dataTable.asMaps(classOf[String], classOf[String]).asScala.toSeq
+
+    expectedScenarios.length mustBe nbRealScenario(documentation)
+
+    expectedScenarios.map { columns =>
+
+      val nodeName = columns.get("hierarchy")
+      val projectId = columns.get("project")
+      val featurePath = columns.get("feature").fixPathSeparator
+      val scenarioName = columns.get("scenario")
+
+      val node = getHierarchy(nodeName, documentation)
+      node.isDefined mustBe true
+
+
+      val project = node.get.projects.filter(_.id == projectId)
+      project.size mustBe 1
+      project.head.branches.length mustBe 1
+
+      val branch = project.head.branches.head
+
+      val features = branch.features.filter(_.path == featurePath)
+      features.size mustBe 1
+
+      val scenario = features.head.scenarios.filter(_.name == scenarioName)
+      scenario.size mustBe 1
     }
+  }
+
+  def nbRealScenario(documentation: Documentation): Int = {
+    documentation.projects.map(p => if (p.branches.nonEmpty) nbRealScenario(p.branches.head) else 0).sum + documentation.children.map(nbRealScenario).sum
+  }
+
+  def nbRealScenario(branch: BranchDocumentationDTO): Int = {
+    branch.features.map(_.scenarios.length).sum
+  }
+
+  def getHierarchy(hierarchy: String, source: Documentation): Option[Documentation] = {
+    if (source.id == hierarchy) Some(source)
+    else if (source.children.isEmpty) None
+    else source.children.flatMap(getHierarchy(hierarchy, _)).headOption
   }
 }

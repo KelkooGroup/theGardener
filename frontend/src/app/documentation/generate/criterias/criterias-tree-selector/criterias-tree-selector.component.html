@@ -32,17 +32,14 @@
             <li>
               <mat-checkbox class="project"
                             [checked]="project.selected"
+                            [indeterminate]="project.indeterminate"
                             [value]="project"
-                             (change)="selectProject($event)"
+                            (change)="selectProject($event) ; branchFeaturesSelector.updateFeaturesSelection($event.checked)"
               >{{project.label}}
               </mat-checkbox>
             </li>
             <li>
-              <mat-select class="pull-right branch"  placeholder="Stable branch by default"  (selectionChange)="selectBranch($event)" >
-                <mat-option [class.stable-branch]="branch.name == project.stableBranch.name"
-                            *ngFor="let branch of project.branches" [value]="branch">{{branch.name}}
-                </mat-option>
-              </mat-select>
+              <app-criterias-branch-feature-selector [project]="project" #branchFeaturesSelector ></app-criterias-branch-feature-selector>
             </li>
           </ul>
         </div>

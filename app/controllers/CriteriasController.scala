@@ -7,11 +7,19 @@ import play.api.libs.json.Json
 import play.api.mvc._
 import services.CriteriaService
 
-case class ProjectCriteriasDTO(id: String, label: String, stableBranch: String, branches: Seq[String])
+case class BranchCriteriasDTO(name: String, features: Seq[String])
+
+object BranchCriteriasDTO {
+  def apply(branch: Branch): BranchCriteriasDTO = {
+    BranchCriteriasDTO(branch.name, branch.features)
+  }
+}
+
+case class ProjectCriteriasDTO(id: String, label: String, stableBranch: String, branches: Seq[BranchCriteriasDTO])
 
 object ProjectCriteriasDTO {
   def apply(project: Project): ProjectCriteriasDTO = {
-    ProjectCriteriasDTO(project.id, project.name, project.stableBranch, project.branches.getOrElse(Seq()).map(_.name))
+    ProjectCriteriasDTO(project.id, project.name, project.stableBranch, project.branches.getOrElse(Seq()).map(BranchCriteriasDTO(_)))
   }
 }
 
@@ -30,6 +38,7 @@ object CriteriaDTO {
 @Api(value = "CriteriasController", produces = "application/json")
 class CriteriasController @Inject()(criteriaService: CriteriaService) extends InjectedController {
 
+  implicit val branchFormat = Json.format[BranchCriteriasDTO]
   implicit val projectFormat = Json.format[ProjectCriteriasDTO]
   implicit val criteriaFormat = Json.format[CriteriaDTO]
 
