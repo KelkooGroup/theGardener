@@ -22,8 +22,8 @@ import org.scalatest._
 import org.scalatest.mockito._
 import org.scalatestplus.play._
 import org.scalatestplus.play.guice._
-import play.api._
-import play.api.cache.SyncCacheApi
+import play.api.Mode
+import play.api.cache._
 import play.api.db._
 import play.api.inject._
 import play.api.inject.guice._
@@ -35,6 +35,7 @@ import repository._
 import resource._
 import services.CriteriaService._
 import services._
+import steps.Injector._
 import utils._
 
 import scala.collection.JavaConverters._
@@ -52,7 +53,7 @@ object Injector {
 }
 
 
-object CommonSteps extends PlaySpec with GuiceOneServerPerSuite with BeforeAndAfterAll with MockitoSugar with Injecting {
+object CommonSteps extends PlaySpec with GuiceOneServerPerSuite with BeforeAndAfterAll with MockitoSugar {
 
   implicit val scenarioFormat = derived.flat.oformat[ScenarioDefinition]((__ \ "keyword").format[String])
   implicit val branchFormat = Json.format[Branch]
@@ -64,18 +65,18 @@ object CommonSteps extends PlaySpec with GuiceOneServerPerSuite with BeforeAndAf
 
   var projects: Map[String, Project] = _
 
-  val db = Injector.inject[Database]
-  val scenarioRepository = Injector.inject[ScenarioRepository]
-  val featureRepository = Injector.inject[FeatureRepository]
-  val branchRepository = Injector.inject[BranchRepository]
-  val hierarchyRepository = Injector.inject[HierarchyRepository]
-  val projectRepository = Injector.inject[ProjectRepository]
-  val featureService = Injector.inject[FeatureService]
-  val tagRepository = Injector.inject[TagRepository]
-  val config = Injector.inject[Config]
-  val cache = Injector.inject[SyncCacheApi]
+  val db = inject[Database]
+  val scenarioRepository = inject[ScenarioRepository]
+  val featureRepository = inject[FeatureRepository]
+  val branchRepository = inject[BranchRepository]
+  val hierarchyRepository = inject[HierarchyRepository]
+  val projectRepository = inject[ProjectRepository]
+  val featureService = inject[FeatureService]
+  val tagRepository = inject[TagRepository]
+  val config = inject[Config]
+  val cache = inject[AsyncCacheApi]
 
-  val applicationBuilder = Injector.builder.overrides(bind[SyncCacheApi].toInstance(cache)).in(Mode.Test)
+  val applicationBuilder = builder.overrides(bind[SyncCacheApi].toInstance(new DefaultSyncCacheApi(cache))).in(Mode.Test)
 
   override def fakeApplication(): play.api.Application = applicationBuilder.build()
 
@@ -210,8 +211,7 @@ Scenario: providing several book suggestions
   }
 
   Given("""^the cache is empty$""") { () =>
-    cache.remove(criteriasListCacheKey)
-    cache.remove(criteriasTreeCacheKey)
+    await(cache.removeAll())
   }
 
   When("^we go in a browser to url \"([^\"]*)\"$") { url: String =>
