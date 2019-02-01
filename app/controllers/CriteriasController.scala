@@ -1,6 +1,6 @@
 package controllers
 
-import io.swagger.annotations._
+//import io.swagger.annotations._
 import javax.inject.Inject
 import models._
 import play.api.libs.json.Json
@@ -35,20 +35,20 @@ object CriteriaDTO {
   }
 }
 
-@Api(value = "CriteriasController", produces = "application/json")
+//@Api(value = "CriteriasController", produces = "application/json")
 class CriteriasController @Inject()(criteriaService: CriteriaService) extends InjectedController {
 
   implicit val branchFormat = Json.format[BranchCriteriasDTO]
   implicit val projectFormat = Json.format[ProjectCriteriasDTO]
   implicit val criteriaFormat = Json.format[CriteriaDTO]
 
-  @ApiOperation(value = "Get all criterias", response = classOf[CriteriaDTO], responseContainer = "list")
+//  @ApiOperation(value = "Get all criterias", response = classOf[CriteriaDTO], responseContainer = "list")
   def getCriterias(): Action[AnyContent] = Action {
 
     Ok(Json.toJson(criteriaService.getCriterias().map(CriteriaDTO(_).copy(children = None))))
   }
 
-  @ApiOperation(value = "Get all criterias in a tree", response = classOf[CriteriaDTO])
+//  @ApiOperation(value = "Get all criterias in a tree", response = classOf[CriteriaDTO])
   def getCriteriasTree(): Action[AnyContent] = Action {
 
     Ok(Json.toJson(CriteriaDTO(criteriaService.getCriteriasTree())))

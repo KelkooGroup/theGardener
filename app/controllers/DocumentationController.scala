@@ -1,6 +1,6 @@
 package controllers
 
-import io.swagger.annotations._
+//import io.swagger.annotations._
 import javax.inject.Inject
 import models._
 import play.api.Logging
@@ -46,22 +46,22 @@ object Documentation {
 }
 
 
-@Api(value = "DocumentationController", produces = "application/json")
+//@Api(value = "DocumentationController", produces = "application/json")
 class DocumentationController @Inject()(documentationRepository: DocumentationRepository, criteriaService: CriteriaService, hierarchyRepository: HierarchyRepository, projectRepository: ProjectRepository) extends InjectedController with Logging {
 
   implicit val branchFormat = Json.format[BranchDocumentationDTO]
   implicit val projectFormat = Json.format[ProjectDocumentationDTO]
   implicit val documentationFormat = Json.format[Documentation]
 
-  @ApiOperation(value = "Get documentation", response = classOf[Documentation])
-  @ApiImplicitParams(Array(
-    new ApiImplicitParam(name = "project", dataType = "string", paramType = "query", allowMultiple = true),
-    new ApiImplicitParam(name = "node", dataType = "string", paramType = "query", allowMultiple = true)
-  ))
-  @ApiResponses(Array(
-    new ApiResponse(code = 400, message = "Incorrect json"),
-    new ApiResponse(code = 404, message = "Project not found")
-  ))
+//  @ApiOperation(value = "Get documentation", response = classOf[Documentation])
+//  @ApiImplicitParams(Array(
+//    new ApiImplicitParam(name = "project", dataType = "string", paramType = "query", allowMultiple = true),
+//    new ApiImplicitParam(name = "node", dataType = "string", paramType = "query", allowMultiple = true)
+//  ))
+//  @ApiResponses(Array(
+//    new ApiResponse(code = 400, message = "Incorrect json"),
+//    new ApiResponse(code = 404, message = "Project not found")
+//  ))
   def generateDocumentation(): Action[AnyContent] = Action { request =>
     try {
       val criteriasTree = criteriaService.getCriteriasTree()
