@@ -2,7 +2,9 @@ package services
 
 import java.io._
 
-import akka.actor.ActorSystem
+import akka.Done
+import akka.actor.{ActorSystem, CoordinatedShutdown}
+import akka.util.Timeout
 import com.typesafe.config._
 import javax.inject._
 import models._
@@ -20,7 +22,13 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
   val synchronizeInterval = config.getInt("projects.synchronize.interval")
   val synchronizeInitialDelay = config.getInt("projects.synchronize.initial.delay")
 
-  actorSystem.scheduler.schedule(initialDelay = synchronizeInitialDelay.seconds, interval = synchronizeInterval.seconds)(synchronizeAll())
+  val synchronizeJob = actorSystem.scheduler.schedule(initialDelay = synchronizeInitialDelay.seconds, interval = synchronizeInterval.seconds)(synchronizeAll())(actorSystem.dispatcher)
+  CoordinatedShutdown(actorSystem).addTask(
+    CoordinatedShutdown.PhaseBeforeServiceUnbind, "cancelSynchronizeJob") { () ⇒
+    implicit val timeout = Timeout(5.seconds)
+    synchronizeJob.cancel()
+    Future.successful(Done)
+  }
 
   def getLocalRepository(projectId: String, branch: String): String = s"$projectsRootDirectory$projectId/$branch/".fixPathSeparator
 

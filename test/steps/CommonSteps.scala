@@ -45,7 +45,8 @@ import scala.reflect._
 
 
 object Injector {
-  lazy val injector = (new GuiceApplicationBuilder).injector()
+  val builder = new GuiceApplicationBuilder
+  lazy val injector = builder.injector()
 
   def inject[T: ClassTag]: T = injector.instanceOf[T]
 }
@@ -63,10 +64,6 @@ object CommonSteps extends PlaySpec with GuiceOneServerPerSuite with BeforeAndAf
 
   var projects: Map[String, Project] = _
 
-  val applicationBuilder = new GuiceApplicationBuilder().in(Mode.Test)
-
-  override def fakeApplication(): play.api.Application = applicationBuilder.build()
-
   val db = Injector.inject[Database]
   val scenarioRepository = Injector.inject[ScenarioRepository]
   val featureRepository = Injector.inject[FeatureRepository]
@@ -77,6 +74,10 @@ object CommonSteps extends PlaySpec with GuiceOneServerPerSuite with BeforeAndAf
   val tagRepository = Injector.inject[TagRepository]
   val config = Injector.inject[Config]
   val cache = Injector.inject[SyncCacheApi]
+
+  val applicationBuilder = Injector.builder.overrides(bind[SyncCacheApi].toInstance(cache)).in(Mode.Test)
+
+  override def fakeApplication(): play.api.Application = applicationBuilder.build()
 
   val projectsRootDirectory = config.getString("projects.root.directory").fixPathSeparator
   val remoteRootDirectory = "target/remote/data/".fixPathSeparator

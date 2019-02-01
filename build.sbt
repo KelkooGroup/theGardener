@@ -45,6 +45,7 @@ libraryDependencies ++= Seq(
   "io.swagger" %% "swagger-play2" % "1.6.0",
   "com.h2database" % "h2" % "1.4.197",
   "com.jsuereth" %% "scala-arm" % "2.0",
+  "commons-io" % "commons-io" % "2.6",
   "net.ruippeixotog" %% "scala-scraper" % "2.1.0" % Test,
   "io.cucumber" %% "cucumber-scala" % "2.0.1" % Test,
   "io.cucumber" % "cucumber-junit" % "2.0.1" % Test,
