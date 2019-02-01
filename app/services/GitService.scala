@@ -7,7 +7,7 @@ import org.eclipse.jgit.api.CreateBranchCommand.SetupUpstreamMode._
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.diff.DiffEntry.ChangeType
 import org.eclipse.jgit.treewalk.CanonicalTreeParser
-import play.api.Logger
+import play.api.Logging
 import resource._
 import utils._
 
@@ -17,12 +17,12 @@ import scala.concurrent._
 import scala.util.Try
 
 
-class GitService @Inject()(implicit ec: ExecutionContext) {
+class GitService @Inject()(implicit ec: ExecutionContext)  extends Logging {
 
   def clone(url: String, localDirectory: String): Future[Unit] = {
     Future {
       Git.cloneRepository().setURI(url).setDirectory(new File(localDirectory)).call().close()
-      Logger.info(s"Cloning $url to $localDirectory")
+      logger.info(s"Cloning $url to $localDirectory")
 
     }.logError(s"Error while cloning repository $url in $localDirectory")
   }
@@ -39,7 +39,7 @@ class GitService @Inject()(implicit ec: ExecutionContext) {
         git.checkout.setName(branch).call()
       }
 
-      Logger.info(s"git checkout $localRepository to branch $branch")
+      logger.info(s"git checkout $localRepository to branch $branch")
 
     }.logError(s"Error while checkout branch $branch in $localRepository")
   }
@@ -79,7 +79,7 @@ class GitService @Inject()(implicit ec: ExecutionContext) {
           changes.mkString(", ")
         }
 
-        Logger.info(s"git pull in $localRepository : $logMessage")
+        logger.info(s"git pull in $localRepository : $logMessage")
 
         (created, updated, deleted)
       }
@@ -88,10 +88,10 @@ class GitService @Inject()(implicit ec: ExecutionContext) {
   }
 
   def getRemoteBranches(url: String): Future[Seq[String]] = {
-    Logger.debug(s"Get remote branches of $url")
+    logger.debug(s"Get remote branches of $url")
     Future {
       val branches = Git.lsRemoteRepository().setHeads(true).setRemote(url).call().asScala.toSeq.map(_.getName.replace("refs/heads/", ""))
-      Logger.info(s"git ls $url : ${branches.mkString(", ")}")
+      logger.info(s"git ls $url : ${branches.mkString(", ")}")
 
       branches
 

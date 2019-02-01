@@ -23,7 +23,7 @@ import org.scalatest.mockito._
 import org.scalatestplus.play._
 import org.scalatestplus.play.guice._
 import play.api._
-import play.api.cache.AsyncCacheApi
+import play.api.cache.SyncCacheApi
 import play.api.db._
 import play.api.inject._
 import play.api.inject.guice._
@@ -63,9 +63,7 @@ object CommonSteps extends PlaySpec with GuiceOneServerPerSuite with BeforeAndAf
 
   var projects: Map[String, Project] = _
 
-  val cache = new InMemoryCache()
-
-  val applicationBuilder = new GuiceApplicationBuilder().overrides(bind[AsyncCacheApi].toInstance(cache)).in(Mode.Test)
+  val applicationBuilder = new GuiceApplicationBuilder().in(Mode.Test)
 
   override def fakeApplication(): play.api.Application = applicationBuilder.build()
 
@@ -78,6 +76,7 @@ object CommonSteps extends PlaySpec with GuiceOneServerPerSuite with BeforeAndAf
   val featureService = Injector.inject[FeatureService]
   val tagRepository = Injector.inject[TagRepository]
   val config = Injector.inject[Config]
+  val cache = Injector.inject[SyncCacheApi]
 
   val projectsRootDirectory = config.getString("projects.root.directory").fixPathSeparator
   val remoteRootDirectory = "target/remote/data/".fixPathSeparator

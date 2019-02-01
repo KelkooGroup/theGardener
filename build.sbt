@@ -1,7 +1,7 @@
 name := "the_gardener"
 
 val jdkVersion = "1.8"
-scalaVersion := "2.12.7"
+scalaVersion := "2.12.8"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
@@ -33,7 +33,7 @@ libraryDependencies ++= Seq(
   guice,
   evolutions,
   jdbc,
-  cacheApi,
+  caffeine,
   "ch.qos.logback" % "logback-access" % "1.2.3",
   "net.logstash.logback" % "logstash-logback-encoder" % "4.11",
   "com.typesafe.play" %% "play-json" % "2.6.10",
