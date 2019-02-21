@@ -1,65 +1,65 @@
 export class DocumentationStepApi {
-  public id: string;
-  public keyword: string;
-  public text: string;
-  public argument: Array<Array<string>>;
+  id: string;
+  keyword: string;
+  text: string;
+  argument: Array<Array<string>>;
 }
 
 export class DocumentationExamplesApi {
-  public id: string;
-  public keyword: string;
-  public description: string;
-  public tableBody: Array<Array<string>>;
-  public tableHeader: Array<string>;
+  id: string;
+  keyword: string;
+  description: string;
+  tableBody: Array<Array<string>>;
+  tableHeader: Array<string>;
 }
 
 export class DocumentationScenarioApi {
-  public id: string;
-  public name: string;
-  public abstractionLevel: string;
-  public caseType: string;
-  public workflowStep: string;
-  public keyword: string;
-  public description: string;
-  public tags: Array<string>;
-  public steps: Array<DocumentationStepApi>;
-  public examples: Array<DocumentationExamplesApi>;
+  id: string;
+  name: string;
+  abstractionLevel: string;
+  caseType: string;
+  workflowStep: string;
+  keyword: string;
+  description: string;
+  tags: Array<string>;
+  steps: Array<DocumentationStepApi>;
+  examples: Array<DocumentationExamplesApi>;
 }
 
 export class DocumentationFeatureApi {
-  public id: string;
-  public path: string;
-  public name: string;
-  public description: string;
-  public tags: Array<string>;
-  public comments: Array<string>;
-  public keyword: string;
-  public background: DocumentationScenarioApi;
-  public scenarios: Array<DocumentationScenarioApi>;
+  id: string;
+  path: string;
+  name: string;
+  description: string;
+  tags: Array<string>;
+  comments: Array<string>;
+  keyword: string;
+  background: DocumentationScenarioApi;
+  scenarios: Array<DocumentationScenarioApi>;
 }
 
 export class DocumentationBranchApi {
-  public id: string;
-  public name: string;
-  public isStable: string;
-  public features: Array<DocumentationFeatureApi>;
+  id: string;
+  name: string;
+  isStable: string;
+  features: Array<DocumentationFeatureApi>;
 }
 
 export class DocumentationProjectApi {
-  public id: string;
-  public name: string;
-  public stableBranch: string;
-  public branches: Array<DocumentationBranchApi>;
+  id: string;
+  name: string;
+  stableBranch: string;
+  branches: Array<DocumentationBranchApi>;
 }
 
 export class DocumentationNodeApi {
-  public id: string;
-  public slugName: string;
-  public name: string;
-  public childrenLabel: string;
-  public childLabel: string;
-  public children: Array<DocumentationNodeApi>;
-  public projects: Array<DocumentationProjectApi>;
+  id: string;
+  slugName: string;
+  name: string;
+  childrenLabel: string;
+  childLabel: string;
+  children: Array<DocumentationNodeApi>;
+  projects: Array<DocumentationProjectApi>;
 }
 
 export interface ExpandableNode {
@@ -74,19 +74,19 @@ export interface ExpandableNode {
 }
 
 export class DocumentationNode implements ExpandableNode {
-  public type = 'node';
-  public nodeId: string;
-  public localId: string;
-  public data: DocumentationNodeApi;
-  public level: number;
-  public children: Array<DocumentationNode>;
-  public projects: Array<DocumentationProject>;
+  type = 'node';
+  nodeId: string;
+  localId: string;
+  data: DocumentationNodeApi;
+  level: number;
+  children: Array<DocumentationNode>;
+  projects: Array<DocumentationProject>;
 
-  public static toAnchor(id: string): string {
+  static toAnchor(id: string): string {
     return id.split(' ').join('_').split('/').join('-').split('.').join('-').split('#').join('-').toLocaleLowerCase();
   }
 
-  public static newFromApi(parentNodeId: string, dataApi: DocumentationNodeApi, level: number): DocumentationNode {
+  static newFromApi(parentNodeId: string, dataApi: DocumentationNodeApi, level: number): DocumentationNode {
     const instance = new DocumentationNode();
     instance.data = dataApi;
     instance.localId = DocumentationNode.toAnchor(dataApi.slugName);
@@ -122,19 +122,19 @@ export class DocumentationNode implements ExpandableNode {
 }
 
 export class DocumentationStepRow {
-  public values: { [key: string]: string; } = {};
+  values: { [key: string]: string; } = {};
 
-  public getValue(key: string): string {
+  getValue(key: string): string {
     return this.values[key];
   }
 }
 
 export class DocumentationStepTable {
-  public headers: { [key: string]: string; } = {};
-  public headerIds = [];
-  public rows = [];
+  headers: { [key: string]: string; } = {};
+  headerIds: Array<string> = [];
+  rows: Array<DocumentationStepRow>  = [];
 
-  public getHeader(headerId: string): string {
+  getHeader(headerId: string): string {
     return this.headers[headerId];
   }
 }
@@ -146,18 +146,18 @@ export class DocumentationStepTextFragment {
 }
 
 export class DocumentationStep implements ExpandableNode {
-  public type: string;
-  public nodeId: string;
-  public localId: string;
-  public data: DocumentationStepApi;
-  public text = [];
-  public hasTable: boolean;
-  public table: DocumentationStepTable;
-  public hasLongText: boolean;
-  public longText: string;
+  type: string;
+  nodeId: string;
+  localId: string;
+  data: DocumentationStepApi;
+  text: Array<DocumentationStepTextFragment>  = [];
+  hasTable: boolean;
+  table: DocumentationStepTable;
+  hasLongText: boolean;
+  longText: string;
 
 
-  public static newFromApi(dataApi: DocumentationStepApi): DocumentationStep {
+  static newFromApi(dataApi: DocumentationStepApi): DocumentationStep {
     const instance = new DocumentationStep();
     instance.data = dataApi;
     instance.hasTable = false;
@@ -198,8 +198,8 @@ export class DocumentationStep implements ExpandableNode {
         instance.text.push(new DocumentationStepTextFragment(instance.data.text, false));
       } else {
         let isParameter = false;
-        for (let j = 0; j < fragments.length; j++) {
-          instance.text.push(new DocumentationStepTextFragment(fragments[j], isParameter));
+        for (const fragment of fragments) {
+          instance.text.push(new DocumentationStepTextFragment(fragment, isParameter));
           isParameter = !isParameter;
         }
       }
@@ -218,22 +218,22 @@ export class DocumentationStep implements ExpandableNode {
 
 export class DocumentationExamples {
 
-  public data: DocumentationExamplesApi;
-  public table: DocumentationStepTable;
+  data: DocumentationExamplesApi;
+  table: DocumentationStepTable;
 
-  public static newFromApi(dataApi: DocumentationExamplesApi): DocumentationExamples {
+  static newFromApi(dataApi: DocumentationExamplesApi): DocumentationExamples {
     const instance = new DocumentationExamples();
     instance.data = dataApi;
     instance.table = new DocumentationStepTable();
 
-    for (let j = 0; j < dataApi.tableHeader.length; j++) {
-      instance.table.headerIds.push(j + '');
-      instance.table.headers[j] = dataApi.tableHeader[j];
+    for (let i = 0; i < dataApi.tableHeader.length; i++) {
+      instance.table.headerIds.push(i + '');
+      instance.table.headers[i] = dataApi.tableHeader[i];
     }
-    for (let k = 0; k < dataApi.tableBody.length; k++) {
+    for (const line of dataApi.tableBody) {
       const row = new DocumentationStepRow();
-      for (let l = 0; l < dataApi.tableBody[k].length; l++) {
-        row.values[instance.table.headerIds[l]] = dataApi.tableBody[k][l];
+      for (let i = 0; i < line.length; i++) {
+        row.values[instance.table.headerIds[i]] = line[i];
       }
       instance.table.rows.push(row);
     }
@@ -244,15 +244,15 @@ export class DocumentationExamples {
 }
 
 export class DocumentationScenario implements ExpandableNode {
-  public type = 'scenario';
-  public nodeId: string;
-  public localId: string;
-  public data: DocumentationScenarioApi;
-  public level: number;
-  public steps: Array<DocumentationStep>;
-  public examples: DocumentationExamples;
+  type = 'scenario';
+  nodeId: string;
+  localId: string;
+  data: DocumentationScenarioApi;
+  level: number;
+  steps: Array<DocumentationStep>;
+  examples: DocumentationExamples;
 
-  public static newFromApi(type: string, parentNodeId: string, dataApi: DocumentationScenarioApi, level: number): DocumentationScenario {
+  static newFromApi(type: string, parentNodeId: string, dataApi: DocumentationScenarioApi, level: number): DocumentationScenario {
     const instance = new DocumentationScenario();
     instance.type = type;
     instance.data = dataApi;
@@ -285,16 +285,16 @@ export class DocumentationScenario implements ExpandableNode {
 
 
 export class DocumentationFeature implements ExpandableNode {
-  public type = 'feature';
-  public nodeId: string;
-  public localId: string;
-  public data: DocumentationFeatureApi;
-  public level: number;
-  public background: DocumentationScenario;
-  public scenarios: Array<DocumentationScenario>;
-  public children: Array<DocumentationScenario>;
+  type = 'feature';
+  nodeId: string;
+  localId: string;
+  data: DocumentationFeatureApi;
+  level: number;
+  background: DocumentationScenario;
+  scenarios: Array<DocumentationScenario>;
+  children: Array<DocumentationScenario>;
 
-  public static newFromApi(parentNodeId: string, dataApi: DocumentationFeatureApi, level: number): DocumentationFeature {
+  static newFromApi(parentNodeId: string, dataApi: DocumentationFeatureApi, level: number): DocumentationFeature {
     const instance = new DocumentationFeature();
     instance.data = dataApi;
     instance.localId = DocumentationNode.toAnchor(dataApi.path);
@@ -330,13 +330,13 @@ export class DocumentationFeature implements ExpandableNode {
 }
 
 export class DocumentationBranch {
-  public data: DocumentationBranchApi;
-  public nodeId: string;
-  public localId: string;
-  public level: number;
-  public features: Array<DocumentationFeature>;
+  data: DocumentationBranchApi;
+  nodeId: string;
+  localId: string;
+  level: number;
+  features: Array<DocumentationFeature>;
 
-  public static newFromApi(parentNodeId: string, dataApi: DocumentationBranchApi, level: number): DocumentationBranch {
+  static newFromApi(parentNodeId: string, dataApi: DocumentationBranchApi, level: number): DocumentationBranch {
     const instance = new DocumentationBranch();
     instance.data = dataApi;
     instance.localId = DocumentationNode.toAnchor(dataApi.name);
@@ -352,14 +352,14 @@ export class DocumentationBranch {
 
 
 export class DocumentationProject implements ExpandableNode {
-  public type = 'project';
-  public nodeId: string;
-  public localId: string;
-  public data: DocumentationProjectApi;
-  public level: number;
-  public branch: DocumentationBranch;
+  type = 'project';
+  nodeId: string;
+  localId: string;
+  data: DocumentationProjectApi;
+  level: number;
+  branch: DocumentationBranch;
 
-  public static newFromApi(parentNodeId: string, dataApi: DocumentationProjectApi, level: number): DocumentationProject {
+  static newFromApi(parentNodeId: string, dataApi: DocumentationProjectApi, level: number): DocumentationProject {
     const instance = new DocumentationProject();
     instance.data = dataApi;
     instance.localId = DocumentationNode.toAnchor(dataApi.name);

@@ -12,7 +12,7 @@ export class APIInterceptor implements HttpInterceptor {
     } else {
       url = `${environment.apiUrl}/${req.url}`;
     }
-    const apiReq = req.clone({url: url, withCredentials: true});
+    const apiReq = req.clone({url, withCredentials: true});
     return next.handle(apiReq);
   }
 }

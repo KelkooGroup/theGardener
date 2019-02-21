@@ -7,11 +7,9 @@ import {Component, Input} from '@angular/core';
 })
 export class HeaderComponent {
 
-  @Input()
-  logoSrc: string;
+  @Input() logoSrc: string;
 
-  @Input()
-  appTitle?: string;
+  @Input() appTitle?: string;
 
   constructor() {
   }

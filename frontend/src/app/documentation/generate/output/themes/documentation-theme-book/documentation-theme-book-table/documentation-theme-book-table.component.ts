@@ -8,8 +8,7 @@ import {DocumentationStepTable} from '../../../../../../_models/documentation';
 })
 export class DocumentationThemeBookTableComponent implements OnInit {
 
-  @Input()
-  table: DocumentationStepTable;
+  @Input() table: DocumentationStepTable;
 
   constructor() {
   }

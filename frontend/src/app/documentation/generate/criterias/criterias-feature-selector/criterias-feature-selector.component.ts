@@ -1,15 +1,12 @@
 import {
-  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
   OnInit,
   Output,
-  QueryList,
-  ViewChild,
-  ViewChildren
+  ViewChild
 } from '@angular/core';
-import {FeatureSelector} from '../../../../_services/criteriasSelection';
+import {FeatureSelector} from '../../../../_services/criterias-selection';
 import {MatCheckbox} from '@angular/material';
 
 @Component({
@@ -19,15 +16,12 @@ import {MatCheckbox} from '@angular/material';
 })
 export class CriteriasFeatureSelectorComponent implements OnInit {
 
-  @Output()
-  featureSelected = new EventEmitter<FeatureSelector>();
+  @Output() readonly featureSelected = new EventEmitter<FeatureSelector>();
 
 
-  @Input()
-  feature: FeatureSelector;
+  @Input() feature: FeatureSelector;
 
-  @ViewChild(MatCheckbox)
-  checkBox: MatCheckbox;
+  @ViewChild(MatCheckbox) checkBox: MatCheckbox;
 
   selected = false;
 
