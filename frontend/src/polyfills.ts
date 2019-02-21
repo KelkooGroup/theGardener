@@ -73,6 +73,12 @@ import 'core-js/es6/set';
  */
 import 'zone.js/dist/zone';  // Included with Angular CLI.
 
+import 'core-js';
+import 'zone.js';
+
+if (!Element.prototype.matches) {
+  Element.prototype.matches = Element.prototype.webkitMatchesSelector;
+}
 
 
 /***************************************************************************************************

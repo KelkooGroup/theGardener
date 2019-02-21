@@ -7,7 +7,7 @@ import {
   HierarchyNodeSelector,
   ProjectSelector,
   TupleHierarchyNodeSelector
-} from './criteriasSelection';
+} from './criterias-selection';
 
 
 @Injectable({
@@ -19,20 +19,19 @@ export class CriteriasService {
   constructor(private http: HttpClient) {
   }
 
-  public criterias(): Observable<Array<HierarchyNodeApi>> {
+  criterias(): Observable<Array<HierarchyNodeApi>> {
     const url = `api/criterias`;
     return this.http.get<Array<HierarchyNodeApi>>(url);
   }
 
   buildHierarchyNodeSelector(apiResult: Array<HierarchyNodeApi>): Array<HierarchyNodeSelector> {
     const hierarchyNodeSelectorArray = [];
-    for (let i = 0; i < apiResult.length; i++) {
-      const loopNodeApi = apiResult[i];
+    for (const loopNodeApi of apiResult) {
       const currentNodeSelector = HierarchyNodeSelector.newFromApi(loopNodeApi);
       hierarchyNodeSelectorArray.push(currentNodeSelector);
+
       if (loopNodeApi.projects != null) {
-        for (let j = 0; j < loopNodeApi.projects.length; j++) {
-          const loopProjectApi = loopNodeApi.projects[j];
+        for (const loopProjectApi of loopNodeApi.projects) {
           const currentProjectSelector = ProjectSelector.newFromApi(loopProjectApi);
           currentNodeSelector.projects.push(currentProjectSelector);
           currentProjectSelector.relatedHierarchyNode = currentNodeSelector;
@@ -43,7 +42,7 @@ export class CriteriasService {
   }
 
 
-  public buildHierarchyNodeSelectorAsTree(listNode: Array<HierarchyNodeSelector>): HierarchyNodeSelector {
+  buildHierarchyNodeSelectorAsTree(listNode: Array<HierarchyNodeSelector>): HierarchyNodeSelector {
     let root: HierarchyNodeSelector = null;
     if (listNode.length > 0) {
       root = listNode[0];
@@ -62,8 +61,7 @@ export class CriteriasService {
     const left = [];
 
     if (children.length > 0) {
-      for (let i = 0; i < children.length; i++) {
-        const loopNode = children[i];
+      for (const loopNode of children) {
         if (loopNode.id.startsWith(node.id)) {
           loopNode.root = root;
           if (loopNode.id.length === node.id.length + 3) {
@@ -77,8 +75,7 @@ export class CriteriasService {
       }
     }
     if (taken.length > 0) {
-      for (let i = 0; i < taken.length; i++) {
-        const loopTaken = taken[i];
+      for (const loopTaken of taken) {
         const tuple = this.build(loopTaken, Object.assign([], left), root);
         loopTaken.children = tuple.taken;
       }

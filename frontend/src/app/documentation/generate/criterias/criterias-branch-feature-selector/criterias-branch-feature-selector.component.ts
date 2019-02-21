@@ -1,17 +1,14 @@
 import {
   AfterViewChecked,
-  ChangeDetectorRef,
   Component,
   Input,
   OnInit,
-  Output,
   QueryList,
-  ViewChild,
   ViewChildren
 } from '@angular/core';
-import {BranchSelector, FeatureSelector, ProjectSelector} from '../../../../_services/criteriasSelection';
+import {BranchSelector, FeatureSelector, ProjectSelector} from '../../../../_services/criterias-selection';
 import {CriteriasFeatureSelectorComponent} from '../criterias-feature-selector/criterias-feature-selector.component';
-import {MatSelect} from '@angular/material';
+import {MatSelectChange} from '@angular/material';
 
 @Component({
   selector: 'app-criterias-branch-feature-selector',
@@ -20,11 +17,9 @@ import {MatSelect} from '@angular/material';
 })
 export class CriteriasBranchFeatureSelectorComponent implements OnInit, AfterViewChecked {
 
-  @Input()
-  project: ProjectSelector;
+  @Input() project: ProjectSelector;
 
-  @ViewChildren(CriteriasFeatureSelectorComponent)
-  featureComponents: QueryList<CriteriasFeatureSelectorComponent>;
+  @ViewChildren(CriteriasFeatureSelectorComponent) featureComponents: QueryList<CriteriasFeatureSelectorComponent>;
 
 
   constructor() {
@@ -34,7 +29,7 @@ export class CriteriasBranchFeatureSelectorComponent implements OnInit, AfterVie
   }
 
 
-  selectBranch(event) {
+  selectBranch(event: MatSelectChange) {
     const branch = event.source.value as BranchSelector;
     branch.selectBranch();
 

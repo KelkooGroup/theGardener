@@ -1,7 +1,7 @@
 <mat-table class="book-table" [dataSource]="table.rows">
   <ng-container [matColumnDef]="headerId" *ngFor="let headerId of table.headerIds">
-    <mat-header-cell class="book-header-cell" *matHeaderCellDef> {{table.getHeader(headerId)}}</mat-header-cell>
-    <mat-cell class="book-cell" mat-cell *matCellDef="let row"> {{row.getValue(headerId)}}</mat-cell>
+    <mat-header-cell class="book-header-cell" *matHeaderCellDef> {{ table.getHeader(headerId) }}</mat-header-cell>
+    <mat-cell class="book-cell" mat-cell *matCellDef="let row"> {{ row.getValue(headerId) }}</mat-cell>
   </ng-container>
 
   <mat-header-row class="book-header-row" *matHeaderRowDef="table.headerIds"></mat-header-row>

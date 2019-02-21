@@ -7,17 +7,13 @@ import {Component, Input, OnInit} from '@angular/core';
 })
 export class MenuItemComponent implements OnInit {
 
-  @Input()
-  routerlink: string;
+  @Input() routerlink: string;
 
-  @Input()
-  icon: string;
+  @Input() icon: string;
 
-  @Input()
-  label: string;
+  @Input() label: string;
 
-  @Input()
-  implemented = true;
+  @Input() implemented = true;
 
   constructor() {
   }

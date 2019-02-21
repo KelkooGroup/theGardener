@@ -1,10 +1,10 @@
-<div class="title">{{childrenLabel}}:</div>
+<div class="title">{{ childrenLabel }}:</div>
 
 <mat-tree [dataSource]="nestedDataSource" [treeControl]="nestedTreeControl" class="criterias-tree">
   <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
     <li class="mat-tree-node">
       <button mat-icon-button disabled></button>
-      <div class="hierarchyNode">{{node.name}}</div>
+      <div class="hierarchyNode">{{ node.name }}</div>
     </li>
   </mat-tree-node>
 
@@ -14,7 +14,7 @@
         <button mat-icon-button matTreeNodeToggle
                 [attr.aria-label]="'toggle ' + node.name">
           <mat-icon class="mat-icon-rtl-mirror">
-            {{nestedTreeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+            {{ nestedTreeControl.isExpanded(node) ? 'expand_more' : 'chevron_right' }}
           </mat-icon>
         </button>
         <mat-checkbox class="hierarchyNode"
@@ -22,11 +22,11 @@
                       [indeterminate]="node.indeterminate"
                       [value]="node"
                       (change)="selectHierarchyNode($event)"
-        >{{node.name}}
+        >{{ node.name }}
         </mat-checkbox>
       </div>
       <ul [class.criterias-tree-invisible]="!nestedTreeControl.isExpanded(node)">
-        <div>{{node.childrenLabel}}:</div>
+        <div>{{ node.childrenLabel }}:</div>
         <div class="mat-tree-node pull-right" *ngFor="let project of node.projects">
           <ul class="flex-container flex-direction-column flex-align-items-start">
             <li>
@@ -35,7 +35,7 @@
                             [indeterminate]="project.indeterminate"
                             [value]="project"
                             (change)="selectProject($event) ; branchFeaturesSelector.updateFeaturesSelection($event.checked)"
-              >{{project.label}}
+              >{{ project.label }}
               </mat-checkbox>
             </li>
             <li>

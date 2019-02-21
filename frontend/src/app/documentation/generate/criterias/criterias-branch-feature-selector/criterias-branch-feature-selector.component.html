@@ -5,7 +5,7 @@
       <li>
         <mat-select class="branches"  placeholder="Stable branch by default"   (selectionChange)="selectBranch($event)" >
           <mat-option [class.stable-branch]="branch.name == project.stableBranch.name"
-                      *ngFor="let branch of project.branches" [value]="branch">{{branch.name}}
+                      *ngFor="let branch of project.branches" [value]="branch">{{ branch.name }}
           </mat-option>
         </mat-select>
       </li>

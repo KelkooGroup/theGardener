@@ -27,8 +27,8 @@ const ALL_FEATURES_FILTER = new FeatureSelector(0, '*', 'All features');
 
 export class BranchSelector {
 
-  public featureFilter: FeatureSelector;
-  public features: Array<FeatureSelector>;
+  featureFilter: FeatureSelector;
+  features: Array<FeatureSelector>;
 
   constructor(
     public name: string,
@@ -39,8 +39,7 @@ export class BranchSelector {
     this.featureFilter = NO_FEATURE_FILTER;
     this.features.push(ALL_FEATURES_FILTER);
     let lastDirectory = '';
-    for (let k = 0; k < featureRowPath.length; k++) {
-      const currentPath = featureRowPath[k];
+    for (const currentPath of featureRowPath) {
       const split = currentPath.split('/');
       if (split.length === 1) {
         this.features.push(new FeatureSelector(split.length, currentPath, currentPath));
@@ -59,35 +58,35 @@ export class BranchSelector {
     }
   }
 
-  public selectBranch() {
+  selectBranch() {
     this.project.branchSelection(this);
     this.selectAllFeatures();
   }
 
-  public selectFeature(feature: FeatureSelector) {
+  selectFeature(feature: FeatureSelector) {
     this.project.featureSelection(feature);
   }
 
-  public selectAllFeatures() {
+  selectAllFeatures() {
     this.featureFilter = ALL_FEATURES_FILTER;
   }
 
-  public selectNoneFeatures() {
+  selectNoneFeatures() {
     this.featureFilter = NO_FEATURE_FILTER;
   }
 
-  public hasFilter(): boolean {
+  hasFilter(): boolean {
     return this.featureFilter !== ALL_FEATURES_FILTER && this.featureFilter !== NO_FEATURE_FILTER;
   }
 }
 
 export class ProjectSelector {
 
-  public selected = false;
-  public indeterminate = false;
-  public selectedBranch: BranchSelector;
-  public stableBranch: BranchSelector;
-  public relatedHierarchyNode: HierarchyNodeSelector;
+  selected = false;
+  indeterminate = false;
+  selectedBranch: BranchSelector;
+  stableBranch: BranchSelector;
+  relatedHierarchyNode: HierarchyNodeSelector;
 
   constructor(
     public id: string,
@@ -96,9 +95,9 @@ export class ProjectSelector {
   ) {
   }
 
-  public static newFromApi(projectApi: ProjectApi): ProjectSelector {
+  static newFromApi(projectApi: ProjectApi): ProjectSelector {
 
-    const branches = [];
+    const branches: Array<BranchSelector> = [];
     const mapBranchNameBranch = new Map();
     const instance = new ProjectSelector(
       projectApi.id,
@@ -106,8 +105,8 @@ export class ProjectSelector {
       branches
     );
     if (projectApi.branches !== null) {
-      for (let k = 0; k < projectApi.branches.length; k++) {
-        const currentBranch = new BranchSelector(projectApi.branches[k].name, projectApi.branches[k].features, instance);
+      for (const branch of projectApi.branches) {
+        const currentBranch = new BranchSelector(branch.name, branch.features, instance);
         branches.push(currentBranch);
         mapBranchNameBranch.set(currentBranch.name, currentBranch);
       }
@@ -119,7 +118,7 @@ export class ProjectSelector {
     return instance;
   }
 
-  public selection(selected: boolean) {
+  selection(selected: boolean) {
     this.selected = selected;
     this.selectedBranch = this.stableBranch;
     if (this.selected) {
@@ -130,24 +129,21 @@ export class ProjectSelector {
     this.relatedHierarchyNode.root.updateIndeterminateStatus();
   }
 
-  public featureSelection(selectedFeature: FeatureSelector) {
+  featureSelection(selectedFeature: FeatureSelector) {
     this.selected = true;
     this.selectedBranch.featureFilter = selectedFeature;
     this.relatedHierarchyNode.root.updateIndeterminateStatus();
   }
 
-  public branchSelection(selectedBranch: BranchSelector) {
+  branchSelection(selectedBranch: BranchSelector) {
     this.selected = true;
     this.selectedBranch = selectedBranch;
     this.relatedHierarchyNode.root.updateIndeterminateStatus();
   }
 
-  public isIndeterminate(): boolean {
-    this.indeterminate = false;
-    if (!this.selectedBranch ||
-      (this.selectedBranch && this.selectedBranch.name !== this.stableBranch.name)) {
-      this.indeterminate = true;
-    }
+  isIndeterminate(): boolean {
+
+    this.indeterminate = !this.selectedBranch || (this.selectedBranch && this.selectedBranch.name !== this.stableBranch.name);
     if (this.selectedBranch && this.selectedBranch.hasFilter()) {
       this.indeterminate = true;
     }
@@ -159,14 +155,14 @@ export class ProjectSelector {
 }
 
 export class HierarchyNodeSelector {
-  public selected = false;
-  public indeterminate = false;
-  public open = false;
-  public level: number;
-  public path: string;
-  public children = [];
-  public projects = [];
-  public root: HierarchyNodeSelector;
+  selected = false;
+  indeterminate = false;
+  open = false;
+  level: number;
+  path: string;
+  children: Array<HierarchyNodeSelector> = [];
+  projects: Array<ProjectSelector> = [];
+  root: HierarchyNodeSelector;
 
   constructor(
     public id: string,
@@ -177,7 +173,7 @@ export class HierarchyNodeSelector {
     this.level = this.id.split('.').length - 1;
   }
 
-  public static newFromApi(nodeApi: HierarchyNodeApi): HierarchyNodeSelector {
+  static newFromApi(nodeApi: HierarchyNodeApi): HierarchyNodeSelector {
     return new HierarchyNodeSelector(
       nodeApi.id,
       nodeApi.slugName,
@@ -187,15 +183,15 @@ export class HierarchyNodeSelector {
     );
   }
 
-  public hasChilden(): boolean {
+  hasChilden(): boolean {
     return this.children.length > 0;
   }
 
-  public hasProjects(): boolean {
+  hasProjects(): boolean {
     return this.projects.length > 0;
   }
 
-  public clone(): HierarchyNodeSelector {
+  clone(): HierarchyNodeSelector {
     const instance = new HierarchyNodeSelector(
       this.id,
       this.slugName,
@@ -209,21 +205,21 @@ export class HierarchyNodeSelector {
     return instance;
   }
 
-  public selection(selected: boolean) {
+  selection(selected: boolean) {
     this.selected = selected;
-    for (let i = 0; i < this.children.length; i++) {
-      this.children[i].selection(selected);
+    for (const child of this.children) {
+      child.selection(selected);
     }
-    for (let i = 0; i < this.projects.length; i++) {
-      this.projects[i].selected = this.selected;
+    for (const project of this.projects) {
+      project.selected = this.selected;
     }
   }
 
-  public refreshIndeterminateStatus() {
+  refreshIndeterminateStatus() {
     this.root.updateIndeterminateStatus();
   }
 
-  public updateIndeterminateStatus(): string {
+  updateIndeterminateStatus(): string {
 
     let localStatus = 'na';
 
@@ -236,8 +232,7 @@ export class HierarchyNodeSelector {
       let nbSelected = 0;
       let nbIndeterminate = 0;
 
-      for (let j = 0; j < this.projects.length; j++) {
-        const loopProjectApi = this.projects[j];
+      for (const loopProjectApi of this.projects) {
         if (loopProjectApi.selected) {
           nbSelected++;
         }
@@ -268,8 +263,7 @@ export class HierarchyNodeSelector {
     let nbChildrenNotSelected = 0;
     let nbChildrenIndeterminate = 0;
 
-    for (let i = 0; i < this.children.length; i++) {
-      const loopNode = this.children[i];
+    for (const loopNode of this.children) {
       const loopStatus = loopNode.updateIndeterminateStatus();
       switch (loopStatus) {
         case 'notSelected' :
@@ -325,7 +319,7 @@ export class HierarchyNodeDisplay {
   ) {
   }
 
-  public toString() {
+  toString() {
     return this.humanizedPath;
   }
 
@@ -333,7 +327,7 @@ export class HierarchyNodeDisplay {
 
 export class ProjectDisplay {
 
-  public specificBranch: string;
+  specificBranch: string;
 
   constructor(
     public node: HierarchyNodeDisplay,
@@ -342,7 +336,7 @@ export class ProjectDisplay {
   ) {
   }
 
-  public toString() {
+  toString() {
     const project = `On ${this.node} only ${this.name}`;
     if (this.specificBranch) {
       return `${project} at ${this.specificBranch} branch`;
@@ -354,8 +348,8 @@ export class ProjectDisplay {
 
 export class CriteriasDisplay {
 
-  projects = [];
-  hierarchyNodes = [];
+  projects: Array<ProjectDisplay> = [];
+  hierarchyNodes: Array<HierarchyNodeDisplay> = [];
 }
 
 export class CriteriasSelector {
@@ -366,22 +360,20 @@ export class CriteriasSelector {
   static SEP_PATH = '_';
   static SPLIT_PROJECT = '>';
 
-  public hierarchyNodesSelector: HierarchyNodeSelector[];
+  hierarchyNodesSelector: Array<HierarchyNodeSelector>;
 
-  humanizeHttpParams(nodes: string[], projects: string[]): CriteriasDisplay {
+  humanizeHttpParams(nodes: Array<string>, projects: Array<string>): CriteriasDisplay {
     const criteriasDisplay = new CriteriasDisplay();
 
 
     if (nodes !== undefined) {
-      for (let i = 0; i < nodes.length; i++) {
-        const path = nodes[i];
+      for (const path of nodes) {
         const hierarchyNode = new HierarchyNodeDisplay(path, this.humanizeNodePath(path));
         criteriasDisplay.hierarchyNodes.push(hierarchyNode);
       }
     }
     if (projects !== undefined) {
-      for (let i = 0; i < projects.length; i++) {
-        const projectSelectorString = projects[i];
+      for (const projectSelectorString of projects) {
         if (projectSelectorString !== undefined) {
           const projectSelectorParams = projectSelectorString.split(CriteriasSelector.SPLIT_PROJECT);
 
@@ -406,21 +398,20 @@ export class CriteriasSelector {
     return criteriasDisplay;
   }
 
-  public humanizeNodePath(nodePath: string): string {
+  humanizeNodePath(nodePath: string): string {
 
     return nodePath;
   }
 
-  public humanizeProjectId(projectId: string): string {
+  humanizeProjectId(projectId: string): string {
 
     return projectId;
   }
 
-  public buildHttpParams(): HttpParams {
+  buildHttpParams(): HttpParams {
 
     let httpParams = new HttpParams();
-    for (let i = 0; i < this.hierarchyNodesSelector.length; i++) {
-      const loopNode = this.hierarchyNodesSelector[i];
+    for (const loopNode of this.hierarchyNodesSelector) {
       httpParams = this._buildHttpParams(httpParams, loopNode);
     }
     return httpParams;
@@ -438,13 +429,12 @@ export class CriteriasSelector {
     }
 
     if (hierarchyNodeSelector.hasChilden()) {
-      for (let i = 0; i < hierarchyNodeSelector.children.length; i++) {
-        httpParams = this._buildHttpParams(httpParams, hierarchyNodeSelector.children[i]);
+      for (const child of hierarchyNodeSelector.children) {
+        httpParams = this._buildHttpParams(httpParams, child);
       }
     }
     if (hierarchyNodeSelector.hasProjects()) {
-      for (let i = 0; i < hierarchyNodeSelector.projects.length; i++) {
-        const loopProject: ProjectSelector = hierarchyNodeSelector.projects[i];
+      for (const loopProject of hierarchyNodeSelector.projects) {
         if (loopProject.selected) {
           const loopHttpParams = this._buildHttpParamsForAProject(loopProject);
           httpParams = httpParams.append(CriteriasSelector.PARAM_PROJECT, loopHttpParams);
@@ -456,8 +446,7 @@ export class CriteriasSelector {
 
   private _buildHttpParamsForSpecificProjectSelection(httpParams: HttpParams, hierarchyNodeSelector: HierarchyNodeSelector): HttpParams {
     if (hierarchyNodeSelector.hasProjects()) {
-      for (let i = 0; i < hierarchyNodeSelector.projects.length; i++) {
-        const loopProject: ProjectSelector = hierarchyNodeSelector.projects[i];
+      for (const loopProject of hierarchyNodeSelector.projects) {
         if (loopProject.selected) {
           if (loopProject.selectedBranch !== undefined
             && (
@@ -472,8 +461,8 @@ export class CriteriasSelector {
       }
     }
     if (hierarchyNodeSelector.hasChilden()) {
-      for (let i = 0; i < hierarchyNodeSelector.children.length; i++) {
-        httpParams = this._buildHttpParamsForSpecificProjectSelection(httpParams, hierarchyNodeSelector.children[i]);
+      for (const child of hierarchyNodeSelector.children) {
+        httpParams = this._buildHttpParamsForSpecificProjectSelection(httpParams, child);
       }
     }
     return httpParams;

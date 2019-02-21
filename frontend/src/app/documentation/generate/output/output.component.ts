@@ -11,16 +11,13 @@ import {DocumentationThemeBookComponent} from './themes/documentation-theme-book
 })
 export class OutputComponent implements OnInit {
 
-  @Input()
-  display = false;
+  @Input() display = false;
 
-  @Output()
-  documentationData: DocumentationNode[];
+  @Output() documentationData: Array<DocumentationNode>;
 
   showSpinner = true;
 
-  @ViewChild(DocumentationThemeBookComponent)
-  documentationTheme: DocumentationThemeBookComponent;
+  @ViewChild(DocumentationThemeBookComponent) documentationTheme: DocumentationThemeBookComponent;
 
   constructor(private documentationService: DocumentationService, private route: ActivatedRoute) {
 
@@ -29,12 +26,12 @@ export class OutputComponent implements OnInit {
   ngOnInit() {
 
     this.route.queryParams.subscribe(httpParams => {
-      const httpParamsAsString = this.buildHttpParams(httpParams['node'], httpParams['project']);
+      const httpParamsAsString = this.buildHttpParams(httpParams.node, httpParams.project);
       this.generateDocumentation(httpParamsAsString);
     });
   }
 
-  buildHttpParams(nodes: string[], projects: string[]): string {
+  buildHttpParams(nodes: Array<string>, projects: Array<string>): string {
     let nodesArray = nodes;
     if (!(nodesArray instanceof Array)) {
       nodesArray = new Array(nodesArray);
@@ -44,14 +41,14 @@ export class OutputComponent implements OnInit {
       projectsArray = new Array(projectsArray);
     }
     let httpParams = '';
-    for (let i = 0; i < nodesArray.length; i++) {
-      if (nodesArray[i] != null) {
-        httpParams += `node=${nodesArray[i]}&`;
+    for (const node of nodesArray) {
+      if (node != null) {
+        httpParams += `node=${node}&`;
       }
     }
-    for (let i = 0; i < projectsArray.length; i++) {
-      if (projectsArray[i] != null) {
-        httpParams += `project=${projectsArray[i]}&`;
+    for (const project of projectsArray) {
+      if (project) {
+        httpParams += `project=${project}&`;
       }
     }
     return httpParams;

@@ -1,5 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {BranchSelector, HierarchyNodeSelector, ProjectSelector} from '../../../../_services/criteriasSelection';
+import {HierarchyNodeSelector, ProjectSelector} from '../../../../_services/criterias-selection';
+import {MatCheckboxChange} from '@angular/material';
 import {MatTreeNestedDataSource} from '@angular/material/tree';
 import {NestedTreeControl} from '@angular/cdk/tree';
 
@@ -14,31 +15,29 @@ export class CriteriasTreeSelectorComponent implements OnInit {
   nestedTreeControl: NestedTreeControl<HierarchyNodeSelector>;
   nestedDataSource: MatTreeNestedDataSource<HierarchyNodeSelector>;
 
-  @Input()
-  data: HierarchyNodeSelector[];
+  @Input() data: Array<HierarchyNodeSelector>;
 
-  @Input()
-  childrenLabel: string;
+  @Input() childrenLabel: string;
 
   ngOnInit() {
-    this.nestedTreeControl = new NestedTreeControl<HierarchyNodeSelector>(this._getChildren);
+    this.nestedTreeControl = new NestedTreeControl<HierarchyNodeSelector>(this.getChildren);
     this.nestedDataSource = new MatTreeNestedDataSource();
     this.nestedDataSource.data = this.data;
   }
 
   hasNestedChild = (_: number, nodeData: HierarchyNodeSelector) => nodeData.hasChilden() || nodeData.hasProjects();
 
-  private _getChildren = (node: HierarchyNodeSelector) => node.children;
+  private getChildren = (node: HierarchyNodeSelector) => node.children;
 
 
-  selectHierarchyNode(event) {
-    const source = event.source.value as HierarchyNodeSelector;
+  selectHierarchyNode(event: MatCheckboxChange) {
+    const source = event.source.value as unknown as HierarchyNodeSelector;
     source.selection(event.checked);
     source.refreshIndeterminateStatus();
   }
 
-  selectProject(event) {
-    const source = event.source.value as ProjectSelector;
+  selectProject(event: MatCheckboxChange) {
+    const source = event.source.value as unknown as ProjectSelector;
     source.selection(event.checked);
   }
 

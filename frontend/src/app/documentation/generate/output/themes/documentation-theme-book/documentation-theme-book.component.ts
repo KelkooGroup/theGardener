@@ -1,8 +1,8 @@
-import {AfterViewChecked, Component, Input, OnInit} from '@angular/core';
+import {AfterViewChecked, Component, OnInit} from '@angular/core';
 import {DocumentationNode, ExpandableNode} from '../../../../../_models/documentation';
 import {MatTreeNestedDataSource} from '@angular/material/tree';
 import {NestedTreeControl} from '@angular/cdk/tree';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 import {Location} from '@angular/common';
 
 @Component({
@@ -12,7 +12,7 @@ import {Location} from '@angular/common';
 })
 export class DocumentationThemeBookComponent implements OnInit, AfterViewChecked {
 
-  documentationData: DocumentationNode[];
+  documentationData: Array<DocumentationNode>;
 
   nestedTreeControl: NestedTreeControl<ExpandableNode>;
   nestedDataSource: MatTreeNestedDataSource<DocumentationNode>;
@@ -34,9 +34,9 @@ export class DocumentationThemeBookComponent implements OnInit, AfterViewChecked
     });
   }
 
-  updateGeneratedDocumentation(documentationData: DocumentationNode[]) {
+  updateGeneratedDocumentation(documentationData: Array<DocumentationNode>) {
     this.documentationData = documentationData;
-    this.nestedTreeControl = new NestedTreeControl<ExpandableNode>(this._getChildren);
+    this.nestedTreeControl = new NestedTreeControl<ExpandableNode>(this.getChildren);
     this.nestedDataSource = new MatTreeNestedDataSource();
     this.nestedDataSource.data = this.documentationData;
     this.nestedTreeControl.dataNodes = this.documentationData;
@@ -60,7 +60,7 @@ export class DocumentationThemeBookComponent implements OnInit, AfterViewChecked
 
   hasNestedChild = (_: number, nodeData: DocumentationNode) => nodeData.hasChilden();
 
-  private _getChildren = (node: ExpandableNode) => node.getChilden();
+  private getChildren = (node: ExpandableNode) => node.getChilden();
 
 
 }
