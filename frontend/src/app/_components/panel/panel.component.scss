@@ -43,6 +43,8 @@
 
   .panel-body {
     padding: 0 10px 10px;
+    min-width: 200px;
+    min-height: 200px;
   }
 
   .panel-actions {
@@ -81,3 +83,4 @@
 .pointer {
   cursor: pointer;
 }
+

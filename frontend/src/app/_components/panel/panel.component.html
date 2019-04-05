@@ -1,4 +1,4 @@
-<div class="panel panel-default  ">
+<div class="panel panel-default" >
 
   <div class="panel-top" *ngIf="panelTitle" (click)="toggleClosed()" [class.pointer]="isClosable">
 
@@ -25,6 +25,9 @@
     <ng-content *ngIf="!showSpinner"></ng-content>
     <div class="spinner-container" *ngIf="showSpinner">
       <mat-spinner color="primary" mode="indeterminate"></mat-spinner>
+    </div>
+    <div class="progress-bar-container" *ngIf="showProgressBar">
+      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
     </div>
   </div>
 

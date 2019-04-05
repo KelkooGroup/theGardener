@@ -22,3 +22,8 @@ $type-colors: (
 ::ng-deep .segment-main > .segment-key {
   color: $color-text-dark !important;
 }
+
+::ng-deep .segment-main > .segment-value {
+  font-size: $font-size-text-small !important;
+  font-family: "courier", serif;
+}

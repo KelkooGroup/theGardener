@@ -1,4 +1,4 @@
-import {AfterViewChecked, Component, OnInit} from '@angular/core';
+import {AfterViewChecked, Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {DocumentationNode, ExpandableNode} from '../../../../../_models/documentation';
 import {MatTreeNestedDataSource} from '@angular/material/tree';
 import {NestedTreeControl} from '@angular/cdk/tree';
@@ -10,15 +10,20 @@ import {Location} from '@angular/common';
   templateUrl: './documentation-theme-book.component.html',
   styleUrls: ['./documentation-theme-book.component.scss']
 })
-export class DocumentationThemeBookComponent implements OnInit, AfterViewChecked {
+export class DocumentationThemeBookComponent implements OnInit,  AfterViewChecked {
 
-  documentationData: Array<DocumentationNode>;
+  documentationData: DocumentationNode[];
 
   nestedTreeControl: NestedTreeControl<ExpandableNode>;
   nestedDataSource: MatTreeNestedDataSource<DocumentationNode>;
 
   url: string;
   hash: string;
+
+  @Output()
+  documentationDisplayed: EventEmitter<Boolean> = new EventEmitter();
+  documentationDisplayedEmitted = false ;
+
 
   constructor(private location: Location, private route: ActivatedRoute) {
   }
@@ -34,19 +39,22 @@ export class DocumentationThemeBookComponent implements OnInit, AfterViewChecked
     });
   }
 
-  updateGeneratedDocumentation(documentationData: Array<DocumentationNode>) {
+  updateGeneratedDocumentation(documentationData: DocumentationNode[]) {
+    this.documentationDisplayedEmitted = false ;
     this.documentationData = documentationData;
-    this.nestedTreeControl = new NestedTreeControl<ExpandableNode>(this.getChildren);
+    this.nestedTreeControl = new NestedTreeControl<ExpandableNode>(this._getChildren);
     this.nestedDataSource = new MatTreeNestedDataSource();
     this.nestedDataSource.data = this.documentationData;
     this.nestedTreeControl.dataNodes = this.documentationData;
     this.nestedTreeControl.expandAll();
+
   }
 
-
-  ngAfterViewChecked() {
+  defineHash(hash: string){
+    this.hash = hash;
     this.selectHash();
   }
+
 
   selectHash() {
     if (this.hash) {
@@ -54,13 +62,21 @@ export class DocumentationThemeBookComponent implements OnInit, AfterViewChecked
       if (cmp) {
         cmp.scrollIntoView();
       }
+      window.location.hash = this.hash;
+    }
+  }
+
+  ngAfterViewChecked() {
+    if (! this.documentationDisplayedEmitted){
+      this.documentationDisplayedEmitted = true ;
+      this.documentationDisplayed.emit(true);
     }
   }
 
 
   hasNestedChild = (_: number, nodeData: DocumentationNode) => nodeData.hasChilden();
 
-  private getChildren = (node: ExpandableNode) => node.getChilden();
+  private _getChildren = (node: ExpandableNode) => node.getChilden();
 
 
 }
