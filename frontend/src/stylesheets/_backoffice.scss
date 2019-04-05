@@ -11,78 +11,25 @@ $font-size-h4 : 28px;
 $font-size-h5 : 25px;
 $font-size-h6 : 22px;
 $font-size-h7 : 20px;
-$font-size-text : 20px;
-$font-size-text-small: small;
-$font-size-text-x-small: x-small;
+$font-size-h8 : 18px;
+$font-size-h9 : 17px;
+$font-size-text : 16px;
+$font-size-text-small: 15px;
+$font-size-text-x-small: 10px;
 $font-size-text-big: 22px;
-
+$font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Verdana, Arial, sans-serif;
 
 html, body {
-  min-height: 100%;
+  height: 100%;
+  width: 100%;
   background-color: $color-background;
   color: $color-text;
   font-size: $font-size-text;
-  font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Verdana, Arial, sans-serif;
+  font-family: $font-family;
   margin: 0;
 }
 
 a {
   color: $color-link;
   cursor: pointer;
-}
-
-a.mat-raised-button {
-  text-decoration: none;
-}
-
-.theGardener {
-  display: flex;
-  flex-flow: row wrap;
-}
-
-.theGardener, .mat-dialog-container {
-
-  font-size: $font-size-text;
-  background-color: $color-background;
-
-  .content {
-    flex: 1 90%;
-    width: 100%;
-    background-color: $color-background;
-    padding: 10px 15px;
-  }
-
-  .right_col {
-    margin-left: 70px;
-    padding: 10px 20px;
-  }
-
-  h1, h2, h3 {
-    margin-top: 10px;
-    margin-bottom: 10px;
-  }
-
-  h2 a {
-    text-decoration: underline;
-  }
-
-  h3 a {
-    text-decoration: underline;
-  }
-
-  .page-title {
-    width: 100%;
-    font-size: $font-size-h3;
-  }
-
-  select {
-    color: $color-link-over;
-    height: 30px;
-    line-height: 18px;
-    padding: 5px 10px;
-    border-radius: 2px;
-    background: #fff;
-    font-size: $font-size-h3;
-  }
-
 }

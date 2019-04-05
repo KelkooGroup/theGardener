@@ -33,6 +33,8 @@ import {
   MatTabsModule,
   MatTreeModule,
 } from '@angular/material';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
+import {MatExpansionModule} from '@angular/material/expansion';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatCardModule} from '@angular/material/card';
 import {PanelComponent} from './_components/panel/panel.component';
@@ -47,6 +49,10 @@ import {FooterComponent} from './_components/page/footer/footer.component';
 import {CriteriasBranchFeatureSelectorComponent} from './documentation/generate/criterias/criterias-branch-feature-selector/criterias-branch-feature-selector.component';
 import {CriteriasFeatureSelectorComponent} from './documentation/generate/criterias/criterias-feature-selector/criterias-feature-selector.component';
 import { DocumentationThemeBookLongTextComponent } from './documentation/generate/output/themes/documentation-theme-book/documentation-theme-book-long-text/documentation-theme-book-long-text.component';
+import { NavigatePageComponent } from './documentation/navigate/navigate-page.component';
+import { NavigateContentComponent } from './documentation/navigate/navigate-content.component';
+import { NavigateTreeComponent } from './documentation/navigate/navigate-tree/navigate-tree.component';
+import { NavigateMenuComponent } from './documentation/navigate/navigate-menu/navigate-menu.component';
 
 const nonProductionProviders = [{
   provide: HTTP_INTERCEPTORS,
@@ -77,6 +83,10 @@ const nonProductionProviders = [{
     CriteriasBranchFeatureSelectorComponent,
     CriteriasFeatureSelectorComponent,
     DocumentationThemeBookLongTextComponent,
+    NavigatePageComponent,
+    NavigateContentComponent,
+    NavigateTreeComponent,
+    NavigateMenuComponent,
   ],
   imports: [
     HttpClientModule,
@@ -101,6 +111,8 @@ const nonProductionProviders = [{
     MatProgressSpinnerModule,
     FormsModule,
     NgxJsonViewerModule,
+    MatExpansionModule,
+    MatProgressBarModule,
   ],
   providers: [
     ...!environment.production ? nonProductionProviders : [],

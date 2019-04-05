@@ -45,6 +45,12 @@
   justify-content: space-between;
 }
 
+.flex-align-content-center {
+  align-content: center;
+}
+
+
+
 .flex-wrap    {
   -webkit-flex-wrap: wrap;
   flex-wrap: wrap;
@@ -55,3 +61,11 @@
   flex-wrap: wrap-reverse;
 }
 
+.flex-width-expand{
+  width: 100%;
+}
+
+
+.flex-height-expand{
+  height: 100%;
+}

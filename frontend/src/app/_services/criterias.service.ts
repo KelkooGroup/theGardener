@@ -19,19 +19,20 @@ export class CriteriasService {
   constructor(private http: HttpClient) {
   }
 
-  criterias(): Observable<Array<HierarchyNodeApi>> {
+  public criterias(): Observable<Array<HierarchyNodeApi>> {
     const url = `api/criterias`;
     return this.http.get<Array<HierarchyNodeApi>>(url);
   }
 
   buildHierarchyNodeSelector(apiResult: Array<HierarchyNodeApi>): Array<HierarchyNodeSelector> {
     const hierarchyNodeSelectorArray = [];
-    for (const loopNodeApi of apiResult) {
+    for (let i = 0; i < apiResult.length; i++) {
+      const loopNodeApi = apiResult[i];
       const currentNodeSelector = HierarchyNodeSelector.newFromApi(loopNodeApi);
       hierarchyNodeSelectorArray.push(currentNodeSelector);
-
       if (loopNodeApi.projects != null) {
-        for (const loopProjectApi of loopNodeApi.projects) {
+        for (let j = 0; j < loopNodeApi.projects.length; j++) {
+          const loopProjectApi = loopNodeApi.projects[j];
           const currentProjectSelector = ProjectSelector.newFromApi(loopProjectApi);
           currentNodeSelector.projects.push(currentProjectSelector);
           currentProjectSelector.relatedHierarchyNode = currentNodeSelector;
@@ -42,26 +43,27 @@ export class CriteriasService {
   }
 
 
-  buildHierarchyNodeSelectorAsTree(listNode: Array<HierarchyNodeSelector>): HierarchyNodeSelector {
+  public buildHierarchyNodeSelectorAsTree(listNode: Array<HierarchyNodeSelector>): HierarchyNodeSelector {
     let root: HierarchyNodeSelector = null;
     if (listNode.length > 0) {
       root = listNode[0];
       root.path = '';
       root.open = true;
-      const tuple = this.build(root, listNode, root);
+      const tuple = this.build(root, listNode, root, root);
       root.children = tuple.taken;
     }
     return root;
   }
 
 
-  private build(node: HierarchyNodeSelector, children: Array<HierarchyNodeSelector>, root: HierarchyNodeSelector): TupleHierarchyNodeSelector {
+  private build(node: HierarchyNodeSelector, children: Array<HierarchyNodeSelector>, root: HierarchyNodeSelector, parent: HierarchyNodeSelector): TupleHierarchyNodeSelector {
 
     const taken = [];
     const left = [];
 
     if (children.length > 0) {
-      for (const loopNode of children) {
+      for (let i = 0; i < children.length; i++) {
+        const loopNode = children[i];
         if (loopNode.id.startsWith(node.id)) {
           loopNode.root = root;
           if (loopNode.id.length === node.id.length + 3) {
@@ -75,8 +77,9 @@ export class CriteriasService {
       }
     }
     if (taken.length > 0) {
-      for (const loopTaken of taken) {
-        const tuple = this.build(loopTaken, Object.assign([], left), root);
+      for (let i = 0; i < taken.length; i++) {
+        const loopTaken = taken[i];
+        const tuple = this.build(loopTaken, Object.assign([], left), root,node);
         loopTaken.children = tuple.taken;
       }
     }
