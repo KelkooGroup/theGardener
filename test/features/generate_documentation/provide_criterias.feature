@@ -13,7 +13,6 @@ Feature: Provide criterias
       | .01.01.01. | suggestion | Suggestion system    | Projects      | Project      |
       | .01.01.02. | user       | User system          | Projects      | Project      |
       | .01.01.03. | search     | Search system        | Projects      | Project      |
-
     And we have the following projects
       | id                 | name                    | repositoryUrl                                              | stableBranch | featuresRootPath |
       | suggestionsWS      | Suggestions WebServices | target/remote/data/GetFeatures/library/suggestionsWS/      | master       | test/features    |

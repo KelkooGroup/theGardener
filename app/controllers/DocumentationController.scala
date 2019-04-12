@@ -3,7 +3,7 @@ package controllers
 import io.swagger.annotations._
 import javax.inject.Inject
 import models._
-import play.api.Logger
+import play.api.Logging
 import play.api.libs.json.Json
 import play.api.mvc._
 import repository._
@@ -47,7 +47,7 @@ object Documentation {
 
 
 @Api(value = "DocumentationController", produces = "application/json")
-class DocumentationController @Inject()(documentationRepository: DocumentationRepository, criteriaService: CriteriaService, hierarchyRepository: HierarchyRepository, projectRepository: ProjectRepository) extends InjectedController {
+class DocumentationController @Inject()(documentationRepository: DocumentationRepository, criteriaService: CriteriaService, hierarchyRepository: HierarchyRepository, projectRepository: ProjectRepository) extends InjectedController with Logging {
 
   implicit val branchFormat = Json.format[BranchDocumentationDTO]
   implicit val projectFormat = Json.format[ProjectDocumentationDTO]
@@ -110,7 +110,7 @@ class DocumentationController @Inject()(documentationRepository: DocumentationRe
       }
     } catch {
       case e: Exception =>
-        Logger.error(e.getMessage, e)
+        logger.error(e.getMessage, e)
         BadRequest
     }
   }

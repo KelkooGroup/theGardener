@@ -5,12 +5,12 @@ import anorm._
 import javax.inject.Inject
 import models.Feature.backgroundFormat
 import models._
-import play.api.Logger
+import play.api.Logging
 import play.api.db.Database
 import play.api.libs.json.Json
 import utils._
 
-class FeatureRepository @Inject()(db: Database, tagRepository: TagRepository, scenarioRepository: ScenarioRepository) {
+class FeatureRepository @Inject()(db: Database, tagRepository: TagRepository, scenarioRepository: ScenarioRepository) extends Logging {
 
   val parser = for {
     id <- long("id")
@@ -76,7 +76,7 @@ class FeatureRepository @Inject()(db: Database, tagRepository: TagRepository, sc
         SQL"SELECT * FROM feature WHERE id = $idOpt".as(parser.singleOpt)
       }
     } catch {
-      case e: Exception => Logger.error(s"Error while saving feature ${feature.name}", e)
+      case e: Exception => logger.error(s"Error while saving feature ${feature.name}", e)
         None
     }
   }
