@@ -42,7 +42,7 @@ libraryDependencies ++= Seq(
   "com.typesafe.play" %% "anorm" % "2.5.3",
   "mysql" % "mysql-connector-java" % "8.0.11",
   "org.eclipse.jgit" % "org.eclipse.jgit" % "5.1.2.201810061102-r",
-  "io.swagger" %% "swagger-play2" % "1.6.0",
+  "io.swagger" %% "swagger-play2" % "1.7.0",
   "com.h2database" % "h2" % "1.4.197",
   "com.jsuereth" %% "scala-arm" % "2.0",
   "commons-io" % "commons-io" % "2.6",
