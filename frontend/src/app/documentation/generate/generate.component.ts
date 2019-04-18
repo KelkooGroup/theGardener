@@ -10,14 +10,11 @@ import {OutputComponent} from './output/output.component';
 })
 export class GenerateComponent implements OnInit {
 
-  @Output()
-  isCriterias = false;
+  @Output() isCriterias = false;
 
-  @Output()
-  isOutput = false;
+  @Output() isOutput = false;
 
-  @ViewChild(OutputComponent)
-  outputComponent: OutputComponent;
+  @ViewChild(OutputComponent) outputComponent: OutputComponent;
 
   constructor(private route: ActivatedRoute, private router: Router) {
 
@@ -26,7 +23,7 @@ export class GenerateComponent implements OnInit {
   ngOnInit() {
     this.route.params
       .subscribe((params: Params) => {
-        const type = params['type'];
+        const type = params.type;
         this.isCriterias = type === 'criterias';
         this.isOutput = type === 'output';
         this.outputComponent.display = this.isOutput;

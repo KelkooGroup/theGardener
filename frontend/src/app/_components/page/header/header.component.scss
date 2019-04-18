@@ -1,15 +1,16 @@
 @import "../../../../stylesheets/backoffice";
 
 .header {
-  min-width: $min-width;
   width: 100%;
-  padding-left: 10px;
   min-height: 60px;
   flex-direction: row;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-color: $color-main;
 }
 
 .header-logo img {
-  height: 100px;
+  height: 50px;
 }
 
 .header-title div {

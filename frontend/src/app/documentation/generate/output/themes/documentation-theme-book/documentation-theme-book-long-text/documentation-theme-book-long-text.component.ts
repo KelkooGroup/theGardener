@@ -7,8 +7,7 @@ import {Component, Input, OnInit} from '@angular/core';
 })
 export class DocumentationThemeBookLongTextComponent implements OnInit {
 
-  @Input()
-  longText: string;
+  @Input() longText: string;
 
   isJson: boolean;
   json: any;
@@ -19,7 +18,7 @@ export class DocumentationThemeBookLongTextComponent implements OnInit {
     this.jsonText = this.longText;
   }
 
-  set jsonText (text) {
+  set jsonText(text: string) {
     try {
       this.json = JSON.parse(text);
       this.isJson = true ;

@@ -4,11 +4,14 @@
   display: none;
 }
 
+
+
 .documentation-tree ul,
 .documentation-tree li {
   margin-top: 0;
   margin-bottom: 0;
   list-style-type: none;
+  padding-left: 1px;
 }
 
 .pull-right {
@@ -21,31 +24,31 @@
 }
 
 .level1 {
-  font-size: $font-size-h1;
-}
-
-.level2 {
-  font-size: $font-size-h2;
-}
-
-.level3 {
   font-size: $font-size-h3;
 }
 
-.level4 {
+.level2 {
   font-size: $font-size-h4;
 }
 
-.level5 {
+.level3 {
   font-size: $font-size-h5;
 }
 
-.level6 {
+.level4 {
   font-size: $font-size-h6;
 }
 
-.level7 {
+.level5 {
   font-size: $font-size-h7;
+}
+
+.level6 {
+  font-size: $font-size-h8;
+}
+
+.level7 {
+  font-size: $font-size-h9;
 }
 
 .project, .branch, .feature, .scenario, .step, .table {

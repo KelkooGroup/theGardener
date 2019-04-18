@@ -8,3 +8,5 @@ public/dist/
 local-conf/kkg.sql
 .scannerwork/
 local-conf/application-dev.conf
+local-conf/application.pp.conf
+local-conf/application.local.conf

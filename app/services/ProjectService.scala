@@ -2,12 +2,14 @@ package services
 
 import java.io._
 
-import akka.actor.ActorSystem
+import akka.Done
+import akka.actor.{ActorSystem, CoordinatedShutdown}
+import akka.util.Timeout
 import com.typesafe.config._
 import javax.inject._
 import models._
 import org.apache.commons.io.FileUtils._
-import play.api.Logger
+import play.api.Logging
 import repository._
 import utils._
 
@@ -15,12 +17,18 @@ import scala.concurrent._
 import scala.concurrent.duration._
 
 class ProjectService @Inject()(projectRepository: ProjectRepository, gitService: GitService, featureService: FeatureService, featureRepository: FeatureRepository, branchRepository: BranchRepository, criteriaService: CriteriaService,
-                               config: Config, actorSystem: ActorSystem)(implicit ec: ExecutionContext) {
+                               config: Config, actorSystem: ActorSystem)(implicit ec: ExecutionContext) extends Logging {
   val projectsRootDirectory = config.getString("projects.root.directory")
   val synchronizeInterval = config.getInt("projects.synchronize.interval")
   val synchronizeInitialDelay = config.getInt("projects.synchronize.initial.delay")
 
-  actorSystem.scheduler.schedule(initialDelay = synchronizeInitialDelay.seconds, interval = synchronizeInterval.seconds)(synchronizeAll())
+  val synchronizeJob = actorSystem.scheduler.schedule(initialDelay = synchronizeInitialDelay.seconds, interval = synchronizeInterval.seconds)(synchronizeAll())(actorSystem.dispatcher)
+  CoordinatedShutdown(actorSystem).addTask(
+    CoordinatedShutdown.PhaseBeforeServiceUnbind, "cancelSynchronizeJob") { () ⇒
+    implicit val timeout = Timeout(5.seconds)
+    synchronizeJob.cancel()
+    Future.successful(Done)
+  }
 
   def getLocalRepository(projectId: String, branch: String): String = s"$projectsRootDirectory$projectId/$branch/".fixPathSeparator
 
@@ -34,12 +42,12 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
     val features = featureService.parseBranchDirectory(project, branch, getLocalRepository(project.id, branch.name) + project.featuresRootPath)
     featureRepository.saveAll(features)
 
-    Logger.debug(s"${features.size} features saved for project ${project.id} on branch ${branch.name}")
+    logger.debug(s"${features.size} features saved for project ${project.id} on branch ${branch.name}")
   }
 
   private def checkoutBranches(project: Project, branches: Set[String]) = {
     if (branches.nonEmpty) {
-      Logger.debug(s"checkout ${project.id} branches ${branches.mkString(", ")}")
+      logger.debug(s"checkout ${project.id} branches ${branches.mkString(", ")}")
 
       FutureExt.sequentially(branches.toSeq) { branchName =>
         val localRepository = getLocalRepository(project.id, branchName)
@@ -58,7 +66,7 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
 
   private def updateBranches(project: Project, branches: Set[String]) = {
     if (branches.nonEmpty) {
-      Logger.debug(s"update ${project.id} branches ${branches.mkString(", ")}")
+      logger.debug(s"update ${project.id} branches ${branches.mkString(", ")}")
 
       FutureExt.sequentially(branches.toSeq) { branchName =>
 
@@ -77,7 +85,7 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
 
               (created ++ updated).flatMap(filePath => featureService.parseFeatureFile(project.id, branch, getLocalRepository(project.id, branchName) + filePath).toOption).foreach(featureRepository.save)
 
-              Logger.debug(s"${created.size} features created, ${updated.size} features updated and ${deleted.size} features deleted, for project ${project.id} on branch ${branch.name}")
+              logger.debug(s"${created.size} features created, ${updated.size} features updated and ${deleted.size} features deleted, for project ${project.id} on branch ${branch.name}")
             } else {
               parseAndSaveFeatures(project, branch)
             }
@@ -89,7 +97,7 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
 
   def deleteBranches(projectId: String, branches: Set[String]): Future[Unit] = {
     if (branches.nonEmpty) {
-      Logger.debug(s"delete $projectId branches ${branches.mkString(", ")}")
+      logger.debug(s"delete $projectId branches ${branches.mkString(", ")}")
 
       Future {
         for (branch <- branches) {
@@ -105,7 +113,7 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
   }
 
   def synchronizeAll(): Future[Unit] = {
-    Logger.info("Start synchronizing projects")
+    logger.info("Start synchronizing projects")
 
     val projects = projectRepository.findAll()
 
@@ -113,20 +121,20 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
   }
 
   def synchronize(project: Project): Future[Unit] = {
-    Logger.debug(s"Start synchronizing project ${project.id}")
+    logger.debug(s"Start synchronizing project ${project.id}")
 
     val localBranches = branchRepository.findAllByProjectId(project.id).map(_.name).toSet
 
-    Logger.debug(s"Local branches of project ${project.id} : ${localBranches.mkString(", ")}")
+    logger.debug(s"Local branches of project ${project.id} : ${localBranches.mkString(", ")}")
 
     gitService.getRemoteBranches(project.repositoryUrl).map(_.toSet).flatMap { remoteBranches =>
-      Logger.debug(s"Remotes branches of project ${project.id} : ${remoteBranches.mkString(", ")}")
+      logger.debug(s"Remotes branches of project ${project.id} : ${remoteBranches.mkString(", ")}")
 
       val branchesToUpdate = localBranches.intersect(remoteBranches)
       val branchesToCheckout = remoteBranches -- localBranches
       val branchesToDelete = localBranches -- remoteBranches
 
-      Logger.info(s"Project ${project.id}, branches to update: ${branchesToUpdate.mkString(", ")}, branches to checkout: ${branchesToCheckout.mkString(", ")}, branches to delete: ${branchesToDelete.mkString(", ")}")
+      logger.info(s"Project ${project.id}, branches to update: ${branchesToUpdate.mkString(", ")}, branches to checkout: ${branchesToCheckout.mkString(", ")}, branches to delete: ${branchesToDelete.mkString(", ")}")
 
       for {
         _ <- checkoutBranches(project, branchesToCheckout)

@@ -8,7 +8,10 @@ import {Component, Input, OnInit} from '@angular/core';
 })
 export class PanelComponent implements OnInit {
 
+  @Input() scrollYIfNeeded ? = false;
   @Input() showSpinner ? = false;
+  @Input() showProgressBar ? = false;
+
   @Input() panelTitle: string;
   @Input() panelIcon: string;
 

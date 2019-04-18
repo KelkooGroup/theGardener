@@ -7,7 +7,7 @@ import {
   HierarchyNodeSelector,
   ProjectSelector,
   TupleHierarchyNodeSelector
-} from './criteriasSelection';
+} from './criterias-selection';
 
 
 @Injectable({
@@ -49,14 +49,14 @@ export class CriteriasService {
       root = listNode[0];
       root.path = '';
       root.open = true;
-      const tuple = this.build(root, listNode, root);
+      const tuple = this.build(root, listNode, root, root);
       root.children = tuple.taken;
     }
     return root;
   }
 
 
-  private build(node: HierarchyNodeSelector, children: Array<HierarchyNodeSelector>, root: HierarchyNodeSelector): TupleHierarchyNodeSelector {
+  private build(node: HierarchyNodeSelector, children: Array<HierarchyNodeSelector>, root: HierarchyNodeSelector, parent: HierarchyNodeSelector): TupleHierarchyNodeSelector {
 
     const taken = [];
     const left = [];
@@ -79,7 +79,7 @@ export class CriteriasService {
     if (taken.length > 0) {
       for (let i = 0; i < taken.length; i++) {
         const loopTaken = taken[i];
-        const tuple = this.build(loopTaken, Object.assign([], left), root);
+        const tuple = this.build(loopTaken, Object.assign([], left), root,node);
         loopTaken.children = tuple.taken;
       }
     }

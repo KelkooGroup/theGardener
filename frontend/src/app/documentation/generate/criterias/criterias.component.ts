@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {CriteriasDisplay, CriteriasSelector, HierarchyNodeSelector, } from '../../../_services/criteriasSelection';
+import {CriteriasDisplay, CriteriasSelector, HierarchyNodeSelector, } from '../../../_services/criterias-selection';
 import {HierarchyNodeApi} from '../../../_models/criterias';
 import {CriteriasService} from '../../../_services/criterias.service';
 import {ActivatedRoute} from '@angular/router';
@@ -12,23 +12,17 @@ import {HttpParams} from '@angular/common/http';
 })
 export class CriteriasComponent {
 
-  @Input()
-  isCriteriaSelection = false;
+  @Input() isCriteriaSelection = false;
 
-  @Input()
-  isCriteriaDisplay = false;
+  @Input() isCriteriaDisplay = false;
 
-  @Output()
-  generateDocumentationRequestEventEmitter: EventEmitter<HttpParams> = new EventEmitter();
+  @Output() readonly generateDocumentationRequestEventEmitter: EventEmitter<HttpParams> = new EventEmitter();
 
-  @Output()
-  criteriasSelector = new CriteriasSelector();
+  @Output() readonly criteriasSelector = new CriteriasSelector();
 
-  @Output()
-  views: HierarchyNodeSelector[];
+  @Output() views: Array<HierarchyNodeSelector>;
 
-  @Output()
-  criteriaDisplay: CriteriasDisplay;
+  @Output() criteriaDisplay: CriteriasDisplay;
 
   constructor(private criteriasService: CriteriasService, private route: ActivatedRoute) {
     this.criteriasService.criterias().subscribe(
@@ -42,11 +36,11 @@ export class CriteriasComponent {
       });
 
     this.route.queryParams.subscribe(httpParams => {
-      this.displayCriteria(httpParams['node'], httpParams['project']);
+      this.displayCriteria(httpParams.node, httpParams.project);
     });
   }
 
-  displayCriteria(nodes: string[], projects: string[]) {
+  displayCriteria(nodes: Array<string>, projects: Array<string>) {
     let nodesArray = nodes;
     if (!(nodesArray instanceof Array)) {
       nodesArray = new Array(nodesArray);

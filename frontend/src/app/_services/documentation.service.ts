@@ -17,7 +17,7 @@ export class DocumentationService {
     return this.http.get<DocumentationNodeApi>(url);
   }
 
-  public decorate(apiResult: DocumentationNodeApi): Array<DocumentationNode> {
+  decorate(apiResult: DocumentationNodeApi): Array<DocumentationNode> {
     const decoratedDataArray = [];
     for (const node of apiResult.children) {
       decoratedDataArray.push(DocumentationNode.newFromApi('', node, 1));

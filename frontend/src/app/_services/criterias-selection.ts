@@ -11,30 +11,157 @@ export class TupleHierarchyNodeSelector {
   }
 }
 
-export class FeatureSelector {
+export interface NavigationItem {
+  selected: boolean;
+  itemType: string;
+  displayName: string;
+  route?: string;
+  toBeDisplayed: boolean;
+  matchPage(page:string) : boolean;
+  itemOptions: boolean;
+  itemOptionPlaceHolder?: string;
+  itemOptionSelected() : NavigationItem;
+  itemChildren(): NavigationItem[];
+}
+
+export class FeatureSelector implements NavigationItem{
+  public selected: boolean = false ;
+  public itemOptions: boolean= false ;
+  public toBeDisplayed: boolean = true;
   constructor(
     public level: number,
     public value: string,
     public display: string,
+    public directory: DirectorySelector
   ) {
 
   }
 
+  public matchPage(page:string) : boolean{
+    return page &&  page.startsWith(this.route);
+  }
+
+  public path(){
+    return this.directory.path() + "/" + this.value ;
+  }
+
+  public get displayName(): string {
+    return this.display;
+  }
+
+  public get itemType(): string {
+    return "feature";
+  }
+
+  public get route(): string {
+    return this.path();
+  }
+
+  public  itemChildren(): NavigationItem[] {
+    return Array<NavigationItem>();
+  }
+
+  public itemOptionSelected() : NavigationItem{
+    return null;
+  }
+
 }
 
-const NO_FEATURE_FILTER = new FeatureSelector(0, '~', 'None features');
-const ALL_FEATURES_FILTER = new FeatureSelector(0, '*', 'All features');
+export class DirectorySelector implements NavigationItem{
 
-export class BranchSelector {
+  public features: Array<FeatureSelector>;
+  public directories: Array<DirectorySelector>;
+  public selected: boolean = false ;
+  public itemOptions: boolean= false ;
+  public toBeDisplayed: boolean = false;
 
+  constructor(
+    public name: string,
+    featureRowPath: Array<string>,
+    public pathFromRoot: string,
+    public branch: BranchSelector
+  ) {
+    this.features = new Array<FeatureSelector>();
+    this.directories = new Array<DirectorySelector>();
+    let lastDirectory = '';
+    let lastDirectoryFeatureRowPath = new Array<string>();
+    for (let k = 0; k < featureRowPath.length; k++) {
+      const currentPath = featureRowPath[k];
+      const split = currentPath.split('/', 2);
+      if (split.length === 1) {
+        this.features.push(new FeatureSelector(split.length, currentPath, currentPath.replace(".feature",""), this ));
+      } else {
+        if (split.length === 2) {
+          const currentDirectory = split[0];
+          if (currentDirectory !== lastDirectory ) {
+            if ( lastDirectory != '') {
+                this.directories.push(new DirectorySelector(lastDirectory,  lastDirectoryFeatureRowPath, pathFromRoot +'/' +lastDirectory, branch));
+            }
+            lastDirectory = currentDirectory;
+            lastDirectoryFeatureRowPath = new Array<string>();
+          }
+          lastDirectoryFeatureRowPath.push( split[1]);
+        }
+      }
+    }
+    if ( lastDirectory != '') {
+       this.directories.push(new DirectorySelector(lastDirectory,  lastDirectoryFeatureRowPath,pathFromRoot +'/' +lastDirectory,branch));
+    }
+
+
+
+  }
+
+  public matchPage(page:string) : boolean{
+    return page &&  page.startsWith(this.route);
+  }
+
+  public path(){
+    return this.branch.path() + ">" + this.pathFromRoot ;
+  }
+
+
+  public get displayName(): string {
+    return this.name;
+  }
+
+  public get itemType(): string {
+    return "directory";
+  }
+
+  public  itemChildren(): NavigationItem[] {
+    let children = Array<NavigationItem>();
+    this.directories.forEach(d=> children.push(d));
+    this.features.forEach(d=> children.push(d));
+    return children;
+  }
+
+  public get route(): string {
+    return this.path();
+  }
+
+  public itemOptionSelected() : NavigationItem{
+    return null;
+  }
+}
+
+const NO_FEATURE_FILTER = new FeatureSelector(0, '~', 'None features', null);
+const ALL_FEATURES_FILTER = new FeatureSelector(0, '*', 'All features',null);
+
+export class BranchSelector implements NavigationItem{
+
+  public selected: boolean = false ;
   public featureFilter: FeatureSelector;
   public features: Array<FeatureSelector>;
-
+  public rootDirectory: DirectorySelector;
+  public itemOptions: boolean= false ;
+  public toBeDisplayed: boolean = false;
   constructor(
     public name: string,
     public featureRowPath: Array<string>,
     public project: ProjectSelector
   ) {
+    this.rootDirectory  = new DirectorySelector(name, featureRowPath,"", this);
     this.features = new Array<FeatureSelector>();
     this.featureFilter = NO_FEATURE_FILTER;
     this.features.push(ALL_FEATURES_FILTER);
@@ -43,20 +170,24 @@ export class BranchSelector {
       const currentPath = featureRowPath[k];
       const split = currentPath.split('/');
       if (split.length === 1) {
-        this.features.push(new FeatureSelector(split.length, currentPath, currentPath));
+        this.features.push(new FeatureSelector(split.length, currentPath, currentPath,this.rootDirectory));
       } else {
         if (split.length === 2) {
           const currentDirectory = split[0];
           if (currentDirectory !== lastDirectory) {
-            this.features.push(new FeatureSelector(split.length - 1, currentDirectory, currentDirectory + ' :'));
+            this.features.push(new FeatureSelector(split.length - 1, currentDirectory, currentDirectory + ' :',this.rootDirectory));
             lastDirectory = currentDirectory;
           }
-          this.features.push(new FeatureSelector(split.length, currentPath, split[1]));
+          this.features.push(new FeatureSelector(split.length, currentPath, split[1],this.rootDirectory));
         } else {
-          this.features.push(new FeatureSelector(split.length, currentPath, currentPath));
+          this.features.push(new FeatureSelector(split.length, currentPath, currentPath,this.rootDirectory));
         }
       }
     }
+  }
+
+  public path(){
+    return this.project.path() + ">" + this.name ;
   }
 
   public selectBranch() {
@@ -79,15 +210,43 @@ export class BranchSelector {
   public hasFilter(): boolean {
     return this.featureFilter !== ALL_FEATURES_FILTER && this.featureFilter !== NO_FEATURE_FILTER;
   }
+
+  public get displayName(): string {
+    return this.name;
+  }
+
+  public get itemType(): string {
+    return "directory";
+  }
+
+  public  itemChildren(): NavigationItem[] {
+    return this.rootDirectory.itemChildren();
+  }
+
+  public get route(): string {
+    return this.path();
+  }
+
+  public itemOptionSelected() : NavigationItem{
+    return null;
+  }
+
+  public matchPage(page:string) : boolean{
+    return page &&  page.startsWith(this.route);
+  }
+
 }
 
-export class ProjectSelector {
+export class ProjectSelector implements  NavigationItem{
 
   public selected = false;
   public indeterminate = false;
   public selectedBranch: BranchSelector;
   public stableBranch: BranchSelector;
   public relatedHierarchyNode: HierarchyNodeSelector;
+  public itemOptions: boolean= true ;
+  public itemOptionPlaceHolder : "Stable branch by default";
+  public toBeDisplayed: boolean = false;
 
   constructor(
     public id: string,
@@ -96,9 +255,18 @@ export class ProjectSelector {
   ) {
   }
 
+
+  public itemOptionSelected() : NavigationItem {
+    return this.stableBranch ;
+  }
+
+  public path(){
+    return this.relatedHierarchyNode.path + ">" + this.id ;
+  }
+
   public static newFromApi(projectApi: ProjectApi): ProjectSelector {
 
-    const branches = [];
+    const branches = Array<BranchSelector>();
     const mapBranchNameBranch = new Map();
     const instance = new ProjectSelector(
       projectApi.id,
@@ -106,12 +274,23 @@ export class ProjectSelector {
       branches
     );
     if (projectApi.branches !== null) {
+
+
+
       for (let k = 0; k < projectApi.branches.length; k++) {
+
+       if (projectApi.id == "publisherManagementBO" && projectApi.branches[k].name == "qa"){
+         projectApi.id;
+       }
+
+
         const currentBranch = new BranchSelector(projectApi.branches[k].name, projectApi.branches[k].features, instance);
         branches.push(currentBranch);
         mapBranchNameBranch.set(currentBranch.name, currentBranch);
       }
     }
+
+
 
     instance.stableBranch = mapBranchNameBranch.get(projectApi.stableBranch);
     instance.stableBranch.project = instance;
@@ -155,18 +334,38 @@ export class ProjectSelector {
     return this.indeterminate;
   }
 
+  public get displayName(): string {
+    return this.label;
+  }
 
+  public get itemType(): string {
+    return "project";
+  }
+
+  public  itemChildren(): NavigationItem[] {
+    return this.branches;
+  }
+
+  public get route(): string {
+    return this.path();
+  }
+
+  public matchPage(page:string) : boolean{
+    return page &&  page.startsWith(this.route);
+  }
 }
 
-export class HierarchyNodeSelector {
+export class HierarchyNodeSelector implements  NavigationItem{
   public selected = false;
   public indeterminate = false;
   public open = false;
   public level: number;
   public path: string;
-  public children = [];
-  public projects = [];
+  public children = Array<HierarchyNodeSelector>();
+  public projects = Array<ProjectSelector>();
   public root: HierarchyNodeSelector;
+  public itemOptions: boolean= false ;
+  public toBeDisplayed: boolean = false;
 
   constructor(
     public id: string,
@@ -183,9 +382,10 @@ export class HierarchyNodeSelector {
       nodeApi.slugName,
       nodeApi.name,
       nodeApi.childrenLabel,
-      nodeApi.childLabel
+      nodeApi.childLabel,
     );
   }
+
 
   public hasChilden(): boolean {
     return this.children.length > 0;
@@ -314,8 +514,72 @@ export class HierarchyNodeSelector {
     this.selected = (status === 'selected');
     return status;
   }
+
+  public get displayName(): string {
+    return this.name;
+  }
+
+  public get itemType(): string {
+    return "node";
+  }
+
+  public itemChildren(): NavigationItem[] {
+    let children = Array<NavigationItem>();
+    this.children.forEach(d=> children.push(d));
+    this.projects.forEach(d=> children.push(d));
+    return children;
+  }
+
+  public get route(): string {
+    return this.path;
+  }
+
+  public itemOptionSelected() : NavigationItem{
+    return null;
+  }
+
+  public matchPage(page:string) : boolean{
+    return page &&  page.startsWith(this.route);
+  }
 }
 
+
+
+
+
+export class SelectionEvent {
+  constructor(
+   public feature : FeatureSelector,
+   public directory : DirectorySelector,
+   public branch : BranchSelector,
+   public project : ProjectSelector,
+   public node : HierarchyNodeSelector,
+){}
+
+   public path() {
+     if(this.feature){
+       return this.feature.path()  ;
+     }
+     if(this.directory){
+       return this.directory.path() ;
+     }
+     if(this.branch){
+       return this.branch.path() ;
+     }
+     if(this.project){
+       return this.project.path() ;
+     }
+     if(this.node){
+       return this.node.path ;
+     }
+     return "";
+   }
+
+  public toString() {
+    return this.path();
+  }
+
+}
 
 export class HierarchyNodeDisplay {
 
@@ -354,8 +618,8 @@ export class ProjectDisplay {
 
 export class CriteriasDisplay {
 
-  projects = [];
-  hierarchyNodes = [];
+  projects = Array<ProjectDisplay>();
+  hierarchyNodes = Array<HierarchyNodeDisplay>();
 }
 
 export class CriteriasSelector {

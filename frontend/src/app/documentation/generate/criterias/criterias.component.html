@@ -14,13 +14,13 @@
   <div *ngIf="criteriaDisplay.hierarchyNodes.length > 0">
     All projects from sections:
     <ul>
-      <li *ngFor="let node of criteriaDisplay.hierarchyNodes;">{{node}}</li>
+      <li *ngFor="let node of criteriaDisplay.hierarchyNodes;">{{ node }}</li>
     </ul>
   </div>
   <div *ngIf="criteriaDisplay.projects.length > 0">
     <span>Projects:</span>
     <ul>
-      <li *ngFor="let project of criteriaDisplay.projects;">{{project}}</li>
+      <li *ngFor="let project of criteriaDisplay.projects;">{{ project }}</li>
     </ul>
   </div>
 </app-panel>
