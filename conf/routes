@@ -40,3 +40,6 @@ GET           /api/docs/*file                                 controllers.Assets
 
 
 
+#IsAlive
+#GET     /HealthCheck/isAlive        com.kelkoo.play.controllers.IsAlive.isAlive(status: Option[String])
+
