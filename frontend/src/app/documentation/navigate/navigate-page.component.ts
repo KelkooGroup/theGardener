@@ -1,4 +1,4 @@
-import {AfterViewChecked, Component, OnInit, Output, ViewChild} from '@angular/core';
+import {AfterViewChecked, Component, OnInit, Output, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {CriteriasService} from "../../_services/criterias.service";
 import {ActivatedRoute} from "@angular/router";
 import {HierarchyNodeApi} from "../../_models/criterias";
@@ -21,8 +21,8 @@ export class NavigatePageComponent implements OnInit, AfterViewChecked {
   @Output()
   criteriasSelector = new CriteriasSelector();
 
-  @ViewChild(NavigateMenuComponent)
-  root: NavigateMenuComponent;
+  @ViewChildren(NavigateMenuComponent)
+  roots: QueryList<NavigateMenuComponent>;
 
   @ViewChild(NavigateTreeComponent)
   tree: NavigateTreeComponent;
@@ -30,14 +30,14 @@ export class NavigatePageComponent implements OnInit, AfterViewChecked {
   @ViewChild(NavigateContentComponent)
   content: NavigateContentComponent;
 
-  showProgressBar= false;
+  showProgressBar = false;
 
   selectionedItem: NavigationItem;
 
   initialPath: string;
   navigatedTo = false;
 
-  constructor(private criteriasService: CriteriasService,  private location: Location, private route: ActivatedRoute) {
+  constructor(private criteriasService: CriteriasService, private location: Location, private route: ActivatedRoute) {
     this.criteriasService.criterias().subscribe(
       (result: Array<HierarchyNodeApi>) => {
         const hierarchyNodeSelectorTree = criteriasService.buildHierarchyNodeSelectorAsTree(criteriasService.buildHierarchyNodeSelector(result));
@@ -53,19 +53,18 @@ export class NavigatePageComponent implements OnInit, AfterViewChecked {
     }
     this.selectionedItem = selection;
     this.selectionedItem.selected = true;
-    if (   this.selectionedItem.toBeDisplayed ) {
-      this.showProgressBar = true ;
+    if (this.selectionedItem.toBeDisplayed) {
+      this.showProgressBar = true;
       this.content.generateDocumentation(this.selectionedItem.route);
-      this.showProgressBar = false ;
+      this.showProgressBar = false;
       var hash = window.location.hash
       var path = `/app/documentation/navigate/${encodeURIComponent(this.selectionedItem.route)}`;
-      if (hash){
-        path=`${path}#${hash}`;
+      if (hash && path.search('#') == -1 ){
+         path=`${path}${hash}`;
       }
       this.location.go(path);
     }
   }
-
 
 
   ngOnInit() {
@@ -77,17 +76,20 @@ export class NavigatePageComponent implements OnInit, AfterViewChecked {
   }
 
   ngAfterViewChecked() {
-    if (!this.navigatedTo && this.root) {
-      this.navigatedTo = true;
-      (async () => {
-        await this.delay(1);
-        console.log(`Navigating to ${this.initialPath}`);
-        this.root.navigateTo(this.initialPath);
+    let that = this;
+    if (!that.navigatedTo) {
+      this.roots.forEach(function (root) {
+        that.navigatedTo = true;
+        (async () => {
+          await that.delay(1);
+          console.log(`Navigating to ${that.initialPath}`);
+          root.navigateTo(that.initialPath);
 
-      })();
+        })();
+
+      });
     }
   }
-
 
 
 }

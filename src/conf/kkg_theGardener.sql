@@ -12,7 +12,7 @@ truncate scenario_tag ;
 
 
 INSERT INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel) VALUES ('.', 'root', 'root', 'Views', 'View');
-INSERT INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel) VALUES ('.01.', 'eng', 'Engineering', 'Areas', 'Area');
+INSERT INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel) VALUES ('.01.', 'internal', 'Internal', 'Areas', 'Area');
 INSERT INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel) VALUES ('.01.01.', 'publisher', 'Publisher', 'System groups', 'System group');
 INSERT INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel) VALUES ('.01.01.01.', 'extranet', 'Publisher extranet', 'Projects', 'Project');
 INSERT INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel) VALUES ('.01.01.02.', 'internal', 'Publisher internal management', 'Projects', 'Project');
