@@ -66,6 +66,7 @@ export class NavigateMenuComponent implements OnInit, AfterViewChecked {
   selection: EventEmitter<NavigationItem> = new EventEmitter();
 
   navigateTo(page: string) {
+    this.expanded = this.depth < 2;
     if (page && page.startsWith(this.item.route)) {
       if (this.item.itemChildren().length > 0) {
         this.expanded = true;
@@ -93,8 +94,8 @@ export class NavigateMenuComponent implements OnInit, AfterViewChecked {
           }
         });
       }
-    } else {
-      this.expanded = this.depth > 2;
+    }else{
+      this.items.forEach(e => e.navigateTo(page));
     }
   }
 
