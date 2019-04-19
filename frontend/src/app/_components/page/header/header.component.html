@@ -1,11 +1,15 @@
 <div class="header">
 
-  <ul class="flex-container flex-direction-row flex-align-items-center">
-    <li class="header-logo">
-      <img [src]="logoSrc" alt="Logo">
+  <ul class="flex-container flex-direction-row flex-align-items-center  flex-space-between">
+    <li *ngIf="logoSrc" class="header-logo">
+      <img   [src]="logoSrc" alt="Organisation logo">
     </li>
-    <li class="header-title">
+    <li *ngIf="appTitle && !logoSrc" class="header-title" >
       <div>{{ appTitle }}</div>
+    </li>
+    <li class="header-logo-the-gardener">
+      <div>Powered by</div>
+      <img src="assets/images/logo.png" alt="Logo">
     </li>
   </ul>
 

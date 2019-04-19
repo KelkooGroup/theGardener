@@ -1,5 +1,5 @@
 <div  [style.height.px]="headerHeight"  >
- <app-header logoRouterLink="app" logoSrc="assets/images/logo.png"></app-header>
+ <app-header  [appTitle]="'Documentation'"  ></app-header>
 </div>
   <div  #content class="content"    (window:resize)="onResize($event)" >
     <router-outlet></router-outlet>
