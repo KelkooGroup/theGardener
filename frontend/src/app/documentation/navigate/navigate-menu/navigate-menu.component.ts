@@ -94,7 +94,7 @@ export class NavigateMenuComponent implements OnInit, AfterViewChecked {
         });
       }
     } else {
-      this.expanded = false;
+      this.expanded = this.depth > 2;
     }
   }
 

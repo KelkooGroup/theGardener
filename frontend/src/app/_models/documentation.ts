@@ -83,7 +83,7 @@ export class DocumentationNode implements ExpandableNode {
   projects: Array<DocumentationProject>;
 
   static toAnchor(id: string): string {
-    return id.split(' ').join('_').split('/').join('-').split('.').join('-').split('#').join('-').toLocaleLowerCase();
+    return id.split(' ').join('_').split('/').join('-').split('.').join('-').split('#').join('-').split(':').join('-').toLocaleLowerCase();
   }
 
   static newFromApi(parentNodeId: string, dataApi: DocumentationNodeApi, level: number): DocumentationNode {
@@ -257,7 +257,7 @@ export class DocumentationScenario implements ExpandableNode {
     instance.type = type;
     instance.data = dataApi;
     instance.localId = DocumentationNode.toAnchor(dataApi.name);
-    instance.nodeId = `${parentNodeId}_${instance.localId}`;
+    instance.nodeId = `${instance.localId}`;
     instance.level = level;
     instance.steps = [];
     for (const step of dataApi.steps) {
@@ -298,7 +298,7 @@ export class DocumentationFeature implements ExpandableNode {
     const instance = new DocumentationFeature();
     instance.data = dataApi;
     instance.localId = DocumentationNode.toAnchor(dataApi.path);
-    instance.nodeId = `${parentNodeId}_${instance.localId}`;
+    instance.nodeId = `${instance.localId}`;
     instance.level = level;
     if (dataApi.background) {
       instance.background = DocumentationScenario.newFromApi('background', instance.nodeId + '_background', dataApi.background, level + 1);
