@@ -26,7 +26,7 @@
     <div *ngIf="item.itemOptions">
 
       <div class="options" [ngStyle]="{'padding-left': ((depth+1) * 12) + 'px'}" >
-        <mat-select  placeholder="Stable branch by default" (selectionChange)="setSelectedOption($event.source.value)"  selectedOptions="qa">
+        <mat-select  placeholder="Stable branch by default" (selectionChange)="setSelectedOption($event.source.value)" >
           <mat-option *ngFor="let child of item.itemChildren()" [value]="child"    >
             {{child.displayName}}
           </mat-option>
