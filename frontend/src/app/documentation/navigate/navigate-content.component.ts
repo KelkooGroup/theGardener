@@ -2,7 +2,7 @@ import {AfterViewChecked, Component, Input, OnInit, Output, ViewChild} from '@an
 import {NavigationItem} from "../../_services/criterias-selection";
 import {DocumentationNode, DocumentationNodeApi} from "../../_models/documentation";
 import {DocumentationService} from "../../_services/documentation.service";
-import {DocumentationThemeBookComponent} from "../generate/output/themes/documentation-theme-book/documentation-theme-book.component";
+import {DocumentationThemeBookComponent} from "../themes/documentation-theme-book/documentation-theme-book.component";
 import {ActivatedRoute} from "@angular/router";
 
 @Component({

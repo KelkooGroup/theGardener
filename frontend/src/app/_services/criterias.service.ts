@@ -3,11 +3,18 @@ import {Observable} from 'rxjs/Observable';
 import {HttpClient} from '@angular/common/http';
 import {HierarchyNodeApi} from '../_models/criterias';
 import {
-  CriteriasSelector,
   HierarchyNodeSelector,
   ProjectSelector,
-  TupleHierarchyNodeSelector
 } from './criterias-selection';
+
+class TupleHierarchyNodeSelector {
+
+  constructor(
+    public taken: Array<HierarchyNodeSelector>,
+    public left: Array<HierarchyNodeSelector>
+  ) {
+  }
+}
 
 
 @Injectable({
@@ -67,7 +74,7 @@ export class CriteriasService {
         if (loopNode.id.startsWith(node.id)) {
           loopNode.root = root;
           if (loopNode.id.length === node.id.length + 3) {
-            loopNode.path = `${node.path}${CriteriasSelector.SEP_PATH}${loopNode.slugName}`;
+            loopNode.path = `${node.path}_${loopNode.slugName}`;
             taken.push(loopNode);
           }
           if (loopNode.id.length > node.id.length + 3) {
