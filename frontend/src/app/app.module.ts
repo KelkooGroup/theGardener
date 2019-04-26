@@ -33,7 +33,7 @@ import {MatExpansionModule} from '@angular/material/expansion';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatCardModule} from '@angular/material/card';
 import {PanelComponent} from './_components/panel/panel.component';
-import {CriteriasService} from './_services/criterias.service';
+import {HierarchyService} from './_services/hierarchy.service';
 import {DocumentationService} from './_services/documentation.service';
 import {DocumentationThemeBookComponent} from './documentation/themes/documentation-theme-book/documentation-theme-book.component';
 import {DocumentationThemeBookTableComponent} from './documentation/themes/documentation-theme-book/documentation-theme-book-table/documentation-theme-book-table.component';
@@ -94,7 +94,7 @@ const nonProductionProviders = [{
   ],
   providers: [
     ...!environment.production ? nonProductionProviders : [],
-    CriteriasService,
+    HierarchyService,
     DocumentationService
   ],
   bootstrap: [AppComponent]

@@ -1,8 +1,8 @@
 import {AfterViewChecked, Component, OnInit, Output, QueryList, ViewChild, ViewChildren} from '@angular/core';
-import {CriteriasService} from "../../_services/criterias.service";
+import {HierarchyService} from "../../_services/hierarchy.service";
 import {ActivatedRoute} from "@angular/router";
-import {HierarchyNodeApi} from "../../_models/criterias";
-import {HierarchyNodeSelector, NavigationItem} from "../../_services/criterias-selection";
+import {HierarchyNodeApi} from "../../_models/hierarchy";
+import {NavigationItem} from "../../_models/navigation";
 import {NavigateContentComponent} from "./navigate-content.component";
 import {Location} from "@angular/common";
 import {NavigateMenuComponent} from "./navigate-menu/navigate-menu.component";
@@ -15,7 +15,7 @@ import {NavigateMenuComponent} from "./navigate-menu/navigate-menu.component";
 export class NavigatePageComponent implements OnInit, AfterViewChecked {
 
   @Output()
-  items: HierarchyNodeSelector[];
+  items: NavigationItem[];
 
   @ViewChildren(NavigateMenuComponent)
   roots: QueryList<NavigateMenuComponent>;
@@ -30,10 +30,10 @@ export class NavigatePageComponent implements OnInit, AfterViewChecked {
   initialPath: string;
   navigatedTo = false;
 
-  constructor(private criteriasService: CriteriasService, private location: Location, private route: ActivatedRoute) {
-    this.criteriasService.criterias().subscribe(
+  constructor(private hierarchyService: HierarchyService, private location: Location, private route: ActivatedRoute) {
+    this.hierarchyService.hierarchy().subscribe(
       (result: Array<HierarchyNodeApi>) => {
-        const hierarchyNodeSelectorTree = criteriasService.buildHierarchyNodeSelectorAsTree(criteriasService.buildHierarchyNodeSelector(result));
+        const hierarchyNodeSelectorTree = hierarchyService.buildHierarchyNodeSelectorAsTree(hierarchyService.buildHierarchyNodeSelector(result));
         this.items = hierarchyNodeSelectorTree && hierarchyNodeSelectorTree.children;
       },
       () => {

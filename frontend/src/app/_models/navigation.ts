@@ -1,19 +1,23 @@
-import {HierarchyNodeApi, ProjectApi} from '../_models/criterias';
+import {HierarchyNodeApi, ProjectApi} from './hierarchy';
 
-export interface NavigationItem {
+export interface NavigationWithOptions {
+  itemOptions: boolean;
+  itemOptionPlaceHolder?: string;
+  itemOptionSelected() : NavigationItem;
+
+}
+
+export interface NavigationItem extends  NavigationWithOptions{
   selected: boolean;
   itemType: string;
   displayName: string;
   route?: string;
   toBeDisplayed: boolean;
   matchPage(page:string) : boolean;
-  itemOptions: boolean;
-  itemOptionPlaceHolder?: string;
-  itemOptionSelected() : NavigationItem;
   itemChildren(): NavigationItem[];
 }
 
-export class FeatureSelector implements NavigationItem{
+export class NavigationFeature implements NavigationItem{
   public selected: boolean = false ;
   public itemOptions: boolean= false ;
   public toBeDisplayed: boolean = true;
@@ -21,7 +25,7 @@ export class FeatureSelector implements NavigationItem{
     public level: number,
     public value: string,
     public display: string,
-    public directory: DirectorySelector
+    public directory: NavigationDirectory
   ) {
 
   }
@@ -56,10 +60,10 @@ export class FeatureSelector implements NavigationItem{
 
 }
 
-export class DirectorySelector implements NavigationItem{
+export class NavigationDirectory implements NavigationItem{
 
-  public features: Array<FeatureSelector>;
-  public directories: Array<DirectorySelector>;
+  public features: Array<NavigationFeature>;
+  public directories: Array<NavigationDirectory>;
   public selected: boolean = false ;
   public itemOptions: boolean= false ;
   public toBeDisplayed: boolean = false;
@@ -68,23 +72,23 @@ export class DirectorySelector implements NavigationItem{
     public name: string,
     featureRowPath: Array<string>,
     public pathFromRoot: string,
-    public branch: BranchSelector
+    public branch: NavigationBranch
   ) {
-    this.features = new Array<FeatureSelector>();
-    this.directories = new Array<DirectorySelector>();
+    this.features = new Array<NavigationFeature>();
+    this.directories = new Array<NavigationDirectory>();
     let lastDirectory = '';
     let lastDirectoryFeatureRowPath = new Array<string>();
     for (let k = 0; k < featureRowPath.length; k++) {
       const currentPath = featureRowPath[k];
       const split = currentPath.split('/', 2);
       if (split.length === 1) {
-        this.features.push(new FeatureSelector(split.length, currentPath, currentPath.replace(".feature",""), this ));
+        this.features.push(new NavigationFeature(split.length, currentPath, currentPath.replace(".feature",""), this ));
       } else {
         if (split.length === 2) {
           const currentDirectory = split[0];
           if (currentDirectory !== lastDirectory ) {
             if ( lastDirectory != '') {
-                this.directories.push(new DirectorySelector(lastDirectory,  lastDirectoryFeatureRowPath, pathFromRoot +'/' +lastDirectory, branch));
+                this.directories.push(new NavigationDirectory(lastDirectory,  lastDirectoryFeatureRowPath, pathFromRoot +'/' +lastDirectory, branch));
             }
             lastDirectory = currentDirectory;
             lastDirectoryFeatureRowPath = new Array<string>();
@@ -94,7 +98,7 @@ export class DirectorySelector implements NavigationItem{
       }
     }
     if ( lastDirectory != '') {
-       this.directories.push(new DirectorySelector(lastDirectory,  lastDirectoryFeatureRowPath,pathFromRoot +'/' +lastDirectory,branch));
+       this.directories.push(new NavigationDirectory(lastDirectory,  lastDirectoryFeatureRowPath,pathFromRoot +'/' +lastDirectory,branch));
     }
 
 
@@ -134,37 +138,37 @@ export class DirectorySelector implements NavigationItem{
   }
 }
 
-export class BranchSelector implements NavigationItem{
+export class NavigationBranch implements NavigationItem{
 
   public selected: boolean = false ;
-  public featureFilter: FeatureSelector;
-  public features: Array<FeatureSelector>;
-  public rootDirectory: DirectorySelector;
+  public featureFilter: NavigationFeature;
+  public features: Array<NavigationFeature>;
+  public rootDirectory: NavigationDirectory;
   public itemOptions: boolean= false ;
   public toBeDisplayed: boolean = false;
   constructor(
     public name: string,
     public featureRowPath: Array<string>,
-    public project: ProjectSelector
+    public project: NavigationProject
   ) {
-    this.rootDirectory  = new DirectorySelector(name, featureRowPath,"", this);
-    this.features = new Array<FeatureSelector>();
+    this.rootDirectory  = new NavigationDirectory(name, featureRowPath,"", this);
+    this.features = new Array<NavigationFeature>();
     let lastDirectory = '';
     for (let k = 0; k < featureRowPath.length; k++) {
       const currentPath = featureRowPath[k];
       const split = currentPath.split('/');
       if (split.length === 1) {
-        this.features.push(new FeatureSelector(split.length, currentPath, currentPath,this.rootDirectory));
+        this.features.push(new NavigationFeature(split.length, currentPath, currentPath,this.rootDirectory));
       } else {
         if (split.length === 2) {
           const currentDirectory = split[0];
           if (currentDirectory !== lastDirectory) {
-            this.features.push(new FeatureSelector(split.length - 1, currentDirectory, currentDirectory + ' :',this.rootDirectory));
+            this.features.push(new NavigationFeature(split.length - 1, currentDirectory, currentDirectory + ' :',this.rootDirectory));
             lastDirectory = currentDirectory;
           }
-          this.features.push(new FeatureSelector(split.length, currentPath, split[1],this.rootDirectory));
+          this.features.push(new NavigationFeature(split.length, currentPath, split[1],this.rootDirectory));
         } else {
-          this.features.push(new FeatureSelector(split.length, currentPath, currentPath,this.rootDirectory));
+          this.features.push(new NavigationFeature(split.length, currentPath, currentPath,this.rootDirectory));
         }
       }
     }
@@ -200,13 +204,13 @@ export class BranchSelector implements NavigationItem{
 
 }
 
-export class ProjectSelector implements  NavigationItem{
+export class NavigationProject implements  NavigationItem{
 
   public selected = false;
   public indeterminate = false;
-  public selectedBranch: BranchSelector;
-  public stableBranch: BranchSelector;
-  public relatedHierarchyNode: HierarchyNodeSelector;
+  public selectedBranch: NavigationBranch;
+  public stableBranch: NavigationBranch;
+  public relatedHierarchyNode: NavigationHierarchyNode;
   public itemOptions: boolean= true ;
   public itemOptionPlaceHolder : "Stable branch by default";
   public toBeDisplayed: boolean = false;
@@ -214,7 +218,7 @@ export class ProjectSelector implements  NavigationItem{
   constructor(
     public id: string,
     public label: string,
-    public branches: Array<BranchSelector>,
+    public branches: Array<NavigationBranch>,
   ) {
   }
 
@@ -227,34 +231,22 @@ export class ProjectSelector implements  NavigationItem{
     return this.relatedHierarchyNode.path + ">" + this.id ;
   }
 
-  public static newFromApi(projectApi: ProjectApi): ProjectSelector {
+  public static newFromApi(projectApi: ProjectApi): NavigationProject {
 
-    const branches = Array<BranchSelector>();
+    const branches = Array<NavigationBranch>();
     const mapBranchNameBranch = new Map();
-    const instance = new ProjectSelector(
+    const instance = new NavigationProject(
       projectApi.id,
       projectApi.label,
       branches
     );
     if (projectApi.branches !== null) {
-
-
-
       for (let k = 0; k < projectApi.branches.length; k++) {
-
-       if (projectApi.id == "publisherManagementBO" && projectApi.branches[k].name == "qa"){
-         projectApi.id;
-       }
-
-
-        const currentBranch = new BranchSelector(projectApi.branches[k].name, projectApi.branches[k].features, instance);
+        const currentBranch = new NavigationBranch(projectApi.branches[k].name, projectApi.branches[k].features, instance);
         branches.push(currentBranch);
         mapBranchNameBranch.set(currentBranch.name, currentBranch);
       }
     }
-
-
-
     instance.stableBranch = mapBranchNameBranch.get(projectApi.stableBranch);
     instance.stableBranch.project = instance;
     instance.selectedBranch = instance.stableBranch;
@@ -284,15 +276,15 @@ export class ProjectSelector implements  NavigationItem{
   }
 }
 
-export class HierarchyNodeSelector implements  NavigationItem{
+export class NavigationHierarchyNode implements  NavigationItem{
   public selected = false;
   public indeterminate = false;
   public open = false;
   public level: number;
   public path: string;
-  public children = Array<HierarchyNodeSelector>();
-  public projects = Array<ProjectSelector>();
-  public root: HierarchyNodeSelector;
+  public children = Array<NavigationHierarchyNode>();
+  public projects = Array<NavigationProject>();
+  public root: NavigationHierarchyNode;
   public itemOptions: boolean= false ;
   public toBeDisplayed: boolean = false;
 
@@ -305,8 +297,8 @@ export class HierarchyNodeSelector implements  NavigationItem{
     this.level = this.id.split('.').length - 1;
   }
 
-  public static newFromApi(nodeApi: HierarchyNodeApi): HierarchyNodeSelector {
-    return new HierarchyNodeSelector(
+  public static newFromApi(nodeApi: HierarchyNodeApi): NavigationHierarchyNode {
+    return new NavigationHierarchyNode(
       nodeApi.id,
       nodeApi.slugName,
       nodeApi.name,
@@ -324,8 +316,8 @@ export class HierarchyNodeSelector implements  NavigationItem{
     return this.projects.length > 0;
   }
 
-  public clone(): HierarchyNodeSelector {
-    const instance = new HierarchyNodeSelector(
+  public clone(): NavigationHierarchyNode {
+    const instance = new NavigationHierarchyNode(
       this.id,
       this.slugName,
       this.name,

@@ -12,7 +12,7 @@ import {
 } from '@angular/core';
 import {Router} from '@angular/router';
 import {animate, state, style, transition, trigger} from '@angular/animations';
-import {NavigationItem} from "../../../_services/criterias-selection";
+import {NavigationItem} from "../../../_models/navigation";
 import {MatSelect} from "@angular/material";
 
 @Component({
