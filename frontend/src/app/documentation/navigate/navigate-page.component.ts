@@ -2,10 +2,9 @@ import {AfterViewChecked, Component, OnInit, Output, QueryList, ViewChild, ViewC
 import {CriteriasService} from "../../_services/criterias.service";
 import {ActivatedRoute} from "@angular/router";
 import {HierarchyNodeApi} from "../../_models/criterias";
-import {CriteriasSelector, HierarchyNodeSelector, NavigationItem} from "../../_services/criterias-selection";
+import {HierarchyNodeSelector, NavigationItem} from "../../_services/criterias-selection";
 import {NavigateContentComponent} from "./navigate-content.component";
 import {Location} from "@angular/common";
-import {NavigateTreeComponent} from "./navigate-tree/navigate-tree.component";
 import {NavigateMenuComponent} from "./navigate-menu/navigate-menu.component";
 
 @Component({
@@ -18,14 +17,8 @@ export class NavigatePageComponent implements OnInit, AfterViewChecked {
   @Output()
   items: HierarchyNodeSelector[];
 
-  @Output()
-  criteriasSelector = new CriteriasSelector();
-
   @ViewChildren(NavigateMenuComponent)
   roots: QueryList<NavigateMenuComponent>;
-
-  @ViewChild(NavigateTreeComponent)
-  tree: NavigateTreeComponent;
 
   @ViewChild(NavigateContentComponent)
   content: NavigateContentComponent;

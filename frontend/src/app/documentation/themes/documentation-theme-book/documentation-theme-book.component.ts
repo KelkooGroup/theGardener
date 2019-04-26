@@ -1,5 +1,5 @@
 import {AfterViewChecked, Component, EventEmitter, OnInit, Output} from '@angular/core';
-import {DocumentationNode, ExpandableNode} from '../../../../../_models/documentation';
+import {DocumentationNode, ExpandableNode} from '../../../_models/documentation';
 import {MatTreeNestedDataSource} from '@angular/material/tree';
 import {NestedTreeControl} from '@angular/cdk/tree';
 import {ActivatedRoute} from '@angular/router';
