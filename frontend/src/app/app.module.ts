@@ -6,9 +6,6 @@ import {AppComponent} from './app.component';
 import {environment} from '../environments/environment';
 import {HeaderComponent} from './_components/page/header/header.component';
 import {AppRoutingModule} from './app-routing.module';
-import {MenuComponent} from './_components/page/menu/menu.component';
-import {MenuItemComponent} from './_components/page/menu-item/menu-item.component';
-import {PageComponent} from './_components/page/page/page.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {NgxJsonViewerModule} from 'ngx-json-viewer';
 import {FormsModule} from '@angular/forms';
@@ -32,7 +29,6 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatCardModule} from '@angular/material/card';
-import {PanelComponent} from './_components/panel/panel.component';
 import {HierarchyService} from './_services/hierarchy.service';
 import {DocumentationService} from './_services/documentation.service';
 import {DocumentationThemeBookComponent} from './documentation/themes/documentation-theme-book/documentation-theme-book.component';
@@ -54,17 +50,13 @@ const nonProductionProviders = [{
   declarations: [
     AppComponent,
     HeaderComponent,
-    MenuComponent,
-    MenuItemComponent,
-    PageComponent,
-    PanelComponent,
-    DocumentationThemeBookComponent,
-    DocumentationThemeBookTableComponent,
     FooterComponent,
-    DocumentationThemeBookLongTextComponent,
     NavigatePageComponent,
     NavigateContentComponent,
     NavigateMenuComponent,
+    DocumentationThemeBookComponent,
+    DocumentationThemeBookTableComponent,
+    DocumentationThemeBookLongTextComponent,
   ],
   imports: [
     HttpClientModule,
