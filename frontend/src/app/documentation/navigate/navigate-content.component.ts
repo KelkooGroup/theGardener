@@ -1,5 +1,5 @@
 import {AfterViewChecked, Component, Input, OnInit, Output, ViewChild} from '@angular/core';
-import {NavigationItem} from "../../_services/criterias-selection";
+import {NavigationItem} from "../../_models/navigation";
 import {DocumentationNode, DocumentationNodeApi} from "../../_models/documentation";
 import {DocumentationService} from "../../_services/documentation.service";
 import {DocumentationThemeBookComponent} from "../themes/documentation-theme-book/documentation-theme-book.component";

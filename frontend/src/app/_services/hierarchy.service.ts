@@ -1,17 +1,17 @@
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {HttpClient} from '@angular/common/http';
-import {HierarchyNodeApi} from '../_models/criterias';
+import {HierarchyNodeApi} from '../_models/hierarchy';
 import {
-  HierarchyNodeSelector,
-  ProjectSelector,
-} from './criterias-selection';
+  NavigationHierarchyNode,
+  NavigationProject,
+} from '../_models/navigation';
 
 class TupleHierarchyNodeSelector {
 
   constructor(
-    public taken: Array<HierarchyNodeSelector>,
-    public left: Array<HierarchyNodeSelector>
+    public taken: Array<NavigationHierarchyNode>,
+    public left: Array<NavigationHierarchyNode>
   ) {
   }
 }
@@ -20,27 +20,27 @@ class TupleHierarchyNodeSelector {
 @Injectable({
   providedIn: 'root'
 })
-export class CriteriasService {
+export class HierarchyService {
 
 
   constructor(private http: HttpClient) {
   }
 
-  public criterias(): Observable<Array<HierarchyNodeApi>> {
+  public hierarchy(): Observable<Array<HierarchyNodeApi>> {
     const url = `api/criterias`;
     return this.http.get<Array<HierarchyNodeApi>>(url);
   }
 
-  buildHierarchyNodeSelector(apiResult: Array<HierarchyNodeApi>): Array<HierarchyNodeSelector> {
+  buildHierarchyNodeSelector(apiResult: Array<HierarchyNodeApi>): Array<NavigationHierarchyNode> {
     const hierarchyNodeSelectorArray = [];
     for (let i = 0; i < apiResult.length; i++) {
       const loopNodeApi = apiResult[i];
-      const currentNodeSelector = HierarchyNodeSelector.newFromApi(loopNodeApi);
+      const currentNodeSelector = NavigationHierarchyNode.newFromApi(loopNodeApi);
       hierarchyNodeSelectorArray.push(currentNodeSelector);
       if (loopNodeApi.projects != null) {
         for (let j = 0; j < loopNodeApi.projects.length; j++) {
           const loopProjectApi = loopNodeApi.projects[j];
-          const currentProjectSelector = ProjectSelector.newFromApi(loopProjectApi);
+          const currentProjectSelector = NavigationProject.newFromApi(loopProjectApi);
           currentNodeSelector.projects.push(currentProjectSelector);
           currentProjectSelector.relatedHierarchyNode = currentNodeSelector;
         }
@@ -50,8 +50,8 @@ export class CriteriasService {
   }
 
 
-  public buildHierarchyNodeSelectorAsTree(listNode: Array<HierarchyNodeSelector>): HierarchyNodeSelector {
-    let root: HierarchyNodeSelector = null;
+  public buildHierarchyNodeSelectorAsTree(listNode: Array<NavigationHierarchyNode>): NavigationHierarchyNode {
+    let root: NavigationHierarchyNode = null;
     if (listNode.length > 0) {
       root = listNode[0];
       root.path = '';
@@ -63,7 +63,7 @@ export class CriteriasService {
   }
 
 
-  private build(node: HierarchyNodeSelector, children: Array<HierarchyNodeSelector>, root: HierarchyNodeSelector, parent: HierarchyNodeSelector): TupleHierarchyNodeSelector {
+  private build(node: NavigationHierarchyNode, children: Array<NavigationHierarchyNode>, root: NavigationHierarchyNode, parent: NavigationHierarchyNode): TupleHierarchyNodeSelector {
 
     const taken = [];
     const left = [];
