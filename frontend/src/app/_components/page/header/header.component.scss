@@ -1,21 +1,40 @@
 @import "../../../../stylesheets/backoffice";
 
 .header {
-  min-width: $min-width;
   width: 100%;
-  padding-left: 10px;
   min-height: 60px;
   flex-direction: row;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-color: $color-main;
+  background-color: $color-main;
 }
 
 .header-logo img {
-  height: 100px;
+  height: 50px;
+}
+
+.header-logo-the-gardener {
+  background-color: white;
+  margin-right: 10px;
+  margin-top: 3px;
+}
+
+.header-logo-the-gardener div {
+  font-size: $font-size-text-x-small;
+}
+.header-logo-the-gardener img {
+  height: 40px;
+}
+
+.header-title  {
+  padding-left: 20px;
 }
 
 .header-title div {
   min-height: 28px;
-  padding-top: 40px;
   font-size: $font-size-text;
+  color: white;
 }
 
 

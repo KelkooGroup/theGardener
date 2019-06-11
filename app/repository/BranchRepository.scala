@@ -40,9 +40,18 @@ class BranchRepository @Inject()(db: Database) {
         Some(branch.id)
 
       } else {
-        SQL"""INSERT INTO branch (name, isStable, projectId)
+        findByProjectIdAndName(branch.projectId, branch.name) match {
+          case Some(existingBranch) =>
+            SQL"""REPLACE INTO branch (id, name, isStable, projectId)
+                                            VALUES (${existingBranch.id}, ${branch.name}, ${branch.isStable}, ${branch.projectId})"""
+              .executeUpdate()
+            Some(existingBranch.id)
+
+
+          case None => SQL"""INSERT INTO branch (name, isStable, projectId)
            VALUES (${branch.name}, ${branch.isStable}, ${branch.projectId})"""
-          .executeInsert()
+            .executeInsert()
+        }
       }
 
       SQL"SELECT * FROM branch WHERE id = $id".as(parser.single)

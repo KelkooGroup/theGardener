@@ -1,0 +1,95 @@
+
+
+truncate hierarchyNode ;
+truncate project ;
+truncate project_hierarchyNode ;
+truncate branch ;
+truncate feature ;
+truncate feature_tag ;
+truncate tag;
+truncate scenario;
+truncate scenario_tag ;
+
+
+INSERT INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel) VALUES ('.', 'root', 'root', 'Views', 'View');
+INSERT INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel) VALUES ('.01.', 'internal', 'Internal', 'Areas', 'Area');
+INSERT INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel) VALUES ('.01.01.', 'publisher', 'Publisher', 'System groups', 'System group');
+INSERT INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel) VALUES ('.01.01.01.', 'extranet', 'Publisher extranet', 'Projects', 'Project');
+INSERT INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel) VALUES ('.01.01.02.', 'internal', 'Publisher internal management', 'Projects', 'Project');
+INSERT INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel) VALUES ('.01.01.03.', 'feeds', 'Feeds to publishers', 'Projects', 'Project');
+INSERT INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel) VALUES ('.01.01.04.', 'api', 'API to publishers', 'Projects', 'Project');
+INSERT INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel) VALUES ('.01.02.', 'search', 'Search', 'System groups', 'System group');
+INSERT INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel) VALUES ('.01.02.01.', 'meta', 'Search meta info', 'Projects', 'Project');
+INSERT INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel) VALUES ('.01.03.', 'gsa', 'Google Shopping Ads', 'Systems', 'System');
+INSERT INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel) VALUES ('.01.03.01.', 'pla', 'PLA', 'Projects', 'Project');
+INSERT INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel) VALUES ('.01.10.', 'tools', 'Tools', 'Tools', 'Tool');
+INSERT INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel) VALUES ('.01.03.02.', 'cop', 'Core Offer Processing', 'Projects', 'Project');
+INSERT INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel) VALUES ('.01.04.', 'kdp', 'Data Platform', 'Systems', 'System');
+INSERT INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel) VALUES ('.01.04.01.', 'processing', 'Processing', 'Systems', 'System');
+INSERT INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel) VALUES ('.01.05.', 'merchant', 'Merchant', 'System groups', 'System group');
+INSERT INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel) VALUES ('.01.05.01.', 'core', 'Merchant', 'Projects', 'Project');
+INSERT INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel) VALUES ('.01.05.02.', 'caps', 'CAPS', 'Projects', 'Project');
+INSERT INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel) VALUES ('.01.05.03.', 'statistics', 'Statistics', 'Projects', 'Project');
+INSERT INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel) VALUES ('.02.', 'public', 'Public', 'Areas', 'Area');
+INSERT INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel) VALUES ('.02.01.', 'publishers', 'Publisher', 'Areas', 'Area');
+
+
+INSERT INTO project (id, name, repositoryUrl, stableBranch, featuresRootPath) VALUES ('publisherExtranet', 'Publisher extranet', 'http://gitlab.corp.kelkoo.net/syndication/publisherExtranet.git', 'qa', 'test/features');
+INSERT INTO project (id, name, repositoryUrl, stableBranch, featuresRootPath) VALUES ('publisherExtranetDataAggregatorSparkApplication', 'Publisher extranet data aggregator', 'http://gitlab.corp.kelkoo.net/syndication/publisherExtranetDataAggregatorSparkApplication.git', 'qa', 'src/test/features');
+INSERT INTO project (id, name, repositoryUrl, stableBranch, featuresRootPath) VALUES ('publisherManagementBO', 'Publisher management BO', 'http://gitlab.corp.kelkoo.net/syndication/publisherManagementBO.git', 'qa', 'test/features');
+INSERT INTO project (id, name, repositoryUrl, stableBranch, featuresRootPath) VALUES ('publisherFeedSparkApplication', 'Offer feed service', 'http://gitlab.corp.kelkoo.net/syndication/publisherFeedSparkApplication.git', 'qa', 'features');
+INSERT INTO project (id, name, repositoryUrl, stableBranch, featuresRootPath) VALUES ('kelkooUrlForLeadService', 'Lead service urls', 'http://gitlab.corp.kelkoo.net/common/kelkooUrl.git', 'qa', 'features/LeadService');
+INSERT INTO project (id, name, repositoryUrl, stableBranch, featuresRootPath) VALUES ('leadService', 'Lead service', 'http://gitlab.corp.kelkoo.net/syndication/kls.git', 'qa', 'test/features');
+INSERT INTO project (id, name, repositoryUrl, stableBranch, featuresRootPath) VALUES ('googleShoppingAdsBidderServices', 'PLA Bidder services', 'http://gitlab.corp.kelkoo.net/google-eu/googleShoppingAdsBidderServices.git', 'qa', 'src/test/features');
+INSERT INTO project (id, name, repositoryUrl, stableBranch, featuresRootPath) VALUES ('offerStatsWS', 'Offer stats WS', 'http://gitlab.corp.kelkoo.net/syndication/offerStatsWS.git', 'qa', 'test/features');
+INSERT INTO project (id, name, repositoryUrl, stableBranch, featuresRootPath) VALUES ('theGardener', 'the Gardener', 'http://gitlab.corp.kelkoo.net/syndication/theGardener.git', 'qa', 'test/features');
+INSERT INTO project (id, name, repositoryUrl, stableBranch, featuresRootPath) VALUES ('copGoogleExporter', 'COP Google Exporter', 'http://gitlab.corp.kelkoo.net/cop/copGoogleExporter.git', 'qa', 'src/test/resources/features');
+INSERT INTO project (id, name, repositoryUrl, stableBranch, featuresRootPath) VALUES ('kdpFraudCheck', 'Fraud check', 'http://gitlab.corp.kelkoo.net/data-platform/fraudCheck.git', 'qa', 'src/test/features');
+INSERT INTO project (id, name, repositoryUrl, stableBranch, featuresRootPath) VALUES ('trafficAcquisitionCostCalculation', 'Traffic acquisition cost calculation', 'http://gitlab.corp.kelkoo.net/data-platform/trafficAcquisitionCostCalculation.git', 'qa', 'src/test/features');
+INSERT INTO project (id, name, repositoryUrl, stableBranch, featuresRootPath) VALUES ('merchantProcessing', 'Merchant processing', 'http://gitlab.corp.kelkoo.net/merchant/merchantProcessing.git', 'qa', 'test/features');
+INSERT INTO project (id, name, repositoryUrl, stableBranch, featuresRootPath) VALUES ('merchantDatasetSparkApplications', 'Merchant dataset spark applications', 'http://gitlab.corp.kelkoo.net/merchant/merchantDatasetSparkApplications.git', 'qa', 'src/test/features');
+INSERT INTO project (id, name, repositoryUrl, stableBranch, featuresRootPath) VALUES ('merchantCsbSparkApplication', 'CSB spark application', 'http://gitlab.corp.kelkoo.net/merchant/csbSparkApplication.git', 'qa', 'src/test/features');
+INSERT INTO project (id, name, repositoryUrl, stableBranch, featuresRootPath) VALUES ('merchantContractWS', 'Contract WS', 'http://gitlab.corp.kelkoo.net/merchant-contracts/contractWS.git', 'qa', 'test/features');
+INSERT INTO project (id, name, repositoryUrl, stableBranch, featuresRootPath) VALUES ('merchantSscMerchantClient', 'SSC merchant client', 'http://gitlab.corp.kelkoo.net/merchant/sscMerchantClient.git', 'qa', 'src/test/features');
+INSERT INTO project (id, name, repositoryUrl, stableBranch, featuresRootPath) VALUES ('merchantBO', 'Merchant BO', 'http://gitlab.corp.kelkoo.net/merchant/merchantBO.git', 'qa', 'test/features');
+INSERT INTO project (id, name, repositoryUrl, stableBranch, featuresRootPath) VALUES ('merchantDataWS', 'Merchant data WS', 'http://gitlab.corp.kelkoo.net/merchant/merchantDataWS.git', 'qa', 'test/features');
+INSERT INTO project (id, name, repositoryUrl, stableBranch, featuresRootPath) VALUES ('merchantRatecardWS', 'Merchant rate card WS', 'http://gitlab.corp.kelkoo.net/merchant/merchantRatecardWS', 'qa', 'test/features');
+INSERT INTO project (id, name, repositoryUrl, stableBranch, featuresRootPath) VALUES ('merchantMappingWS', 'Merchant mapping WS', 'http://gitlab.corp.kelkoo.net/merchant/merchantMappingWS.git', 'qa', 'test/features');
+INSERT INTO project (id, name, repositoryUrl, stableBranch, featuresRootPath) VALUES ('merchantdatahistoryws', 'Merchant data history WS', 'http://gitlab.corp.kelkoo.net/merchant/merchantdatahistoryws.git', 'qa', 'test/features');
+INSERT INTO project (id, name, repositoryUrl, stableBranch, featuresRootPath) VALUES ('merchantCustomerWS', 'Merchant customer WS', 'http://gitlab.corp.kelkoo.net/merchant/customerWS.git', 'qa', 'test/features');
+INSERT INTO project (id, name, repositoryUrl, stableBranch, featuresRootPath) VALUES ('merchantBudgetSparkApplication', 'Merchant budget spark application', 'http://gitlab.corp.kelkoo.net/caps/budgetSparkApplication.git', 'qa', 'src/test/features');
+INSERT INTO project (id, name, repositoryUrl, stableBranch, featuresRootPath) VALUES ('merchantRevenueCalculation', 'Merchant revenue calculation', 'http://gitlab.corp.kelkoo.net/caps/revenueCalculation.git', 'qa', 'src/test/features');
+INSERT INTO project (id, name, repositoryUrl, stableBranch, featuresRootPath) VALUES ('merchantStatisticsSparkApplications', 'Merchant statistics spark applications', 'http://gitlab.corp.kelkoo.net/merchantStatistics/merchantStatisticsSparkApplications.git', 'qa', 'src/test/scala/bdd/features');
+INSERT INTO project (id, name, repositoryUrl, stableBranch, featuresRootPath) VALUES ('googleShoppingAdsPlaBackOffice', 'PLA BO', 'http://gitlab.corp.kelkoo.net/google-eu/googleShoppingAdsPlaBackOffice.git', 'preprod', 'plaBackOfficeServices/src/test/resources/acceptance.feature');
+INSERT INTO project (id, name, repositoryUrl, stableBranch, featuresRootPath) VALUES ('shoppingAPI', 'Shopping API', 'http://gitlab.corp.kelkoo.net/syndication/shoppingApi.git', 'qa', 'test/features');
+
+INSERT INTO project_hierarchyNode (projectId, hierarchyId) VALUES ('copGoogleExporter', '.01.03.02.');
+INSERT INTO project_hierarchyNode (projectId, hierarchyId) VALUES ('googleShoppingAdsBidderServices', '.01.03.01.');
+INSERT INTO project_hierarchyNode (projectId, hierarchyId) VALUES ('googleShoppingAdsPlaBackOffice', '.01.03.01.');
+INSERT INTO project_hierarchyNode (projectId, hierarchyId) VALUES ('kdpFraudCheck', '.01.04.01.');
+INSERT INTO project_hierarchyNode (projectId, hierarchyId) VALUES ('kelkooUrlForLeadService', '.01.01.04.');
+INSERT INTO project_hierarchyNode (projectId, hierarchyId) VALUES ('leadService', '.01.01.04.');
+INSERT INTO project_hierarchyNode (projectId, hierarchyId) VALUES ('shoppingAPI', '.01.01.04.');
+INSERT INTO project_hierarchyNode (projectId, hierarchyId) VALUES ('shoppingAPI', '.02.01.');
+INSERT INTO project_hierarchyNode (projectId, hierarchyId) VALUES ('merchantBO', '.01.05.01.');
+INSERT INTO project_hierarchyNode (projectId, hierarchyId) VALUES ('merchantBudgetSparkApplication', '.01.05.02.');
+INSERT INTO project_hierarchyNode (projectId, hierarchyId) VALUES ('merchantContractWS', '.01.05.01.');
+INSERT INTO project_hierarchyNode (projectId, hierarchyId) VALUES ('merchantCsbSparkApplication', '.01.05.01.');
+INSERT INTO project_hierarchyNode (projectId, hierarchyId) VALUES ('merchantCustomerWS', '.01.05.01.');
+INSERT INTO project_hierarchyNode (projectId, hierarchyId) VALUES ('merchantdatahistoryws', '.01.05.01.');
+INSERT INTO project_hierarchyNode (projectId, hierarchyId) VALUES ('merchantDatasetSparkApplications', '.01.05.01.');
+INSERT INTO project_hierarchyNode (projectId, hierarchyId) VALUES ('merchantDataWS', '.01.05.01.');
+INSERT INTO project_hierarchyNode (projectId, hierarchyId) VALUES ('merchantMappingWS', '.01.05.01.');
+INSERT INTO project_hierarchyNode (projectId, hierarchyId) VALUES ('merchantProcessing', '.01.05.01.');
+INSERT INTO project_hierarchyNode (projectId, hierarchyId) VALUES ('merchantRatecardWS', '.01.05.01.');
+INSERT INTO project_hierarchyNode (projectId, hierarchyId) VALUES ('merchantRevenueCalculation', '.01.05.02.');
+INSERT INTO project_hierarchyNode (projectId, hierarchyId) VALUES ('merchantSscMerchantClient', '.01.05.01.');
+INSERT INTO project_hierarchyNode (projectId, hierarchyId) VALUES ('merchantStatisticsSparkApplications', '.01.05.03.');
+INSERT INTO project_hierarchyNode (projectId, hierarchyId) VALUES ('offerStatsWS', '.01.02.01.');
+INSERT INTO project_hierarchyNode (projectId, hierarchyId) VALUES ('publisherExtranet', '.01.01.01.');
+INSERT INTO project_hierarchyNode (projectId, hierarchyId) VALUES ('publisherExtranetDataAggregatorSparkApplication', '.01.01.01.');
+INSERT INTO project_hierarchyNode (projectId, hierarchyId) VALUES ('publisherFeedSparkApplication', '.01.01.03.');
+INSERT INTO project_hierarchyNode (projectId, hierarchyId) VALUES ('publisherManagementBO', '.01.01.02.');
+INSERT INTO project_hierarchyNode (projectId, hierarchyId) VALUES ('theGardener', '.01.10.');
+INSERT INTO project_hierarchyNode (projectId, hierarchyId) VALUES ('trafficAcquisitionCostCalculation', '.01.04.01.');
+
