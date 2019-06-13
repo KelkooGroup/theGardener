@@ -8,11 +8,10 @@ import {Component, ElementRef, OnInit, Renderer2, ViewChild} from '@angular/core
 export class AppComponent implements OnInit {
 
   headerHeight = 70;
-  contentHeight : number;
+  contentHeight: number;
   footerHeight = 40;
 
-  @ViewChild('content')
-  content: ElementRef;
+  @ViewChild('content') content: ElementRef;
 
   constructor(private renderer: Renderer2) {
   }
@@ -27,11 +26,11 @@ export class AppComponent implements OnInit {
 
   resize() {
     this.contentHeight = window.innerHeight - this.headerHeight - this.footerHeight ;
-    console.log("Resize content: "+ this.contentHeight)
+    console.log('Resize content: ' + this.contentHeight);
     this.renderer.setStyle(
       this.content.nativeElement,
       'height',
-      this.contentHeight+ 'px'
+      this.contentHeight + 'px'
     );
 
   }

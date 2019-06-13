@@ -12,8 +12,8 @@ import {
 } from '@angular/core';
 import {Router} from '@angular/router';
 import {animate, state, style, transition, trigger} from '@angular/animations';
-import {NavigationItem} from "../../../_models/navigation";
-import {MatSelect} from "@angular/material";
+import {NavigationItem} from '../../../_models/navigation';
+import {MatSelect} from '@angular/material';
 
 @Component({
   selector: 'app-navigate-menu',
@@ -31,6 +31,12 @@ import {MatSelect} from "@angular/material";
 })
 export class NavigateMenuComponent implements OnInit, AfterViewChecked {
 
+  constructor(public router: Router) {
+    if (this.depth === undefined) {
+      this.depth = 0;
+    }
+  }
+
   expanded: boolean;
   @HostBinding('attr.aria-expanded') ariaExpanded = this.expanded;
   @Input() item: NavigationItem;
@@ -40,20 +46,14 @@ export class NavigateMenuComponent implements OnInit, AfterViewChecked {
 
   itemOptionPlaceHolder: string;
 
-  @ViewChildren(NavigateMenuComponent)
-  items: QueryList<NavigateMenuComponent>;
+  @ViewChildren(NavigateMenuComponent) items: QueryList<NavigateMenuComponent>;
 
-  @ViewChild(MatSelect)
-  selectOptions : MatSelect;
+  @ViewChild(MatSelect) selectOptions: MatSelect;
 
   needSomeChecksAfterRendering = false;
-  pageToBeChecked : string;
+  pageToBeChecked: string;
 
-  constructor(public router: Router) {
-    if (this.depth === undefined) {
-      this.depth = 0;
-    }
-  }
+  @Output() selection: EventEmitter<NavigationItem> = new EventEmitter();
 
   ngOnInit() {
     if (this.item.itemOptions) {
@@ -61,9 +61,6 @@ export class NavigateMenuComponent implements OnInit, AfterViewChecked {
       this.itemOptionPlaceHolder = this.item.itemOptionPlaceHolder;
     }
   }
-
-  @Output()
-  selection: EventEmitter<NavigationItem> = new EventEmitter();
 
   navigateTo(page: string) {
     this.expanded =  this.expanded || this.depth < 2;
@@ -78,23 +75,22 @@ export class NavigateMenuComponent implements OnInit, AfterViewChecked {
       }
 
       if (page && this.item && this.item.itemOptions) {
-        var that: NavigateMenuComponent = this;
-        this.item.itemChildren().forEach(function (item) {
+        this.item.itemChildren().forEach(item => {
           if (page.startsWith(item.route)) {
             if (item.itemChildren().length > 0) {
-              that.expanded = true;
+              this.expanded = true;
             }
-            that.selectedOption = item;
-            if (that.selectOptions){
-              that.selectOptions.value = item;
+            this.selectedOption = item;
+            if (this.selectOptions) {
+              this.selectOptions.value = item;
             }
-            that.items.forEach(e => e.navigateTo(page));
-            that.pageToBeChecked = page;
-            that.needSomeChecksAfterRendering = true;
+            this.items.forEach(e => e.navigateTo(page));
+            this.pageToBeChecked = page;
+            this.needSomeChecksAfterRendering = true;
           }
         });
       }
-    }else{
+    } else {
       this.items.forEach(e => e.navigateTo(page));
     }
   }

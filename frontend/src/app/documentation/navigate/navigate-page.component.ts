@@ -1,11 +1,11 @@
 import {AfterViewChecked, Component, OnInit, Output, QueryList, ViewChild, ViewChildren} from '@angular/core';
-import {HierarchyService} from "../../_services/hierarchy.service";
-import {ActivatedRoute} from "@angular/router";
-import {HierarchyNodeApi} from "../../_models/hierarchy";
-import {NavigationItem} from "../../_models/navigation";
-import {NavigateContentComponent} from "./navigate-content.component";
-import {Location} from "@angular/common";
-import {NavigateMenuComponent} from "./navigate-menu/navigate-menu.component";
+import {HierarchyService} from '../../_services/hierarchy.service';
+import {ActivatedRoute} from '@angular/router';
+import {HierarchyNodeApi} from '../../_models/hierarchy';
+import {NavigationItem} from '../../_models/navigation';
+import {NavigateContentComponent} from './navigate-content.component';
+import {Location} from '@angular/common';
+import {NavigateMenuComponent} from './navigate-menu/navigate-menu.component';
 
 @Component({
   selector: 'app-navigate-page',
@@ -14,14 +14,11 @@ import {NavigateMenuComponent} from "./navigate-menu/navigate-menu.component";
 })
 export class NavigatePageComponent implements OnInit, AfterViewChecked {
 
-  @Output()
-  items: NavigationItem[];
+  @Output() items: Array<NavigationItem>;
 
-  @ViewChildren(NavigateMenuComponent)
-  roots: QueryList<NavigateMenuComponent>;
+  @ViewChildren(NavigateMenuComponent) roots: QueryList<NavigateMenuComponent>;
 
-  @ViewChild(NavigateContentComponent)
-  content: NavigateContentComponent;
+  @ViewChild(NavigateContentComponent) content: NavigateContentComponent;
 
   showProgressBar = false;
 
@@ -50,10 +47,10 @@ export class NavigatePageComponent implements OnInit, AfterViewChecked {
       this.showProgressBar = true;
       this.content.generateDocumentation(this.selectionedItem.route);
       this.showProgressBar = false;
-      var hash = window.location.hash
-      var path = `/app/documentation/navigate/${encodeURIComponent(this.selectionedItem.route)}`;
-      if (hash && path.search('#') == -1 ){
-         path=`${path}${hash}`;
+      const hash = window.location.hash;
+      let path = `/app/documentation/navigate/${encodeURIComponent(this.selectionedItem.route)}`;
+      if (hash && path.search('#') === -1) {
+        path = `${path}${hash}`;
       }
       this.location.go(path);
     }
@@ -61,7 +58,7 @@ export class NavigatePageComponent implements OnInit, AfterViewChecked {
 
 
   ngOnInit() {
-    this.initialPath = this.route.snapshot.paramMap.get("path")
+    this.initialPath = this.route.snapshot.paramMap.get('path');
   }
 
   delay(ms: number) {
@@ -69,14 +66,13 @@ export class NavigatePageComponent implements OnInit, AfterViewChecked {
   }
 
   ngAfterViewChecked() {
-    let that = this;
-    if (!that.navigatedTo) {
-      this.roots.forEach(function (root) {
-        that.navigatedTo = true;
+    if (!this.navigatedTo) {
+      this.roots.forEach( root => {
+        this.navigatedTo = true;
         (async () => {
-          await that.delay(1);
-          console.log(`Navigating to ${that.initialPath}`);
-          root.navigateTo(that.initialPath);
+          await this.delay(1);
+          console.log(`Navigating to ${this.initialPath}`);
+          root.navigateTo(this.initialPath);
 
         })();
 

@@ -1,9 +1,9 @@
 import {AfterViewChecked, Component, Input, OnInit, Output, ViewChild} from '@angular/core';
-import {NavigationItem} from "../../_models/navigation";
-import {DocumentationNode, DocumentationNodeApi} from "../../_models/documentation";
-import {DocumentationService} from "../../_services/documentation.service";
-import {DocumentationThemeBookComponent} from "../themes/documentation-theme-book/documentation-theme-book.component";
-import {ActivatedRoute} from "@angular/router";
+import {NavigationItem} from '../../_models/navigation';
+import {DocumentationNode, DocumentationNodeApi} from '../../_models/documentation';
+import {DocumentationService} from '../../_services/documentation.service';
+import {DocumentationThemeBookComponent} from '../themes/documentation-theme-book/documentation-theme-book.component';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-navigate-content',
@@ -12,29 +12,26 @@ import {ActivatedRoute} from "@angular/router";
 })
 export class NavigateContentComponent implements OnInit, AfterViewChecked {
 
-  @Input()
-  selection: NavigationItem;
+  @Input() selection: NavigationItem;
 
-  @Input()
-  display = false;
+  @Input() display = false;
 
-  @Output()
-  documentationData: DocumentationNode[];
+  @Output() documentationData: Array<DocumentationNode>;
 
-  @ViewChild(DocumentationThemeBookComponent)
-  documentationTheme: DocumentationThemeBookComponent;
+  @ViewChild(DocumentationThemeBookComponent) documentationTheme: DocumentationThemeBookComponent;
 
   showProgressBar = false;
 
   hash: string;
-  needToGoToHash = false ;
+  needToGoToHash = false;
 
-  constructor(private documentationService: DocumentationService, private route: ActivatedRoute) { }
+  constructor(private documentationService: DocumentationService, private route: ActivatedRoute) {
+  }
 
   ngOnInit() {
     this.route.fragment.subscribe((hash: string) => {
       if (hash) {
-        if ( hash != this.hash) {
+        if (hash !== this.hash) {
           this.needToGoToHash = true;
           this.hash = hash;
         }
@@ -50,7 +47,7 @@ export class NavigateContentComponent implements OnInit, AfterViewChecked {
     if (this.hash && this.needToGoToHash) {
       const cmp = document.getElementById(this.hash);
       if (cmp) {
-        this.needToGoToHash = false ;
+        this.needToGoToHash = false;
         cmp.scrollIntoView();
       }
     }
@@ -59,7 +56,7 @@ export class NavigateContentComponent implements OnInit, AfterViewChecked {
   generateDocumentation(route: string) {
     if (route !== '') {
       this.showProgressBar = true;
-      const cmp = document.getElementById("top");
+      const cmp = document.getElementById('top');
       if (cmp) {
         cmp.scrollIntoView();
       }
@@ -70,21 +67,22 @@ export class NavigateContentComponent implements OnInit, AfterViewChecked {
           if (this.documentationTheme) {
             this.documentationTheme.updateGeneratedDocumentation(this.documentationData);
           }
-          new Promise(() => {
+          return new Promise(() => {
             setTimeout(() => {
-                this.selectHash();
+              this.selectHash();
             }, 1000);
           });
         },
         () => {
         });
+
     }
   }
 
-  hideProgressBar(){
-    new Promise(() => {
+  hideProgressBar() {
+    return new Promise(() => {
       setTimeout(() => {
-        this.showProgressBar = false ;
+        this.showProgressBar = false;
       }, 10);
     });
 

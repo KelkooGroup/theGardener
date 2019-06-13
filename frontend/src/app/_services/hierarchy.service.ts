@@ -26,20 +26,18 @@ export class HierarchyService {
   constructor(private http: HttpClient) {
   }
 
-  public hierarchy(): Observable<Array<HierarchyNodeApi>> {
+  hierarchy(): Observable<Array<HierarchyNodeApi>> {
     const url = `api/criterias`;
     return this.http.get<Array<HierarchyNodeApi>>(url);
   }
 
   buildHierarchyNodeSelector(apiResult: Array<HierarchyNodeApi>): Array<NavigationHierarchyNode> {
     const hierarchyNodeSelectorArray = [];
-    for (let i = 0; i < apiResult.length; i++) {
-      const loopNodeApi = apiResult[i];
+    for (const loopNodeApi of apiResult) {
       const currentNodeSelector = NavigationHierarchyNode.newFromApi(loopNodeApi);
       hierarchyNodeSelectorArray.push(currentNodeSelector);
       if (loopNodeApi.projects != null) {
-        for (let j = 0; j < loopNodeApi.projects.length; j++) {
-          const loopProjectApi = loopNodeApi.projects[j];
+        for (const loopProjectApi of loopNodeApi.projects) {
           const currentProjectSelector = NavigationProject.newFromApi(loopProjectApi);
           currentNodeSelector.projects.push(currentProjectSelector);
           currentProjectSelector.relatedHierarchyNode = currentNodeSelector;
@@ -50,7 +48,7 @@ export class HierarchyService {
   }
 
 
-  public buildHierarchyNodeSelectorAsTree(listNode: Array<NavigationHierarchyNode>): NavigationHierarchyNode {
+  buildHierarchyNodeSelectorAsTree(listNode: Array<NavigationHierarchyNode>): NavigationHierarchyNode {
     let root: NavigationHierarchyNode = null;
     if (listNode.length > 0) {
       root = listNode[0];
@@ -69,8 +67,7 @@ export class HierarchyService {
     const left = [];
 
     if (children.length > 0) {
-      for (let i = 0; i < children.length; i++) {
-        const loopNode = children[i];
+      for (const loopNode of  children) {
         if (loopNode.id.startsWith(node.id)) {
           loopNode.root = root;
           if (loopNode.id.length === node.id.length + 3) {
@@ -84,9 +81,8 @@ export class HierarchyService {
       }
     }
     if (taken.length > 0) {
-      for (let i = 0; i < taken.length; i++) {
-        const loopTaken = taken[i];
-        const tuple = this.build(loopTaken, Object.assign([], left), root,node);
+      for (const loopTaken of taken) {
+        const tuple = this.build(loopTaken, Object.assign([], left), root, node);
         loopTaken.children = tuple.taken;
       }
     }

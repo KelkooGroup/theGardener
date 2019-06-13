@@ -5,7 +5,7 @@
 
 
     <ul class="flex-container flex-direction-row flex-align-items-center flex-space-between flex-width-expand">
-      <span [ngClass]="item.itemType+'-text'" class="item-text">{{item.displayName}}</span>
+      <span [ngClass]="item.itemType+'-text'" class="item-text">{{ item.displayName }}</span>
 
       <span fxFlex *ngIf="item.itemChildren().length">
     <span fxFlex></span>
@@ -28,7 +28,7 @@
       <div class="options" [ngStyle]="{'padding-left': ((depth+1) * 12) + 'px'}" >
         <mat-select  placeholder="Stable branch by default" (selectionChange)="setSelectedOption($event.source.value)" >
           <mat-option *ngFor="let child of item.itemChildren()" [value]="child"    >
-            {{child.displayName}}
+            {{ child.displayName }}
           </mat-option>
         </mat-select>
       </div>
