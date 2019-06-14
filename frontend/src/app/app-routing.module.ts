@@ -1,57 +1,32 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {GenerateComponent} from './documentation/generate/generate.component';
-import {AdminPageComponent} from './next/admin-page/admin-page.component';
-import {DashboardPageComponent} from './next/dashboard-page/dashboard-page.component';
-import {ProfilePageComponent} from './next/profile-page/profile-page.component';
-import {SearchPageComponent} from './next/search-page/search-page.component';
+import {NavigatePageComponent} from './documentation/navigate/navigate-page.component';
 
 
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'app/documentation/generate/criterias',
+    redirectTo: 'app/documentation/navigate',
     pathMatch: 'full',
   },
   {
     path: 'app',
-    redirectTo: 'app/documentation/generate/criterias',
-    pathMatch: 'full',
-  },
-  {
-    path: 'app/documentation/generate',
-    redirectTo: 'app/documentation/generate/criterias',
+    redirectTo: 'app/documentation/navigate',
     pathMatch: 'full',
   },
   {
     path: 'app/documentation',
-    redirectTo: 'app/documentation/generate/criterias',
+    redirectTo: 'app/documentation/navigate',
     pathMatch: 'full',
   },
   {
-    path: 'app/documentation/generate/:type',
-    component: GenerateComponent,
+    path: 'app/documentation/navigate',
+    component: NavigatePageComponent,
     canActivate: []
   },
   {
-    path: 'app/admin',
-    component: AdminPageComponent,
-    canActivate: []
-  }
-  ,
-  {
-    path: 'app/dashboard',
-    component: DashboardPageComponent,
-    canActivate: []
-  },
-  {
-    path: 'app/search',
-    component: SearchPageComponent,
-    canActivate: []
-  },
-  {
-    path: 'app/profile',
-    component: ProfilePageComponent,
+    path: 'app/documentation/navigate/:path',
+    component: NavigatePageComponent,
     canActivate: []
   },
 ];

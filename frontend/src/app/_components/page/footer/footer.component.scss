@@ -1,25 +1,23 @@
 @import "../../../../stylesheets/backoffice";
 
 .footer {
-  min-width: $min-width;
   width: 100%;
-  padding-top: 10px;
-  min-height: 60px;
+  padding-top: 3px;
+  height: 35px;
 
   border-top: 1px solid $color-main;
 
 }
 
-.footer-logo img {
-  height: 30px;
-  padding-left: 5px;
+.footer-text img {
+  height: 20px;
+  padding-left: 2px;
+  padding-right: 2px;
 }
 
-.footer-text span {
-  font-size: 17px;
+.footer-text  {
+  font-size: $font-size-text-x-small;
 }
 
-.space {
-  width: 50px;
-}
+
 

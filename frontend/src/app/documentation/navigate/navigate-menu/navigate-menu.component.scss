@@ -1,0 +1,87 @@
+@import '~@angular/material/theming';
+@import "../../../../stylesheets/backoffice";
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker hue.
+$app-primary: mat-palette($mat-indigo);
+$app-accent: mat-palette($mat-green);
+
+// The warn palette is optional (defaults to red).
+$app-warn: mat-palette($mat-red);
+
+// Create the theme object (a Sass map containing all of the palettes).
+$app-theme: mat-light-theme($app-primary, $app-accent, $app-warn);
+
+:host {
+  display: flex;
+  flex-direction: column;
+  outline: none;
+  width: 100%;
+
+  .mat-list-item.active {
+    background-color: mat-color($app-primary, 50);
+  }
+
+  &:hover,
+  &:focus {
+    > .mat-list-item:not(.expanded) {
+      background-color: mat-color($app-primary, 100) !important;
+    }
+  }
+}
+
+.item{
+  min-width: 300px;
+  cursor: pointer;
+  padding-top: 3px ;
+  padding-left:  10px;
+  padding-right:  10px;
+  padding-bottom: 3px ;
+  display: flex;
+  width: auto;
+  background-color: $color-text-lighter;
+  font-size: $font-size-text-small;
+}
+
+.item-text{
+  padding-right: 3px;
+}
+
+
+
+.node-text{
+  color: $color-text-darker ;
+}
+
+.project-text{
+  color: $color-text;
+}
+
+.feature-text{
+  color: $color-text-invert;
+}
+
+.options {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-right: 13px;
+  font-family: "courier", serif;
+  font-size: $font-size-text-small;
+
+}
+
+.expanded, .options{
+  background-color: $color-border-lighter;
+}
+
+.selected {
+  background-color: $color-text-light;
+}
+
+.selected.expanded{
+  background-color: $color-text-light;
+}
+
+a {
+  cursor: pointer;
+}
