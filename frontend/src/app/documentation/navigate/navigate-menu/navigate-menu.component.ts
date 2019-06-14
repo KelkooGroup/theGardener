@@ -62,7 +62,7 @@ export class NavigateMenuComponent implements OnInit, AfterViewChecked {
     }
   }
 
-  navigateTo(page: string) {
+  navigateTo(page?: string) {
     this.expanded =  this.expanded || this.depth < 2;
     if (page && page.startsWith(this.item.route)) {
       if (this.item.itemChildren().length > 0) {
