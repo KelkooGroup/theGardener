@@ -1,4 +1,4 @@
-@import "../../../../../../stylesheets/backoffice";
+@import "../../../../stylesheets/backoffice";
 
 .documentation-tree-invisible {
   display: none;
@@ -60,7 +60,7 @@
 }
 
 .branch {
-  font-family: "courier";
+  font-family: "courier", serif;
   font-size: $font-size-text-x-small;
   width: 50%;
   padding-left: 10px;
@@ -96,7 +96,7 @@
   font-style: italic;
   font-weight: lighter;
   font-size: $font-size-text-x-small;
-  font-family: "courier";
+  font-family: "courier", serif;
   color: $color-text-darker;
 }
 

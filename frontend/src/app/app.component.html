@@ -1,5 +1,5 @@
 <div  [style.height.px]="headerHeight"  >
- <app-header  [appTitle]="'Documentation'"   [logoSrc]="'assets/images/logo_kelkoogroup_white.png'" ></app-header>
+ <app-header  [appTitle]="'Documentation'"  ></app-header>
 </div>
   <div  #content class="content"    (window:resize)="onResize($event)" >
     <router-outlet></router-outlet>
