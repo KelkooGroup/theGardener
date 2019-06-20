@@ -18,7 +18,7 @@ export class NavigateContentComponent implements OnInit, AfterViewChecked {
 
   @Output() documentationData: Array<DocumentationNode>;
 
-  @ViewChild(DocumentationThemeBookComponent) documentationTheme: DocumentationThemeBookComponent;
+  @ViewChild(DocumentationThemeBookComponent, { static: true }) documentationTheme: DocumentationThemeBookComponent;
 
   showProgressBar = false;
 
