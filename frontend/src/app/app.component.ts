@@ -11,7 +11,7 @@ export class AppComponent implements OnInit {
   contentHeight: number;
   footerHeight = 40;
 
-  @ViewChild('content') content: ElementRef;
+  @ViewChild('content', { static: true }) content: ElementRef;
 
   constructor(private renderer: Renderer2) {
   }
