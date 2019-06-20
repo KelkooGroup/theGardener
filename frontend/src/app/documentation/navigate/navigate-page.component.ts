@@ -18,7 +18,7 @@ export class NavigatePageComponent implements OnInit, AfterViewChecked {
 
   @ViewChildren(NavigateMenuComponent) roots: QueryList<NavigateMenuComponent>;
 
-  @ViewChild(NavigateContentComponent) content: NavigateContentComponent;
+  @ViewChild(NavigateContentComponent, { static: true }) content: NavigateContentComponent;
 
   showProgressBar = false;
 

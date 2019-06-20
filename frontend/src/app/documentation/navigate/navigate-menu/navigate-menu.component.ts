@@ -48,7 +48,7 @@ export class NavigateMenuComponent implements OnInit, AfterViewChecked {
 
   @ViewChildren(NavigateMenuComponent) items: QueryList<NavigateMenuComponent>;
 
-  @ViewChild(MatSelect) selectOptions: MatSelect;
+  @ViewChild(MatSelect, { static: false }) selectOptions: MatSelect;
 
   needSomeChecksAfterRendering = false;
   pageToBeChecked: string;
