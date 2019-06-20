@@ -13,7 +13,7 @@ import {
 import {Router} from '@angular/router';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {NavigationItem} from '../../../_models/navigation';
-import {MatSelect} from '@angular/material';
+import { MatSelect } from '@angular/material/select';
 
 @Component({
   selector: 'app-navigate-menu',
