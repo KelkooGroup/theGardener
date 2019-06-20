@@ -26,6 +26,7 @@ export class NavigatePageComponent implements OnInit, AfterViewChecked {
 
   initialPath: string;
   navigatedTo = false;
+  errorMessage = '';
 
   constructor(private hierarchyService: HierarchyService, private location: Location, private route: ActivatedRoute) {
     this.hierarchyService.hierarchy().subscribe(
@@ -33,7 +34,7 @@ export class NavigatePageComponent implements OnInit, AfterViewChecked {
         const hierarchyNodeSelectorTree = hierarchyService.buildHierarchyNodeSelectorAsTree(hierarchyService.buildHierarchyNodeSelector(result));
         this.items = hierarchyNodeSelectorTree && hierarchyNodeSelectorTree.children;
       },
-      () => {
+      (error) => { this.errorMessage = error.message;
       });
   }
 

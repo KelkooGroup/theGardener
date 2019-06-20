@@ -24,6 +24,7 @@ export class NavigateContentComponent implements OnInit, AfterViewChecked {
 
   hash: string;
   needToGoToHash = false;
+  errorMessage = '';
 
   constructor(private documentationService: DocumentationService, private route: ActivatedRoute) {
   }
@@ -73,7 +74,8 @@ export class NavigateContentComponent implements OnInit, AfterViewChecked {
             }, 1000);
           });
         },
-        () => {
+        (error) => {
+           this.errorMessage = error.message;
         });
 
     }

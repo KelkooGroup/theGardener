@@ -4,6 +4,9 @@
       <app-navigate-menu *ngFor="let item of items" [item]="item" (selection)="selection($event)"></app-navigate-menu>
     </mat-nav-list>
   </div>
+  <div *ngIf="errorMessage" class="alert alert-warning">
+    <strong>Warning!</strong> {{errorMessage}}
+  </div>
   <div style="overflow-y: scroll ; flex-grow: 4;" >
      <app-navigate-content [selection]="selectionedItem" class="content"></app-navigate-content>
   </div>

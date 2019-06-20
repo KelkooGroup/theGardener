@@ -5,6 +5,9 @@
 <div [hidden]="showProgressBar"  >
   <div  style="height: 10px" ></div>
 </div>
+<div *ngIf="errorMessage" class="alert alert-warning">
+  <strong>Warning!</strong> {{errorMessage}}
+</div>
 
 
 <app-documentation-theme-book   (documentationDisplayed)="hideProgressBar()"></app-documentation-theme-book>
