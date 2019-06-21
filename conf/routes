@@ -29,8 +29,8 @@ GET           /api/hierarchy                                  controllers.Hierar
 PUT           /api/hierarchy/:id                              controllers.HierarchyController.updateHierarchy(id: String)
 DELETE        /api/hierarchy/:id                              controllers.HierarchyController.deleteHierarchy(id: String)
 
-GET           /api/criterias                                  controllers.CriteriasController.getCriterias()
-GET           /api/criterias/tree                             controllers.CriteriasController.getCriteriasTree()
+GET           /api/menu                                       controllers.MenuController.getMenu()
+GET           /api/menu/tree                                  controllers.MenuController.getMenuTree()
 GET           /api/generateDocumentation                      controllers.DocumentationController.generateDocumentation()
 
 # API DOCUMENTATION

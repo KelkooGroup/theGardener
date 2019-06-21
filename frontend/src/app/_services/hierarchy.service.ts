@@ -27,7 +27,7 @@ export class HierarchyService {
   }
 
   hierarchy(): Observable<Array<HierarchyNodeApi>> {
-    const url = `api/criterias`;
+    const url = `api/menu`;
     return this.http.get<Array<HierarchyNodeApi>>(url);
   }
 
