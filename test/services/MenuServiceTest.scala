@@ -1,13 +1,13 @@
 package services
 
-import models.{Criteria, HierarchyNode}
+import models.{Menu, HierarchyNode}
 import org.scalatest.Matchers._
 import org.scalatest._
 import org.scalatest.mockito._
 import repository.FeatureRepository
-import services.CriteriaService._
+import services.MenuService._
 
-class CriteriaServiceTest extends WordSpec with MustMatchers with MockitoSugar {
+class MenuServiceTest extends WordSpec with MustMatchers with MockitoSugar {
 
   val featureRepository = mock[FeatureRepository]
 
@@ -17,20 +17,20 @@ class CriteriaServiceTest extends WordSpec with MustMatchers with MockitoSugar {
   val suggestionNode = HierarchyNode(".01.01.01.", "suggestion", "Suggestion system", "Projects", "Project")
   val productNode = HierarchyNode(".02.", "product", "Product view ", "System groups", "System group")
 
-  val root = Criteria(rootNode.id, Seq(rootNode))
-  val eng = Criteria(engNode.id, Seq(engNode))
-  val library = Criteria(libraryNode.id, Seq(libraryNode))
-  val suggestion = Criteria(suggestionNode.id, Seq(suggestionNode))
-  val product = Criteria(productNode.id, Seq(productNode))
+  val root = Menu(rootNode.id, Seq(rootNode))
+  val eng = Menu(engNode.id, Seq(engNode))
+  val library = Menu(libraryNode.id, Seq(libraryNode))
+  val suggestion = Menu(suggestionNode.id, Seq(suggestionNode))
+  val product = Menu(productNode.id, Seq(productNode))
 
-  val criteriasSubtree = library.copy(hierarchy = Seq(rootNode, engNode, libraryNode), children = Seq(
+  val menuSubtree = library.copy(hierarchy = Seq(rootNode, engNode, libraryNode), children = Seq(
     suggestion.copy(hierarchy = Seq(rootNode, engNode, libraryNode, suggestionNode))))
 
-  val criteriasTree = root.copy(children = Seq(
-    eng.copy(hierarchy = Seq(rootNode, engNode), children = Seq(criteriasSubtree)),
+  val menuTree = root.copy(children = Seq(
+    eng.copy(hierarchy = Seq(rootNode, engNode), children = Seq(menuSubtree)),
     product.copy(hierarchy = Seq(rootNode, productNode))))
 
-  "CriteriaService" should {
+  "MenuService" should {
     "find if a hierarchy node is the child of another" in {
       assert(isChild(root)(eng))
       assert(isChild(root)(product))
@@ -49,18 +49,18 @@ class CriteriaServiceTest extends WordSpec with MustMatchers with MockitoSugar {
 
       val actualTree = buildTree(root, nodes)
 
-      val expectedTree = criteriasTree.children
+      val expectedTree = menuTree.children
 
       actualTree must contain theSameElementsInOrderAs expectedTree
     }
 
     "build a subtree with the hierarchy node slug name" in {
 
-      findCriteriasSubtree(".01.01.")(criteriasTree) mustBe Some(criteriasSubtree)
+      findMenuSubtree(".01.01.")(menuTree) mustBe Some(menuSubtree)
     }
 
     "merge children hierarchy" in {
-      mergeChildrenHierarchy(criteriasTree) must contain theSameElementsAs Seq(rootNode, engNode, libraryNode, suggestionNode, productNode)
+      mergeChildrenHierarchy(menuTree) must contain theSameElementsAs Seq(rootNode, engNode, libraryNode, suggestionNode, productNode)
     }
   }
 }

@@ -54,7 +54,7 @@ class DocumentationRepositoryTest extends PlaySpec with GuiceOneServerPerSuite w
   "DocumentationRepository" should {
 
     "build documentation from " in {
-      val documentation: ProjectDocumentationDTO = documentationRepository.buildProjectDocumentation(ProjectCriteria(project1.id, project1.name, branch1.name))
+      val documentation: ProjectDocumentationDTO = documentationRepository.buildProjectDocumentation(ProjectMenuItem(project1.id, project1.name, branch1.name))
 
       documentation.id mustBe project1.id
       documentation.name mustBe project1.name
