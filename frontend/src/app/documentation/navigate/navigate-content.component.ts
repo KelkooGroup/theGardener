@@ -4,6 +4,7 @@ import {DocumentationNode, DocumentationNodeApi} from '../../_models/documentati
 import {DocumentationService} from '../../_services/documentation.service';
 import {DocumentationThemeBookComponent} from '../themes/documentation-theme-book/documentation-theme-book.component';
 import {ActivatedRoute} from '@angular/router';
+import {NotificationService} from "../../_services/notification.service";
 
 @Component({
   selector: 'app-navigate-content',
@@ -18,15 +19,14 @@ export class NavigateContentComponent implements OnInit, AfterViewChecked {
 
   @Output() documentationData: Array<DocumentationNode>;
 
-  @ViewChild(DocumentationThemeBookComponent, { static: true }) documentationTheme: DocumentationThemeBookComponent;
+  @ViewChild(DocumentationThemeBookComponent, {static: true}) documentationTheme: DocumentationThemeBookComponent;
 
   showProgressBar = false;
 
   hash: string;
   needToGoToHash = false;
-  errorMessage = '';
 
-  constructor(private documentationService: DocumentationService, private route: ActivatedRoute) {
+  constructor(private documentationService: DocumentationService, private route: ActivatedRoute, private notificationService: NotificationService) {
   }
 
   ngOnInit() {
@@ -68,26 +68,16 @@ export class NavigateContentComponent implements OnInit, AfterViewChecked {
           if (this.documentationTheme) {
             this.documentationTheme.updateGeneratedDocumentation(this.documentationData);
           }
-          return new Promise(() => {
-            setTimeout(() => {
-              this.selectHash();
-            }, 1000);
-          });
         },
         (error) => {
-           this.errorMessage = error.message;
+          this.notificationService.showError("Couldn't access this feature",error);
         });
 
     }
   }
 
   hideProgressBar() {
-    return new Promise(() => {
-      setTimeout(() => {
-        this.showProgressBar = false;
-      }, 10);
-    });
-
+    this.showProgressBar = false;
   }
 
 }
