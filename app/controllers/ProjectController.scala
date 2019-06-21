@@ -12,7 +12,7 @@ import services._
 import scala.concurrent._
 
 @Api(value = "ProjectController", produces = "application/json")
-class ProjectController @Inject()(projectRepository: ProjectRepository, projectService: ProjectService, hierarchyRepository: HierarchyRepository, branchRepository: BranchRepository, criteriaService: CriteriaService)(implicit ec: ExecutionContext) extends InjectedController {
+class ProjectController @Inject()(projectRepository: ProjectRepository, projectService: ProjectService, hierarchyRepository: HierarchyRepository, branchRepository: BranchRepository, criteriaService: MenuService)(implicit ec: ExecutionContext) extends InjectedController {
 
   implicit val branchFormat = Json.format[Branch]
   implicit val hierarchyFormat = Json.format[HierarchyNode]

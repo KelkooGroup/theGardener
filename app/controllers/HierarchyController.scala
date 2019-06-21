@@ -7,10 +7,10 @@ import models._
 import play.api.libs.json._
 import play.api.mvc._
 import repository._
-import services.CriteriaService
+import services.MenuService
 
 @Api(value = "HierarchyController", produces = "application/json")
-class HierarchyController @Inject()(hierarchyRepository: HierarchyRepository, criteriaService: CriteriaService) extends InjectedController {
+class HierarchyController @Inject()(hierarchyRepository: HierarchyRepository, criteriaService: MenuService) extends InjectedController {
 
   implicit val hierarchyFormat = Json.format[HierarchyNode]
 

@@ -1,7 +1,7 @@
-Feature: Provide criterias
+Feature: Provide menu
 
   @level_2_technical_details @nominal_case @valid
-  Scenario: provide criterias - json output
+  Scenario: provide menu - json output
     Given the database is empty
     And the cache is empty
     And the hierarchy nodes are
@@ -35,7 +35,7 @@ Feature: Provide criterias
       | 1  | test/features/provide/provide_book_suggestions.feature  |      |             | 1        | Scenario |
       | 2  | test/features/provide/provide_other_suggestions.feature |      |             | 1        | Scenario |
       | 3  | test/features/admin/admin_book_suggestions.feature      |      |             | 1        | Scenario |
-    When I perform a "GET" on following URL "/api/criterias"
+    When I perform a "GET" on following URL "/api/menu"
     Then I get the following json response body
 """
 [

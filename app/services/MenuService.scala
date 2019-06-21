@@ -5,19 +5,19 @@ import models.HierarchyNode._
 import models._
 import play.api.cache._
 import repository._
-import services.CriteriaService._
+import services.MenuService._
 import utils._
 
 import scala.util.Try
 
-class CriteriaService @Inject()(hierarchyRepository: HierarchyRepository, projectRepository: ProjectRepository, branchRepository: BranchRepository, featureRepository: FeatureRepository, cache: SyncCacheApi) {
+class MenuService @Inject()(hierarchyRepository: HierarchyRepository, projectRepository: ProjectRepository, branchRepository: BranchRepository, featureRepository: FeatureRepository, cache: SyncCacheApi) {
 
-  def refreshCache(): Unit = Try(getCriteriasTree(true))
+  def refreshCache(): Unit = Try(getMenuTree(true))
 
-  def getCriterias(refresh: Boolean = false): Seq[Criteria] = {
-    if (refresh) cache.remove(criteriasListCacheKey)
+  def getMenu(refresh: Boolean = false): Seq[Menu] = {
+    if (refresh) cache.remove(menuListCacheKey)
 
-    cache.getOrElseUpdate(criteriasListCacheKey) {
+    cache.getOrElseUpdate(menuListCacheKey) {
 
       val mapProjectIdProject = projectRepository.findAll().map(p => p.id -> p).toMap
 
@@ -45,53 +45,53 @@ class CriteriaService @Inject()(hierarchyRepository: HierarchyRepository, projec
           ))
           projectWithBranches
         }
-        Criteria(hierarchyNode.id, Seq(hierarchyNode), projects.sortBy(_.id))
+        Menu(hierarchyNode.id, Seq(hierarchyNode), projects.sortBy(_.id))
       }.sortBy(_.id)
     }
   }
 
-  def getCriteriasTree(refresh: Boolean = false): Criteria = {
-    if (refresh) cache.remove(criteriasTreeCacheKey)
+  def getMenuTree(refresh: Boolean = false): Menu = {
+    if (refresh) cache.remove(menuTreeCacheKey)
 
-    cache.getOrElseUpdate(criteriasTreeCacheKey) {
+    cache.getOrElseUpdate(menuTreeCacheKey) {
 
-      val criterias = getCriterias(refresh)
+      val menu = getMenu(refresh)
 
-      criterias.headOption
-        .map(c => c.copy(children = buildTree(c, criterias.tail)))
-        .getOrElse(Criteria("", Seq()))
+      menu.headOption
+        .map(c => c.copy(children = buildTree(c, menu.tail)))
+        .getOrElse(Menu("", Seq()))
     }
   }
 }
 
-object CriteriaService {
+object MenuService {
 
-  val criteriasListCacheKey = "criteriasList"
-  val criteriasTreeCacheKey = "criteriasTree"
+  val menuListCacheKey = "menuList"
+  val menuTreeCacheKey = "menuTree"
 
-  def isChild(parent: Criteria)(child: Criteria): Boolean = {
+  def isChild(parent: Menu)(child: Menu): Boolean = {
     val childId = child.id.split(s"\\$idSeparator").toSeq.filterNot(_.isEmpty)
     val parentId = parent.id.split(s"\\$idSeparator").toSeq.filterNot(_.isEmpty)
 
     childId.size > parentId.size && (parentId.isEmpty || childId.startsWith(parentId)) && childId.drop(parentId.size).size == 1
   }
 
-  def buildTree(node: Criteria, children: Seq[Criteria]): Seq[Criteria] = {
+  def buildTree(node: Menu, children: Seq[Menu]): Seq[Menu] = {
     val (taken, left) = children.partition(isChild(node))
 
     taken.map { c =>
-      val criteria = c.copy(hierarchy = node.hierarchy ++ c.hierarchy)
-      criteria.copy(children = buildTree(criteria, left))
+      val menu = c.copy(hierarchy = node.hierarchy ++ c.hierarchy)
+      menu.copy(children = buildTree(menu, left))
     }
   }
 
-  def findCriteriasSubtree(id: String)(criteria: Criteria): Option[Criteria] = {
-    if (criteria.id == id) Some(criteria)
-    else if (criteria.children.isEmpty) None
-    else criteria.children.flatMap(findCriteriasSubtree(id)).headOption
+  def findMenuSubtree(id: String)(menu: Menu): Option[Menu] = {
+    if (menu.id == id) Some(menu)
+    else if (menu.children.isEmpty) None
+    else menu.children.flatMap(findMenuSubtree(id)).headOption
   }
 
-  def mergeChildrenHierarchy(criteria: Criteria): Seq[HierarchyNode] = {
-    (criteria.hierarchy ++ criteria.children.flatMap(c => c.hierarchy ++ mergeChildrenHierarchy(c))).distinct
+  def mergeChildrenHierarchy(menu: Menu): Seq[HierarchyNode] = {
+    (menu.hierarchy ++ menu.children.flatMap(c => c.hierarchy ++ mergeChildrenHierarchy(c))).distinct
   }
 }
