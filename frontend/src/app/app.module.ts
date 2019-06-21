@@ -27,7 +27,7 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatCardModule} from '@angular/material/card';
-import {MatSnackBarModule} from "@angular/material";
+import {MatSnackBarModule} from '@angular/material';
 import {HierarchyService} from './_services/hierarchy.service';
 import {DocumentationService} from './_services/documentation.service';
 import {DocumentationThemeBookComponent} from './documentation/themes/documentation-theme-book/documentation-theme-book.component';
@@ -37,7 +37,7 @@ import {DocumentationThemeBookLongTextComponent} from './documentation/themes/do
 import {NavigatePageComponent} from './documentation/navigate/navigate-page.component';
 import {NavigateContentComponent} from './documentation/navigate/navigate-content.component';
 import {NavigateMenuComponent} from './documentation/navigate/navigate-menu/navigate-menu.component';
-import {NotificationService} from "./_services/notification.service";
+import {NotificationService} from './_services/notification.service';
 
 const nonProductionProviders = [{
   provide: HTTP_INTERCEPTORS,
@@ -83,13 +83,13 @@ const nonProductionProviders = [{
     NgxJsonViewerModule,
     MatExpansionModule,
     MatProgressBarModule,
-    MatSnackBarModule
+    MatSnackBarModule,
   ],
   providers: [
     ...!environment.production ? nonProductionProviders : [],
     HierarchyService,
     DocumentationService,
-    NotificationService
+    NotificationService,
   ],
   bootstrap: [AppComponent]
 })

@@ -4,7 +4,7 @@ import {DocumentationNode, DocumentationNodeApi} from '../../_models/documentati
 import {DocumentationService} from '../../_services/documentation.service';
 import {DocumentationThemeBookComponent} from '../themes/documentation-theme-book/documentation-theme-book.component';
 import {ActivatedRoute} from '@angular/router';
-import {NotificationService} from "../../_services/notification.service";
+import {NotificationService} from '../../_services/notification.service';
 
 @Component({
   selector: 'app-navigate-content',
@@ -26,7 +26,9 @@ export class NavigateContentComponent implements OnInit, AfterViewChecked {
   hash: string;
   needToGoToHash = false;
 
-  constructor(private documentationService: DocumentationService, private route: ActivatedRoute, private notificationService: NotificationService) {
+  constructor(private documentationService: DocumentationService,
+              private route: ActivatedRoute,
+              private notificationService: NotificationService) {
   }
 
   ngOnInit() {
@@ -68,16 +70,13 @@ export class NavigateContentComponent implements OnInit, AfterViewChecked {
           if (this.documentationTheme) {
             this.documentationTheme.updateGeneratedDocumentation(this.documentationData);
           }
-        },
-        (error) => {
-          this.notificationService.showError("Couldn't access this feature",error);
+          this.showProgressBar = false;
+        }, error => {
+          this.notificationService.showError('Error while getting this feature', error);
+          this.showProgressBar = false;
         });
 
     }
-  }
-
-  hideProgressBar() {
-    this.showProgressBar = false;
   }
 
 }

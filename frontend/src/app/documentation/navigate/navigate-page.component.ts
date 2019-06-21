@@ -6,7 +6,7 @@ import {NavigationItem} from '../../_models/navigation';
 import {NavigateContentComponent} from './navigate-content.component';
 import {Location} from '@angular/common';
 import {NavigateMenuComponent} from './navigate-menu/navigate-menu.component';
-import {NotificationService} from "../../_services/notification.service";
+import {NotificationService} from '../../_services/notification.service';
 
 @Component({
   selector: 'app-navigate-page',
@@ -33,9 +33,8 @@ export class NavigatePageComponent implements OnInit, AfterViewChecked {
       (result: Array<HierarchyNodeApi>) => {
         const hierarchyNodeSelectorTree = hierarchyService.buildHierarchyNodeSelectorAsTree(hierarchyService.buildHierarchyNodeSelector(result));
         this.items = hierarchyNodeSelectorTree && hierarchyNodeSelectorTree.children;
-      },
-      (error) => {
-        this.notificationService.showError("Navigation is not available",error);
+      }, error => {
+        this.notificationService.showError('Error while getting items for navigation', error);
       });
   }
 
