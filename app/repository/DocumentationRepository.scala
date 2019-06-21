@@ -11,7 +11,7 @@ import play.api.libs.json.Json
 
 import scala.language.postfixOps
 
-case class ProjectCriteria(projectId: String, projectName: String, branchName: String, featureFilter: Option[String] = None, tagsFilter: Option[Seq[String]] = None)
+case class ProjectMenuItem(projectId: String, projectName: String, branchName: String, featureFilter: Option[String] = None, tagsFilter: Option[Seq[String]] = None)
 
 case class DocumentationRowJoin(branchId: Long, branchName: String, branchIsStable: Boolean, featureId: Long, featurePath: String, featureBackgroundAsJson: Option[String], featureLanguage: Option[String],
                                 featureKeyword: String, featureName: String, featureDescription: String, featureComments: String,
@@ -58,7 +58,7 @@ class DocumentationRepository @Inject()(db: Database) {
   } yield DocumentationTagRowJoin(branchId, featureId, featureTagName, scenarioId, scenarioTagName)
 
 
-  def buildProjectDocumentation(projectCriteria: ProjectCriteria): ProjectDocumentationDTO = {
+  def buildProjectDocumentation(projectCriteria: ProjectMenuItem): ProjectDocumentationDTO = {
 
     val tagsRows: Seq[DocumentationTagRowJoin] = db.withConnection { implicit connection =>
       SQL"""  SELECT b.id AS   branch_id,

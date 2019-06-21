@@ -31,7 +31,7 @@ class ProjectServiceTest extends WordSpec with MustMatchers with BeforeAndAfter 
   val featureRepository = mock[FeatureRepository]
   val branchRepository = mock[BranchRepository]
   val featureService = mock[FeatureService]
-  val criteriaService = mock[CriteriaService]
+  val criteriaService = mock[MenuService]
 
   val projectService = new ProjectService(projectRepository, gitService, featureService, featureRepository, branchRepository, criteriaService, ConfigFactory.load(), ActorSystem())
 
