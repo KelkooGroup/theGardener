@@ -17,7 +17,7 @@ class FeatureServiceTest extends WordSpec with MustMatchers with MockitoSugar {
       when(featureRepository.findByBranchIdAndPath(any[Long], any[String])).thenReturn(None)
 
       val branch = Branch(1, "master", isStable = true, "test")
-      val feature = new FeatureService(ConfigFactory.load(), featureRepository).parseFeatureFile("test", branch, "test/features/generate_documentation/show_a_feature.feature").get
+      val feature = new FeatureService(ConfigFactory.load(), featureRepository).parseFeatureFile("test", branch, "test/features/documentation/gerkin/show_scenarios.feature").get
 
       feature.name mustBe "Generate documentation"
       feature.description must include("As a user,")
