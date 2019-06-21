@@ -1,4 +1,4 @@
-Feature: Provide criterias
+Feature: Provide menu
 
   @level_2_technical_details @nominal_case @valid
   Scenario: provide menu - json output

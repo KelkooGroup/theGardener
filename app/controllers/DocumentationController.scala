@@ -47,7 +47,7 @@ object Documentation {
 
 
 @Api(value = "DocumentationController", produces = "application/json")
-class DocumentationController @Inject()(documentationRepository: DocumentationRepository, criteriaService: MenuService, hierarchyRepository: HierarchyRepository, projectRepository: ProjectRepository) extends InjectedController with Logging {
+class DocumentationController @Inject()(documentationRepository: DocumentationRepository, menuService: MenuService, hierarchyRepository: HierarchyRepository, projectRepository: ProjectRepository) extends InjectedController with Logging {
 
   implicit val branchFormat = Json.format[BranchDocumentationDTO]
   implicit val projectFormat = Json.format[ProjectDocumentationDTO]
@@ -64,8 +64,8 @@ class DocumentationController @Inject()(documentationRepository: DocumentationRe
   ))
   def generateDocumentation(): Action[AnyContent] = Action { request =>
     try {
-      val criteriasTree = criteriaService.getMenuTree()
-      val criteriaMap = criteriaService.getMenu().map(c => c.id -> MenuService.findMenuSubtree(c.id)(criteriasTree)).toMap
+      val menu = menuService.getMenuTree()
+      val menuItemMap = menuService.getMenu().map(c => c.id -> MenuService.findMenuSubtree(c.id)(menu)).toMap
 
       val projectDocumentations = request.queryString.getOrElse("project", Seq()).flatMap { projectParam =>
         val params = projectParam.split(">")
@@ -82,7 +82,7 @@ class DocumentationController @Inject()(documentationRepository: DocumentationRe
         val tagsFilter = params.lift(4).map(tagsAsString => tagsAsString.split(",").toSeq)
 
         hierarchy.lastOption.flatMap { hierarchyNode =>
-          criteriaMap.get(hierarchyNode.id).flatten.map { criteria =>
+          menuItemMap.get(hierarchyNode.id).flatten.map { criteria =>
             buildDocumentation(criteria.hierarchy, Seq(documentationRepository.buildProjectDocumentation(ProjectMenuItem(projectId, projectName, branchName, featureFilter, tagsFilter))))
           }
         }
@@ -91,8 +91,8 @@ class DocumentationController @Inject()(documentationRepository: DocumentationRe
       val nodeDocumentations = request.queryString.getOrElse("node", Seq()).flatMap { nodeParam =>
         val hierarchy = nodeParam.split("_").toSeq.filterNot(_.isEmpty).flatMap(hierarchyRepository.findBySlugName)
 
-        hierarchy.lastOption.map(_.id).flatMap(criteriaMap.get).flatten.map(MenuService.mergeChildrenHierarchy).getOrElse(Seq()).flatMap { hierarchyNode =>
-          criteriaMap.get(hierarchyNode.id).flatten.map { criteria =>
+        hierarchy.lastOption.map(_.id).flatMap(menuItemMap.get).flatten.map(MenuService.mergeChildrenHierarchy).getOrElse(Seq()).flatMap { hierarchyNode =>
+          menuItemMap.get(hierarchyNode.id).flatten.map { criteria =>
             criteria.projects.map { project =>
               buildDocumentation(criteria.hierarchy, Seq(documentationRepository.buildProjectDocumentation(ProjectMenuItem(project.id, project.name, project.stableBranch))))
             }
