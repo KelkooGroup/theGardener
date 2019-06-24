@@ -38,117 +38,99 @@ Feature: Provide menu
     When I perform a "GET" on following URL "/api/menu"
     Then I get the following json response body
 """
-[
-   {
-      "id":".",
-      "slugName":"root",
-      "name":"Hierarchy root",
-      "childrenLabel":"Views",
-      "childLabel":"View",
-      "projects":[]
-   },
-   {
-      "id":".01.",
-      "slugName":"eng",
-      "name":"Engineering view",
-      "childrenLabel":"System groups",
-      "childLabel":"System group",
-      "projects":[]
-   },
-   {
-      "id":".01.01.",
-      "slugName":"library",
-      "name":"Library system group",
-      "childrenLabel":"Systems",
-      "childLabel":"System",
-      "projects":[]
-   },
-   {
-      "id":".01.01.01.",
-      "slugName":"suggestion",
-      "name":"Suggestion system",
-      "childrenLabel":"Projects",
-      "childLabel":"Project",
-      "projects":[
-         {
-            "id":"suggestionsReports",
-            "label":"Suggestions Reports",
-            "stableBranch":"master",
-            "branches":[
-               {
-                 "name":"master",
-                 "features":[]
-               }
-            ]
-         },
-         {
-            "id":"suggestionsWS",
-            "label":"Suggestions WebServices",
-            "stableBranch":"master",
-            "branches":[
-               {
-                 "name":"master",
-                 "features": ["admin/admin_book_suggestions.feature", "provide/provide_book_suggestions.feature", "provide/provide_other_suggestions.feature"]
-               },
-               {
-                 "name":"bugfix/351",
-                 "features":[]
-               }
-            ]
-         }
-      ]
-   },
-   {
-      "id":".01.01.02.",
-      "slugName":"user",
-      "name":"User system",
-      "childrenLabel":"Projects",
-      "childLabel":"Project",
-      "projects":[
-         {
-            "id":"usersWS",
-            "label":"Users WebServices",
-            "stableBranch":"master",
-            "branches":[
-               {
-                 "name":"master",
-                 "features":[]
-               }
-            ]
-         }
-      ]
-   },
-   {
-      "id":".01.01.03.",
-      "slugName":"search",
-      "name":"Search system",
-      "childrenLabel":"Projects",
-      "childLabel":"Project",
-      "projects":[]
-   },
-   {
-      "id":".02.",
-      "slugName":"biz",
-      "name":"Business view",
-      "childrenLabel":"Units",
-      "childLabel":"Unit",
-      "projects":[
-         {
-            "id":"suggestionsWS",
-            "label":"Suggestions WebServices",
-            "stableBranch":"master",
-            "branches":[
-               {
-                 "name":"master",
-                 "features": ["admin/admin_book_suggestions.feature", "provide/provide_book_suggestions.feature", "provide/provide_other_suggestions.feature"]
-               },
-               {
-                 "name":"bugfix/351",
-                 "features":[]
-               }
-            ]
-         }
-      ]
-   }
-]
+{
+	"id": ".",
+	"slugName": "root",
+	"name": "Hierarchy root",
+	"childrenLabel": "Views",
+	"childLabel": "View",
+	"projects": [],
+	"children": [{
+		"id": ".01.",
+		"slugName": "eng",
+		"name": "Engineering view",
+		"childrenLabel": "System groups",
+		"childLabel": "System group",
+		"projects": [],
+		"children": [{
+			"id": ".01.01.",
+			"slugName": "library",
+			"name": "Library system group",
+			"childrenLabel": "Systems",
+			"childLabel": "System",
+			"projects": [],
+			"children": [{
+				"id": ".01.01.01.",
+				"slugName": "suggestion",
+				"name": "Suggestion system",
+				"childrenLabel": "Projects",
+				"childLabel": "Project",
+				"projects": [{
+					"id": "suggestionsReports",
+					"label": "Suggestions Reports",
+					"stableBranch": "master",
+					"branches": [{
+						"name": "master",
+						"features": []
+					}]
+				}, {
+					"id": "suggestionsWS",
+					"label": "Suggestions WebServices",
+					"stableBranch": "master",
+					"branches": [{
+						"name": "master",
+						"features": ["admin/admin_book_suggestions.feature", "provide/provide_book_suggestions.feature", "provide/provide_other_suggestions.feature"]
+					}, {
+						"name": "bugfix/351",
+						"features": []
+					}]
+				}],
+				"children": []
+			}, {
+				"id": ".01.01.02.",
+				"slugName": "user",
+				"name": "User system",
+				"childrenLabel": "Projects",
+				"childLabel": "Project",
+				"projects": [{
+					"id": "usersWS",
+					"label": "Users WebServices",
+					"stableBranch": "master",
+					"branches": [{
+						"name": "master",
+						"features": []
+					}]
+				}],
+				"children": []
+			}, {
+				"id": ".01.01.03.",
+				"slugName": "search",
+				"name": "Search system",
+				"childrenLabel": "Projects",
+				"childLabel": "Project",
+				"projects": [],
+				"children": []
+			}]
+		}]
+	}, {
+		"id": ".02.",
+		"slugName": "biz",
+		"name": "Business view",
+		"childrenLabel": "Units",
+		"childLabel": "Unit",
+		"projects": [{
+			"id": "suggestionsWS",
+			"label": "Suggestions WebServices",
+			"stableBranch": "master",
+			"branches": [{
+				"name": "master",
+				"features": ["admin/admin_book_suggestions.feature", "provide/provide_book_suggestions.feature", "provide/provide_other_suggestions.feature"]
+			}, {
+				"name": "bugfix/351",
+				"features": []
+			}]
+		}],
+		"children": []
+	}]
+}
 """

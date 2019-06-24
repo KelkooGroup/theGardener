@@ -45,12 +45,6 @@ class MenuController @Inject()(menuService: MenuService) extends InjectedControl
   @ApiOperation(value = "Get all menu items", response = classOf[MenuDTO], responseContainer = "list")
   def getMenu(): Action[AnyContent] = Action {
 
-    Ok(Json.toJson(menuService.getMenu().map(MenuDTO(_).copy(children = None))))
-  }
-
-  @ApiOperation(value = "Get all menu items in a tree", response = classOf[MenuDTO])
-  def getMenuTree(): Action[AnyContent] = Action {
-
     Ok(Json.toJson(MenuDTO(menuService.getMenuTree())))
   }
 }

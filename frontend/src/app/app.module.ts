@@ -27,7 +27,7 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatCardModule} from '@angular/material/card';
-import {HierarchyService} from './_services/hierarchy.service';
+import {MenuService} from './_services/menu.service';
 import {DocumentationService} from './_services/documentation.service';
 import {DocumentationThemeBookComponent} from './documentation/themes/documentation-theme-book/documentation-theme-book.component';
 import {DocumentationThemeBookTableComponent} from './documentation/themes/documentation-theme-book/documentation-theme-book-table/documentation-theme-book-table.component';
@@ -84,7 +84,7 @@ const nonProductionProviders = [{
   ],
   providers: [
     ...!environment.production ? nonProductionProviders : [],
-    HierarchyService,
+    MenuService,
     DocumentationService
   ],
   bootstrap: [AppComponent]

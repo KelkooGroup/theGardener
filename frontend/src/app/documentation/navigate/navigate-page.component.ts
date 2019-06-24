@@ -1,5 +1,5 @@
 import {AfterViewChecked, Component, OnInit, Output, QueryList, ViewChild, ViewChildren} from '@angular/core';
-import {HierarchyService} from '../../_services/hierarchy.service';
+import {MenuService} from '../../_services/menu.service';
 import {ActivatedRoute} from '@angular/router';
 import {HierarchyNodeApi} from '../../_models/hierarchy';
 import {NavigationItem} from '../../_models/navigation';
@@ -18,7 +18,7 @@ export class NavigatePageComponent implements OnInit, AfterViewChecked {
 
   @ViewChildren(NavigateMenuComponent) roots: QueryList<NavigateMenuComponent>;
 
-  @ViewChild(NavigateContentComponent, { static: true }) content: NavigateContentComponent;
+  @ViewChild(NavigateContentComponent, {static: true}) content: NavigateContentComponent;
 
   showProgressBar = false;
 
@@ -27,10 +27,10 @@ export class NavigatePageComponent implements OnInit, AfterViewChecked {
   initialPath: string;
   navigatedTo = false;
 
-  constructor(private hierarchyService: HierarchyService, private location: Location, private route: ActivatedRoute) {
+  constructor(private hierarchyService: MenuService, private location: Location, private route: ActivatedRoute) {
     this.hierarchyService.hierarchy().subscribe(
-      (result: Array<HierarchyNodeApi>) => {
-        const hierarchyNodeSelectorTree = hierarchyService.buildHierarchyNodeSelectorAsTree(hierarchyService.buildHierarchyNodeSelector(result));
+      (result: HierarchyNodeApi) => {
+        const hierarchyNodeSelectorTree = hierarchyService.buildHierarchyNodeSelector(result);
         this.items = hierarchyNodeSelectorTree && hierarchyNodeSelectorTree.children;
       },
       () => {
@@ -67,7 +67,7 @@ export class NavigatePageComponent implements OnInit, AfterViewChecked {
 
   ngAfterViewChecked() {
     if (!this.navigatedTo) {
-      this.roots.forEach( root => {
+      this.roots.forEach(root => {
         this.navigatedTo = true;
         (async () => {
           await this.delay(1);

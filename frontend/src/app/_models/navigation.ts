@@ -3,24 +3,28 @@ import {HierarchyNodeApi, ProjectApi} from './hierarchy';
 export interface NavigationWithOptions {
   itemOptions: boolean;
   itemOptionPlaceHolder?: string;
+
   itemOptionSelected(): NavigationItem;
 
 }
 
-export interface NavigationItem extends  NavigationWithOptions {
+export interface NavigationItem extends NavigationWithOptions {
   selected: boolean;
   itemType: string;
   displayName: string;
   route?: string;
   toBeDisplayed: boolean;
+
   matchPage(page: string): boolean;
+
   itemChildren(): Array<NavigationItem>;
 }
 
 export class NavigationFeature implements NavigationItem {
-  selected = false ;
-  itemOptions = false ;
+  selected = false;
+  itemOptions = false;
   toBeDisplayed = true;
+
   constructor(
     public level: number,
     public value: string,
@@ -31,11 +35,11 @@ export class NavigationFeature implements NavigationItem {
   }
 
   matchPage(page: string): boolean {
-    return page &&  page.startsWith(this.route);
+    return page && page.startsWith(this.route);
   }
 
   path() {
-    return this.directory.path() + '/' + this.value ;
+    return this.directory.path() + '/' + this.value;
   }
 
   get displayName(): string {
@@ -64,8 +68,8 @@ export class NavigationDirectory implements NavigationItem {
 
   features: Array<NavigationFeature>;
   directories: Array<NavigationDirectory>;
-  selected = false ;
-  itemOptions = false ;
+  selected = false;
+  itemOptions = false;
   toBeDisplayed = false;
 
   constructor(
@@ -81,35 +85,34 @@ export class NavigationDirectory implements NavigationItem {
     for (const currentPath of featureRowPath) {
       const split = currentPath.split('/', 2);
       if (split.length === 1) {
-        this.features.push(new NavigationFeature(split.length, currentPath, currentPath.replace('.feature', ''), this ));
+        this.features.push(new NavigationFeature(split.length, currentPath, currentPath.replace('.feature', ''), this));
       } else {
         if (split.length === 2) {
           const currentDirectory = split[0];
-          if (currentDirectory !== lastDirectory ) {
-            if ( lastDirectory !== '') {
-                this.directories.push(new NavigationDirectory(lastDirectory,  lastDirectoryFeatureRowPath, pathFromRoot + '/' + lastDirectory, branch));
+          if (currentDirectory !== lastDirectory) {
+            if (lastDirectory !== '') {
+              this.directories.push(new NavigationDirectory(lastDirectory, lastDirectoryFeatureRowPath, pathFromRoot + '/' + lastDirectory, branch));
             }
             lastDirectory = currentDirectory;
             lastDirectoryFeatureRowPath = new Array<string>();
           }
-          lastDirectoryFeatureRowPath.push( split[1]);
+          lastDirectoryFeatureRowPath.push(split[1]);
         }
       }
     }
-    if ( lastDirectory !== '') {
-       this.directories.push(new NavigationDirectory(lastDirectory,  lastDirectoryFeatureRowPath, pathFromRoot + '/' + lastDirectory, branch));
+    if (lastDirectory !== '') {
+      this.directories.push(new NavigationDirectory(lastDirectory, lastDirectoryFeatureRowPath, pathFromRoot + '/' + lastDirectory, branch));
     }
-
 
 
   }
 
   matchPage(page: string): boolean {
-    return page &&  page.startsWith(this.route);
+    return page && page.startsWith(this.route);
   }
 
   path() {
-    return this.branch.path() + '>' + this.pathFromRoot ;
+    return this.branch.path() + '>' + this.pathFromRoot;
   }
 
 
@@ -139,18 +142,19 @@ export class NavigationDirectory implements NavigationItem {
 
 export class NavigationBranch implements NavigationItem {
 
-  selected = false ;
+  selected = false;
   featureFilter: NavigationFeature;
   features: Array<NavigationFeature>;
   rootDirectory: NavigationDirectory;
-  itemOptions = false ;
+  itemOptions = false;
   toBeDisplayed = false;
+
   constructor(
     public name: string,
     public featureRowPath: Array<string>,
     public project: NavigationProject
   ) {
-    this.rootDirectory  = new NavigationDirectory(name, featureRowPath, '', this);
+    this.rootDirectory = new NavigationDirectory(name, featureRowPath, '', this);
     this.features = new Array<NavigationFeature>();
     let lastDirectory = '';
     for (const currentPath of featureRowPath) {
@@ -173,7 +177,7 @@ export class NavigationBranch implements NavigationItem {
   }
 
   path() {
-    return this.project.path() + '>' + this.name ;
+    return this.project.path() + '>' + this.name;
   }
 
   get displayName(): string {
@@ -197,12 +201,12 @@ export class NavigationBranch implements NavigationItem {
   }
 
   matchPage(page: string): boolean {
-    return page &&  page.startsWith(this.route);
+    return page && page.startsWith(this.route);
   }
 
 }
 
-export class NavigationProject implements  NavigationItem {
+export class NavigationProject implements NavigationItem {
 
   constructor(
     public id: string,
@@ -210,7 +214,6 @@ export class NavigationProject implements  NavigationItem {
     public branches: Array<NavigationBranch>,
   ) {
   }
-
 
 
   get displayName(): string {
@@ -230,7 +233,7 @@ export class NavigationProject implements  NavigationItem {
   selectedBranch: NavigationBranch;
   stableBranch: NavigationBranch;
   relatedHierarchyNode: NavigationHierarchyNode;
-  itemOptions = true ;
+  itemOptions = true;
   itemOptionPlaceHolder: 'Stable branch by default';
   toBeDisplayed = false;
 
@@ -258,11 +261,11 @@ export class NavigationProject implements  NavigationItem {
 
 
   itemOptionSelected(): NavigationItem {
-    return this.stableBranch ;
+    return this.stableBranch;
   }
 
   path() {
-    return this.relatedHierarchyNode.path + '>' + this.id ;
+    return this.relatedHierarchyNode.path + '>' + this.id;
   }
 
   itemChildren(): Array<NavigationItem> {
@@ -270,11 +273,11 @@ export class NavigationProject implements  NavigationItem {
   }
 
   matchPage(page: string): boolean {
-    return page &&  page.startsWith(this.route);
+    return page && page.startsWith(this.route);
   }
 }
 
-export class NavigationHierarchyNode implements  NavigationItem {
+export class NavigationHierarchyNode implements NavigationItem {
   selected = false;
   indeterminate = false;
   open = false;
@@ -283,7 +286,7 @@ export class NavigationHierarchyNode implements  NavigationItem {
   children = Array<NavigationHierarchyNode>();
   projects = Array<NavigationProject>();
   root: NavigationHierarchyNode;
-  itemOptions = false ;
+  itemOptions = false;
   toBeDisplayed = false;
 
   constructor(
@@ -329,7 +332,6 @@ export class NavigationHierarchyNode implements  NavigationItem {
   }
 
 
-
   get displayName(): string {
     return this.name;
   }
@@ -354,6 +356,6 @@ export class NavigationHierarchyNode implements  NavigationItem {
   }
 
   matchPage(page: string): boolean {
-    return page &&  page.startsWith(this.route);
+    return page && page.startsWith(this.route);
   }
 }
