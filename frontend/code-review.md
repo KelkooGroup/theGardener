@@ -19,3 +19,6 @@
 - ExpandableNode getChilden: typo, should be getChild**r**en
 - I think instead of using a static method in class DocumentationNode, it would be better to define a method in the service to build the object instances.
 
+- Styles must not be specified in the HTML templates, but rather associated to CSS classes defined in css file
+
+- documentation-theme-book.component.html is too big and should be refactored. For instance, extract a project, feature, background, and scenario components.

@@ -6,6 +6,7 @@ import {
   NavigationHierarchyNode,
   NavigationProject,
 } from '../_models/navigation';
+import {map} from 'rxjs/operators';
 
 class TupleHierarchyNodeSelector {
 
@@ -26,9 +27,13 @@ export class HierarchyService {
   constructor(private http: HttpClient) {
   }
 
-  hierarchy(): Observable<Array<HierarchyNodeApi>> {
+  hierarchy(): Observable<NavigationHierarchyNode> {
     const url = `api/menu`;
-    return this.http.get<Array<HierarchyNodeApi>>(url);
+    return this.http.get<Array<HierarchyNodeApi>>(url)
+      .pipe(
+        map(r => this.buildHierarchyNodeSelector(r)),
+        map(r => this.buildHierarchyNodeSelectorAsTree(r)),
+      );
   }
 
   buildHierarchyNodeSelector(apiResult: Array<HierarchyNodeApi>): Array<NavigationHierarchyNode> {

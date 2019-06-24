@@ -1,7 +1,6 @@
 import {AfterViewChecked, Component, OnInit, Output, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {HierarchyService} from '../../_services/hierarchy.service';
 import {ActivatedRoute} from '@angular/router';
-import {HierarchyNodeApi} from '../../_models/hierarchy';
 import {NavigationItem} from '../../_models/navigation';
 import {NavigateContentComponent} from './navigate-content.component';
 import {Location} from '@angular/common';
@@ -30,8 +29,7 @@ export class NavigatePageComponent implements OnInit, AfterViewChecked {
 
   constructor(private hierarchyService: HierarchyService, private location: Location, private route: ActivatedRoute, private notificationService: NotificationService) {
     this.hierarchyService.hierarchy().subscribe(
-      (result: Array<HierarchyNodeApi>) => {
-        const hierarchyNodeSelectorTree = hierarchyService.buildHierarchyNodeSelectorAsTree(hierarchyService.buildHierarchyNodeSelector(result));
+      hierarchyNodeSelectorTree => {
         this.items = hierarchyNodeSelectorTree && hierarchyNodeSelectorTree.children;
       }, error => {
         this.notificationService.showError('Error while getting items for navigation', error);

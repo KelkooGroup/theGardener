@@ -14,7 +14,7 @@ export class HierarchyNodeApi {
   id: string;
   slugName: string;
   name: string;
-  children: Array<HierarchyNodeApi>;
+  children?: Array<HierarchyNodeApi>;
   childrenLabel: string;
   childLabel: string;
   projects: Array<ProjectApi>;
