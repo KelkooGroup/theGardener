@@ -65,8 +65,7 @@ export class NavigateContentComponent implements OnInit, AfterViewChecked {
       }
 
       this.documentationService.generateDocumentation(`project=${route}`).subscribe(
-        (result: DocumentationNodeApi) => {
-          this.documentationData = this.documentationService.decorate(result);
+        result => {
           if (this.documentationTheme) {
             this.documentationTheme.updateGeneratedDocumentation(this.documentationData);
           }

@@ -23,7 +23,7 @@ export class DocumentationScenarioApi {
   description: string;
   tags: Array<string>;
   steps: Array<DocumentationStepApi>;
-  examples: Array<DocumentationExamplesApi>;
+  examples?: Array<DocumentationExamplesApi>;
 }
 
 export class DocumentationFeatureApi {
@@ -34,21 +34,21 @@ export class DocumentationFeatureApi {
   tags: Array<string>;
   comments: Array<string>;
   keyword: string;
-  background: DocumentationScenarioApi;
+  background?: DocumentationScenarioApi;
   scenarios: Array<DocumentationScenarioApi>;
 }
 
 export class DocumentationBranchApi {
   id: string;
   name: string;
-  isStable: string;
+  isStable: boolean;
   features: Array<DocumentationFeatureApi>;
 }
 
 export class DocumentationProjectApi {
   id: string;
   name: string;
-  stableBranch: string;
+  stableBranch?: string;
   branches: Array<DocumentationBranchApi>;
 }
 
@@ -83,7 +83,18 @@ export class DocumentationNode implements ExpandableNode {
   projects: Array<DocumentationProject>;
 
   static toAnchor(id: string): string {
-    return id.split(' ').join('_').split('/').join('-').split('.').join('-').split('#').join('-').split(':').join('-').toLocaleLowerCase();
+    return id
+      .split(' ')
+      .join('_')
+      .split('/')
+      .join('-')
+      .split('.')
+      .join('-')
+      .split('#')
+      .join('-')
+      .split(':')
+      .join('-')
+      .toLocaleLowerCase();
   }
 
   static newFromApi(parentNodeId: string, dataApi: DocumentationNodeApi, level: number): DocumentationNode {
@@ -365,6 +376,7 @@ export class DocumentationProject implements ExpandableNode {
     instance.localId = DocumentationNode.toAnchor(dataApi.name);
     instance.nodeId = `${parentNodeId}_${instance.localId}`;
     instance.level = level;
+    // FIXME : for loop that overrides the same value. Why not use dataApi.branches[n] ?
     for (const branch of dataApi.branches) {
       instance.branch = DocumentationBranch.newFromApi(instance.nodeId, branch, level);
     }
