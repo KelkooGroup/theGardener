@@ -1,12 +1,11 @@
 import {AfterViewChecked, Component, OnInit, Output, QueryList, ViewChild, ViewChildren} from '@angular/core';
-import {HierarchyService} from '../../_services/hierarchy.service';
+import {MenuService} from '../../_services/menu.service';
 import {ActivatedRoute} from '@angular/router';
 import {HierarchyNodeApi} from '../../_models/hierarchy';
 import {NavigationItem} from '../../_models/navigation';
 import {NavigateContentComponent} from './navigate-content.component';
 import {Location} from '@angular/common';
 import {NavigateMenuComponent} from './navigate-menu/navigate-menu.component';
-import {NotificationService} from '../../_services/notification.service';
 
 @Component({
   selector: 'app-navigate-page',
@@ -28,13 +27,13 @@ export class NavigatePageComponent implements OnInit, AfterViewChecked {
   initialPath: string;
   navigatedTo = false;
 
-  constructor(private hierarchyService: HierarchyService, private location: Location, private route: ActivatedRoute, private notificationService: NotificationService) {
+  constructor(private hierarchyService: MenuService, private location: Location, private route: ActivatedRoute) {
     this.hierarchyService.hierarchy().subscribe(
-      (result: Array<HierarchyNodeApi>) => {
-        const hierarchyNodeSelectorTree = hierarchyService.buildHierarchyNodeSelectorAsTree(hierarchyService.buildHierarchyNodeSelector(result));
+      (result: HierarchyNodeApi) => {
+        const hierarchyNodeSelectorTree = hierarchyService.buildHierarchyNodeSelector(result);
         this.items = hierarchyNodeSelectorTree && hierarchyNodeSelectorTree.children;
-      }, error => {
-        this.notificationService.showError('Error while getting items for navigation', error);
+      },
+      () => {
       });
   }
 
