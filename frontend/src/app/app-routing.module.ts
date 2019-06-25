@@ -1,6 +1,6 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {NavigatePageComponent} from './documentation/navigate/navigate-page.component';
+import {NavigatePageComponent} from './output/navigate/navigate-page.component';
 
 
 const routes: Routes = [

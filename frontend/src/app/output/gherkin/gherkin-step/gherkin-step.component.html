@@ -1,0 +1,12 @@
+<div class="step">
+  <span class="stepKeyword">{{ step.data.keyword }}</span>&nbsp;
+  <span [class.stepParameter]="fragment.isParameter"
+        [class.stepText]="! fragment.isParameter"
+        *ngFor="let fragment of step.text">{{ fragment.text }}</span>
+</div>
+<div *ngIf="step.hasTable" class="table pull-right">
+  <app-gherkin-table [table]="step.table"></app-gherkin-table>
+</div>
+<div *ngIf="step.hasLongText" class="table pull-right">
+  <app-gherkin-long-text [longText]="step.longText"></app-gherkin-long-text>
+</div>

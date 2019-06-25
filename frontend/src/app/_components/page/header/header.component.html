@@ -2,9 +2,9 @@
 
   <ul class="flex-container flex-direction-row flex-align-items-center  flex-space-between">
     <li *ngIf="logoSrc" class="header-logo">
-      <img   [src]="logoSrc" alt="Organisation logo">
+      <img [src]="logoSrc" alt="Organisation logo">
     </li>
-    <li *ngIf="appTitle && !logoSrc" class="header-title" >
+    <li *ngIf="appTitle && !logoSrc" class="header-title">
       <div>{{ appTitle }}</div>
     </li>
     <li class="header-logo-the-gardener">

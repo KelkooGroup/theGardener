@@ -9,35 +9,38 @@ import {AppRoutingModule} from './app-routing.module';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {NgxJsonViewerModule} from 'ngx-json-viewer';
 import {FormsModule} from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatChipsModule } from '@angular/material/chips';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatListModule } from '@angular/material/list';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSelectModule } from '@angular/material/select';
-import { MatTableModule } from '@angular/material/table';
-import { MatTabsModule } from '@angular/material/tabs';
-import { MatTreeModule } from '@angular/material/tree';
+import {MatButtonModule} from '@angular/material/button';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MatChipsModule} from '@angular/material/chips';
+import {MatDialogModule} from '@angular/material/dialog';
+import {MatDividerModule} from '@angular/material/divider';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatIconModule} from '@angular/material/icon';
+import {MatInputModule} from '@angular/material/input';
+import {MatListModule} from '@angular/material/list';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MatSelectModule} from '@angular/material/select';
+import {MatTableModule} from '@angular/material/table';
+import {MatTabsModule} from '@angular/material/tabs';
+import {MatTreeModule} from '@angular/material/tree';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatCardModule} from '@angular/material/card';
 import {MatSnackBarModule} from '@angular/material';
 import {MenuService} from './_services/menu.service';
-import {DocumentationService} from './_services/documentation.service';
-import {DocumentationThemeBookComponent} from './documentation/themes/documentation-theme-book/documentation-theme-book.component';
-import {DocumentationThemeBookTableComponent} from './documentation/themes/documentation-theme-book/documentation-theme-book-table/documentation-theme-book-table.component';
+import {GherkinService} from './_services/gherkin.service';
+import {GherkinComponent} from './output/gherkin/gherkin.component';
+import {GherkinTableComponent} from './output/gherkin/gherkin-table/gherkin-table.component';
 import {FooterComponent} from './_components/page/footer/footer.component';
-import {DocumentationThemeBookLongTextComponent} from './documentation/themes/documentation-theme-book/documentation-theme-book-long-text/documentation-theme-book-long-text.component';
-import {NavigatePageComponent} from './documentation/navigate/navigate-page.component';
-import {NavigateContentComponent} from './documentation/navigate/navigate-content.component';
-import {NavigateMenuComponent} from './documentation/navigate/navigate-menu/navigate-menu.component';
+import {GherkinLongTextComponent} from './output/gherkin/gherkin-long-text/gherkin-long-text.component';
+import {NavigatePageComponent} from './output/navigate/navigate-page.component';
+import {NavigateContentComponent} from './output/navigate/navigate-content.component';
+import {NavigateMenuComponent} from './output/navigate/navigate-menu/navigate-menu.component';
 import {NotificationService} from './_services/notification.service';
+import {GherkinFeatureComponent} from './output/gherkin/gherkin-feature/gherkin-feature.component';
+import {GherkinBackgroundComponent} from './output/gherkin/gherkin-background/gherkin-background.component';
+import {GherkinStepComponent} from './output/gherkin/gherkin-step/gherkin-step.component';
 
 const nonProductionProviders = [{
   provide: HTTP_INTERCEPTORS,
@@ -54,9 +57,12 @@ const nonProductionProviders = [{
     NavigatePageComponent,
     NavigateContentComponent,
     NavigateMenuComponent,
-    DocumentationThemeBookComponent,
-    DocumentationThemeBookTableComponent,
-    DocumentationThemeBookLongTextComponent,
+    GherkinComponent,
+    GherkinTableComponent,
+    GherkinLongTextComponent,
+    GherkinFeatureComponent,
+    GherkinBackgroundComponent,
+    GherkinStepComponent,
   ],
   imports: [
     HttpClientModule,
@@ -88,7 +94,7 @@ const nonProductionProviders = [{
   providers: [
     ...!environment.production ? nonProductionProviders : [],
     MenuService,
-    DocumentationService,
+    GherkinService,
     NotificationService,
   ],
   bootstrap: [AppComponent]

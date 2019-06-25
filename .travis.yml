@@ -23,7 +23,6 @@ cache:
         - $HOME/.m2
         - $HOME/.ivy2
         - $HOME/.sbt
-        - $HOME/.sonar/cache
         - $HOME/node_modules/
         - $HOME/frontend/node_modules
 git:

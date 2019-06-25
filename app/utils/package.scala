@@ -6,7 +6,7 @@ import scala.concurrent._
 import scala.util.control.NonFatal
 import scala.util.{Failure, Try}
 
-package object utils  extends Logging {
+package object utils extends Logging {
 
   implicit class TryOps[T](t: Try[T]) {
     def logError(msg: => String): Try[T] = t.recoverWith {
@@ -25,4 +25,5 @@ package object utils  extends Logging {
   implicit class PathExt(path: String) {
     def fixPathSeparator: String = path.replace('/', File.separatorChar)
   }
+
 }
