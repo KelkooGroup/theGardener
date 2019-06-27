@@ -33,7 +33,6 @@ export class MenuService {
     currentNodeSelector.path = path;
     currentNodeSelector.open = true;
     currentNodeSelector.children = apiResult.children.map(child => this.buildHierarchyNodeSelector(child, `${path}_${child.slugName}`));
-    currentNodeSelector.toBeDisplayed = true;
 
     return currentNodeSelector;
   }
