@@ -13,16 +13,13 @@ class Filters @Inject()(environment: Environment, corsFilter: CORSFilter)(implic
   /**
     * Returns true for following cases:
     * - Response is a Javascript file (Angular app)
-    * - Request is made on '/api/generateDocumentation'
+    * - Request is made on '/api/generateGherkin'
     *
     * @return
     */
   private def shouldGzip = (requestHeader: RequestHeader, response: Result) => {
     val responseIsJavascript = response.body.contentType.exists(_.startsWith("application/javascript"))
-    val requestPathShouldBeGzipped = requestHeader.path match {
-      case "/api/generateDocumentation" => true
-      case _ => false
-    }
+    val requestPathShouldBeGzipped = requestHeader.path.contains("/api/")
     responseIsJavascript || requestPathShouldBeGzipped
   }
 

@@ -9,6 +9,7 @@ import java.util
 import anorm._
 import com.typesafe.config._
 import controllers._
+import controllers.dto._
 import cucumber.api.DataTable
 import cucumber.api.scala._
 import julienrf.json.derived
@@ -265,9 +266,9 @@ Scenario: providing several book suggestions
 
     implicit val branchFormat = Json.format[BranchDocumentationDTO]
     implicit val projectFormat = Json.format[ProjectDocumentationDTO]
-    implicit val documentationFormat = Json.format[Documentation]
+    implicit val documentationFormat = Json.format[DocumentationDTO]
 
-    val documentation = Json.parse(contentAsString(response)).as[Documentation]
+    val documentation = Json.parse(contentAsString(response)).as[DocumentationDTO]
     val expectedScenarios = dataTable.asMaps(classOf[String], classOf[String]).asScala.toSeq
 
     expectedScenarios.length mustBe nbRealScenario(documentation)
@@ -297,7 +298,7 @@ Scenario: providing several book suggestions
     }
   }
 
-  def nbRealScenario(documentation: Documentation): Int = {
+  def nbRealScenario(documentation: DocumentationDTO): Int = {
     documentation.projects.map(p => if (p.branches.nonEmpty) nbRealScenario(p.branches.head) else 0).sum + documentation.children.map(nbRealScenario).sum
   }
 
@@ -305,7 +306,7 @@ Scenario: providing several book suggestions
     branch.features.map(_.scenarios.length).sum
   }
 
-  def getHierarchy(hierarchy: String, source: Documentation): Option[Documentation] = {
+  def getHierarchy(hierarchy: String, source: DocumentationDTO): Option[DocumentationDTO] = {
     if (source.id == hierarchy) Some(source)
     else if (source.children.isEmpty) None
     else source.children.flatMap(getHierarchy(hierarchy, _)).headOption

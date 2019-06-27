@@ -17,7 +17,7 @@ import scala.concurrent._
 import scala.util.Try
 
 
-class GitService @Inject()(implicit ec: ExecutionContext)  extends Logging {
+class GitService @Inject()(implicit ec: ExecutionContext) extends Logging {
 
   def clone(url: String, localDirectory: String): Future[Unit] = {
     Future {
