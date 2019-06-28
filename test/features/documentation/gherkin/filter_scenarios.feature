@@ -102,6 +102,54 @@ Feature: As an admin, I want register a user
     And the database is synchronized on the project "suggestionsReports"
     And the database is synchronized on the project "usersWS"
 
+  @level_1_specification @nominal_case @ready
+  Scenario: generate documentation of a project given a specific branch
+    When I perform a "GET" on following URL "/api/gerkin?path=usersWS>master"
+    Then I get the following scenarios
+      | hierarchy  | project       | feature                             | scenario               |
+      | .01.01.02. | usersWSClient | test/features/register_user.feature | register a user client |
+
+  @level_1_specification @nominal_case @ready
+  Scenario: generate documentation of a project filtered on features
+    When I perform a "GET" on following URL "/api/gerkin?path=suggestionsWS>master>provide_book_suggestions.feature"
+    Then I get the following scenarios
+      | hierarchy  | project       | feature                                        | scenario                                                                  |
+      | .01.01.01. | suggestionsWS | test/features/provide_book_suggestions.feature | providing several book suggestions                                        |
+      | .01.01.01. | suggestionsWS | test/features/provide_book_suggestions.feature | one service on which the suggestion system depends on is down             |
+      | .01.01.01. | suggestionsWS | test/features/provide_book_suggestions.feature | suggestions of popular and available books adapted to the age of the user |
+
+  @level_1_specification @nominal_case @ready
+  Scenario: generate documentation of a project filtered on a tag
+    When I perform a "GET" on following URL "/api/gerkin?path=suggestionsWS>master>provide_book_suggestions.feature&tags=nominal_case"
+    Then I get the following scenarios
+      | hierarchy  | project       | feature                                        | scenario                                                                  |
+      | .01.01.01. | suggestionsWS | test/features/provide_book_suggestions.feature | providing several book suggestions                                        |
+      | .01.01.01. | suggestionsWS | test/features/provide_book_suggestions.feature | suggestions of popular and available books adapted to the age of the user |
+
+  @level_1_specification @nominal_case @ready
+  Scenario: generate documentation of a project filtered on several tags
+    When I perform a "GET" on following URL "/api/gerkin?path=suggestionsWS>master>provide_book_suggestions.feature&tags=nominal_case,valid"
+    Then I get the following scenarios
+      | hierarchy  | project       | feature                                        | scenario                                                                  |
+      | .01.01.01. | suggestionsWS | test/features/provide_book_suggestions.feature | suggestions of popular and available books adapted to the age of the user |
+
+
+    # TODO To be consistant with the new orientation of the project
+    #           -  use gerkin instead of generateDocumentation
+    #           -  use path instead of project and node
+    #           -  remove all scenario and code related to the selection of scenario
+    #                           - at node level
+    #                           - from several projects
+
+  @level_1_specification @nominal_case @ready
+  Scenario: generate documentation with all scenarios of a project
+    When I perform a "GET" on following URL "/api/gerkin?path=suggestionsWS"
+    Then I get the following scenarios
+      | hierarchy  | project       | feature                                        | scenario                                                                  |
+      | .01.01.01. | suggestionsWS | test/features/provide_book_suggestions.feature | providing several book suggestions                                        |
+      | .01.01.01. | suggestionsWS | test/features/provide_book_suggestions.feature | one service on which the suggestion system depends on is down             |
+      | .01.01.01. | suggestionsWS | test/features/provide_book_suggestions.feature | suggestions of popular and available books adapted to the age of the user |
+      | .01.01.01. | suggestionsWS | test/features/admin.feature                    | admin scenario                                                            |
 
   @level_1_specification @nominal_case @valid
   Scenario: generate documentation with all scenarios of a project
@@ -113,7 +161,8 @@ Feature: As an admin, I want register a user
       | .01.01.01. | suggestionsWS | test/features/provide_book_suggestions.feature | suggestions of popular and available books adapted to the age of the user |
       | .01.01.01. | suggestionsWS | test/features/admin.feature                    | admin scenario                                                            |
 
-  @level_1_specification @nominal_case @valid
+    # TODO Remove, see details above
+  @level_1_specification @nominal_case @valid @toremove
   Scenario: generate documentation with all scenarios of two projects
     When I perform a "GET" on following URL "/api/gherkin?project=_eng_library_suggestion>suggestionsWS&project=_eng_library_suggestion>suggestionsReports"
     Then I get the following scenarios
@@ -124,7 +173,8 @@ Feature: As an admin, I want register a user
       | .01.01.01. | suggestionsWS      | test/features/admin.feature                       | admin scenario                                                            |
       | .01.01.01. | suggestionsReports | test/features/provide_suggestions_reports.feature | providing suggestions reports                                             |
 
-  @level_1_specification @nominal_case @valid
+   # TODO Remove, see details above
+  @level_1_specification @nominal_case @valid @toremove
   Scenario: generate documentation with all scenarios of all projects under a hierarchy
     When I perform a "GET" on following URL "/api/gherkin?node=_eng_library_suggestion"
     Then I get the following scenarios
@@ -135,7 +185,8 @@ Feature: As an admin, I want register a user
       | .01.01.01. | suggestionsWS      | test/features/admin.feature                       | admin scenario                                                            |
       | .01.01.01. | suggestionsReports | test/features/provide_suggestions_reports.feature | providing suggestions reports                                             |
 
-  @level_1_specification @nominal_case @valid
+   # TODO Remove, see details above
+  @level_1_specification @nominal_case @valid @toremove
   Scenario: generate documentation with all scenarios of all projects under a high level hierarchy
     When I perform a "GET" on following URL "/api/gherkin?node=_eng_library"
     Then I get the following scenarios
@@ -147,7 +198,8 @@ Feature: As an admin, I want register a user
       | .01.01.01. | suggestionsReports | test/features/provide_suggestions_reports.feature | providing suggestions reports                                             |
       | .01.01.02. | usersWS            | test/features/register_user.feature               | register a user                                                           |
 
-  @level_1_specification @nominal_case @valid
+   # TODO Remove, see details above
+  @level_1_specification @nominal_case @valid @toremove
   Scenario: generate documentation with all scenarios of all projects under two hierarchies
     When I perform a "GET" on following URL "/api/gherkin?node=_eng_library_suggestion&node=_eng_library_user"
     Then I get the following scenarios
@@ -159,7 +211,8 @@ Feature: As an admin, I want register a user
       | .01.01.01. | suggestionsReports | test/features/provide_suggestions_reports.feature | providing suggestions reports                                             |
       | .01.01.02. | usersWS            | test/features/register_user.feature               | register a user                                                           |
 
-  @level_1_specification @nominal_case @valid
+   # TODO Remove, see details above
+  @level_1_specification @nominal_case @valid @toremove
   Scenario: generate documentation with all scenarios of all projects under a hierarchy plus a single project
     When I perform a "GET" on following URL "/api/gherkin?node=_eng_library_suggestion&project=_eng_library_user>usersWS"
     Then I get the following scenarios
@@ -171,35 +224,4 @@ Feature: As an admin, I want register a user
       | .01.01.01. | suggestionsReports | test/features/provide_suggestions_reports.feature | providing suggestions reports                                             |
       | .01.01.02. | usersWS            | test/features/register_user.feature               | register a user                                                           |
 
-  @level_1_specification @nominal_case @ready
-  Scenario: generate documentation of a project given a specific branch
-    When I perform a "GET" on following URL "/api/gherkin?project=_eng_library_user>usersWS>master"
-    Then I get the following scenarios
-      | hierarchy  | project       | feature                             | scenario               |
-      | .01.01.02. | usersWSClient | test/features/register_user.feature | register a user client |
-
-  @level_1_specification @nominal_case @valid
-  Scenario: generate documentation of a project filtered on features
-    When I perform a "GET" on following URL "/api/gherkin?project=_eng_library_suggestion>suggestionsWS>>provide_book"
-    Then I get the following scenarios
-      | hierarchy  | project       | feature                                        | scenario                                                                  |
-      | .01.01.01. | suggestionsWS | test/features/provide_book_suggestions.feature | providing several book suggestions                                        |
-      | .01.01.01. | suggestionsWS | test/features/provide_book_suggestions.feature | one service on which the suggestion system depends on is down             |
-      | .01.01.01. | suggestionsWS | test/features/provide_book_suggestions.feature | suggestions of popular and available books adapted to the age of the user |
-
-  @level_1_specification @nominal_case @ready
-  Scenario: generate documentation of a project filtered on a tag
-    When I perform a "GET" on following URL "/api/gherkin?project=_eng_library_suggestion>suggestionsWS>>>nominal_case"
-    Then I get the following scenarios
-      | hierarchy  | project       | feature                                        | scenario                                                                  |
-      | .01.01.01. | suggestionsWS | test/features/provide_book_suggestions.feature | providing several book suggestions                                        |
-      | .01.01.01. | suggestionsWS | test/features/provide_book_suggestions.feature | suggestions of popular and available books adapted to the age of the user |
-      | .01.01.01. | suggestionsWS | test/features/admin.feature                    | admin scenario                                                            |
-
-  @level_1_specification @nominal_case @ready
-  Scenario: generate documentation of a project filtered on several tags
-    When I perform a "GET" on following URL "/api/gherkin?project=_eng_library_suggestion>suggestionsWS>>>nominal_case,valid"
-    Then I get the following scenarios
-      | hierarchy  | project       | feature                     | scenario       |
-      | .01.01.01. | suggestionsWS | test/features/admin.feature | admin scenario |
 
