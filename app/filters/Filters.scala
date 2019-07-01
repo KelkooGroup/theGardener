@@ -14,7 +14,7 @@ class Filters @Inject()(environment: Environment, accessLogFilter: AccessLogFilt
   /**
     * Returns true for following cases:
     * - Response is a Javascript file (Angular app)
-    * - Request is made on '/api/generateGherkin'
+    * - Request is made on '/api/'
     *
     * @return
     */
