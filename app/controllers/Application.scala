@@ -17,4 +17,5 @@ class Application @Inject()(assets: Assets) extends InjectedController {
 
   // Workaround for the images because url of images in html files are not rewritten (prefixed) by Angular
   def imageAssets(file: Asset): Action[AnyContent] = assets.versioned(path = "/public/dist/assets/images", file)
+
 }

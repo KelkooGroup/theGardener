@@ -32,9 +32,9 @@ DELETE        /api/hierarchy/:id                              controllers.Hierar
 GET           /api/menu                                       controllers.MenuController.getMenu()
 
 
-GET           /api/gherkin                                     controllers.GherkinController.generateGherkin()
+GET           /api/gherkin                                    controllers.GherkinController.generateGherkin()
 
-
+GET           /api/config                                     controllers.ConfigController.getConfig()
 # Future :
 #GET           /api/pages                                      controllers.PageController.generateDocumentation()
 
