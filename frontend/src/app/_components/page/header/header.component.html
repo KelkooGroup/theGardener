@@ -1,12 +1,11 @@
 <div class="header">
 
   <ul class="flex-container flex-direction-row flex-align-items-center  flex-space-between">
-    <li *ngIf="logoSrc" class="header-logo">
+    <li class="header-logo">
       <img [src]="logoSrc" alt="Organisation logo">
+      <div *ngIf="appTitle">{{ appTitle }}</div>
     </li>
-    <li *ngIf="appTitle && !logoSrc" class="header-title">
-      <div>{{ appTitle }}</div>
-    </li>
+
     <li class="header-logo-the-gardener">
       <div>Powered by</div>
       <a href="https://kelkoogroup.github.io/theGardener/"><img src="assets/images/logo.png" alt="Logo"></a>

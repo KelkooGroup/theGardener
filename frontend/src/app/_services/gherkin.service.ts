@@ -25,5 +25,4 @@ export class GherkinService {
     return decoratedDataArray;
   }
 
-
 }
