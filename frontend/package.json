@@ -44,7 +44,7 @@
     "ts-option": "2.0.0",
     "tslib": "1.10.0",
     "zone.js": "0.9.1",
-    "snyk": "1.189.0"
+    "snyk": "1.192.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "0.800.3",
