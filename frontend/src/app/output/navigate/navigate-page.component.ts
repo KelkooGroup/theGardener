@@ -1,6 +1,6 @@
 import {AfterViewChecked, Component, OnInit, Output, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {MenuService} from '../../_services/menu.service';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, ParamMap} from '@angular/router';
 import {HierarchyNodeApi} from '../../_models/hierarchy';
 import {NavigationItem} from '../../_models/navigation';
 import {NavigateContentComponent} from './navigate-content.component';
@@ -27,15 +27,13 @@ export class NavigatePageComponent implements OnInit, AfterViewChecked {
 
   initialPath: string;
   navigatedTo = false;
+  currentRoute: string;
 
-  constructor(private hierarchyService: MenuService, private location: Location, private route: ActivatedRoute, private notificationService: NotificationService) {
-    this.hierarchyService.hierarchy().subscribe(
-      (result: HierarchyNodeApi) => {
-        const hierarchyNodeSelectorTree = hierarchyService.buildHierarchyNodeSelector(result);
-        this.items = hierarchyNodeSelectorTree && hierarchyNodeSelectorTree.children;
-      }, error => {
-        this.notificationService.showError('Error while getting items for navigation', error);
-      });
+  constructor(private hierarchyService: MenuService,
+              private location: Location,
+              private route: ActivatedRoute,
+              private notificationService: NotificationService) {
+
   }
 
   selection(selection: NavigationItem) {
@@ -60,6 +58,16 @@ export class NavigatePageComponent implements OnInit, AfterViewChecked {
 
   ngOnInit() {
     this.initialPath = this.route.snapshot.paramMap.get('path');
+    this.route.paramMap.subscribe((params: ParamMap) => {
+      this.currentRoute = params.get('name');
+      this.hierarchyService.hierarchy().subscribe(
+        (result: HierarchyNodeApi) => {
+          const hierarchyNodeSelectorTree = this.hierarchyService.buildHierarchyNodeSelector(result);
+          this.items = this.searchChildren(hierarchyNodeSelectorTree && hierarchyNodeSelectorTree.children);
+        }, error => {
+          this.notificationService.showError('Error while getting items for navigation', error);
+        });
+    });
   }
 
   delay(ms: number) {
@@ -81,5 +89,12 @@ export class NavigatePageComponent implements OnInit, AfterViewChecked {
     }
   }
 
+  private searchChildren(childs: Array<NavigationItem>) {
+    let i = 0;
+    while (i != childs.length && childs[i].route !== this.currentRoute) {
+      i++;
+    }
+    return childs[i] && childs[i].itemChildren();
+  }
 
 }

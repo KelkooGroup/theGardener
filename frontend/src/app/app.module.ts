@@ -4,7 +4,6 @@ import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {APIInterceptor} from './http-interceptor';
 import {AppComponent} from './app.component';
 import {environment} from '../environments/environment';
-import {HeaderComponent} from './_components/page/header/header.component';
 import {AppRoutingModule} from './app-routing.module';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {NgxJsonViewerModule} from 'ngx-json-viewer';
@@ -41,6 +40,7 @@ import {NotificationService} from './_services/notification.service';
 import {GherkinFeatureComponent} from './output/gherkin/gherkin-feature/gherkin-feature.component';
 import {GherkinBackgroundComponent} from './output/gherkin/gherkin-background/gherkin-background.component';
 import {GherkinStepComponent} from './output/gherkin/gherkin-step/gherkin-step.component';
+import {HeaderComponent} from "./_components/page/header/header.component";
 
 const nonProductionProviders = [{
   provide: HTTP_INTERCEPTORS,
