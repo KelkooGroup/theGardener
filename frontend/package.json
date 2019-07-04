@@ -10,7 +10,9 @@
     "test-no-watch": "ng test --watch=false --progress=false",
     "lint": "ng lint",
     "pree2e": "webdriver-manager update --gecko=false",
-    "e2e": "ng e2e --webdriver-update=false"
+    "e2e": "ng e2e --webdriver-update=false",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "private": true,
   "dependencies": {
@@ -41,7 +43,8 @@
     "rxjs-compat": "^6.5.2",
     "ts-option": "^2.0.0",
     "tslib": "^1.10.0",
-    "zone.js": "~0.9.1"
+    "zone.js": "~0.9.1",
+    "snyk": "^1.189.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.800.0",
@@ -79,5 +82,6 @@
   },
   "optionalDependencies": {
     "fsevents": "*"
-  }
+  },
+  "snyk": true
 }
