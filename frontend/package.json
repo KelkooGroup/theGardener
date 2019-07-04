@@ -53,7 +53,7 @@
     "@angular/language-service": "8.0.2",
     "@types/chai": "4.1.7",
     "@types/chai-as-promised": "7.1.0",
-    "@types/cucumber": "4.0.5",
+    "@types/cucumber": "4.0.6",
     "@types/jasmine": "3.3.13",
     "@types/jasminewd2": "2.0.6",
     "@types/node": "12.0.8",
