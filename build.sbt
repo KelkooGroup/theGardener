@@ -36,7 +36,7 @@ libraryDependencies ++= Seq(
   caffeine,
   "ch.qos.logback" % "logback-access" % "1.2.3",
   "net.logstash.logback" % "logstash-logback-encoder" % "5.2",
-  "com.typesafe.play" %% "play-json" % "2.7.3",
+  "com.typesafe.play" %% "play-json" % "2.7.4",
   "org.julienrf" %% "play-json-derived-codecs" % "5.0.0",
   "io.cucumber" % "gherkin" % "5.0.0",
   "com.typesafe.play" %% "anorm" % "2.5.3",
