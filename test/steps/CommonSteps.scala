@@ -19,7 +19,7 @@ import net.ruippeixotog.scalascraper.browser._
 import org.apache.commons.io._
 import org.eclipse.jgit.api._
 import org.scalatest._
-import org.scalatest.mockito._
+import org.scalatestplus.mockito._
 import play.api.Mode
 import play.api.cache._
 import play.api.db._

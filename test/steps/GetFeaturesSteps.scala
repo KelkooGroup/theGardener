@@ -10,7 +10,7 @@ import cucumber.api.scala.{EN, ScalaDsl}
 import models.Feature._
 import models._
 import org.eclipse.jgit.api._
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito._
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.api.test._

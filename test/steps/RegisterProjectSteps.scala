@@ -6,7 +6,7 @@ import java.util
 import cucumber.api.DataTable
 import cucumber.api.scala._
 import models._
-import org.scalatest.mockito._
+import org.scalatestplus.mockito._
 import play.api.libs.json.Json
 import play.api.mvc.Result
 import play.api.test.Helpers._
