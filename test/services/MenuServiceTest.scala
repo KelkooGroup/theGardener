@@ -3,7 +3,7 @@ package services
 import models.{Menu, HierarchyNode}
 import org.scalatest.Matchers._
 import org.scalatest._
-import org.scalatest.mockito._
+import org.scalatestplus.mockito._
 import repository.FeatureRepository
 import services.MenuService._
 

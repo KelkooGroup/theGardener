@@ -6,7 +6,7 @@ import anorm._
 import cucumber.api.DataTable
 import cucumber.api.scala.{EN, ScalaDsl}
 import models._
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito._
 
 import scala.collection.JavaConverters._
 

@@ -11,7 +11,7 @@ import org.mockito.Mockito._
 import org.mockito._
 import org.scalatest._
 import org.scalatest.concurrent._
-import org.scalatest.mockito._
+import org.scalatestplus.mockito._
 import repository._
 
 import scala.concurrent.ExecutionContext.Implicits.global
