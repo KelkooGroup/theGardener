@@ -27,7 +27,7 @@
     "@angular/platform-browser-dynamic": "8.1.0",
     "@angular/platform-server": "8.1.0",
     "@angular/router": "8.1.0",
-    "@types/lodash": "4.14.121",
+    "@types/lodash": "4.14.135",
     "angular-super-validator": "2.0.0",
     "core-js": "2.6.9",
     "font-awesome": "4.7.0",
@@ -44,7 +44,7 @@
     "ts-option": "2.0.0",
     "tslib": "1.10.0",
     "zone.js": "0.9.1",
-    "snyk": "1.189.0"
+    "snyk": "1.192.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "0.800.3",
