@@ -7,7 +7,7 @@ import {GherkinStepComponent} from '../gherkin-step/gherkin-step.component';
 import {GherkinTableComponent} from '../gherkin-table/gherkin-table.component';
 import {GherkinLongTextComponent} from '../gherkin-long-text/gherkin-long-text.component';
 import {NgxJsonViewerModule} from 'ngx-json-viewer';
-import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {BrowserAnimationsModule, NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {
   ExpandableNode,
   GherkinStep,
@@ -98,6 +98,7 @@ describe('GherkinBackgroundComponent', () => {
         MatTableModule,
         NgxJsonViewerModule,
         NoopAnimationsModule,
+        BrowserAnimationsModule,
       ]
     })
       .compileComponents();

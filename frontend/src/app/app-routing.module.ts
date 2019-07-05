@@ -20,12 +20,12 @@ const routes: Routes = [
     pathMatch: 'full',
   },
   {
-    path: 'app/documentation/navigate',
+    path: 'app/documentation/navigate/:name',
     component: NavigatePageComponent,
     canActivate: []
   },
   {
-    path: 'app/documentation/navigate/:path',
+    path: 'app/documentation/navigate/:name/:path',
     component: NavigatePageComponent,
     canActivate: []
   },

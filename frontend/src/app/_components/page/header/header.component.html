@@ -1,10 +1,15 @@
 <div class="header">
 
-  <ul class="flex-container flex-direction-row flex-align-items-center  flex-space-between">
+  <ul class="header-bar">
     <li class="header-logo">
       <img [src]="logoSrc" alt="Organisation logo">
       <div *ngIf="appTitle">{{ appTitle }}</div>
     </li>
+
+
+    <div class="header-navigation">
+      <a *ngFor="let item of items" routerLink="app/documentation/navigate/{{item.route}}/" routerLinkActive="active">{{ item.displayName }}</a>
+    </div>
 
     <li class="header-logo-the-gardener">
       <div>Powered by</div>
@@ -13,3 +18,4 @@
   </ul>
 
 </div>
+
