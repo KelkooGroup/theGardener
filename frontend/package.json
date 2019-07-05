@@ -75,7 +75,7 @@
     "protractor-cucumber-framework": "6.1.2",
     "puppeteer": "1.18.1",
     "rxjs-tslint": "0.1.7",
-    "ts-node": "8.2.0",
+    "ts-node": "8.3.0",
     "tslint": "5.18.0",
     "typescript": "3.4.5",
     "webpack": "4.34.0"
