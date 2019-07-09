@@ -56,7 +56,7 @@
     "@types/cucumber": "4.0.6",
     "@types/jasmine": "3.3.13",
     "@types/jasminewd2": "2.0.6",
-    "@types/node": "12.0.12",
+    "@types/node": "12.6.2",
     "chai": "4.2.0",
     "chai-as-promised": "7.1.1",
     "codelyzer": "5.1.0",
