@@ -15,15 +15,9 @@ jobs:
     displayName: 'npm install'
 
   - script: |
-      sudo cp .azure-pipelines/linux/xvfb.init /etc/init.d/xvfb
-      sudo chmod +x /etc/init.d/xvfb
-      sudo update-rc.d xvfb defaults
-      sudo service xvfb start
-    displayName: 'Start X Virtual Frame Buffer'
-
-  - script: |
       cd frontend
-      export DISPLAY=:10
+      export DISPLAY=:99.0
+      sh -e /etc/init.d/xvfb start
       ./node_modules/tslint/bin/tslint -t json -o report.json --project . --force
       ng test --watch=false --progress=false --code-coverage
       ng e2e
