@@ -1,5 +1,4 @@
-jobs:
-- job: Frontend
+
   pool:
     vmImage: 'ubuntu-latest'
   steps:
@@ -35,10 +34,6 @@ jobs:
       ng build --no-progress --prod --outputPath ../public/dist
     displayName: 'ng build --prod'
 
-- job: Backend
-  pool:
-    vmImage: 'ubuntu-latest'
-  steps:
   - script: |
       echo "deb https://dl.bintray.com/sbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list
       sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823
@@ -50,11 +45,23 @@ jobs:
   - script: sbt clean coverage test coverageReport scalastyle scapegoat
     displayName: 'sbt test'
 
-- job: Package
-  pool:
-    vmImage: 'ubuntu-latest'
-  dependsOn:
-  - Frontend
-  - Backend
-  steps:
   - script: sbt dist
+  
+  - script: |
+      sudo mkdir /opt/sonarscanner
+      cd /opt/sonarscanner
+      sudo wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.0.0.1744-linux.zip
+      sudo unzip sonar-scanner-cli-4.0.0.1744-linux.zip
+      sudo rm sonar-scanner-cli-4.0.0.1744-linux.zip
+      sudo nano sonar-scanner-cli-4.0.0.1744-linux/conf/sonar-scanner.properties
+      sonar.host.url=https://sonarcloud.io
+      sudo chmod +x sonar-scanner-4.0.0.1744-linux/bin/sonar-scanner
+      sudo ln -s /opt/sonarscanner/sonar-scanner-4.0.0.1744-linux/bin/sonar-scanner /usr/local/bin/sonar-scanner
+    displayName: 'install sonar-scanner'
+ 
+   - script: |
+      cd -
+      sonar-scanner -D sonar.login=6c199a8887e5909a63eb3d6ffcd70c1ca33d6757
+    displayName: 'install sonar-scanner'
+    
+  
