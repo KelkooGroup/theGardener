@@ -19,5 +19,9 @@ steps:
     cd frontend
     npm install -g @angular/cli
     npm install
+    ./node_modules/tslint/bin/tslint -t json -o report.json --project . --force
+    ng test --watch=false --progress=false --code-coverage
+    ng e2e
+    ng build --no-progress --prod --outputPath ../public/dist
     ng build --prod
   displayName: 'npm install and build'
