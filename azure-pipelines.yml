@@ -24,7 +24,7 @@ jobs:
       npm install -g @angular/cli
       npm install
     displayName: 'npm install'
-    
+
   - script: |
       ./node_modules/tslint/bin/tslint -t json -o report.json --project . --force
       ng test --watch=false --progress=false --code-coverage
@@ -43,7 +43,7 @@ jobs:
     displayName: 'install sbt'
 
   - script: sbt clean coverage test coverageReport scalastyle scapegoat
-    displayName: 'sbt test
+    displayName: 'sbt test'
 
 - job: Package
   dependsOn:
