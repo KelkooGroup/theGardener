@@ -8,9 +8,6 @@ trigger:
 - bugfix/*
 - feature/*
 
-pool:
-  vmImage: 'ubuntu-latest'
-
 jobs:
 - job: Frontend
   pool:
