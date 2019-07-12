@@ -30,9 +30,9 @@ jobs:
       ng test --watch=false --progress=false --code-coverage
       ng e2e
     displayName: 'npm test'
-    
+
   - script: ng build --no-progress --prod --outputPath ../public/dist
-      
+
 - job: Backend
   steps:
   - script: |
@@ -41,12 +41,12 @@ jobs:
       sudo apt-get update
       sudo apt-get install sbt
     displayName: 'install sbt'
-    
+
   - script: sbt clean coverage test coverageReport scalastyle scapegoat
     displayName: 'sbt test
 
 - job: Package
-  dependsOn: 
+  dependsOn:
   - Frontend
   - Backend
   steps:
