@@ -32,7 +32,7 @@
     "cucumber-pretty": "1.5.2",
     "jasmine": "3.4.0",
     "less": "3.9.0",
-    "lodash": "4.17.13",
+    "lodash": "4.17.14",
     "moment": "2.24.0",
     "ngx-json-viewer": "2.4.0",
     "ngx-moment": "3.4.0",
