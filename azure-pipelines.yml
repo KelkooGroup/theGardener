@@ -14,13 +14,6 @@
     displayName: 'npm install'
 
   - script: |
-      sudo cp .azure-pipelines/linux/xvfb.init /etc/init.d/xvfb
-      sudo chmod +x /etc/init.d/xvfb
-      sudo update-rc.d xvfb defaults
-      sudo service xvfb start
-    displayName: 'Start X Virtual Frame Buffer'
-
-  - script: |
       cd frontend
       export DISPLAY=:10
       sudo /usr/bin/Xvfb :10 -ac>>$/tmp/Xvfb.out 2>&1 &
