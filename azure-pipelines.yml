@@ -55,14 +55,12 @@
       sudo unzip sonar-scanner-cli-4.0.0.1744-linux.zip
       sudo rm sonar-scanner-cli-4.0.0.1744-linux.zip
       sudo nano sonar-scanner-cli-4.0.0.1744-linux/conf/sonar-scanner.properties
-      sonar.host.url=https://sonarcloud.io
       sudo chmod +x sonar-scanner-4.0.0.1744-linux/bin/sonar-scanner
       sudo ln -s /opt/sonarscanner/sonar-scanner-4.0.0.1744-linux/bin/sonar-scanner /usr/local/bin/sonar-scanner
     displayName: 'install sonar-scanner'
 
   - script: |
-      cd -
-      sonar-scanner -D sonar.login=6c199a8887e5909a63eb3d6ffcd70c1ca33d6757
+      sonar-scanner -D sonar.host.url=https://sonarcloud.io -D sonar.login=6c199a8887e5909a63eb3d6ffcd70c1ca33d6757
     displayName: 'sonar-scanner'
     
   
