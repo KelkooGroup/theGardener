@@ -25,12 +25,16 @@ jobs:
     displayName: 'npm install'
 
   - script: |
+      cd frontend
       ./node_modules/tslint/bin/tslint -t json -o report.json --project . --force
       ng test --watch=false --progress=false --code-coverage
       ng e2e
     displayName: 'npm test'
 
-  - script: ng build --no-progress --prod --outputPath ../public/dist
+  - script:  |
+      cd frontend
+      ng build --no-progress --prod --outputPath ../public/dist
+    displayName: 'ng build --prod'
 
 - job: Backend
   pool:
