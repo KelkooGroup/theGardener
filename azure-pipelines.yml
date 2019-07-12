@@ -23,7 +23,7 @@
   - script: |
       cd frontend
       export DISPLAY=:10
-      sh -e /etc/init.d/xvfb start
+      sudo /usr/bin/Xvfb :10 -ac>>$/tmp/Xvfb.out 2>&1 &
       ./node_modules/tslint/bin/tslint -t json -o report.json --project . --force
       ng test --watch=false --progress=false --code-coverage
       ng e2e
