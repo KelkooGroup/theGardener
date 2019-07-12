@@ -5,23 +5,45 @@
 
 trigger:
 - master
+- bugfix/*
+- feature/*
 
 pool:
   vmImage: 'ubuntu-latest'
 
-steps:
-- task: NodeTool@0
-  inputs:
-    versionSpec: '10.x'
-  displayName: 'Install Node.js'
+jobs:
+- job: Frontend
+    steps:
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '10.x'
+      displayName: 'Install Node.js'
 
-- script: |
-    cd frontend
-    npm install -g @angular/cli
-    npm install
-    ./node_modules/tslint/bin/tslint -t json -o report.json --project . --force
-    ng test --watch=false --progress=false --code-coverage
-    ng e2e
-    ng build --no-progress --prod --outputPath ../public/dist
-    ng build --prod
-  displayName: 'npm install and build'
+    - script: |
+        cd frontend
+        npm install -g @angular/cli
+        npm install
+        ./node_modules/tslint/bin/tslint -t json -o report.json --project . --force
+        ng test --watch=false --progress=false --code-coverage
+        ng e2e
+        ng build --no-progress --prod --outputPath ../public/dist
+      displayName: 'npm install and build'
+      
+- job: Backend
+    steps:
+    - script: |
+        echo "deb https://dl.bintray.com/sbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list
+        sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823
+        sudo apt-get update
+        sudo apt-get install sbt
+        sbt clean coverage test coverageReport scalastyle scapegoat
+      displayName: 'sbt test'
+
+- job: Package
+    dependsOn: 
+    - Frontend
+    - Backend
+    steps:
+    - script: |
+        sbt dist
+      displayName: 'sbt dist'
