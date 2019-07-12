@@ -46,6 +46,7 @@
     displayName: 'sbt test'
 
   - script: sbt dist
+    displayName: 'sbt dist'
 
   - script: |
       sudo mkdir /opt/sonarscanner
