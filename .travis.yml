@@ -12,7 +12,6 @@ addons:
             - google-chrome
         packages:
             - google-chrome-stable
-            - nodejs
 jdk:
     - oraclejdk8
 scala:
@@ -29,9 +28,11 @@ git:
     depth: false
 
 before_script:
+    - 'nvm install --lts'
+    - 'nvm use --lts'
     - 'set -e'
     - 'cd frontend'
-    - 'npm install -g @angular/cli@7.3.4'
+    - 'npm install -g @angular/cli'
     - 'export PATH=$(npm prefix -g)/bin:$PATH'
     - 'npm install'
     - 'export DISPLAY=:99.0'
