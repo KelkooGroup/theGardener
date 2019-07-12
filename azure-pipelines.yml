@@ -13,8 +13,9 @@ pool:
 
 jobs:
 - job: Frontend
+  pool:
+    vmImage: 'ubuntu-latest'
   steps:
-  vmImage: 'ubuntu-latest'
   - task: NodeTool@0
     inputs:
       versionSpec: '10.x'
@@ -35,7 +36,8 @@ jobs:
   - script: ng build --no-progress --prod --outputPath ../public/dist
 
 - job: Backend
-  vmImage: 'ubuntu-latest'
+  pool:
+    vmImage: 'ubuntu-latest'
   steps:
   - script: |
       echo "deb https://dl.bintray.com/sbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list
@@ -48,7 +50,8 @@ jobs:
     displayName: 'sbt test'
 
 - job: Package
-  vmImage: 'ubuntu-latest'
+  pool:
+    vmImage: 'ubuntu-latest'
   dependsOn:
   - Frontend
   - Backend
