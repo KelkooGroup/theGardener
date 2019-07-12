@@ -25,7 +25,7 @@
     "@angular/platform-browser-dynamic": "8.1.1",
     "@angular/platform-server": "8.1.1",
     "@angular/router": "8.1.1",
-    "@types/lodash": "4.14.135",
+    "@types/lodash": "4.14.136",
     "angular-super-validator": "2.0.0",
     "core-js": "2.6.9",
     "font-awesome": "4.7.0",
