@@ -5,7 +5,7 @@ import models.Branch
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import org.scalatest._
-import org.scalatest.mockito._
+import org.scalatestplus.mockito._
 import repository.FeatureRepository
 
 class FeatureServiceTest extends WordSpec with MustMatchers with MockitoSugar {
