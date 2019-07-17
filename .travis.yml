@@ -12,8 +12,12 @@ addons:
             - google-chrome
         packages:
             - google-chrome-stable
+
+services:
+  - xvfb
+
 jdk:
-    - oraclejdk8
+    - openjdk8
 scala:
     - 2.12.8
 
@@ -35,8 +39,6 @@ before_script:
     - 'npm install -g @angular/cli'
     - 'export PATH=$(npm prefix -g)/bin:$PATH'
     - 'npm install'
-    - 'export DISPLAY=:99.0'
-    - 'sh -e /etc/init.d/xvfb start'
 
 script:
     - './node_modules/tslint/bin/tslint -t json -o report.json --project . --force'
