@@ -10,7 +10,7 @@ class PageRepository @Inject()(db: Database) {
 
 
   private val parser = for {
-    pageId <- long("pageId")
+    id <- long("id")
     name <- str("name")
     label <- str("label")
     description <- str("description")
@@ -19,7 +19,7 @@ class PageRepository @Inject()(db: Database) {
     relativePath <- str("relativePath")
     path <- str("path")
     directoryId <- long("directoryId")
-  } yield Page(pageId, name, label, description, order, markdown, relativePath, path, directoryId)
+  } yield Page(id, name, label, description, order, markdown, relativePath, path, directoryId)
 
   def findAll(): Seq[Page] = {
     db.withConnection { implicit connection =>
@@ -27,7 +27,7 @@ class PageRepository @Inject()(db: Database) {
     }
   }
 
-  def findAllByBranchId(directoryId: Long): Seq[Page] = {
+  def findAllByDirectoryId(directoryId: Long): Seq[Page] = {
     db.withConnection { implicit connection =>
       SQL"SELECT * FROM page WHERE directoryId = $directoryId".as(parser.*)
     }
@@ -35,11 +35,10 @@ class PageRepository @Inject()(db: Database) {
 
   def save(page: Page): Page = {
     db.withConnection { implicit connection =>
-      val pageId: Option[Long] = if (existsById(page.pageId)) {
-        SQL"""REPLACE INTO page (pageId, name, label, description, `order`,markdown
-              , relativePath, path, directoryId)
+      val id: Option[Long] = if (existsById(page.id) || existsByDirectoryIdAndName(page.directoryId, page.name)) {
+        SQL"""REPLACE INTO page (id, name, label, description, `order`,markdown, relativePath, path, directoryId)
            VALUES (
-          ${page.pageId},
+          ${page.id},
           ${page.name},
           ${page.label},
           ${page.description},
@@ -50,30 +49,10 @@ class PageRepository @Inject()(db: Database) {
           ${page.directoryId})"""
           .executeUpdate()
 
-        Some(page.pageId)
+        Some(page.id)
 
       } else {
-        findByBranchIdAndName(page.directoryId, page.name) match {
-          case Some(existingPage) =>
-            SQL"""REPLACE INTO page (pageId, name, label, description, `order`,markdown
-              , relativePath, path, directoryId)
-           VALUES (
-          ${page.pageId},
-          ${page.name},
-          ${page.label},
-          ${page.description},
-          ${page.order},
-          ${page.markdown},
-          ${page.relativePath},
-          ${page.path},
-          ${page.directoryId})"""
-              .executeUpdate()
-
-            Some(existingPage.pageId)
-
-
-          case None => SQL"""INSERT INTO page ( name, label, description, `order`,markdown
-              , relativePath, path, directoryId)
+        SQL"""INSERT INTO page (name, label, description, `order`, markdown, relativePath, path, directoryId)
            VALUES (
           ${page.name},
           ${page.label},
@@ -83,11 +62,9 @@ class PageRepository @Inject()(db: Database) {
           ${page.relativePath},
           ${page.path},
           ${page.directoryId})"""
-            .executeInsert()
-        }
+          .executeInsert()
       }
-
-      SQL"SELECT * FROM page WHERE pageId = $pageId".as(parser.single)
+      SQL"SELECT * FROM page WHERE id = $id".as(parser.single)
     }
   }
 
@@ -103,13 +80,13 @@ class PageRepository @Inject()(db: Database) {
 
   def deleteById(id: Long): Unit = {
     db.withConnection { implicit connection =>
-      SQL"DELETE FROM page WHERE pageId = $id".executeUpdate()
+      SQL"DELETE FROM page WHERE id = $id".executeUpdate()
     }
   }
 
   def deleteAll(pages: Seq[Page]): Unit = {
     db.withConnection { implicit connection =>
-      SQL"DELETE FROM page WHERE pageId IN (${pages.map(_.pageId)})".executeUpdate()
+      SQL"DELETE FROM page WHERE id IN (${pages.map(_.id)})".executeUpdate()
     }
   }
 
@@ -120,23 +97,23 @@ class PageRepository @Inject()(db: Database) {
   }
 
   def delete(page: Page): Unit = {
-    deleteById(page.pageId)
+    deleteById(page.id)
   }
 
   def findAllById(ids: Seq[Long]): Seq[Page] = {
     db.withConnection { implicit connection =>
-      SQL"SELECT * FROM page WHERE pageId IN ($ids)".as(parser.*)
+      SQL"SELECT * FROM page WHERE id IN ($ids)".as(parser.*)
     }
   }
 
 
   def findById(id: Long): Option[Page] = {
     db.withConnection { implicit connection =>
-      SQL"SELECT * FROM page WHERE pageId = $id".as(parser.singleOpt)
+      SQL"SELECT * FROM page WHERE id = $id".as(parser.singleOpt)
     }
   }
 
-  def findByBranchIdAndName(directoryId: Long, name: String): Option[Page] = {
+  def findByDirectoryIdAndName(directoryId: Long, name: String): Option[Page] = {
     db.withConnection { implicit connection =>
       SQL"SELECT * FROM page WHERE directoryId = $directoryId AND name = $name".as(parser.singleOpt)
     }
@@ -144,7 +121,19 @@ class PageRepository @Inject()(db: Database) {
 
   def existsById(id: Long): Boolean = {
     db.withConnection { implicit connection =>
-      SQL"SELECT COUNT(*) FROM page WHERE pageId = $id".as(scalar[Long].single) > 0
+      SQL"SELECT COUNT(*) FROM page WHERE id = $id".as(scalar[Long].single) > 0
+    }
+  }
+
+  def findByPath(path: String): Option[Page] = {
+    db.withConnection { implicit connection =>
+      SQL"SELECT * FROM page WHERE path = $path".as(parser.singleOpt)
+    }
+  }
+
+  def existsByDirectoryIdAndName(directoryId: Long, name: String): Boolean = {
+    db.withConnection { implicit connection =>
+      SQL"SELECT COUNT(*) FROM page WHERE directoryId = $directoryId AND name = $name".as(scalar[Long].single) > 0
     }
   }
 }

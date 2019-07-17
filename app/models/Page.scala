@@ -1,6 +1,6 @@
 package models
 
-case class Page(pageId: Long,
+case class Page(id: Long,
                 name: String,
                 label: String,
                 description: String,

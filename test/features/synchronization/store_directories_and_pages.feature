@@ -10,8 +10,8 @@ Feature: Retrieve documentation pages from a project on a remote server
     And the cache is empty
     And the remote projects are empty
     And we have the following projects
-      | id            | name                    | repositoryUrl                               | stableBranch | documentationRootPath |
-      | suggestionsWS | Suggestions WebServices | target/data/GetPages/library/suggestionsWS/ | master       | doc                   |
+      | id            | name                    | repositoryUrl                               | stableBranch | featuresRootPath | documentationRootPath |
+      | suggestionsWS | Suggestions WebServices | target/data/GetPages/library/suggestionsWS/ | master       | doc              | doc                   |
     And the server "target/data/GetPages" host under the project "library/suggestionsWS" on the branch "master" the file "doc/thegardener.json"
     """
 {
@@ -59,7 +59,7 @@ Feature: Retrieve documentation pages from a project on a remote server
 }
     """
 
-  @level_1_specification @nominal_case @ready
+  @level_1_specification @nominal_case @valid
   Scenario: retrieve pages and directories from a project
     Given the server "target/data/GetPages/" host under the project "library/suggestionsWS" on the branch "master" the files
       | file                          | content                               |
@@ -68,7 +68,7 @@ Feature: Retrieve documentation pages from a project on a remote server
       | doc/suggestions/examples.md   | **Some suggestion examples**          |
       | doc/admin/admin.md            | **Page for the admin users**          |
     When synchronization action is triggered
-    And we have now those branches in the database
+    Then we have now those branches in the database
       | id | name   | isStable | projectId     |
       | 1  | master | true     | suggestionsWS |
     And we have now those directories in the database
@@ -83,14 +83,14 @@ Feature: Retrieve documentation pages from a project on a remote server
       | 3  | examples   | examples   | examples    | 1     | /suggestions/examples   | suggestionsWS>master>/suggestions/examples   | **Some suggestion examples**          | 2           |
       | 4  | admin      | admin      | admin       | 0     | /admin/admin            | suggestionsWS>master>/admin/admin            | **Page for the admin users**          | 3           |
 
-  @level_1_specification @limit_case @ready
+  @level_1_specification @limit_case @valid
   Scenario: retrieve pages and directories from a project - some page or directories are missing - ignore them
     Given the server "target/data/GetPages/" host under the project "library/suggestionsWS" on the branch "master" the files
       | file                        | content                               |
       | doc/context.md              | **Feature**: Provide book suggestions |
       | doc/suggestions/examples.md | **Some suggestion examples**          |
     When synchronization action is triggered
-    And we have now those branches in the database
+    Then we have now those branches in the database
       | id | name   | isStable | projectId     |
       | 1  | master | true     | suggestionsWS |
     And we have now those directories in the database
@@ -102,7 +102,7 @@ Feature: Retrieve documentation pages from a project on a remote server
       | 1  | context  | context  | context     | 0     | /context              | suggestionsWS>master>/context              | **Feature**: Provide book suggestions | 1           |
       | 2  | examples | examples | examples    | 1     | /suggestions/examples | suggestionsWS>master>/suggestions/examples | **Some suggestion examples**          | 2           |
 
-  @level_1_specification @limit_case @ready
+  @level_1_specification @limit_case @valid
   Scenario: retrieve pages and directories from a project - some pages or directories exists but not listed - ignore them
     Given the server "target/data/GetPages/" host under the project "library/suggestionsWS" on the branch "master" the files
       | file                          | content                               |
@@ -114,7 +114,7 @@ Feature: Retrieve documentation pages from a project on a remote server
       | doc/admin/guide.md            | **WIP Admin guide**                   |
       | doc/ui/screenshots.md         | **WIP The screens**                   |
     When synchronization action is triggered
-    And we have now those branches in the database
+    Then we have now those branches in the database
       | id | name   | isStable | projectId     |
       | 1  | master | true     | suggestionsWS |
     And we have now those directories in the database

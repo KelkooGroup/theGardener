@@ -10,7 +10,8 @@ package object utils extends Logging {
 
   implicit class TryOps[T](t: Try[T]) {
     def logError(msg: => String): Try[T] = t.recoverWith {
-      case e => logger.error(msg, e)
+      case e =>
+        logger.error(msg, e)
         Failure(e)
     }
   }

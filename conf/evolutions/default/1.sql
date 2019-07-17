@@ -1,6 +1,8 @@
 set ignorecase true;
 
 # --- !Downs
+DROP TABLE page;
+DROP TABLE directory;
 DROP TABLE scenario_tag;
 DROP TABLE scenario;
 DROP TABLE feature_tag;
@@ -11,14 +13,16 @@ DROP TABLE project_hierarchyNode;
 DROP TABLE hierarchyNode;
 DROP TABLE project;
 
+
 # --- !Ups
 create table project
 (
-    id               varchar(255) not null,
-    name             varchar(255) not null,
-    repositoryUrl    varchar(255) not null,
-    stableBranch     varchar(255) not null,
-    featuresRootPath varchar(255) not null,
+    id                    varchar(255) not null,
+    name                  varchar(255) not null,
+    repositoryUrl         varchar(255) not null,
+    stableBranch          varchar(255) not null,
+    featuresRootPath      varchar(255) not null,
+    documentationRootPath varchar(255),
     constraint pk_project primary key (id)
 );
 
@@ -97,3 +101,29 @@ create table scenario_tag
     constraint pk_scenario_tag primary key (scenarioId, name)
 );
 
+CREATE TABLE directory
+(
+    id           BIGINT  NOT NULL AUTO_INCREMENT,
+    name         VARCHAR(255),
+    label        VARCHAR(255),
+    description  VARCHAR(255),
+    `order`      INTEGER NOT NULL,
+    relativePath VARCHAR(255),
+    path         VARCHAR(255),
+    branchId     BIGINT  NOT NULL,
+    constraint pk_directory primary key (id)
+);
+
+CREATE TABLE page
+(
+    id           BIGINT  NOT NULL AUTO_INCREMENT,
+    name         VARCHAR(255),
+    label        VARCHAR(255),
+    description  VARCHAR(255),
+    `order`      INTEGER NOT NULL,
+    markdown     TEXT,
+    relativePath VARCHAR(255),
+    path         VARCHAR(255),
+    directoryId  BIGINT  NOT NULL,
+    constraint pk_page primary key (id)
+);

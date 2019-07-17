@@ -1,6 +1,6 @@
 package models
 
-case class Directory(directoryId: Long,
+case class Directory(id: Long,
                      name: String,
                      label: String,
                      description: String,

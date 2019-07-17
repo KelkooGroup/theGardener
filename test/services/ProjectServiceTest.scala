@@ -12,6 +12,7 @@ import org.mockito._
 import org.scalatest._
 import org.scalatest.concurrent._
 import org.scalatestplus.mockito._
+import play.api.{Environment, Mode}
 import repository._
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -30,12 +31,17 @@ class ProjectServiceTest extends WordSpec with MustMatchers with BeforeAndAfter 
   val projectRepository = mock[ProjectRepository]
   val featureRepository = mock[FeatureRepository]
   val branchRepository = mock[BranchRepository]
+  val directoryRepository = mock[DirectoryRepository]
+  val pageRepository = mock[PageRepository]
   val featureService = mock[FeatureService]
-  val criteriaService = mock[MenuService]
+  val menuService = mock[MenuService]
+  val pageService = mock[PageService]
+  val environment = mock[Environment]
 
-  val projectService = new ProjectService(projectRepository, gitService, featureService, featureRepository, branchRepository, criteriaService, ConfigFactory.load(), ActorSystem())
 
-  val project = Project("suggestionsWS", "Suggestions WebServices", "git@gitlab.corp.kelkoo.net:library/suggestionsWS.git", "master", "test/features")
+  val projectService = new ProjectService(projectRepository, gitService, featureService, featureRepository, branchRepository, directoryRepository, pageRepository, menuService, pageService, ConfigFactory.load(),environment, ActorSystem())
+
+  val project = Project( "publisherManagementWS", "Publisher management WS", "http://gitlab.corp.kelkoo.net/syndication/publisherManagementWS.git", "qa", "test/features")
   val masterDirectory = projectService.getLocalRepository(project.id, project.stableBranch)
   val featureBranchDirectory = projectService.getLocalRepository(project.id, featureBranch)
   val bugfixBranchDirectory = projectService.getLocalRepository(project.id, bugfixBranch)
@@ -105,7 +111,7 @@ class ProjectServiceTest extends WordSpec with MustMatchers with BeforeAndAfter 
       when(branchRepository.save(any[Branch])).thenReturn(masterBranch)
       when(branchRepository.findByProjectIdAndName(any[String], any[String])).thenReturn(Some(masterBranch))
       when(branchRepository.findAllByProjectId(any[String])).thenReturn(Seq(masterBranch, Branch(2, bugfixBranch, isStable = false, project.id)))
-
+      when(environment.mode).thenReturn(Mode.Test)
 
       val result = projectService.synchronizeAll()
 
