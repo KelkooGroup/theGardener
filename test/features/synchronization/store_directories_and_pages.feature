@@ -67,7 +67,7 @@ Feature: Retrieve documentation pages from a project on a remote server
       | doc/suggestions/suggestion.md | **What's a suggestion ?**             |
       | doc/suggestions/examples.md   | **Some suggestion examples**          |
       | doc/admin/admin.md            | **Page for the admin users**          |
-    When synchronization action is triggered
+    When the synchronization action is triggered by the webhook for project "suggestionsWS"
     Then we have now those branches in the database
       | id | name   | isStable | projectId     |
       | 1  | master | true     | suggestionsWS |
@@ -89,7 +89,7 @@ Feature: Retrieve documentation pages from a project on a remote server
       | file                        | content                               |
       | doc/context.md              | **Feature**: Provide book suggestions |
       | doc/suggestions/examples.md | **Some suggestion examples**          |
-    When synchronization action is triggered
+    When the synchronization action is triggered by the webhook for project "suggestionsWS"
     Then we have now those branches in the database
       | id | name   | isStable | projectId     |
       | 1  | master | true     | suggestionsWS |
@@ -113,7 +113,7 @@ Feature: Retrieve documentation pages from a project on a remote server
       | doc/admin/admin.md            | **Page for the admin users**          |
       | doc/admin/guide.md            | **WIP Admin guide**                   |
       | doc/ui/screenshots.md         | **WIP The screens**                   |
-    When synchronization action is triggered
+    When the synchronization action is triggered by the webhook for project "suggestionsWS"
     Then we have now those branches in the database
       | id | name   | isStable | projectId     |
       | 1  | master | true     | suggestionsWS |
@@ -146,7 +146,7 @@ Feature: Retrieve documentation pages from a project on a remote server
 
 **Feature**: Provide book suggestions
 """
-    When synchronization action is triggered
+    When the synchronization action is triggered by the webhook for project "suggestionsWS"
     And we have now those branches in the database
       | id | name   | isStable | projectId     |
       | 1  | master | true     | suggestionsWS |

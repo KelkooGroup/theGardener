@@ -37,31 +37,14 @@ class PageRepository @Inject()(db: Database) {
     db.withConnection { implicit connection =>
       val id: Option[Long] = if (existsById(page.id) || existsByDirectoryIdAndName(page.directoryId, page.name)) {
         SQL"""REPLACE INTO page (id, name, label, description, `order`,markdown, relativePath, path, directoryId)
-           VALUES (
-          ${page.id},
-          ${page.name},
-          ${page.label},
-          ${page.description},
-          ${page.order},
-          ${page.markdown},
-          ${page.relativePath},
-          ${page.path},
-          ${page.directoryId})"""
+           VALUES (${page.id},${page.name},${page.label},${page.description},${page.order},${page.markdown},${page.relativePath},${page.path},${page.directoryId})"""
           .executeUpdate()
 
         Some(page.id)
 
       } else {
         SQL"""INSERT INTO page (name, label, description, `order`, markdown, relativePath, path, directoryId)
-           VALUES (
-          ${page.name},
-          ${page.label},
-          ${page.description},
-          ${page.order},
-          ${page.markdown},
-          ${page.relativePath},
-          ${page.path},
-          ${page.directoryId})"""
+           VALUES (${page.name},${page.label},${page.description},${page.order},${page.markdown},${page.relativePath},${page.path},${page.directoryId})"""
           .executeInsert()
       }
       SQL"SELECT * FROM page WHERE id = $id".as(parser.single)

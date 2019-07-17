@@ -36,7 +36,7 @@ class PageService @Inject()(config: Config, directoryRepository: DirectoryReposi
 
         val currentDirectory = directoryRepository.save(Directory(-1, name, meta.directory.label, meta.directory.description, order, relativePath, path, branch.id))
         val pages: Seq[Page] = meta.directory.pages.zipWithIndex.flatMap { case (pagePath, index) => processPage(currentDirectory, localDirectoryPath, pagePath, index) }
-        val children: Seq[Directory] = meta.directory.children.zipWithIndex.flatMap(child => processDirectory(branch, path + child._1 + "/", localDirectoryPath + "/" + child._1, relativePath + child._1 + "/", child._2, false))
+        val children: Seq[Directory] = meta.directory.children.zipWithIndex.flatMap { case (name, index) => processDirectory(branch, path + name + "/", localDirectoryPath + "/" + name, relativePath + name + "/", index, false) }
 
         if (pages.isEmpty && children.isEmpty) {
           directoryRepository.delete(currentDirectory)

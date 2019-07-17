@@ -36,29 +36,14 @@ class DirectoryRepository @Inject()(db: Database) {
     db.withConnection { implicit connection =>
       val id: Option[Long] = if (existsById(directory.id) || existsByBranchIdAndName(directory.branchId, directory.name)) {
         SQL"""REPLACE INTO directory (id, name, label, description, `order`, relativePath, path, branchId)
-           VALUES (
-          ${directory.id},
-          ${directory.name},
-          ${directory.label},
-          ${directory.description},
-          ${directory.order},
-          ${directory.relativePath},
-          ${directory.path},
-          ${directory.branchId})"""
+           VALUES (${directory.id},${directory.name},${directory.label},${directory.description},${directory.order},${directory.relativePath},${directory.path},${directory.branchId})"""
           .executeUpdate()
 
         Some(directory.id)
 
       } else {
         SQL"""INSERT INTO directory (name, label, description, `order`, relativePath, path, branchId)
-           VALUES (
-          ${directory.name},
-          ${directory.label},
-          ${directory.description},
-          ${directory.order},
-          ${directory.relativePath},
-          ${directory.path},
-          ${directory.branchId})"""
+           VALUES (${directory.name},${directory.label},${directory.description},${directory.order},${directory.relativePath},${directory.path},${directory.branchId})"""
           .executeInsert()
       }
 

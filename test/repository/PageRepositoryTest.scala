@@ -13,26 +13,16 @@ class PageRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with Injec
   val db = inject[Database]
   val pageRepository = inject[PageRepository]
 
-  val page1 = Page(1, "app", "page1", "RAS", 0, "appMarkdown", "team1>project_id1>branch1>", "branch1", 1)
-  val page2 = Page(2, "front", "page2", "aucune description", 1, "frontMarkdown", "", "project_id4>branch3>", 1)
-  val page3 = Page(3, "back", "page3", "rien à dire", 2, "backMarkdown", "", "project_id2>branch1>", 3)
+  val page1 = Page(1, "app", "page1", "description1", 0, "appMarkdown", "team1>project_id1>branch1>", "branch1", 1)
+  val page2 = Page(2, "front", "page2", "description2", 1, "frontMarkdown", "", "project_id4>branch3>", 1)
+  val page3 = Page(3, "back", "page3", "description3", 2, "backMarkdown", "", "project_id2>branch1>", 3)
   val pages = Seq(page1, page2, page3)
 
   override def beforeEach() {
     db.withConnection { implicit connection =>
       pages.foreach { page =>
-        SQL"""INSERT INTO page (id, name, label, description, `order`,markdown
-              , relativePath, path, directoryId)
-           VALUES (
-          ${page.id},
-          ${page.name},
-          ${page.label},
-          ${page.description},
-          ${page.order},
-          ${page.markdown},
-          ${page.relativePath},
-          ${page.path},
-          ${page.directoryId})"""
+        SQL"""INSERT INTO page (id, name, label, description, `order`,markdown, relativePath, path, directoryId)
+           VALUES (${page.id},${page.name},${page.label},${page.description},${page.order},${page.markdown},${page.relativePath},${page.path},${page.directoryId})"""
           .executeInsert()
       }
     }
@@ -89,7 +79,7 @@ class PageRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with Injec
     }
 
     "save a page" in {
-      val newPage = Page(-1, "assets", "page1", "RAS", 3, "assetsMarkdown", "", "project_id1>branch1>", 1)
+      val newPage = Page(-1, "assets", "page1", "description4", 3, "assetsMarkdown", "", "project_id1>branch1>", 1)
       pageRepository.save(newPage) mustBe newPage.copy(id = 4)
     }
 
@@ -100,8 +90,8 @@ class PageRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with Injec
     }
 
     "save all pages by projectId" in {
-      val page4 = Page(-1, "conf", "page4", "rien à dire", 4, "confMarkdown", "", "project_id2>branch1>", 3)
-      val page5 = Page(-1, "test", "page5", "rien à dire", 5, "testMarkdown", "", "project_id3>branch1>", 3)
+      val page4 = Page(-1, "conf", "page4", "description5", 4, "confMarkdown", "", "project_id2>branch1>", 3)
+      val page5 = Page(-1, "test", "page5", "description6", 5, "testMarkdown", "", "project_id3>branch1>", 3)
       val expectedPages = Seq(page4.copy(id = 4), page5.copy(id = 5))
 
       pageRepository.saveAll(Seq(page4, page5)) must contain theSameElementsAs expectedPages

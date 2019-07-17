@@ -13,11 +13,6 @@ class StoreDirectoryAndPagesSteps extends ScalaDsl with EN with MockitoSugar {
 
   import CommonSteps._
 
-  When("""^synchronization action is triggered""") { () =>
-    response = route(app, FakeRequest("POST", s"/api/projects/suggestionsWS/synchronize")).get
-    await(response)
-  }
-
   Then("""^we have now those directories in the database$""") { directories: util.List[Directory] =>
     val expectedDirectories = directories.asScala.map(d => new Directory(d.id, d.name, d.label, d.description,d.order,d.relativePath,d.path,d.branchId))
     val actualDirectories = directoryRepository.findAll()

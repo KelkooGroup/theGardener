@@ -51,8 +51,8 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
   }
 
   private def parseAndSaveDirectoriesAndPages(project: Project, branch: Branch): Unit = {
-    val directory = pageService.processDirectory(branch, project.id + ">" + branch.name + ">/", getLocalRepository(project.id, branch.name) + project.documentationRootPath.get)
-    logger.info(s" directories and pages from ${directory.get.path} saved for project ${project.id} on branch ${branch.name}")
+    val directory = pageService.processDirectory(branch, project.id + ">" + branch.name + ">/", getLocalRepository(project.id, branch.name) + project.documentationRootPath.getOrElse("Problem saving directory"))
+    logger.info(s" directories and pages from the branch ${branch.name} saved for project ${project.id} on branch ${branch.name}")
   }
 
   private def checkoutBranches(project: Project, branches: Set[String]) = {
