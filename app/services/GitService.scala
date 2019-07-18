@@ -21,8 +21,12 @@ class GitService @Inject()(implicit ec: ExecutionContext) extends Logging {
 
   def clone(url: String, localDirectory: String): Future[Unit] = {
     Future {
-      Git.cloneRepository().setURI(url).setDirectory(new File(localDirectory)).call().close()
-      logger.info(s"Cloning $url to $localDirectory")
+      Try(Git.open(new File(localDirectory))).getOrElse {
+        Git.cloneRepository().setURI(url).setDirectory(new File(localDirectory)).call().close()
+        logger.info(s"Cloning $url to $localDirectory")
+      }
+
+      ()
 
     }.logError(s"Error while cloning repository $url in $localDirectory")
   }
