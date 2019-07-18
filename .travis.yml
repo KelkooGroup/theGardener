@@ -38,6 +38,8 @@ before_script:
     - 'cd frontend'
     - 'npm install -g @angular/cli'
     - 'export PATH=$(npm prefix -g)/bin:$PATH'
+    - 'export CI=true'
+    - 'npm cache verify'
     - 'npm install'
 
 script:

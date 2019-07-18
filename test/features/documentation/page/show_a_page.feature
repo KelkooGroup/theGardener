@@ -24,7 +24,7 @@ Feature: Generate a documentation page
 
 
     # TODO Make sure to have an index on the column "path"
-  @level_2_technical_details @nominal_case @ready
+  @level_2_technical_details @nominal_case @valid
   Scenario: generate a documentation page
     Given we have those directories in the database
       | id | name        | label         | description             | order | relativePath  | path                               | branchId |
@@ -41,15 +41,12 @@ Feature: Generate a documentation page
     Then I get the following json response body
 """
 {
-  "page":
-    {
-      "path": "suggestionsWS>master>/context",
-      "relativePath": "/context",
-      "name" : "context",
-      "label" : "The context",
-      "description": "Why providing suggestions",
-      "order": "0",
-      "markdown": "**Feature**: Provide book suggestions"
-    }
+  "path": "suggestionsWS>master>/context",
+  "relativePath": "/context",
+  "name" : "context",
+  "label" : "The context",
+  "description": "Why providing suggestions",
+  "order": 0,
+  "markdown": "**Feature**: Provide book suggestions"
 }
 """

@@ -38,7 +38,7 @@ Feature: As a user, I want some book suggestions so that I can do some discovery
 """
 Feature: As a user, I want some book suggestions so that I can do some discovery
     """
-    When the synchronization action is triggered by the scheduler
+    When BDD features synchronization action is triggered
     Then the file system store now the file "target/data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature"
 """
 Feature: As a user, I want some book suggestions so that I can do some discovery

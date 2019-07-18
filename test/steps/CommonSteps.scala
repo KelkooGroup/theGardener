@@ -48,6 +48,12 @@ object Injector {
   def inject[T: ClassTag]: T = injector.instanceOf[T]
 }
 
+case class ProjectTableRow(id: String, name: String, repositoryUrl: String, stableBranch: String, featuresRootPath: String, documentationRootPath: String){
+  def toProject(): Project = {
+    Project(this.id, this.name, this.repositoryUrl, this.stableBranch, this.featuresRootPath, Option(this.documentationRootPath))
+  }
+}
+
 
 object CommonSteps extends MockitoSugar with MustMatchers {
 
@@ -69,6 +75,8 @@ object CommonSteps extends MockitoSugar with MustMatchers {
   val projectRepository = inject[ProjectRepository]
   val featureService = inject[FeatureService]
   val tagRepository = inject[TagRepository]
+  val directoryRepository = inject[DirectoryRepository]
+  val pageRepository = inject[PageRepository]
   val config = inject[Config]
   val cache = inject[AsyncCacheApi]
 
@@ -152,9 +160,13 @@ class CommonSteps extends ScalaDsl with EN with MockitoSugar {
       SQL"TRUNCATE TABLE feature_tag".executeUpdate()
       SQL"TRUNCATE TABLE scenario_tag".executeUpdate()
       SQL"TRUNCATE TABLE tag".executeUpdate()
+      SQL"TRUNCATE TABLE page".executeUpdate()
+      SQL"TRUNCATE TABLE directory".executeUpdate()
       SQL"ALTER TABLE branch ALTER COLUMN id RESTART WITH 1".executeUpdate()
       SQL"ALTER TABLE feature ALTER COLUMN id RESTART WITH 1".executeUpdate()
       SQL"ALTER TABLE scenario ALTER COLUMN id RESTART WITH 1".executeUpdate()
+      SQL"ALTER TABLE page ALTER COLUMN id RESTART WITH 1".executeUpdate()
+      SQL"ALTER TABLE directory ALTER COLUMN id RESTART WITH 1".executeUpdate()
     }
   }
 
@@ -200,13 +212,16 @@ Scenario: providing several book suggestions
     Files.write(fullPath, content.getBytes())
   }
 
-  Given("""^we have the following projects$""") { projects: util.List[Project] =>
+  Given("""^we have the following projects$""") { projects: util.List[ProjectTableRow] =>
     val projectsWithAbsoluteUrl = projects.asScala.map { project =>
       if (project.repositoryUrl.contains("target/")) project.copy(
         repositoryUrl = Paths.get(project.repositoryUrl).toUri.toString,
-        featuresRootPath = project.featuresRootPath.fixPathSeparator)
+        featuresRootPath = project.featuresRootPath.fixPathSeparator,
+        documentationRootPath = if (project.documentationRootPath != null) project.documentationRootPath.fixPathSeparator else project.documentationRootPath
+      )
+
       else project
-    }
+    }.map(_.toProject())
 
     projectRepository.saveAll(projectsWithAbsoluteUrl)
 
@@ -215,6 +230,14 @@ Scenario: providing several book suggestions
 
   Given("""^we have those branches in the database$""") { branches: util.List[Branch] =>
     branchRepository.saveAll(branches.asScala)
+  }
+
+  Given("""^we have those directories in the database$""") { directories: util.List[Directory] =>
+    directoryRepository.saveAll(directories.asScala)
+  }
+
+  Given("""^we have those pages in the database$""") { pages: util.List[Page] =>
+    pageRepository.saveAll(pages.asScala)
   }
 
   Given("""^the cache is empty$""") { () =>
