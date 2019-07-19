@@ -6,7 +6,7 @@ import java.util
 import cucumber.api.DataTable
 import cucumber.api.scala._
 import models._
-import org.scalatest.mockito._
+import org.scalatestplus.mockito._
 import play.api.libs.json.Json
 import play.api.mvc.Result
 import play.api.test.Helpers._
@@ -64,8 +64,8 @@ class RegisterProjectSteps extends ScalaDsl with EN with MockitoSugar {
     Files.createDirectories(fullPath.getParent)
   }
 
-  When("""^a user register a new project with$""") { projects: util.List[Project] =>
-    registerProject(projects.get(0).copy(hierarchy = None, branches = None))
+  When("""^a user register a new project with$""") { projects: util.List[ProjectTableRow] =>
+    registerProject(projects.get(0).toProject().copy(hierarchy = None, branches = None))
   }
 
   When("""^a user register a new project in theGardener$""") { () =>
@@ -78,7 +78,7 @@ class RegisterProjectSteps extends ScalaDsl with EN with MockitoSugar {
     checkProjectsInDb(expectedProjects)
   }
 
-  Then("""^the projects settings are now$""") { projects: util.List[Project] =>
-    checkProjectsInDb(projects.asScala.map(_.copy(hierarchy = None, branches = None)))
+  Then("""^the projects settings are now$""") { projects: util.List[ProjectTableRow] =>
+    checkProjectsInDb(projects.asScala.map(_.toProject().copy(hierarchy = None, branches = None)))
   }
 }

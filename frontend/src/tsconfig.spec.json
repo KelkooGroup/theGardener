@@ -2,8 +2,8 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "outDir": "../out-tsc/spec",
+    "module": "es2015",
     "baseUrl": "./",
-    "module": "commonjs",
     "types": [
       "jasmine",
       "node"

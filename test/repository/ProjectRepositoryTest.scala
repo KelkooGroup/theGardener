@@ -24,8 +24,8 @@ class ProjectRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with In
     db.withConnection { implicit connection =>
 
       projects.foreach { project =>
-        SQL"""INSERT INTO project (id, name, repositoryUrl, stableBranch,featuresRootPath)
-           VALUES (${project.id}, ${project.name}, ${project.repositoryUrl},${project.stableBranch}, ${project.featuresRootPath})"""
+        SQL"""INSERT INTO project (id, name, repositoryUrl, stableBranch,featuresRootPath,documentationRootPath)
+           VALUES (${project.id}, ${project.name}, ${project.repositoryUrl},${project.stableBranch}, ${project.featuresRootPath}, ${project.documentationRootPath})"""
           .executeInsert()
       }
     }

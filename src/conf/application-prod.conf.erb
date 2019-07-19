@@ -1,6 +1,10 @@
 <% require 'kelkoo/erb_utils' %># This is the main configuration file for the application.
 # ~~~~~
 application.name="the_gardener"
+application.title=<%= value("the_gardener_application_title") %>
+appilcation.logoSrc=<%= value("the_gardener_application_logo_src") %>
+
+play.http.filters=filters.Filters
 
 isAlive.initialStatus=<%= value("the_gardener_isalive_initial_status") %>
 isAlive.strOK=<%= value("the_gardener_isalive_is_alive_keyword") %>
@@ -47,5 +51,7 @@ play.evolutions.autoApply = true
 projects.root.directory = <%= value("the_gardener_projects_root_directory") %>
 projects.synchronize.interval = <%= value("the_gardener_projects_synchronize_interval") %>
 projects.synchronize.initial.delay = <%= value("the_gardener_projects_synchronize_initial_delay") %>
+documentation.meta.file = <%= value("the_gardener_documentation_meta_file") %>
 
-
+play.server.http.idleTimeout = 60s
+play.server.akka.requestTimeout = 40s

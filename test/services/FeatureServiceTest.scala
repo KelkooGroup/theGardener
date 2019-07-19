@@ -5,7 +5,7 @@ import models.Branch
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import org.scalatest._
-import org.scalatest.mockito._
+import org.scalatestplus.mockito._
 import repository.FeatureRepository
 
 class FeatureServiceTest extends WordSpec with MustMatchers with MockitoSugar {
@@ -17,7 +17,7 @@ class FeatureServiceTest extends WordSpec with MustMatchers with MockitoSugar {
       when(featureRepository.findByBranchIdAndPath(any[Long], any[String])).thenReturn(None)
 
       val branch = Branch(1, "master", isStable = true, "test")
-      val feature = new FeatureService(ConfigFactory.load(), featureRepository).parseFeatureFile("test", branch, "test/features/generate_documentation/show_a_feature.feature").get
+      val feature = new FeatureService(ConfigFactory.load(), featureRepository).parseFeatureFile("test", branch, "test/features/documentation/gherkin/show_scenarios.feature").get
 
       feature.name mustBe "Generate documentation"
       feature.description must include("As a user,")

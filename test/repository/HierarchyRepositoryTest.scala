@@ -82,7 +82,7 @@ class HierarchyRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with 
 
     "find hierarchyNodes by projectId" in {
       db.withConnection { implicit connection =>
-        SQL"INSERT INTO project (id, name, repositoryUrl, stableBranch,featuresRootPath) VALUES ('id1', 'name1', 'repositoryUrl1', 'stableBranch1', 'featuresRootPath1')".executeInsert()
+        SQL"INSERT INTO project (id, name, repositoryUrl, stableBranch,featuresRootPath,documentationRootPath) VALUES ('id1', 'name1', 'repositoryUrl1', 'stableBranch1', 'featuresRootPath1', '/doc')".executeInsert()
         SQL"INSERT INTO project_hierarchyNode (projectId, hierarchyId) VALUES ('id1', 'id1')".executeInsert()
         SQL"INSERT INTO project_hierarchyNode (projectId, hierarchyId) VALUES ('id1', 'id2')".executeInsert()
       }

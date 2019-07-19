@@ -10,7 +10,7 @@ import cucumber.api.scala.{EN, ScalaDsl}
 import models.Feature._
 import models._
 import org.eclipse.jgit.api._
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito._
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.api.test._
@@ -120,13 +120,9 @@ class GetFeaturesSteps extends ScalaDsl with EN with MockitoSugar {
     Await.result(future, 30.seconds)
   }
 
-  When("""^the synchronization action is triggered by the scheduler$""") { () =>
-    Thread.sleep(2000)
-  }
-
   When("""^the synchronization action is triggered by the webhook for project "([^"]*)"$""") { project: String =>
     response = route(app, FakeRequest("POST", s"/api/projects/$project/synchronize")).get
-    await(response)
+    Await.result(response, 30.seconds)
   }
 
   Then("""^the project BDD features of this project are retrieved from the remote server$""") { () =>

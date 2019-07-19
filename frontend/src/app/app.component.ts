@@ -1,4 +1,5 @@
 import {Component, ElementRef, OnInit, Renderer2, ViewChild} from '@angular/core';
+import {ConfigService} from './_services/config.service';
 
 @Component({
   selector: 'app-root',
@@ -8,13 +9,18 @@ import {Component, ElementRef, OnInit, Renderer2, ViewChild} from '@angular/core
 export class AppComponent implements OnInit {
 
   headerHeight = 70;
-  contentHeight : number;
+  contentHeight: number;
   footerHeight = 40;
+  logoSrc: string;
+  apptitle: string;
 
-  @ViewChild('content')
-  content: ElementRef;
+  @ViewChild('content', {static: true}) content: ElementRef;
 
-  constructor(private renderer: Renderer2) {
+  constructor(private renderer: Renderer2, private applicationService: ConfigService) {
+    this.applicationService.getConfigs().subscribe(result => {
+      this.apptitle = result.title;
+      this.logoSrc = result.logoSrc;
+    });
   }
 
   ngOnInit() {
@@ -26,12 +32,12 @@ export class AppComponent implements OnInit {
   }
 
   resize() {
-    this.contentHeight = window.innerHeight - this.headerHeight - this.footerHeight ;
-    console.log("Resize content: "+ this.contentHeight)
+    this.contentHeight = window.innerHeight - this.headerHeight - this.footerHeight;
+    console.log('Resize content: ' + this.contentHeight);
     this.renderer.setStyle(
       this.content.nativeElement,
       'height',
-      this.contentHeight+ 'px'
+      this.contentHeight + 'px'
     );
 
   }

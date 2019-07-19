@@ -1,9 +1,9 @@
-<div  [style.height.px]="headerHeight"  >
- <app-header  [appTitle]="'Documentation'"   [logoSrc]="'assets/images/logo_kelkoogroup_white.png'" ></app-header>
-</div>
-  <div  #content class="content"    (window:resize)="onResize($event)" >
-    <router-outlet></router-outlet>
-  </div>
-<div  [style.height.px]="footerHeight" >
- <app-footer></app-footer>
-</div>
+<header>
+  <app-header [appTitle]="apptitle" [logoSrc]="logoSrc"></app-header>
+</header>
+<body #content class="content" (window:resize)="onResize($event)">
+<router-outlet></router-outlet>
+</body>
+<footer>
+  <app-footer></app-footer>
+</footer>

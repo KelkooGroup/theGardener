@@ -9,6 +9,7 @@ import java.util
 import anorm._
 import com.typesafe.config._
 import controllers._
+import controllers.dto._
 import cucumber.api.DataTable
 import cucumber.api.scala._
 import julienrf.json.derived
@@ -18,7 +19,7 @@ import net.ruippeixotog.scalascraper.browser._
 import org.apache.commons.io._
 import org.eclipse.jgit.api._
 import org.scalatest._
-import org.scalatest.mockito._
+import org.scalatestplus.mockito._
 import play.api.Mode
 import play.api.cache._
 import play.api.db._
@@ -47,6 +48,12 @@ object Injector {
   def inject[T: ClassTag]: T = injector.instanceOf[T]
 }
 
+case class ProjectTableRow(id: String, name: String, repositoryUrl: String, stableBranch: String, featuresRootPath: String, documentationRootPath: String){
+  def toProject(): Project = {
+    Project(this.id, this.name, this.repositoryUrl, this.stableBranch, this.featuresRootPath, Option(this.documentationRootPath))
+  }
+}
+
 
 object CommonSteps extends MockitoSugar with MustMatchers {
 
@@ -68,6 +75,8 @@ object CommonSteps extends MockitoSugar with MustMatchers {
   val projectRepository = inject[ProjectRepository]
   val featureService = inject[FeatureService]
   val tagRepository = inject[TagRepository]
+  val directoryRepository = inject[DirectoryRepository]
+  val pageRepository = inject[PageRepository]
   val config = inject[Config]
   val cache = inject[AsyncCacheApi]
 
@@ -151,9 +160,13 @@ class CommonSteps extends ScalaDsl with EN with MockitoSugar {
       SQL"TRUNCATE TABLE feature_tag".executeUpdate()
       SQL"TRUNCATE TABLE scenario_tag".executeUpdate()
       SQL"TRUNCATE TABLE tag".executeUpdate()
+      SQL"TRUNCATE TABLE page".executeUpdate()
+      SQL"TRUNCATE TABLE directory".executeUpdate()
       SQL"ALTER TABLE branch ALTER COLUMN id RESTART WITH 1".executeUpdate()
       SQL"ALTER TABLE feature ALTER COLUMN id RESTART WITH 1".executeUpdate()
       SQL"ALTER TABLE scenario ALTER COLUMN id RESTART WITH 1".executeUpdate()
+      SQL"ALTER TABLE page ALTER COLUMN id RESTART WITH 1".executeUpdate()
+      SQL"ALTER TABLE directory ALTER COLUMN id RESTART WITH 1".executeUpdate()
     }
   }
 
@@ -199,13 +212,16 @@ Scenario: providing several book suggestions
     Files.write(fullPath, content.getBytes())
   }
 
-  Given("""^we have the following projects$""") { projects: util.List[Project] =>
+  Given("""^we have the following projects$""") { projects: util.List[ProjectTableRow] =>
     val projectsWithAbsoluteUrl = projects.asScala.map { project =>
       if (project.repositoryUrl.contains("target/")) project.copy(
         repositoryUrl = Paths.get(project.repositoryUrl).toUri.toString,
-        featuresRootPath = project.featuresRootPath.fixPathSeparator)
+        featuresRootPath = project.featuresRootPath.fixPathSeparator,
+        documentationRootPath = if (project.documentationRootPath != null) project.documentationRootPath.fixPathSeparator else project.documentationRootPath
+      )
+
       else project
-    }
+    }.map(_.toProject())
 
     projectRepository.saveAll(projectsWithAbsoluteUrl)
 
@@ -214,6 +230,14 @@ Scenario: providing several book suggestions
 
   Given("""^we have those branches in the database$""") { branches: util.List[Branch] =>
     branchRepository.saveAll(branches.asScala)
+  }
+
+  Given("""^we have those directories in the database$""") { directories: util.List[Directory] =>
+    directoryRepository.saveAll(directories.asScala)
+  }
+
+  Given("""^we have those pages in the database$""") { pages: util.List[Page] =>
+    pageRepository.saveAll(pages.asScala)
   }
 
   Given("""^the cache is empty$""") { () =>
@@ -265,9 +289,9 @@ Scenario: providing several book suggestions
 
     implicit val branchFormat = Json.format[BranchDocumentationDTO]
     implicit val projectFormat = Json.format[ProjectDocumentationDTO]
-    implicit val documentationFormat = Json.format[Documentation]
+    implicit val documentationFormat = Json.format[DocumentationDTO]
 
-    val documentation = Json.parse(contentAsString(response)).as[Documentation]
+    val documentation = Json.parse(contentAsString(response)).as[DocumentationDTO]
     val expectedScenarios = dataTable.asMaps(classOf[String], classOf[String]).asScala.toSeq
 
     expectedScenarios.length mustBe nbRealScenario(documentation)
@@ -297,7 +321,7 @@ Scenario: providing several book suggestions
     }
   }
 
-  def nbRealScenario(documentation: Documentation): Int = {
+  def nbRealScenario(documentation: DocumentationDTO): Int = {
     documentation.projects.map(p => if (p.branches.nonEmpty) nbRealScenario(p.branches.head) else 0).sum + documentation.children.map(nbRealScenario).sum
   }
 
@@ -305,7 +329,7 @@ Scenario: providing several book suggestions
     branch.features.map(_.scenarios.length).sum
   }
 
-  def getHierarchy(hierarchy: String, source: Documentation): Option[Documentation] = {
+  def getHierarchy(hierarchy: String, source: DocumentationDTO): Option[DocumentationDTO] = {
     if (source.id == hierarchy) Some(source)
     else if (source.children.isEmpty) None
     else source.children.flatMap(getHierarchy(hierarchy, _)).headOption
