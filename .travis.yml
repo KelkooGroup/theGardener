@@ -7,11 +7,6 @@ addons:
         organization: kelkoo
         token:
             secure: 6c199a8887e5909a63eb3d6ffcd70c1ca33d6757
-    apt:
-        sources:
-            - google-chrome
-        packages:
-            - google-chrome-stable
 
 services:
   - xvfb
