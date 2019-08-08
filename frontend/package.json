@@ -48,7 +48,7 @@
     "@angular/cli": "8.1.2",
     "@angular/compiler-cli": "8.1.2",
     "@angular/language-service": "8.1.2",
-    "@types/chai": "4.1.7",
+    "@types/chai": "4.2.0",
     "@types/chai-as-promised": "7.1.0",
     "@types/cucumber": "4.0.7",
     "@types/jasmine": "3.3.16",
