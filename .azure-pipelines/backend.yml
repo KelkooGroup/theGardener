@@ -9,6 +9,7 @@
     paths:
       exclude:
       - frontend/*
+      - .azure-pipelines/frontend.yml
       - doc/*
 
   steps:

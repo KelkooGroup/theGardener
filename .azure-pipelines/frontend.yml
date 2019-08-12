@@ -9,6 +9,7 @@
     paths:
       include:
       - frontend/*
+      - .azure-pipelines/frontend.yml
 
   steps:
   - task: NodeTool@0
