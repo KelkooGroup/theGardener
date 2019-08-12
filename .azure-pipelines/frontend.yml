@@ -19,7 +19,7 @@ steps:
 
 - script: |
     cd frontend
-    sudo apt-get remove chrome-stable
+    sudo apt-get remove google-chrome-stable
     npm install -g @angular/cli
     npm install
   displayName: 'npm install'
