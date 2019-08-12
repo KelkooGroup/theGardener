@@ -13,8 +13,10 @@ trigger:
 pr: none
 
 steps:
-- download: current
-  artifact: scala-test-reports
+- task: DownloadPipelineArtifact@2
+  inputs:
+    artifact: '.sbt'
+    path: /home/vsts/.sbt
   
 - script: |
     [ ! -f /usr/local/bin/sbt ] && echo "deb https://dl.bintray.com/sbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list
