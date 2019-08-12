@@ -69,5 +69,5 @@ steps:
 # - publish: target/scala-2.12/scapegoat-report/scapegoat-scalastyle.xml
   # artifact: scapegoat
 
-- publish: target/scala-2.12/scoverage-report/scoverage.xml
-  artifact: scoverage
+# - publish: target/scala-2.12/scoverage-report/scoverage.xml
+  # artifact: scoverage
