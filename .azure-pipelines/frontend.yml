@@ -58,3 +58,9 @@ steps:
 
 - publish: /opt/sonarscanner
   artifact: sonar-scanner
+
+- publish: $(System.DefaultWorkingDirectory)/frontend/report.json
+  artifact: frontend-test-report
+
+- publish: $(System.DefaultWorkingDirectory)/frontend/coverage/lcov.info
+  artifact: lcov

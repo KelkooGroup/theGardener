@@ -14,10 +14,10 @@ pr: none
 
 steps:
 - script: |
-    echo "deb https://dl.bintray.com/sbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list
-    sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823
-    sudo apt-get update  -o Dir::Etc::sourcelist=/etc/apt/sources.list.d/sbt.list
-    sudo apt-get install sbt
+    [ ! -f /usr/local/bin/sbt ] && echo "deb https://dl.bintray.com/sbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list
+    [ ! -f /usr/local/bin/sbt ] && sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823
+    [ ! -f /usr/local/bin/sbt ] && sudo apt-get update  -o Dir::Etc::sourcelist=/etc/apt/sources.list.d/sbt.list
+    [ ! -f /usr/local/bin/sbt ] && sudo apt-get install sbt
     which sbt
     sbt sbtVersion
   displayName: 'install sbt'
@@ -43,11 +43,26 @@ steps:
     sonar-scanner -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=kelkoo -Dsonar.login=6c199a8887e5909a63eb3d6ffcd70c1ca33d6757
   displayName: 'sonar-scanner'
 
+- publish: /usr/local/bin/sbt
+  artifact: sbt
+
+- publish: /home/vsts/.sbt
+  artifact: .sbt
+
 - publish: /home/vsts/.ivy2
   artifact: ivy2
 
-- publish: /home/vsts/.sbt
-  artifact: sbt
-
 - publish: /opt/sonarscanner
   artifact: sonar-scanner
+
+- publish: $(System.DefaultWorkingDirectory)/target/test-reports
+  artifact: scala-test-reports
+
+- publish: $(System.DefaultWorkingDirectory)/target/scalastyle-result.xml
+  artifact: scalastyle
+
+- publish: $(System.DefaultWorkingDirectory)/target/scala-2.12/scapegoat-report/scapegoat-scalastyle.xml
+  artifact: scapegoat
+
+- publish: $(System.DefaultWorkingDirectory)/target/scala-2.12/scoverage-report/scoverage.xml
+  artifact: scoverage
