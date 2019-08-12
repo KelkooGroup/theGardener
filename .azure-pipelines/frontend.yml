@@ -22,6 +22,7 @@ steps:
     npm install -g @angular/cli
     npm install
     cd ./node_modules/protractor && npm i webdriver-manager@latest
+    npm run pree2e
   displayName: 'npm install'
 
 - script: |
