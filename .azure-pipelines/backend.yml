@@ -10,7 +10,7 @@ trigger:
     - frontend/*
     - .azure-pipelines/frontend.yml
     - doc/*
-      
+
 steps:
 - script: |
     echo "deb https://dl.bintray.com/sbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list
@@ -41,11 +41,11 @@ steps:
     sonar-scanner -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=kelkoo -Dsonar.login=6c199a8887e5909a63eb3d6ffcd70c1ca33d6757
   displayName: 'sonar-scanner'
 
-- publish: $(System.DefaultWorkingDirectory)/.ivy2
+- publish: ~/.ivy2
   artifact: ivy2
 
-- publish: $(System.DefaultWorkingDirectory)/.sbt
+- publish: ~/.sbt
   artifact: sbt
 
-- publish: $(System.DefaultWorkingDirectory)/sonar-scanner-cli-4.0.0.1744-linux.zip
+- publish: /opt/sonarscanner/sonar-scanner-cli-4.0.0.1744-linux.zip
   artifact: sonar-scanner

@@ -15,9 +15,9 @@ steps:
   inputs:
     versionSpec: '10.x'
   displayName: 'Install Node.js'
-  
+
 - script: |
-    apt-get autoremove google-chrome-stable
+    sudo apt-get autoremove google-chrome-stable
     cd frontend
     npm install -g @angular/cli
     npm install
@@ -40,7 +40,7 @@ steps:
 - script: |
     sudo mkdir /opt/sonarscanner
     cd /opt/sonarscanner
-    sudo wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.0.0.1744-linux.zip
+    [ ! -f sonar-scanner-cli-4.0.0.1744-linux.zip ] && sudo wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.0.0.1744-linux.zip
     sudo unzip sonar-scanner-cli-4.0.0.1744-linux.zip
     sudo rm sonar-scanner-cli-4.0.0.1744-linux.zip
     sudo nano sonar-scanner-cli-4.0.0.1744-linux/conf/sonar-scanner.properties
@@ -53,7 +53,7 @@ steps:
   displayName: 'sonar-scanner'
 
 - publish: $(System.DefaultWorkingDirectory)/frontend/node_modules
-  artifact: ivy2
+  artifact: node_modules
 
-- publish: $(System.DefaultWorkingDirectory)/sonar-scanner-cli-4.0.0.1744-linux.zip
+- publish: /opt/sonarscanner/sonar-scanner-cli-4.0.0.1744-linux.zip
   artifact: sonar-scanner
