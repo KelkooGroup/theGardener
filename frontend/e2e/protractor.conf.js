@@ -2,7 +2,6 @@
 // https://github.com/angular/protractor/blob/master/lib/config.ts
 
 const { SpecReporter } = require('jasmine-spec-reporter');
-const puppeteer = require('puppeteer');
 
 exports.config = {
   allScriptsTimeout: 22000,
@@ -12,8 +11,7 @@ exports.config = {
   capabilities: {
     browserName: 'chrome',
     chromeOptions: {
-      args: process.env.CI === 'true' ? ['--headless', '--no-sandbox', '--disable-dev-shm-usage'] : [],
-	  binary: puppeteer.executablePath(),
+      args: process.env.CI === 'true' ? ['--headless', '--no-sandbox', '--disable-dev-shm-usage'] : []
     }
   },
   directConnect: true,

@@ -10,7 +10,7 @@
     "test-no-watch": "ng test --watch=false --progress=false",
     "lint": "ng lint",
     "pree2e": "webdriver-manager update --gecko=false",
-    "e2e": "ng e2e --webdriver-update=false"
+    "e2e": "ng e2e"
   },
   "private": true,
   "dependencies": {
