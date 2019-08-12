@@ -23,9 +23,8 @@ steps:
     [ ! -f /usr/local/bin/sbt ] && sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823
     [ ! -f /usr/local/bin/sbt ] && sudo apt-get update  -o Dir::Etc::sourcelist=/etc/apt/sources.list.d/sbt.list
     [ ! -f /usr/local/bin/sbt ] && sudo apt-get install sbt
-    ls -la /home/vsts/
-    touch /home/vsts/test
-    sbt -sbtDir $(sbt-dir) -ivy /tmp/$(ivy2-dir) sbtVersion
+    sbt -sbt-dir $(sbt-dir) -ivy /tmp/$(ivy2-dir) sbtVersion
+    ls -la
   displayName: 'install sbt'
 
 # - script: sbt clean coverage test coverageReport scalastyle scapegoat
@@ -57,6 +56,9 @@ steps:
 
 - publish: $(ivy2-dir)
   artifact: ivy2
+  
+ - publish: project/target
+   artifact: project-target
 
 # - publish: /opt/sonarscanner
   # artifact: sonar-scanner
