@@ -19,6 +19,7 @@ steps:
     [ ! -f /usr/local/bin/sbt ] && sudo apt-get update  -o Dir::Etc::sourcelist=/etc/apt/sources.list.d/sbt.list
     [ ! -f /usr/local/bin/sbt ] && sudo apt-get install sbt
     which sbt
+    ls -la .
     sbt sbtVersion
   displayName: 'install sbt'
 
