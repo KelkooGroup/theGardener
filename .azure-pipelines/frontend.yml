@@ -9,6 +9,7 @@ trigger:
     include:
     - frontend/*
     - .azure-pipelines/frontend.yml
+pr: none
 
 steps:
 - task: NodeTool@0
@@ -38,10 +39,10 @@ steps:
 - script: |
     sudo mkdir /opt/sonarscanner
     cd /opt/sonarscanner
-    [ ! -f sonar-scanner-cli-4.0.0.1744-linux.zip ] && sudo wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.0.0.1744-linux.zip
-    sudo unzip sonar-scanner-cli-4.0.0.1744-linux.zip
-    sudo rm sonar-scanner-cli-4.0.0.1744-linux.zip
-    sudo nano sonar-scanner-cli-4.0.0.1744-linux/conf/sonar-scanner.properties
+    [ ! -f sonar-scanner-cli-4.0.0.1744-linux ] && sudo wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.0.0.1744-linux.zip
+    [ ! -f sonar-scanner-cli-4.0.0.1744-linux ] sudo unzip sonar-scanner-cli-4.0.0.1744-linux.zip
+    [ ! -f sonar-scanner-cli-4.0.0.1744-linux ] sudo rm sonar-scanner-cli-4.0.0.1744-linux.zip
+    [ ! -f sonar-scanner-cli-4.0.0.1744-linux ] sudo nano sonar-scanner-cli-4.0.0.1744-linux/conf/sonar-scanner.properties
     sudo chmod +x sonar-scanner-4.0.0.1744-linux/bin/sonar-scanner
     sudo ln -s /opt/sonarscanner/sonar-scanner-4.0.0.1744-linux/bin/sonar-scanner /usr/local/bin/sonar-scanner
   displayName: 'install sonar-scanner'
@@ -53,5 +54,5 @@ steps:
 - publish: $(System.DefaultWorkingDirectory)/frontend/node_modules
   artifact: node_modules
 
-- publish: /opt/sonarscanner/sonar-scanner-cli-4.0.0.1744-linux.zip
+- publish: /opt/sonarscanner
   artifact: sonar-scanner
