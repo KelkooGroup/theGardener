@@ -56,9 +56,9 @@ steps:
 
 - publish: $(ivy2-dir)
   artifact: ivy2
-  
- - publish: project/target
-   artifact: project-target
+
+- publish: project/target
+  artifact: project-target
 
 # - publish: /opt/sonarscanner
   # artifact: sonar-scanner
