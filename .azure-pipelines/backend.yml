@@ -14,7 +14,7 @@ pr: none
 
 steps:
 - download: current
-  artifact: ivy2
+  artifact: scala-test-reports
   
 - script: |
     [ ! -f /usr/local/bin/sbt ] && echo "deb https://dl.bintray.com/sbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list
@@ -59,14 +59,14 @@ steps:
 - publish: /opt/sonarscanner
   artifact: sonar-scanner
 
-- publish: $(System.DefaultWorkingDirectory)/target/test-reports
+- publish: target/test-reports
   artifact: scala-test-reports
 
-- publish: $(System.DefaultWorkingDirectory)/target/scalastyle-result.xml
+- publish: target/scalastyle-result.xml
   artifact: scalastyle
 
-- publish: $(System.DefaultWorkingDirectory)/target/scala-2.12/scapegoat-report/scapegoat-scalastyle.xml
+- publish: target/scala-2.12/scapegoat-report/scapegoat-scalastyle.xml
   artifact: scapegoat
 
-- publish: $(System.DefaultWorkingDirectory)/target/scala-2.12/scoverage-report/scoverage.xml
+- publish: target/scala-2.12/scoverage-report/scoverage.xml
   artifact: scoverage
