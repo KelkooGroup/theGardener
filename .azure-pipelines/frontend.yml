@@ -17,6 +17,7 @@
     displayName: 'Install Node.js'
 
   - script: |
+      apt-get autoremove google-chrome-stable
       cd frontend
       npm install -g @angular/cli
       npm install
