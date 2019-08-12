@@ -21,7 +21,7 @@ steps:
     cd frontend
     npm install -g @angular/cli
     npm install
-    ./node_modules/ncp/bin/ncp node_modules/webdriver-manager node_modules/protractor/node_modules/webdriver-manager
+    cd ./node_modules/protractor && npm i webdriver-manager@latest
   displayName: 'npm install'
 
 - script: |
