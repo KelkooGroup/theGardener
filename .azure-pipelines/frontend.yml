@@ -19,9 +19,9 @@ steps:
 
 - script: |
     cd frontend
-    sudo apt-get remove google-chrome-stable
     npm install -g @angular/cli
     npm install
+    ncp node_modules/webdriver-manager node_modules/protractor/node_modules/webdriver-manager
   displayName: 'npm install'
 
 - script: |
