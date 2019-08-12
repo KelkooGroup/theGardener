@@ -12,6 +12,10 @@ trigger:
     - doc/*
 pr: none
 
+variables:
+  sbt-dir: $(System.DefaultWorkingDirectory)/.sbt
+  ivy2-dir: $(System.DefaultWorkingDirectory)/.ivy2
+
 steps:
  
 - script: |
@@ -21,7 +25,7 @@ steps:
     [ ! -f /usr/local/bin/sbt ] && sudo apt-get install sbt
     ls -la /home/vsts/
     touch /home/vsts/test
-    sbt sbtVersion
+    sbt -sbtDir $(sbt-dir) -ivy /tmp/$(ivy2-dir) sbtVersion
   displayName: 'install sbt'
 
 # - script: sbt clean coverage test coverageReport scalastyle scapegoat
@@ -48,13 +52,10 @@ steps:
 - publish: /usr/local/bin/sbt
   artifact: sbt
 
-- publish: /home/vsts/test
-  artifact: test
+- publish: $(sbt-dir)
+  artifact: $(sbt-dir)
 
-- publish: /home/vsts/.sbt
-  artifact: .sbt
-
-- publish: /home/vsts/.ivy2
+- publish: $(ivy2-dir)
   artifact: ivy2
 
 # - publish: /opt/sonarscanner
