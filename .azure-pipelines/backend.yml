@@ -13,44 +13,43 @@ trigger:
 pr: none
 
 steps:
-- task: DownloadPipelineArtifact@2
-  inputs:
-    artifact: '.sbt'
-    path: /home/vsts/.sbt
-  
+ 
 - script: |
     [ ! -f /usr/local/bin/sbt ] && echo "deb https://dl.bintray.com/sbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list
     [ ! -f /usr/local/bin/sbt ] && sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823
     [ ! -f /usr/local/bin/sbt ] && sudo apt-get update  -o Dir::Etc::sourcelist=/etc/apt/sources.list.d/sbt.list
     [ ! -f /usr/local/bin/sbt ] && sudo apt-get install sbt
-    which sbt
-    ls -la $(Pipeline.Workspace)
+    ls -la /home/vsts/
+    touch /home/vsts/test
     sbt sbtVersion
   displayName: 'install sbt'
 
-- script: sbt clean coverage test coverageReport scalastyle scapegoat
-  displayName: 'sbt test'
+# - script: sbt clean coverage test coverageReport scalastyle scapegoat
+  # displayName: 'sbt test'
 
-- script: sbt dist
-  displayName: 'sbt dist'
+# - script: sbt dist
+  # displayName: 'sbt dist'
 
-- script: |
-    sudo mkdir /opt/sonarscanner
-    cd /opt/sonarscanner
-    [ ! -d sonar-scanner-cli-4.0.0.1744-linux ] && sudo wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.0.0.1744-linux.zip
-    [ ! -d sonar-scanner-cli-4.0.0.1744-linux ] && sudo unzip sonar-scanner-cli-4.0.0.1744-linux.zip
-    [ ! -d sonar-scanner-cli-4.0.0.1744-linux ] && sudo rm sonar-scanner-cli-4.0.0.1744-linux.zip
-    [ ! -d sonar-scanner-cli-4.0.0.1744-linux ] && sudo nano sonar-scanner-cli-4.0.0.1744-linux/conf/sonar-scanner.properties
-    sudo chmod +x sonar-scanner-4.0.0.1744-linux/bin/sonar-scanner
-    sudo ln -s /opt/sonarscanner/sonar-scanner-4.0.0.1744-linux/bin/sonar-scanner /usr/local/bin/sonar-scanner
-  displayName: 'install sonar-scanner'
+# - script: |
+    # sudo mkdir /opt/sonarscanner
+    # cd /opt/sonarscanner
+    # [ ! -d sonar-scanner-cli-4.0.0.1744-linux ] && sudo wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.0.0.1744-linux.zip
+    # [ ! -d sonar-scanner-cli-4.0.0.1744-linux ] && sudo unzip sonar-scanner-cli-4.0.0.1744-linux.zip
+    # [ ! -d sonar-scanner-cli-4.0.0.1744-linux ] && sudo rm sonar-scanner-cli-4.0.0.1744-linux.zip
+    # [ ! -d sonar-scanner-cli-4.0.0.1744-linux ] && sudo nano sonar-scanner-cli-4.0.0.1744-linux/conf/sonar-scanner.properties
+    # sudo chmod +x sonar-scanner-4.0.0.1744-linux/bin/sonar-scanner
+    # sudo ln -s /opt/sonarscanner/sonar-scanner-4.0.0.1744-linux/bin/sonar-scanner /usr/local/bin/sonar-scanner
+  # displayName: 'install sonar-scanner'
 
-- script: |
-    sonar-scanner -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=kelkoo -Dsonar.login=6c199a8887e5909a63eb3d6ffcd70c1ca33d6757
-  displayName: 'sonar-scanner'
+# - script: |
+    # sonar-scanner -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=kelkoo -Dsonar.login=6c199a8887e5909a63eb3d6ffcd70c1ca33d6757
+  # displayName: 'sonar-scanner'
 
 - publish: /usr/local/bin/sbt
   artifact: sbt
+
+- publish: /home/vsts/test
+  artifact: test
 
 - publish: /home/vsts/.sbt
   artifact: .sbt
@@ -58,17 +57,17 @@ steps:
 - publish: /home/vsts/.ivy2
   artifact: ivy2
 
-- publish: /opt/sonarscanner
-  artifact: sonar-scanner
+# - publish: /opt/sonarscanner
+  # artifact: sonar-scanner
 
-- publish: target/test-reports
-  artifact: scala-test-reports
+# - publish: target/test-reports
+  # artifact: scala-test-reports
 
-- publish: target/scalastyle-result.xml
-  artifact: scalastyle
+# - publish: target/scalastyle-result.xml
+  # artifact: scalastyle
 
-- publish: target/scala-2.12/scapegoat-report/scapegoat-scalastyle.xml
-  artifact: scapegoat
+# - publish: target/scala-2.12/scapegoat-report/scapegoat-scalastyle.xml
+  # artifact: scapegoat
 
 - publish: target/scala-2.12/scoverage-report/scoverage.xml
   artifact: scoverage
