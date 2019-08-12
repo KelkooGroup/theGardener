@@ -17,7 +17,6 @@ steps:
   displayName: 'Install Node.js'
 
 - script: |
-    sudo apt-get autoremove google-chrome-stable
     cd frontend
     npm install -g @angular/cli
     npm install
@@ -25,8 +24,7 @@ steps:
 
 - script: |
     cd frontend
-    export DISPLAY=:10
-    sudo /usr/bin/Xvfb :10 -ac>>/tmp/Xvfb.out 2>&1 &
+    export CI=true
     ./node_modules/tslint/bin/tslint -t json -o report.json --project . --force
     ng test --watch=false --progress=false --code-coverage
     ng e2e

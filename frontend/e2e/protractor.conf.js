@@ -11,7 +11,8 @@ exports.config = {
   capabilities: {
     browserName: 'chrome',
     chromeOptions: {
-      args: process.env.CI === 'true' ? ['--headless', '--no-sandbox', '--disable-dev-shm-usage'] : []
+      args: process.env.CI === 'true' ? ['--headless', '--no-sandbox', '--disable-dev-shm-usage'] : [],
+	  binary: puppeteer.executablePath(),
     }
   },
   directConnect: true,

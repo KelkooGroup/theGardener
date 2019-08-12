@@ -41,10 +41,10 @@ steps:
     sonar-scanner -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=kelkoo -Dsonar.login=6c199a8887e5909a63eb3d6ffcd70c1ca33d6757
   displayName: 'sonar-scanner'
 
-- publish: ~/.ivy2
+- publish: /home/vsts/.ivy2
   artifact: ivy2
 
-- publish: ~/.sbt
+- publish: /home/vsts/.sbt
   artifact: sbt
 
 - publish: /opt/sonarscanner/sonar-scanner-cli-4.0.0.1744-linux.zip
