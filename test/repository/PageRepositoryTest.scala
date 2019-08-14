@@ -70,6 +70,10 @@ class PageRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with Injec
       pageRepository.findAll() must contain theSameElementsAs pages
     }
 
+    "get all pages path" in {
+      pageRepository.findAllPagePath() must contain theSameElementsAs pages.map(p => PagePath(p.directoryId, p.path))
+    }
+
     "get all pages by projectId" in {
       pageRepository.findAllByDirectoryId(1) must contain theSameElementsAs Seq(page1, page2)
     }

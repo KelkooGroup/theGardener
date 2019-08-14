@@ -36,13 +36,13 @@ class PageService @Inject()(config: Config, directoryRepository: DirectoryReposi
 
         val currentDirectory = directoryRepository.save(Directory(-1, name, meta.directory.label, meta.directory.description, order, relativePath, path, branch.id))
         val pages: Seq[Page] = meta.directory.pages.zipWithIndex.flatMap { case (pagePath, index) => processPage(currentDirectory, localDirectoryPath, pagePath, index) }
-        val children: Seq[Directory] = meta.directory.children.zipWithIndex.flatMap { case (name, index) => processDirectory(branch, path + name + "/", localDirectoryPath + "/" + name, relativePath + name + "/", index, false) }
+        val children: Seq[Directory] = meta.directory.children.zipWithIndex.flatMap { case (childName, index) => processDirectory(branch, path + childName + "/", localDirectoryPath + "/" + childName, relativePath + childName + "/", index, isRoot = false) }
 
         if (pages.isEmpty && children.isEmpty) {
           directoryRepository.delete(currentDirectory)
         }
 
-        Directory(currentDirectory.id, currentDirectory.name, currentDirectory.label, currentDirectory.description, currentDirectory.order, currentDirectory.relativePath, currentDirectory.path, currentDirectory.branchId, pages, children)
+        Directory(currentDirectory.id, currentDirectory.name, currentDirectory.label, currentDirectory.description, currentDirectory.order, currentDirectory.relativePath, currentDirectory.path, currentDirectory.branchId, pages.map(_.path), children)
 
       }.logError(s"Error while parsing directory $path").toOption
     } else None

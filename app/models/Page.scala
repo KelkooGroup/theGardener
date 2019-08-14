@@ -9,3 +9,5 @@ case class Page(id: Long,
                 relativePath: String,
                 path: String,
                 directoryId: Long)
+
+case class PagePath(directoryId: Long, path: String)

@@ -11,6 +11,8 @@ class MenuServiceTest extends WordSpec with MustMatchers with MockitoSugar {
 
   val featureRepository = mock[FeatureRepository]
 
+  val separator = "."
+
   val rootNode = HierarchyNode(".", "root", " Hierarchy root", "Views", "View")
   val engNode = HierarchyNode(".01.", "eng", "Engineering view", "System groups", "System group")
   val libraryNode = HierarchyNode(".01.01.", "library", "Library system group", "Systems", "System")
@@ -32,16 +34,16 @@ class MenuServiceTest extends WordSpec with MustMatchers with MockitoSugar {
 
   "MenuService" should {
     "find if a hierarchy node is the child of another" in {
-      assert(isChild(root)(eng))
-      assert(isChild(root)(product))
-      assert(isChild(eng)(library))
-      assert(isChild(library)(suggestion))
-      assert(!isChild(root)(library))
-      assert(!isChild(library)(root))
-      assert(!isChild(library)(eng))
-      assert(!isChild(root)(suggestion))
-      assert(!isChild(eng)(suggestion))
-      assert(!isChild(eng)(product))
+      assert(isChild(separator, root.id, eng.id))
+      assert(isChild(separator, root.id, product.id))
+      assert(isChild(separator, eng.id, library.id))
+      assert(isChild(separator, library.id, suggestion.id))
+      assert(!isChild(separator, root.id, library.id))
+      assert(!isChild(separator, library.id, root.id))
+      assert(!isChild(separator, library.id, eng.id))
+      assert(!isChild(separator, root.id, suggestion.id))
+      assert(!isChild(separator, eng.id, suggestion.id))
+      assert(!isChild(separator, eng.id, product.id))
     }
 
     "build a tree with the hierarchy nodes" in {

@@ -3,7 +3,7 @@ package repository
 import anorm._
 import anorm.SqlParser.{int, long, scalar, str}
 import javax.inject.Inject
-import models.Page
+import models.{Page, PagePath}
 import play.api.db.Database
 
 class PageRepository @Inject()(db: Database) {
@@ -21,9 +21,20 @@ class PageRepository @Inject()(db: Database) {
     directoryId <- long("directoryId")
   } yield Page(id, name, label, description, order, markdown, relativePath, path, directoryId)
 
+  private val pathParser = for {
+    directoryId <- long("directoryId")
+    path <- str("path")
+  } yield PagePath(directoryId, path)
+
   def findAll(): Seq[Page] = {
     db.withConnection { implicit connection =>
       SQL"SELECT * FROM page".as(parser.*)
+    }
+  }
+
+  def findAllPagePath(): Seq[PagePath] = {
+    db.withConnection { implicit connection =>
+      SQL"SELECT path, directoryId FROM page".as(pathParser.*)
     }
   }
 

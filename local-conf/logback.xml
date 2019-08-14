@@ -48,7 +48,7 @@
     <logger name="com.gargoylesoftware.htmlunit.javascript" level="OFF" />
     <logger name="com.zaxxer.hikari" level="OFF" />
 
-    <root level="INFO">
+    <root level="ERROR">
         <appender-ref ref="ASYNCFILE" />
         <appender-ref ref="ASYNCSTDOUT" />
     </root>

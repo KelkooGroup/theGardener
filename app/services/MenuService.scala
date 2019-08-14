@@ -10,7 +10,7 @@ import utils._
 
 import scala.util.Try
 
-class MenuService @Inject()(hierarchyRepository: HierarchyRepository, projectRepository: ProjectRepository, branchRepository: BranchRepository, featureRepository: FeatureRepository, cache: SyncCacheApi) {
+class MenuService @Inject()(hierarchyRepository: HierarchyRepository, projectRepository: ProjectRepository, branchRepository: BranchRepository, featureRepository: FeatureRepository, directoryRepository: DirectoryRepository, pageRepository: PageRepository, cache: SyncCacheApi) {
 
   def refreshCache(): Unit = Try(getMenuTree(true))
 
@@ -35,15 +35,21 @@ class MenuService @Inject()(hierarchyRepository: HierarchyRepository, projectRep
         branchAndPath._1 -> paths
       }
 
+      val pagePaths = pageRepository.findAllPagePath().groupBy(_.directoryId).map { case (directoryId, paths) => directoryId -> paths.map(_.path) }
+      val directories = directoryRepository.findAll().map(d => d.copy(pages = pagePaths.getOrElse(d.id, Seq())))
+
+      val directoryTree = directories.groupBy(_.branchId).map { case (branchId, branchDirectories) =>
+        val (rootDirectory, children) = branchDirectories.partition(_.relativePath == "/")
+        branchId -> buildDirectoryTree(rootDirectory.head, children)
+      }
+
       hierarchyRepository.findAll().map { hierarchyNode =>
         val projects = projectRepository.findAllByHierarchyId(hierarchyNode.id).map { project =>
-          val projectWithBranches = project.copy(branches = Some(
+          project.copy(branches = Some(
             mapProjectIdBranches.getOrElse(project.id, Seq()).map { branch =>
-              val branchWithFeatures = branch.copy(features = mapBranchIdFeaturePaths.getOrElse(branch.id, Set()).toList.sorted)
-              branchWithFeatures
+              branch.copy(features = mapBranchIdFeaturePaths.getOrElse(branch.id, Set()).toList.sorted, rootDirectory = directoryTree.get(branch.id))
             }
           ))
-          projectWithBranches
         }
         Menu(hierarchyNode.id, Seq(hierarchyNode), projects.sortBy(_.id))
       }.sortBy(_.id)
@@ -69,15 +75,15 @@ object MenuService {
   val menuListCacheKey = "menuList"
   val menuTreeCacheKey = "menuTree"
 
-  def isChild(parent: Menu)(child: Menu): Boolean = {
-    val childId = child.id.split(s"\\$idSeparator").toSeq.filterNot(_.isEmpty)
-    val parentId = parent.id.split(s"\\$idSeparator").toSeq.filterNot(_.isEmpty)
+  def isChild(separator: String, parent: String, child: String): Boolean = {
+    val childId = child.split(s"\\$separator").toSeq.filterNot(_.isEmpty)
+    val parentId = parent.split(s"\\$separator").toSeq.filterNot(_.isEmpty)
 
     childId.size > parentId.size && (parentId.isEmpty || childId.startsWith(parentId)) && childId.drop(parentId.size).size == 1
   }
 
   def buildTree(node: Menu, children: Seq[Menu]): Seq[Menu] = {
-    val (taken, left) = children.partition(isChild(node))
+    val (taken, left) = children.partition(child => isChild(idSeparator, node.id, child.id))
 
     taken.map { c =>
       val menu = c.copy(hierarchy = node.hierarchy ++ c.hierarchy)
@@ -93,5 +99,12 @@ object MenuService {
 
   def mergeChildrenHierarchy(menu: Menu): Seq[HierarchyNode] = {
     (menu.hierarchy ++ menu.children.flatMap(c => c.hierarchy ++ mergeChildrenHierarchy(c))).distinct
+  }
+
+  def buildDirectoryTree(currentDirectory: Directory, directories: Seq[Directory]): Directory = {
+    val (children, left) = directories.partition(d => isChild("/", currentDirectory.relativePath, d.relativePath))
+
+    currentDirectory.copy(children = children.map(d => buildDirectoryTree(d, left)))
+
   }
 }

@@ -14,6 +14,8 @@ import scala.concurrent._
 @Api(value = "ProjectController", produces = "application/json")
 class ProjectController @Inject()(projectRepository: ProjectRepository, projectService: ProjectService, hierarchyRepository: HierarchyRepository, branchRepository: BranchRepository, menuService: MenuService)(implicit ec: ExecutionContext) extends InjectedController {
 
+  implicit val pageFormat = Json.format[Page]
+  implicit val directoryFormat = Json.format[Directory]
   implicit val branchFormat = Json.format[Branch]
   implicit val hierarchyFormat = Json.format[HierarchyNode]
   implicit val projectFormat = Json.format[Project]

@@ -41,7 +41,7 @@ class ProjectServiceTest extends WordSpec with MustMatchers with BeforeAndAfter 
 
   val projectService = new ProjectService(projectRepository, gitService, featureService, featureRepository, branchRepository, directoryRepository, pageRepository, menuService, pageService, ConfigFactory.load(),environment, ActorSystem())
 
-  val project = Project( "publisherManagementWS", "Publisher management WS", "http://gitlab.corp.kelkoo.net/syndication/publisherManagementWS.git", "qa", "test/features")
+  val project = Project("suggestionsWS", "Suggestions WebServices", "git@github.com:library/suggestionsWS.git", "master", "test/features")
   val masterDirectory = projectService.getLocalRepository(project.id, project.stableBranch)
   val featureBranchDirectory = projectService.getLocalRepository(project.id, featureBranch)
   val bugfixBranchDirectory = projectService.getLocalRepository(project.id, bugfixBranch)

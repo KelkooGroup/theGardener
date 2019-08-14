@@ -8,5 +8,5 @@ case class Directory(id: Long,
                      relativePath: String,
                      path: String,
                      branchId: Long,
-                     pages: Seq[Page] = Seq(),
+                     pages: Seq[String] = Seq(),
                      children: Seq[Directory] = Seq())

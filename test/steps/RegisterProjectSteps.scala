@@ -69,12 +69,12 @@ class RegisterProjectSteps extends ScalaDsl with EN with MockitoSugar {
   }
 
   When("""^a user register a new project in theGardener$""") { () =>
-    val project = Project("suggestionsWS", "Suggestions WebServices", "git@gitlab.corp.kelkoo.net:library/suggestionsWS.git ", "master", "test/features")
+    val project = Project("suggestionsWS", "Suggestions WebServices", "git@github.com:library/suggestionsWS.git ", "master", "test/features")
     registerProject(project)
   }
 
   Then("""^those projects settings are setup in theGardener$""") { () =>
-    val expectedProjects = Seq(Project("suggestionsWS", "Suggestions WebServices", "git@gitlab.corp.kelkoo.net:library/suggestionsWS.git ", "master", "test/features"))
+    val expectedProjects = Seq(Project("suggestionsWS", "Suggestions WebServices", "git@github.com:library/suggestionsWS.git ", "master", "test/features"))
     checkProjectsInDb(expectedProjects)
   }
 

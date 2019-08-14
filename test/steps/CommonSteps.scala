@@ -20,7 +20,7 @@ import org.apache.commons.io._
 import org.eclipse.jgit.api._
 import org.scalatest._
 import org.scalatestplus.mockito._
-import play.api.Mode
+import play.api.{Application, Logging, Mode}
 import play.api.cache._
 import play.api.db._
 import play.api.inject._
@@ -39,7 +39,6 @@ import scala.collection.JavaConverters._
 import scala.concurrent._
 import scala.io.Source
 import scala.reflect._
-import play.api.Application
 
 object Injector {
   val builder = new GuiceApplicationBuilder
@@ -57,6 +56,8 @@ case class ProjectTableRow(id: String, name: String, repositoryUrl: String, stab
 
 object CommonSteps extends MockitoSugar with MustMatchers {
 
+  implicit val pageFormat = Json.format[Page]
+  implicit val directoryFormat = Json.format[Directory]
   implicit val scenarioFormat = derived.flat.oformat[ScenarioDefinition]((__ \ "keyword").format[String])
   implicit val branchFormat = Json.format[Branch]
   implicit val hierarchyFormat = Json.format[HierarchyNode]
@@ -126,7 +127,7 @@ object CommonSteps extends MockitoSugar with MustMatchers {
 
 case class Configuration(path: String, value: String)
 
-class CommonSteps extends ScalaDsl with EN with MockitoSugar {
+class CommonSteps extends ScalaDsl with EN with MockitoSugar with Logging {
 
   import CommonSteps._
 
@@ -264,6 +265,7 @@ Scenario: providing several book suggestions
 
   Then("""^I get the following json response body$""") { expectedJson: String =>
     contentType(response) mustBe Some(JSON)
+    logger.debug(Json.prettyPrint(contentAsJson(response)))
     contentAsJson(response) mustBe Json.parse(expectedJson.lines.map(l => if (separator == "\\" && (l.contains(""""path":""") || l.contains(""""features":"""))) l.replace("/", """\\""") else l).mkString("\n"))
   }
 
