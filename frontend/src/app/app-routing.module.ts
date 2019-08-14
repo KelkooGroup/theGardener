@@ -24,11 +24,6 @@ const routes: Routes = [
     component: NavigatePageComponent,
     canActivate: []
   },
-  {
-    path: 'app/documentation/navigate/:name/:path',
-    component: NavigatePageComponent,
-    canActivate: []
-  },
 ];
 
 @NgModule({

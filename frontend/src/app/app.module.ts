@@ -26,7 +26,7 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatCardModule} from '@angular/material/card';
-import {MatSnackBarModule} from '@angular/material';
+import {MatSidenavModule, MatSnackBarModule} from '@angular/material';
 import {MenuService} from './_services/menu.service';
 import {GherkinService} from './_services/gherkin.service';
 import {GherkinComponent} from './output/gherkin/gherkin.component';
@@ -34,13 +34,15 @@ import {GherkinTableComponent} from './output/gherkin/gherkin-table/gherkin-tabl
 import {FooterComponent} from './_components/page/footer/footer.component';
 import {GherkinLongTextComponent} from './output/gherkin/gherkin-long-text/gherkin-long-text.component';
 import {NavigatePageComponent} from './output/navigate/navigate-page.component';
-import {NavigateContentComponent} from './output/navigate/navigate-content.component';
+import {NavigateContentComponent} from './output/navigate/navigate-content/navigate-content.component';
 import {NavigateMenuComponent} from './output/navigate/navigate-menu/navigate-menu.component';
 import {NotificationService} from './_services/notification.service';
 import {GherkinFeatureComponent} from './output/gherkin/gherkin-feature/gherkin-feature.component';
 import {GherkinBackgroundComponent} from './output/gherkin/gherkin-background/gherkin-background.component';
 import {GherkinStepComponent} from './output/gherkin/gherkin-step/gherkin-step.component';
 import {HeaderComponent} from './_components/page/header/header.component';
+import {CdkAccordionModule} from '@angular/cdk/accordion';
+import { NavigateMenuItemComponent } from './output/navigate/navigate-menu/navigate-menu-item/navigate-menu-item.component';
 
 const nonProductionProviders = [{
   provide: HTTP_INTERCEPTORS,
@@ -63,6 +65,7 @@ const nonProductionProviders = [{
     GherkinFeatureComponent,
     GherkinBackgroundComponent,
     GherkinStepComponent,
+    NavigateMenuItemComponent,
   ],
   imports: [
     HttpClientModule,
@@ -90,6 +93,8 @@ const nonProductionProviders = [{
     MatExpansionModule,
     MatProgressBarModule,
     MatSnackBarModule,
+    MatSidenavModule,
+    CdkAccordionModule,
   ],
   providers: [
     ...!environment.production ? nonProductionProviders : [],

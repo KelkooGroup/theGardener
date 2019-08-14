@@ -1,15 +1,15 @@
 <div class="header">
 
-  <ul class="header-bar">
+  <ul class="header-bar" role="navigation">
     <li class="header-logo">
-      <img [src]="logoSrc" alt="Organisation logo">
+      <img *ngIf="logoSrc" [src]="logoSrc" alt="Organisation logo">
       <div *ngIf="appTitle">{{ appTitle }}</div>
     </li>
 
-
-    <div class="header-navigation">
-      <a *ngFor="let item of items" routerLink="app/documentation/navigate/{{item.route}}/" routerLinkActive="active">{{ item.displayName }}</a>
-    </div>
+    <li class="header-navigation">
+      <a *ngFor="let item of items" routerLink="app/documentation/navigate/{{item.slugName}}/"
+         routerLinkActive="active">{{ item.name }}</a>
+    </li>
 
     <li class="header-logo-the-gardener">
       <div>Powered by</div>

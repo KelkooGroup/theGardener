@@ -33,7 +33,6 @@ export class AppComponent implements OnInit {
 
   resize() {
     this.contentHeight = window.innerHeight - this.headerHeight - this.footerHeight;
-    console.log('Resize content: ' + this.contentHeight);
     this.renderer.setStyle(
       this.content.nativeElement,
       'height',

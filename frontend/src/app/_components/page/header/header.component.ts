@@ -1,8 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {NavigationItem} from '../../../_models/navigation';
-import {HierarchyNodeApi} from '../../../_models/hierarchy';
 import {MenuService} from '../../../_services/menu.service';
 import {NotificationService} from '../../../_services/notification.service';
+import {HierarchyNodeApi} from '../../../_models/hierarchy';
 
 @Component({
   selector: 'app-header',
@@ -14,7 +13,7 @@ export class HeaderComponent implements OnInit {
 
   @Input() appTitle?: string;
 
-  items: Array<NavigationItem>;
+  items: Array<HierarchyNodeApi>;
 
   constructor(private menuService: MenuService,
               private notificationService: NotificationService) {
@@ -22,9 +21,8 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit() {
     this.menuService.hierarchy().subscribe(
-      (result: HierarchyNodeApi) => {
-        const hierarchyNodeSelectorTree = this.menuService.buildHierarchyNodeSelector(result);
-        this.items = hierarchyNodeSelectorTree && hierarchyNodeSelectorTree.children;
+      result => {
+        this.items = result && result.children;
       }, error => {
         this.notificationService.showError('Error while getting first level of hierarchy', error);
       });

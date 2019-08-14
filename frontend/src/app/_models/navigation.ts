@@ -246,13 +246,13 @@ export class NavigationProject implements NavigationItem {
       projectApi.label,
       branches
     );
-    if (projectApi.branches !== null) {
-      for (const currentBranchApi of projectApi.branches) {
-        const currentBranch = new NavigationBranch(currentBranchApi.name, currentBranchApi.features, instance);
-        branches.push(currentBranch);
-        mapBranchNameBranch.set(currentBranch.name, currentBranch);
-      }
-    }
+    // if (projectApi.branches !== null) {
+    //   for (const currentBranchApi of projectApi.branches) {
+    //     const currentBranch = new NavigationBranch(currentBranchApi.name, currentBranchApi.features, instance);
+    //     branches.push(currentBranch);
+    //     mapBranchNameBranch.set(currentBranch.name, currentBranch);
+    //   }
+    // }
     instance.stableBranch = mapBranchNameBranch.get(projectApi.stableBranch);
     instance.stableBranch.project = instance;
     instance.selectedBranch = instance.stableBranch;
