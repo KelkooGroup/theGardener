@@ -24,7 +24,8 @@ steps:
    [ ! -f /usr/local/bin/sbt ] && sudo apt-get update  -o Dir::Etc::sourcelist=/etc/apt/sources.list.d/sbt.list
    [ ! -f /usr/local/bin/sbt ] && sudo apt-get install sbt
    sh -c "sbt -sbt-dir $(sbt-dir) -ivy $(ivy2-dir) sbtVersion"
-   ls -la
+   ls -la /home/vsts/.sbt/
+   ls -la $(sbt-dir)
   displayName: 'install sbt'
 
 - script: sbt clean coverage test coverageReport scalastyle scapegoat
