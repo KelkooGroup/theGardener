@@ -36,11 +36,11 @@ steps:
 
 - script: sbt clean coverage test coverageReport scalastyle scapegoat
   displayName: 'sbt test'
-  
+
 - task: PublishTestResults@2
   inputs:
     testResultsFormat: 'JUnit'
-    testResultsFiles: '**/TEST-*.xml' 
+    testResultsFiles: '**/TEST-*.xml'
 
 - task: PublishCodeCoverageResults@1
   inputs:
@@ -66,6 +66,6 @@ steps:
 
 - publish: /usr/local/bin/sbt
   artifact: sbt
-  
+
 - publish: /opt/sonarscanner/sonar-scanner-cli-4.0.0.1744-linux.zip
   artifact: sonarscanner
