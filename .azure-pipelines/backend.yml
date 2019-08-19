@@ -44,8 +44,8 @@ steps:
 
 - task: PublishCodeCoverageResults@1
   inputs:
-    codeCoverageTool: 'JaCoCo'
-    summaryFileLocation: target/scala-2.12/scoverage-report/scoverage.xml
+    codeCoverageTool: 'cobertura'
+    summaryFileLocation: target/scala-2.12/coverage-report/cobertura.xml
 
 - script: sbt dist
   displayName: 'sbt dist'
