@@ -19,6 +19,7 @@ variables:
 steps:
  
 - script: |
+    ls -la /usr/local/bin/sbt
     ls -la /home/vsts/.sbt/
     ls -la .sbt
     ls -la .ivy2
