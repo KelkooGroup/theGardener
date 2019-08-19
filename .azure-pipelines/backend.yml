@@ -13,21 +13,25 @@ trigger:
 pr: none
 
 steps:
+
 - task: CacheBeta@0
   inputs:
     key: sbt | $(Agent.OS) | project/build.properties
     path: /home/vsts/.sbt
   displayName: Sbt build cache
+
 - task: CacheBeta@0
   inputs:
     key: ivy2 | $(Agent.OS) | build.sbt | project/plugins.sbt
     path: /home/vsts/.ivy2
   displayName: Yvy build cache
+
 - task: CacheBeta@0
   inputs:
-    key: sonarscanner | '4.0.0.1744' | $(Agent.OS)
+    key: sonarscanner | 4.0.0.1744 | $(Agent.OS)
     path: /opt/sonarscanner
   displayName: Cache sonar-scanner
+
 - script: |
     [ ! -f /usr/local/bin/sbt ] && echo "deb https://dl.bintray.com/sbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list
     [ ! -f /usr/local/bin/sbt ] && sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823
@@ -38,6 +42,16 @@ steps:
 
 - script: sbt clean coverage test coverageReport scalastyle scapegoat
   displayName: 'sbt test'
+  
+- task: PublishTestResults@2
+  inputs:
+    testResultsFormat: 'JUnit'
+    testResultsFiles: '**/TEST-*.xml' 
+
+- task: PublishCodeCoverageResults@1
+  inputs:
+    codeCoverageTool: 'JaCoCo'
+    summaryFileLocation: target/scala-2.12/scoverage-report/scoverage.xml
 
 - script: sbt dist
   displayName: 'sbt dist'

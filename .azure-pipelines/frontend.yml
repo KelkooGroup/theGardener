@@ -23,7 +23,7 @@ steps:
   displayName: Cache npm
 - task: CacheBeta@0
   inputs:
-    key: sonarscanner | '4.0.0.1744' | $(Agent.OS)
+    key: sonarscanner | 4.0.0.1744 | $(Agent.OS)
     path: /opt/sonarscanner
   displayName: Cache sonar-scanner
 - script: |
