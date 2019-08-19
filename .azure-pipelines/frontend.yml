@@ -23,7 +23,7 @@ steps:
   displayName: Cache npm
 - task: CacheBeta@0
   inputs:
-    key: sonar-scanner | $(Agent.OS)
+    key: sonar-scanner-cli-4.0.0.1744 | $(Agent.OS)
     path: /opt/sonarscanner
   displayName: Cache sonar-scanner
 - script: |
@@ -62,4 +62,3 @@ steps:
     sonar-scanner -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=kelkoo -Dsonar.login=6c199a8887e5909a63eb3d6ffcd70c1ca33d6757
   workingDirectory: frontend
   displayName: 'sonar-scanner'
-  
