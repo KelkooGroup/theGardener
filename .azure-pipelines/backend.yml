@@ -57,10 +57,10 @@ steps:
 - publish: /home/vsts/.sbt/launchers/
   artifact: sbt-launcher
 
-- publish: $(sbt-dir)
+- publish: .sbt
   artifact: sbt-cache
 
-- publish: $(ivy2-dir)
+- publish: .ivy2
   artifact: ivy2-cache
 
 - publish: project/target
