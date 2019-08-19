@@ -25,7 +25,7 @@ steps:
   displayName: Yvy build cache
 - task: CacheBeta@0
   inputs:
-    key: sonar-scanner-cli-4.0.0.1744 | $(Agent.OS)
+    key: sonarscanner | '4.0.0.1744' | $(Agent.OS)
     path: /opt/sonarscanner
   displayName: Cache sonar-scanner
 - script: |
