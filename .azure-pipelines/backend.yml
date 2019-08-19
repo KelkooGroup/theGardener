@@ -22,6 +22,10 @@ steps:
     ls -la /home/vsts/.sbt/
     ls -la .sbt
     ls -la .ivy2
+    ls -la project/target
+    ls -la /opt/sonarscanner
+    ls -la target/test-reports
+    ls -la target/scalastyle-result.xml
     [ ! -f /usr/local/bin/sbt ] && echo "deb https://dl.bintray.com/sbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list
     [ ! -f /usr/local/bin/sbt ] && sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823
     [ ! -f /usr/local/bin/sbt ] && sudo apt-get update  -o Dir::Etc::sourcelist=/etc/apt/sources.list.d/sbt.list
