@@ -12,37 +12,33 @@ trigger:
     - doc/*
 pr: none
 
-variables:
-  sbt-dir: .sbt
-  ivy2-dir: .ivy2
-
 steps:
-- task: DownloadPipelineArtifact@2
+- task: CacheBeta@0
   inputs:
-    artifact: 'sbt-launcher'
-    path: /home/vsts/.sbt/launchers/
+    key: sbt | $(Agent.OS) | project/build.properties
+    path: /home/vsts/.sbt
+  displayName: Sbt build cache
+- task: CacheBeta@0
+  inputs:
+    key: ivy2 | $(Agent.OS) | build.sbt | project/plugins.sbt
+    path: /home/vsts/.ivy2
+  displayName: Yvy build cache
 - script: |
-    ls -la /usr/local/bin/sbt
     ls -la /home/vsts/.sbt/
-    ls -la .sbt
-    ls -la .ivy2
-    ls -la project/target
-    ls -la /opt/sonarscanner
-    ls -la target/test-reports
-    ls -la target/scalastyle-result.xml
+    ls -la /home/vsts/.ivy2/
     [ ! -f /usr/local/bin/sbt ] && echo "deb https://dl.bintray.com/sbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list
     [ ! -f /usr/local/bin/sbt ] && sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823
     [ ! -f /usr/local/bin/sbt ] && sudo apt-get update  -o Dir::Etc::sourcelist=/etc/apt/sources.list.d/sbt.list
     [ ! -f /usr/local/bin/sbt ] && sudo apt-get install sbt
-    sbt -sbt-dir $(sbt-dir) -ivy $(ivy2-dir) sbtVersion
+    sbt sbtVersion
     ls -la /home/vsts/.sbt/
-    ls -la $(sbt-dir)
+    ls -la /home/vsts/.ivy2/
   displayName: 'install sbt'
 
-- script: sbt -sbt-dir $(sbt-dir) -ivy $(ivy2-dir) clean coverage test coverageReport scalastyle scapegoat
+- script: sbt clean coverage test coverageReport scalastyle scapegoat
   displayName: 'sbt test'
 
-- script: sbt -sbt-dir $(sbt-dir) -ivy $(ivy2-dir) dist
+- script: sbt dist
   displayName: 'sbt dist'
 
 - script: |
@@ -62,18 +58,6 @@ steps:
 
 - publish: /usr/local/bin/sbt
   artifact: sbt
-  
-- publish: /home/vsts/.sbt/launchers/
-  artifact: sbt-launcher
-
-- publish: .sbt
-  artifact: sbt-cache
-
-- publish: .ivy2
-  artifact: ivy2-cache
-
-- publish: project/target
-  artifact: project-target
 
 - publish: /opt/sonarscanner
   artifact: sonar-scanner
