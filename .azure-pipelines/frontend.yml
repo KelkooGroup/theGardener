@@ -16,7 +16,16 @@ steps:
   inputs:
     versionSpec: '10.x'
   displayName: 'Install Node.js'
-
+- task: CacheBeta@0
+  inputs:
+    key: npm | $(Agent.OS) | frontend/package-lock.json
+    path: frontend/node_modules
+  displayName: Cache npm
+- task: CacheBeta@0
+  inputs:
+    key: sonar-scanner | $(Agent.OS)
+    path: /opt/sonarscanner
+  displayName: Cache sonar-scanner
 - script: |
     npm install -g @angular/cli
     npm install
@@ -52,12 +61,6 @@ steps:
 - script: |
     sonar-scanner -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=kelkoo -Dsonar.login=6c199a8887e5909a63eb3d6ffcd70c1ca33d6757
   displayName: 'sonar-scanner'
-
-- publish: frontend/node_modules
-  artifact: node_modules
-
-- publish: /opt/sonarscanner
-  artifact: sonar-scanner
 
 - publish: frontend/report.json
   artifact: frontend-test-report
