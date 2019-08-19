@@ -16,16 +16,13 @@ steps:
   inputs:
     versionSpec: '10.x'
   displayName: 'Install Node.js'
+
 - task: CacheBeta@0
   inputs:
     key: npm | $(Agent.OS) | frontend/package-lock.json
     path: frontend/node_modules
   displayName: Cache npm
-- task: CacheBeta@0
-  inputs:
-    key: sonarscanner | 4.0.0.1744 | $(Agent.OS)
-    path: /opt/sonarscanner
-  displayName: Cache sonar-scanner
+
 - script: |
     npm install -g @angular/cli
     npm install
@@ -50,10 +47,9 @@ steps:
 - script: |
     sudo mkdir /opt/sonarscanner
     cd /opt/sonarscanner
-    [ ! -d sonar-scanner-cli-4.0.0.1744-linux ] && sudo wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.0.0.1744-linux.zip
-    [ ! -d sonar-scanner-cli-4.0.0.1744-linux ] && sudo unzip sonar-scanner-cli-4.0.0.1744-linux.zip
-    [ ! -d sonar-scanner-cli-4.0.0.1744-linux ] && sudo rm sonar-scanner-cli-4.0.0.1744-linux.zip
-    [ ! -d sonar-scanner-cli-4.0.0.1744-linux ] && sudo nano sonar-scanner-cli-4.0.0.1744-linux/conf/sonar-scanner.properties
+    [ ! -f /opt/sonarscanner/sonar-scanner-cli-4.0.0.1744-linux.zip ] && sudo wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.0.0.1744-linux.zip
+    sudo unzip sonar-scanner-cli-4.0.0.1744-linux.zip
+    sudo nano sonar-scanner-cli-4.0.0.1744-linux/conf/sonar-scanner.properties
     sudo chmod +x sonar-scanner-4.0.0.1744-linux/bin/sonar-scanner
     sudo ln -s /opt/sonarscanner/sonar-scanner-4.0.0.1744-linux/bin/sonar-scanner /usr/local/bin/sonar-scanner
   displayName: 'install sonar-scanner'
@@ -62,3 +58,6 @@ steps:
     sonar-scanner -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=kelkoo -Dsonar.login=6c199a8887e5909a63eb3d6ffcd70c1ca33d6757
   workingDirectory: frontend
   displayName: 'sonar-scanner'
+
+- publish: /opt/sonarscanner/sonar-scanner-cli-4.0.0.1744-linux.zip
+  artifact: sonarscanner
