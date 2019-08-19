@@ -60,17 +60,17 @@ steps:
 - publish: project/target
   artifact: project-target
 
- - publish: /opt/sonarscanner
-   artifact: sonar-scanner
+- publish: /opt/sonarscanner
+  artifact: sonar-scanner
 
- - publish: target/test-reports
-   artifact: scala-test-reports
+- publish: target/test-reports
+  artifact: scala-test-reports
 
- - publish: target/scalastyle-result.xml
-   artifact: scalastyle
+- publish: target/scalastyle-result.xml
+  artifact: scalastyle
 
- - publish: target/scala-2.12/scapegoat-report/scapegoat-scalastyle.xml
-   artifact: scapegoat
+- publish: target/scala-2.12/scapegoat-report/scapegoat-scalastyle.xml
+  artifact: scapegoat
 
- - publish: target/scala-2.12/scoverage-report/scoverage.xml
-   artifact: scoverage
+- publish: target/scala-2.12/scoverage-report/scoverage.xml
+  artifact: scoverage
