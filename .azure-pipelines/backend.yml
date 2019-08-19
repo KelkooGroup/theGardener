@@ -23,15 +23,15 @@ steps:
    [ ! -f /usr/local/bin/sbt ] && sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823
    [ ! -f /usr/local/bin/sbt ] && sudo apt-get update  -o Dir::Etc::sourcelist=/etc/apt/sources.list.d/sbt.list
    [ ! -f /usr/local/bin/sbt ] && sudo apt-get install sbt
-   sh -c "sbt -sbt-dir $(sbt-dir) -ivy $(ivy2-dir) sbtVersion"
+   sbt -sbt-dir $(sbt-dir) -ivy $(ivy2-dir) sbtVersion
    ls -la /home/vsts/.sbt/
    ls -la $(sbt-dir)
   displayName: 'install sbt'
 
-- script: sbt clean coverage test coverageReport scalastyle scapegoat
+- script: sbt -sbt-dir $(sbt-dir) -ivy $(ivy2-dir) clean coverage test coverageReport scalastyle scapegoat
   displayName: 'sbt test'
 
-- script: sbt dist
+- script: sbt -sbt-dir $(sbt-dir) -ivy $(ivy2-dir) dist
   displayName: 'sbt dist'
 
 - script: |
