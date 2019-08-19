@@ -53,7 +53,7 @@ steps:
 - script: |
     sudo mkdir /opt/sonarscanner
     cd /opt/sonarscanner
-    [ ! -f /opt/sonarscanner/sonar-scanner-cli-4.0.0.1744-linux.zip ] && sudo wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.0.0.1744-linux.zip
+    sudo wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.0.0.1744-linux.zip
     sudo unzip sonar-scanner-cli-4.0.0.1744-linux.zip
     sudo nano sonar-scanner-cli-4.0.0.1744-linux/conf/sonar-scanner.properties
     sudo chmod +x sonar-scanner-4.0.0.1744-linux/bin/sonar-scanner
@@ -66,6 +66,3 @@ steps:
 
 - publish: /usr/local/bin/sbt
   artifact: sbt
-
-- publish: /opt/sonarscanner/sonar-scanner-cli-4.0.0.1744-linux.zip
-  artifact: sonarscanner

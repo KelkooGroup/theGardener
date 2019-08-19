@@ -47,7 +47,7 @@ steps:
 - script: |
     sudo mkdir /opt/sonarscanner
     cd /opt/sonarscanner
-    [ ! -f /opt/sonarscanner/sonar-scanner-cli-4.0.0.1744-linux.zip ] && sudo wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.0.0.1744-linux.zip
+    sudo wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.0.0.1744-linux.zip
     sudo unzip sonar-scanner-cli-4.0.0.1744-linux.zip
     sudo nano sonar-scanner-cli-4.0.0.1744-linux/conf/sonar-scanner.properties
     sudo chmod +x sonar-scanner-4.0.0.1744-linux/bin/sonar-scanner
@@ -58,6 +58,3 @@ steps:
     sonar-scanner -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=kelkoo -Dsonar.login=6c199a8887e5909a63eb3d6ffcd70c1ca33d6757
   workingDirectory: frontend
   displayName: 'sonar-scanner'
-
-- publish: /opt/sonarscanner/sonar-scanner-cli-4.0.0.1744-linux.zip
-  artifact: sonarscanner
