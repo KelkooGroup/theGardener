@@ -31,21 +31,21 @@ steps:
     npm install
     cd ./node_modules/protractor && npm i webdriver-manager@latest && cd ../..
     npm run pree2e
-  displayName: 'npm install'
   workingDirectory: frontend
+  displayName: 'npm install'
 
 - script: |
     export CI=true
     ./node_modules/tslint/bin/tslint -t json -o report.json --project . --force
     ng test --watch=false --progress=false --code-coverage
     ng e2e
-  displayName: 'npm test'
   workingDirectory: frontend
+  displayName: 'npm test'
 
 - script:  |
     ng build --no-progress --prod --outputPath ../public/dist
-  displayName: 'ng build --prod'
   workingDirectory: frontend
+  displayName: 'ng build --prod'
 
 - script: |
     sudo mkdir /opt/sonarscanner
@@ -60,10 +60,6 @@ steps:
 
 - script: |
     sonar-scanner -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=kelkoo -Dsonar.login=6c199a8887e5909a63eb3d6ffcd70c1ca33d6757
+  workingDirectory: frontend
   displayName: 'sonar-scanner'
-
-- publish: frontend/report.json
-  artifact: frontend-test-report
-
-- publish: frontend/coverage/lcov.info
-  artifact: lcov
+  
