@@ -85,7 +85,7 @@ class ProjectServiceTest extends WordSpec with MustMatchers with BeforeAndAfter 
       }
     }
 
-    "synchronize all exiting projects" in {
+    "synchronize all existing projects" in {
       forceMkdir(new File(masterDirectory))
       forceMkdir(new File(bugfixBranchDirectory))
 
@@ -123,8 +123,6 @@ class ProjectServiceTest extends WordSpec with MustMatchers with BeforeAndAfter 
         verify(gitService, times(1)).pull(masterDirectory)
 
         verify(gitService, times(1)).clone(project.repositoryUrl, featureBranchDirectory)
-
-        new File(bugfixBranchDirectory).exists() mustBe false
       }
     }
   }
