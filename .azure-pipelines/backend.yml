@@ -17,7 +17,7 @@ variables:
   ivy2-dir: .ivy2
 
 steps:
- - task: DownloadPipelineArtifact@2
+- task: DownloadPipelineArtifact@2
   inputs:
     artifact: 'sbt-launcher'
     path: /home/vsts/.sbt/launchers/
