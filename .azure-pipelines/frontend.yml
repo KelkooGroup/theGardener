@@ -55,6 +55,6 @@ steps:
   displayName: 'install sonar-scanner'
 
 - script: |
-    sonar-scanner -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=kelkoo -Dsonar.login=6c199a8887e5909a63eb3d6ffcd70c1ca33d6757
+    sonar-scanner -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=kelkoo -Dsonar.login=6c199a8887e5909a63eb3d6ffcd70c1ca33d6757 -Dsonar.branch.name=$(Build.SourceBranchName)
   workingDirectory: frontend
   displayName: 'sonar-scanner'
