@@ -4,12 +4,12 @@ import models._
 import play.api.libs.json.Json
 
 
-case class DirectoryMenuItemDTO(id: Long, path: String, name: String, label: String, description: String, order: Long, pages: Seq[String], children: Seq[DirectoryMenuItemDTO])
+case class DirectoryMenuItemDTO(id: Long, path: String, name: String, label: String, description: String, order: Long, children: Seq[DirectoryMenuItemDTO])
 object DirectoryMenuItemDTO {
   implicit val directoryMenuFormat = Json.format[DirectoryMenuItemDTO]
 
   def apply(directory: Directory): DirectoryMenuItemDTO = {
-    DirectoryMenuItemDTO(directory.id, directory.path, directory.name, directory.label, directory.description, directory.order, directory.pages, directory.children.map(DirectoryMenuItemDTO(_)))
+    DirectoryMenuItemDTO(directory.id, directory.path, directory.name, directory.label, directory.description, directory.order, directory.children.map(DirectoryMenuItemDTO(_)))
   }
 }
 

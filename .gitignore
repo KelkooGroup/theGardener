@@ -13,3 +13,4 @@ local-conf/application.local.conf
 local-data/
 test/actual.json
 test/expected.json
+test/test.sc
