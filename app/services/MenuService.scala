@@ -24,7 +24,7 @@ class MenuService @Inject()(hierarchyRepository: HierarchyRepository, projectRep
       val branches = branchRepository.findAll()
       val mapProjectIdBranches = branches.groupBy(_.projectId)
 
-      val mapBranchIdProjectFeaturePath = branches.map(b => b.id -> mapProjectIdProject(b.projectId).featuresRootPath).toMap
+      val mapBranchIdProjectFeaturePath = branches.flatMap(b => mapProjectIdProject(b.projectId).featuresRootPath.map(b.id -> _)).toMap
 
       val mapBranchIdFeaturePaths = featureRepository.findAllFeaturePaths().groupBy(r => r.branchId).map { branchAndPath =>
         val paths = branchAndPath._2.map { p =>
@@ -46,7 +46,7 @@ class MenuService @Inject()(hierarchyRepository: HierarchyRepository, projectRep
       hierarchyRepository.findAll().map { hierarchyNode =>
         val projects = projectRepository.findAllByHierarchyId(hierarchyNode.id).map { project =>
           project.copy(branches = Some(
-            mapProjectIdBranches.getOrElse(project.id, Seq()).map { branch =>
+            mapProjectIdBranches.getOrElse(project.id, Seq()).filter(branch => project.displayedBranches.forall(regex => branch.name.matches(regex))).map { branch =>
               branch.copy(features = mapBranchIdFeaturePaths.getOrElse(branch.id, Set()).toList.sorted, rootDirectory = directoryTree.get(branch.id))
             }
           ))

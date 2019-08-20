@@ -1,12 +1,12 @@
 Feature: Provide criterias
 
-
-## TODO Once the scenario are implemented we can factories steps with background steps
-  @level_2_technical_details @nominal_case @valid
-  Scenario: provide menu - json output
+  Background:
     Given the database is empty
     And the cache is empty
-    And the hierarchy nodes are
+
+  @level_2_technical_details @nominal_case @valid
+  Scenario: provide menu - json output
+    Given the hierarchy nodes are
       | id         | slugName   | name                 | childrenLabel | childLabel   |
       | .          | root       | Hierarchy root       | Views         | View         |
       | .01.       | eng        | Engineering view     | System groups | System group |
@@ -216,12 +216,9 @@ Feature: Provide criterias
 
 """
 
-## TODO Once the scenario are implemented we can factories steps with background steps
-  @level_1_specification @nominal_case @ready
+  @level_2_technical_details @nominal_case @valid
   Scenario: provide menu - filter branches by a regexp
-    Given the database is empty
-    And the cache is empty
-    And the hierarchy nodes are
+    Given the hierarchy nodes are
       | id         | slugName   | name                 | childrenLabel | childLabel   |
       | .          | root       | Hierarchy root       | Views         | View         |
       | .01.       | eng        | Engineering view     | System groups | System group |
@@ -241,18 +238,78 @@ Feature: Provide criterias
       | 4  | version_1.0.0 | false    | suggestionsWS |
       | 5  | bugfix/351    | false    | suggestionsWS |
     When I perform a "GET" on following URL "/api/menu"
-    Then I get the following branches under the project "suggestionsWS"
-      | id | name          |
-      | 1  | master        |
-      | 2  | version_2.0.1 |
-      | 4  | version_1.0.0 |
+    Then I get the following json response body
+"""
+{
+  "id": ".",
+  "hierarchy": "_",
+  "slugName": "root",
+  "name": "Hierarchy root",
+  "childrenLabel": "Views",
+  "childLabel": "View",
+  "projects": [],
+  "children": [
+    {
+      "id": ".01.",
+      "hierarchy": "_eng",
+      "slugName": "eng",
+      "name": "Engineering view",
+      "childrenLabel": "System groups",
+      "childLabel": "System group",
+      "projects": [],
+      "children": [
+        {
+          "id": ".01.01.",
+          "hierarchy": "_eng_library",
+          "slugName": "library",
+          "name": "Library system group",
+          "childrenLabel": "Systems",
+          "childLabel": "System",
+          "projects": [],
+          "children": [
+            {
+              "id": ".01.01.01.",
+              "hierarchy": "_eng_library_suggestion",
+              "slugName": "suggestion",
+              "name": "Suggestion system",
+              "childrenLabel": "Projects",
+              "childLabel": "Project",
+              "projects": [
+                {
+                  "id": "suggestionsWS",
+                  "path": "suggestionsWS",
+                  "label": "Suggestions WebServices",
+                  "stableBranch": "master",
+                  "branches": [
+                    {
+                      "name": "master",
+                      "path": "suggestionsWS>master"
+                    },
+                    {
+                      "name": "version_2.0.1",
+                      "path": "suggestionsWS>version_2.0.1"
+                    },
+                    {
+                      "name": "version_1.0.0",
+                      "path": "suggestionsWS>version_1.0.0"
+                    }
+                  ]
+                }
+              ],
+              "children": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+"""
 
 
   @level_2_technical_details @nominal_case @ready
   Scenario: provide menu - pages on menu - json output
-    Given the database is empty
-    And the cache is empty
-    And the hierarchy nodes are
+    Given the hierarchy nodes are
       | id      | slugName | name                 | childrenLabel | childLabel   | pagesSelector                            |
       | .       | root     | Hierarchy root       | Views         | View         |                                          |
       | .01.    | eng      | Engineering view     | System groups | System group | theGardenerPages>master>/eng/engineering |

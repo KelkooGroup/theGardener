@@ -21,7 +21,8 @@ create table project
     name                  varchar(255) not null,
     repositoryUrl         varchar(255) not null,
     stableBranch          varchar(255) not null,
-    featuresRootPath      varchar(255) not null,
+    displayedBranches     varchar(255),
+    featuresRootPath      varchar(255),
     documentationRootPath varchar(255),
     constraint pk_project primary key (id)
 );

@@ -47,9 +47,9 @@ object Injector {
   def inject[T: ClassTag]: T = injector.instanceOf[T]
 }
 
-case class ProjectTableRow(id: String, name: String, repositoryUrl: String, stableBranch: String, featuresRootPath: String, documentationRootPath: String){
+case class ProjectTableRow(id: String, name: String, repositoryUrl: String, stableBranch: String, displayedBranches: String, featuresRootPath: String, documentationRootPath: String){
   def toProject(): Project = {
-    Project(this.id, this.name, this.repositoryUrl, this.stableBranch, this.featuresRootPath, Option(this.documentationRootPath))
+    Project(this.id, this.name, this.repositoryUrl, this.stableBranch, Option(this.displayedBranches), Option(this.featuresRootPath), Option(this.documentationRootPath))
   }
 }
 
@@ -263,10 +263,15 @@ Scenario: providing several book suggestions
     status(response) mustBe expectedStatus.toInt
   }
 
-  Then("""^I get the following json response body$""") { expectedJson: String =>
+  Then("""^I get the following json response body$""") { expected: String =>
     contentType(response) mustBe Some(JSON)
-    logger.debug(Json.prettyPrint(contentAsJson(response)))
-    contentAsJson(response) mustBe Json.parse(expectedJson.lines.map(l => if (separator == "\\" && (l.contains(""""path":""") || l.contains(""""features":"""))) l.replace("/", """\\""") else l).mkString("\n"))
+    val actualJson = contentAsJson(response)
+    val expectedJson = Json.parse(expected.lines.map(l => if (separator == "\\" && (l.contains(""""path":""") || l.contains(""""features":"""))) l.replace("/", """\\""") else l).mkString("\n"))
+
+    Files.write(Paths.get("test/actual.json".fixPathSeparator), Json.prettyPrint(actualJson).getBytes())
+    Files.write(Paths.get("test/expected.json".fixPathSeparator), Json.prettyPrint(expectedJson).getBytes())
+
+    actualJson mustBe expectedJson
   }
 
   Then("""^the page contains$""") { expectedPageContentPart: String =>

@@ -44,31 +44,44 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
   }
 
   private def parseAndSaveFeatures(project: Project, branch: Branch): Unit = {
-    val features = featureService.parseBranchDirectory(project, branch, getLocalRepository(project.id, branch.name) + project.featuresRootPath)
-    featureRepository.saveAll(features)
+    project.featuresRootPath match {
+      case Some(featuresRootPath) =>
 
-    logger.info(s"${features.size} features saved for project ${project.id} on branch ${branch.name}")
+        val features = featureService.parseBranchDirectory(project, branch, getLocalRepository(project.id, branch.name) + featuresRootPath)
+        featureRepository.saveAll(features)
+
+        logger.info(s"${features.size} features saved for project ${project.id} on branch ${branch.name}")
+
+      case _ => logger.info(s"Features ignored for project ${project.id} on branch ${branch.name} because no featuresRootPath is defined")
+    }
   }
 
+  private def countDirectories(directory: Directory): Int = 1 + directory.children.map(countDirectories).sum
+  private def countPages(directory: Directory): Int = directory.pages.size + directory.children.map(countPages).sum
+
   private def parseAndSaveDirectoriesAndPages(project: Project, branch: Branch): Unit = {
-    val directory = pageService.processDirectory(branch, project.id + ">" + branch.name + ">/", getLocalRepository(project.id, branch.name) + project.documentationRootPath.getOrElse("Problem saving directory"))
-    logger.info(s" directories and pages from the branch ${branch.name} saved for project ${project.id} on branch ${branch.name}")
+    project.documentationRootPath match {
+      case Some(documentationRootPath) =>
+        val rootDirectory = pageService.processDirectory(branch, project.id + ">" + branch.name + ">/", getLocalRepository(project.id, branch.name) + documentationRootPath)
+        logger.info(s"${rootDirectory.map(countDirectories).getOrElse(0)} directories and ${rootDirectory.map(countPages).getOrElse(0)} pages saved for project ${project.id} on branch ${branch.name}")
+
+      case _ => logger.info(s"Directories and pages ignored for project ${project.id} on branch ${branch.name} because no documentationRootPath is defined")
+    }
   }
 
   private def checkoutBranches(project: Project, branches: Set[String]) = {
     if (branches.nonEmpty) {
       logger.info(s"checkout ${project.id} branches ${branches.mkString(", ")}")
 
-      FutureExt.sequentially(branches.toSeq) {
-        branchName =>
-          val localRepository = getLocalRepository(project.id, branchName)
+      FutureExt.sequentially(branches.toSeq) { branchName =>
+        val localRepository = getLocalRepository(project.id, branchName)
 
-          val branch = branchRepository.save(Branch(-1, branchName, branchName == project.stableBranch, project.id))
+        val branch = branchRepository.save(Branch(-1, branchName, branchName == project.stableBranch, project.id))
 
-          for {
-            _ <- gitService.clone(project.repositoryUrl, localRepository)
-            _ <- gitService.checkout(branchName, localRepository)
-          } yield (parseAndSaveFeatures(project, branch), parseAndSaveDirectoriesAndPages(project, branch))
+        for {
+          _ <- gitService.clone(project.repositoryUrl, localRepository)
+          _ <- gitService.checkout(branchName, localRepository)
+        } yield (parseAndSaveFeatures(project, branch), parseAndSaveDirectoriesAndPages(project, branch))
       }
     } else Future.successful(())
   }
@@ -162,20 +175,21 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
 
     logger.info(s"Local branches of project ${project.id} : ${localBranches.mkString(", ")}")
 
-    gitService.getRemoteBranches(project.repositoryUrl).map(_.toSet).flatMap {
-      remoteBranches =>
-        logger.info(s"Remotes branches of project ${project.id} : ${remoteBranches.mkString(", ")}")
+    gitService.getRemoteBranches(project.repositoryUrl).map(_.toSet).flatMap { remoteBranches =>
+      logger.info(s"Remotes branches of project ${project.id} : ${remoteBranches.mkString(", ")}")
 
-        val branchesToUpdate = localBranches.intersect(remoteBranches)
-        val branchesToCheckout = remoteBranches -- localBranches
-        val branchesToDelete = localBranches -- remoteBranches
+      val filteredRemoteBranches = remoteBranches.filter(branch => project.displayedBranches.forall(regex => branch.matches(regex)))
 
-        logger.info(s"Project ${project.id}, branches to update: ${branchesToUpdate.mkString(", ")}, branches to checkout: ${branchesToCheckout.mkString(", ")}, branches to delete: ${branchesToDelete.mkString(", ")}")
+      val branchesToUpdate = localBranches.intersect(filteredRemoteBranches)
+      val branchesToCheckout = filteredRemoteBranches -- localBranches
+      val branchesToDelete = localBranches -- filteredRemoteBranches
 
-        for {
-          _ <- checkoutBranches(project, branchesToCheckout)
-          _ <- updateBranches(project, branchesToUpdate)
-        } yield deleteBranches(project.id, branchesToDelete)
+      logger.info(s"Project ${project.id}, displayed branches: ${project.displayedBranches}, branches to update: ${branchesToUpdate.mkString(", ")}, branches to checkout: ${branchesToCheckout.mkString(", ")}, branches to delete: ${branchesToDelete.mkString(", ")}")
+
+      for {
+        _ <- checkoutBranches(project, branchesToCheckout)
+        _ <- updateBranches(project, branchesToUpdate)
+      } yield deleteBranches(project.id, branchesToDelete)
     }
   }
 }
