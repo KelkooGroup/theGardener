@@ -1,4 +1,5 @@
 name := "the_gardener"
+maintainer := "florian.fauvarque@gmail.com"
 
 val jdkVersion = "1.8"
 scalaVersion := "2.12.8"
