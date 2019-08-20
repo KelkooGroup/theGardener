@@ -5,6 +5,7 @@ import play.api.libs.json.Json
 
 
 case class DirectoryMenuItemDTO(id: Long, path: String, name: String, label: String, description: String, order: Long, children: Seq[DirectoryMenuItemDTO])
+
 object DirectoryMenuItemDTO {
   implicit val directoryMenuFormat = Json.format[DirectoryMenuItemDTO]
 
@@ -33,19 +34,25 @@ object ProjectMenuItemDTO {
   }
 }
 
-case class MenuDTO(id: String, hierarchy: String, slugName: String, name: String, childrenLabel: String, childLabel: String, projects: Seq[ProjectMenuItemDTO], children: Option[Seq[MenuDTO]])
+case class MenuDTO(id: String, hierarchy: String, slugName: String, name: String, childrenLabel: String, childLabel: String, projects: Option[Seq[ProjectMenuItemDTO]], children: Option[Seq[MenuDTO]])
 
 object MenuDTO {
   implicit val menuFormat = Json.format[MenuDTO]
 
+  def getHierarchyNode(menu: Menu) = menu.hierarchy.lastOption.getOrElse(HierarchyNode("", "", "", "", ""))
+  def getHierarchy(menu: Menu) = menu.hierarchy.map(_.slugName).filterNot(_ == "root").mkString("_", "_", "")
+
   def apply(menu: Menu): MenuDTO = {
 
-    val hierarchyNode = menu.hierarchy.lastOption.getOrElse(HierarchyNode("", "", "", "", ""))
+    val hierarchyNode = getHierarchyNode(menu)
 
-    val hierarchy = menu.hierarchy.map(_.slugName).filterNot(_ == "root").mkString("_", "_", "")
+    MenuDTO(menu.id, getHierarchy(menu), hierarchyNode.slugName, hierarchyNode.name, hierarchyNode.childrenLabel, hierarchyNode.childLabel, Some(menu.projects.map(ProjectMenuItemDTO(_))), Some(menu.children.map(MenuDTO(_))))
+  }
 
-    MenuDTO(menu.id, hierarchy, hierarchyNode.slugName, hierarchyNode.name, hierarchyNode.childrenLabel, hierarchyNode.childLabel,
-      menu.projects.map(ProjectMenuItemDTO(_)), Some(menu.children.map(MenuDTO(_))))
+  def header(menu: Menu) = {
+    val hierarchyNode = getHierarchyNode(menu)
+
+    MenuDTO(menu.id, getHierarchy(menu), hierarchyNode.slugName, hierarchyNode.name, hierarchyNode.childrenLabel, hierarchyNode.childLabel, None, None)
   }
 }
 

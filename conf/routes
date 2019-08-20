@@ -30,6 +30,7 @@ PUT           /api/hierarchy/:id                              controllers.Hierar
 DELETE        /api/hierarchy/:id                              controllers.HierarchyController.deleteHierarchy(id: String)
 
 GET           /api/menu                                       controllers.MenuController.getMenu()
+GET           /api/menu/header                                controllers.MenuController.getMenuHeader()
 
 GET           /api/gherkin                                    controllers.GherkinController.generateGherkin()
 

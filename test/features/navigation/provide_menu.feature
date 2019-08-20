@@ -289,7 +289,7 @@ Feature: Provide criterias
 }
 """
 
-  @level_2_technical_details @nominal_case @ready
+  @level_2_technical_details @nominal_case @valid
   Scenario: provide menu header
     Given the hierarchy nodes are
       | id         | slugName   | name                 | childrenLabel | childLabel   |
@@ -310,7 +310,6 @@ Feature: Provide criterias
   "name": "Hierarchy root",
   "childrenLabel": "Views",
   "childLabel": "View",
-  "projects": [],
   "children": [
     {
       "id": ".01.",
@@ -318,7 +317,7 @@ Feature: Provide criterias
       "slugName": "eng",
       "name": "Engineering view",
       "childrenLabel": "System groups",
-      "childLabel": "System group",
+      "childLabel": "System group"
     },
     {
       "id": ".02.",
@@ -326,7 +325,7 @@ Feature: Provide criterias
       "slugName": "biz",
       "name": "Business view",
       "childrenLabel": "Units",
-      "childLabel": "Unit",
+      "childLabel": "Unit"
     }
   ]
 }
@@ -369,6 +368,15 @@ Feature: Provide criterias
     Then I get the following json response body
 """
 {
+  "id": ".01.",
+  "hierarchy": "_eng",
+  "slugName": "eng",
+  "name": "Engineering view",
+  "childrenLabel": "System groups",
+  "childLabel": "System group",
+  "projects": [],
+  "children": [
+    {
       "id": ".01.01.",
       "hierarchy": "_eng_library",
       "slugName": "library",
@@ -479,6 +487,8 @@ Feature: Provide criterias
         }
       ]
     }
+  ]
+}
 """
 
   @level_2_technical_details @nominal_case @ready
