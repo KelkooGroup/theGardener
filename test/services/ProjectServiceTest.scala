@@ -24,8 +24,8 @@ class ProjectServiceTest extends WordSpec with MustMatchers with BeforeAndAfter 
 
   val encoding = "UTF-8"
 
-  val featureBranch = "add-suggestions"
-  val bugfixBranch = "fix-suggestions-engine"
+  val featureBranch = "feature/add-suggestions"
+  val bugfixBranch = "bugfix/fix-suggestions-engine"
 
   val gitService = mock[GitService]
   val projectRepository = mock[ProjectRepository]
@@ -41,7 +41,7 @@ class ProjectServiceTest extends WordSpec with MustMatchers with BeforeAndAfter 
 
   val projectService = new ProjectService(projectRepository, gitService, featureService, featureRepository, branchRepository, directoryRepository, pageRepository, menuService, pageService, ConfigFactory.load(),environment, ActorSystem())
 
-  val project = Project("suggestionsWS", "Suggestions WebServices", "git@github.com:library/suggestionsWS.git", "master", "test/features")
+  val project = Project("suggestionsWS", "Suggestions WebServices", "git@github.com:library/suggestionsWS.git", "master", Some("^(^master$)|(^feature\\/.*$)"), Some("test/features"))
   val masterDirectory = projectService.getLocalRepository(project.id, project.stableBranch)
   val featureBranchDirectory = projectService.getLocalRepository(project.id, featureBranch)
   val bugfixBranchDirectory = projectService.getLocalRepository(project.id, bugfixBranch)
@@ -77,6 +77,8 @@ class ProjectServiceTest extends WordSpec with MustMatchers with BeforeAndAfter 
       val result = projectService.checkoutRemoteBranches(project)
 
       whenReady(result) { _ =>
+        Thread.sleep(100) // Workaround to fix flaky test issue on CI
+
         verify(gitService, times(1)).getRemoteBranches(project.repositoryUrl)
 
         verify(gitService, times(1)).clone(project.repositoryUrl, masterDirectory)
@@ -116,6 +118,8 @@ class ProjectServiceTest extends WordSpec with MustMatchers with BeforeAndAfter 
       val result = projectService.synchronizeAll()
 
       whenReady(result) { _ =>
+        Thread.sleep(100) // Workaround to fix flaky test issue on CI
+
         verify(projectRepository, times(1)).findAll()
 
         verify(gitService, times(1)).getRemoteBranches(project.repositoryUrl)
