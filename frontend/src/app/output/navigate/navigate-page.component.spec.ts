@@ -9,6 +9,7 @@ import {ActivatedRoute} from '@angular/router';
 import {of} from 'rxjs';
 import {RouterTestingModule} from '@angular/router/testing';
 import {NavigateMenuItemComponent} from './navigate-menu/navigate-menu-item/navigate-menu-item.component';
+import {FormsModule} from '@angular/forms';
 
 
 describe('NavigatePageComponent', () => {
@@ -28,6 +29,7 @@ describe('NavigatePageComponent', () => {
         MatSelectModule,
         MatIconModule,
         MatTabsModule,
+        FormsModule,
         HttpClientTestingModule,
         NoopAnimationsModule,
         RouterTestingModule,

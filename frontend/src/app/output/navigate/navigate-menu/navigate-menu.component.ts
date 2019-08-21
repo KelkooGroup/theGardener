@@ -26,8 +26,11 @@ export class NavigateMenuComponent implements OnInit {
         switchMap((nodeName: string) => this.menuService.getMenuHierarchyForSelectedNode(nodeName))
       )
       .subscribe(res => {
-        console.log(res);
         this.res = res;
       });
+  }
+
+  trackItem(index: number, item: MenuHierarchy) {
+    return item.name;
   }
 }

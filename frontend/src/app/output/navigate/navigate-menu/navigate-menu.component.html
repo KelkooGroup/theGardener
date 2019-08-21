@@ -1,3 +1,6 @@
 <div *ngIf="res">
-  <app-navigate-menu-item *ngFor="let item of res" [menuItem]="item"></app-navigate-menu-item>
+  <div *ngFor="let item of res; trackBy: trackItem; let last=last">
+    <app-navigate-menu-item [menuItem]="item"></app-navigate-menu-item>
+<!--    <hr *ngIf="!last">-->
+  </div>
 </div>

@@ -7,6 +7,7 @@ import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {MatFormFieldModule, MatIconModule, MatSelectModule} from '@angular/material';
 import {RouterTestingModule} from '@angular/router/testing';
 import {NavigateMenuItemComponent} from './navigate-menu-item/navigate-menu-item.component';
+import {FormsModule} from '@angular/forms';
 
 describe('NavigateMenuComponent', () => {
   let component: NavigateMenuComponent;
@@ -22,6 +23,7 @@ describe('NavigateMenuComponent', () => {
         MatFormFieldModule,
         MatSelectModule,
         MatIconModule,
+        FormsModule,
         NoopAnimationsModule,
         HttpClientTestingModule,
         RouterTestingModule,

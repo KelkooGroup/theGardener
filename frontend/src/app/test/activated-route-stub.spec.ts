@@ -10,6 +10,7 @@ import {Injectable} from '@angular/core';
 export class ActivatedRouteStub {
   // Observable that contains a map of the parameters
   private subjectParamMap = new BehaviorSubject(convertToParamMap(this.testParamMap));
+  private subjectParams = new BehaviorSubject(this.testParams);
   private subjectParentParamMap = new BehaviorSubject(convertToParamMap(this.testParentParamMap));
   private subjectUrl = new BehaviorSubject(this.testUrl);
 
@@ -22,6 +23,15 @@ export class ActivatedRouteStub {
   set testParamMap(params: {}) {
     this._testParamMap = convertToParamMap(params);
     this.subjectParamMap.next(this._testParamMap);
+  }
+
+  private _testParams: Object;
+  get testParams() {
+    return this._testParams;
+  }
+  set testParams(params) {
+    this._testParams = params;
+    this.subjectParams.next(this._testParams);
   }
 
   private _testParentParamMap: ParamMap;
@@ -56,9 +66,13 @@ export class ActivatedRouteStub {
     this.subjectQueryParamMap.next(this._testQueryParamMap);
   }
 
+  get params() {
+    return this.subjectParams.asObservable();
+  }
+
   get snapshot() {
     return {
-      params: this.testParamMap,
+      params: this.testParams,
       paramMap: this.testParamMap,
       queryParamMap: this.testQueryParamMap,
       url: this.testUrl,

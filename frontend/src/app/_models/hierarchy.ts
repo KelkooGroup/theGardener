@@ -5,7 +5,7 @@ export interface DirectoryApi {
   label: string;
   description: string;
   order: number;
-  pages: Array<string>;
+  pages?: Array<string>;
   children: Array<DirectoryApi>;
 }
 

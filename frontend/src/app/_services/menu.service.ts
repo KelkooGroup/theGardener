@@ -4,6 +4,8 @@ import {HttpClient} from '@angular/common/http';
 import {DirectoryApi, HierarchyNodeApi, ProjectApi} from '../_models/hierarchy';
 import {map} from 'rxjs/operators';
 import {MenuDirectoryHierarchy, MenuHierarchy, MenuProjectHierarchy} from '../_models/menu';
+import {of} from 'rxjs';
+import {MENU_SERVICE_RESPONSE} from '../test/test-data.spec';
 
 @Injectable({
   providedIn: 'root'
@@ -14,25 +16,38 @@ export class MenuService {
   constructor(private http: HttpClient) {
   }
 
-  hierarchy(): Observable<HierarchyNodeApi> {
-    const url = `api/menu`;
+  getMenuHeader(): Observable<HierarchyNodeApi> {
+    const url = 'api/menu/header'
     return this.http.get<HierarchyNodeApi>(url);
-    // return of(MENU_SERVICE_RESPONSE);
   }
 
-  getMenuForSelectedRootNode(nodeName: string): Observable<HierarchyNodeApi> {
-    return this.hierarchy()
+  getSubMenuForNode(nodeId: string): Observable<MenuHierarchy[]> {
+    const url = `api/menu/submenu/${nodeId}`;
+    return this.http.get<HierarchyNodeApi>(url)
       .pipe(
-        map((hierarchyNode: HierarchyNodeApi) => {
-          return hierarchyNode.children.find(node => node.slugName === nodeName)
-        })
-      );
+        map(submenu => this.buildMenuHierarchyForNode(submenu, 0))
+      )
+  }
+
+  hierarchy(): Observable<HierarchyNodeApi> {
+    // const url = `api/menu`;
+    // return this.http.get<HierarchyNodeApi>(url);
+    return of(MENU_SERVICE_RESPONSE);
   }
 
   getMenuHierarchyForSelectedNode(nodeName: string): Observable<MenuHierarchy[]> {
     return this.getMenuForSelectedRootNode(nodeName)
       .pipe(
         map(node => this.buildMenuHierarchyForNode(node, 0))
+      );
+  }
+
+  private getMenuForSelectedRootNode(nodeName: string): Observable<HierarchyNodeApi> {
+    return this.hierarchy()
+      .pipe(
+        map((hierarchyNode: HierarchyNodeApi) => {
+          return hierarchyNode.children.find(node => node.hierarchy === nodeName)
+        })
       );
   }
 

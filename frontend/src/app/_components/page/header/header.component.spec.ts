@@ -47,9 +47,9 @@ describe('HeaderComponent', () => {
     expect(component).toBeTruthy();
     expect(page.navigationItems.length).toBe(2);
     expect(page.navigationItems[0].textContent).toBe('Engineering view');
-    expect(page.navigationItems[0].href).toMatch('/app/documentation/navigate/eng');
+    expect(page.navigationItems[0].href).toMatch('/app/documentation/navigate/_eng');
     expect(page.navigationItems[1].textContent).toBe('Business view');
-    expect(page.navigationItems[1].href).toMatch('/app/documentation/navigate/biz');
+    expect(page.navigationItems[1].href).toMatch('/app/documentation/navigate/_biz');
   }));
 });
 

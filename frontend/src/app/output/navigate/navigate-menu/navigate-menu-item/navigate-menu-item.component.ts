@@ -39,7 +39,7 @@ export class NavigateMenuItemComponent implements OnInit {
         this.expanded = this.menuItem.type === 'Node' || this.active;
         if (this.menuItem.type === 'Project') {
           const project = this.menuItem as MenuProjectHierarchy;
-          this.selectedBranch = project.children.find(b => b.name === project.stableBranch)
+          this.selectedBranch = project.children.find(b => b.name === project.stableBranch);
         }
       });
   }
@@ -54,8 +54,8 @@ export class NavigateMenuItemComponent implements OnInit {
   }
 
   isRouteInActivatedUrl(node: MenuHierarchy) {
-    const isRouteInActivatedUrl = node.route !== undefined &&
-      this.pathInUrl !== undefined &&
+    const isRouteInActivatedUrl = node.route &&
+      this.pathInUrl &&
       (this.pathInUrl === node.route ||
         // Angular router automatically removes trailing slash from URL so we need to append it to check path
         this.pathInUrl.concat('/') === node.route );
@@ -66,4 +66,13 @@ export class NavigateMenuItemComponent implements OnInit {
     const hasActivatedChild = node.children.some(c => this.isNodeActive(c));
     return this.isRouteInActivatedUrl(node) || hasActivatedChild;
   }
+
+  trackMenuItem(index: number, item: MenuHierarchy ) {
+    return item.name;
+  }
+
+  branchComparator(branch1: MenuHierarchy, branch2: MenuHierarchy):boolean {
+    return branch1.name === branch2.name;
+  }
+
 }
