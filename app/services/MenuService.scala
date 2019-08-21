@@ -92,9 +92,15 @@ object MenuService {
   }
 
   def findMenuSubtree(id: String)(menu: Menu): Option[Menu] = {
-    if (menu.id == id) Some(menu)
+    if (id == menu.id) Some(menu)
     else if (menu.children.isEmpty) None
     else menu.children.flatMap(findMenuSubtree(id)).headOption
+  }
+
+  def findMenuSubtree(hierarchy: Seq[String])(menu: Menu): Option[Menu] = {
+    if (hierarchy == menu.hierarchy.map(_.slugName).filterNot(_ == "root")) Some(menu)
+    else if (menu.children.isEmpty) None
+    else menu.children.flatMap(findMenuSubtree(hierarchy)).headOption
   }
 
   def mergeChildrenHierarchy(menu: Menu): Seq[HierarchyNode] = {

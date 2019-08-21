@@ -28,10 +28,10 @@ class MenuController @Inject()(menuService: MenuService, hierarchyRepository: Hi
 
   @ApiOperation(value = "Get submenu", response = classOf[MenuDTO])
   @ApiResponses(Array(new ApiResponse(code = 404, message = "Menu not found")))
-  def getSubMenu(slugName: String): Action[AnyContent] = Action {
-    val hierarchy = hierarchyRepository.findBySlugName(slugName)
-    val menu = hierarchy.flatMap(h => MenuService.findMenuSubtree(h.id)(menuService.getMenuTree()))
+  def getSubMenu(hierarchy: String): Action[AnyContent] = Action {
 
-    menu.map(m => Ok(Json.toJson(MenuDTO(m)))).getOrElse(NotFound(s"No menu $slugName"))
+    val menu = MenuService.findMenuSubtree(hierarchy.split("_").toSeq.filterNot(_.isEmpty))(menuService.getMenuTree())
+
+    menu.map(m => Ok(Json.toJson(MenuDTO(m)))).getOrElse(NotFound(s"No menu $hierarchy"))
   }
 }

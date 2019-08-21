@@ -38,7 +38,8 @@ Feature: Provide criterias
       | 2  | suggestions | Suggestions   | Suggestions...          | 0     | /suggestions/ | suggestionsWS>master>/suggestions/ | 1        |
       | 3  | admin       | Admin         | Administration...       | 1     | /admin/       | suggestionsWS>master>/admin/       | 1        |
     When I perform a "GET" on following URL "/api/menu"
-    Then I get the following json response body
+    Then I get a response with status "200"
+    And  I get the following json response body
 """
 {
   "id": ".",
@@ -221,7 +222,8 @@ Feature: Provide criterias
       | 4  | version_1.0.0 | false    | suggestionsWS |
       | 5  | bugfix/351    | false    | suggestionsWS |
     When I perform a "GET" on following URL "/api/menu"
-    Then I get the following json response body
+    Then I get a response with status "200"
+    And  I get the following json response body
 """
 {
   "id": ".",
@@ -301,7 +303,8 @@ Feature: Provide criterias
       | .01.01.02. | user       | User system          | Projects      | Project      |
       | .01.01.03. | search     | Search system        | Projects      | Project      |
     When I perform a "GET" on following URL "/api/menu/header"
-    Then I get the following json response body
+    Then I get a response with status "200"
+    And  I get the following json response body
 """
 {
   "id": ".",
@@ -364,8 +367,9 @@ Feature: Provide criterias
       | 1  | root        | SuggestionsWS | Suggestions WebServices | 0     | /             | suggestionsWS>master>/             | 1        |
       | 2  | suggestions | Suggestions   | Suggestions...          | 0     | /suggestions/ | suggestionsWS>master>/suggestions/ | 1        |
       | 3  | admin       | Admin         | Administration...       | 1     | /admin/       | suggestionsWS>master>/admin/       | 1        |
-    When I perform a "GET" on following URL "/api/menu/submenu/eng"
-    Then I get the following json response body
+    When I perform a "GET" on following URL "/api/menu/submenu/_eng"
+    Then I get a response with status "200"
+    And I get the following json response body
 """
 {
   "id": ".01.",
@@ -531,7 +535,8 @@ Feature: Provide criterias
       | 3  | examples   | examples   | examples    | 1     | /suggestions/examples   | suggestionsWS>master>/suggestions/examples   | **Some suggestion examples**          | 2           |
       | 4  | admin      | admin      | admin       | 0     | /admin/admin            | suggestionsWS>master>/admin/admin            | **Page for the admin users**          | 3           |
     When I perform a "GET" on following URL "/api/directory/2"
-    Then I get the following json response body
+    Then I get a response with status "200"
+    And  I get the following json response body
     """
 {
   "id": 2,
