@@ -54,6 +54,17 @@ object MenuDTO {
 
     MenuDTO(menu.id, getHierarchy(menu), hierarchyNode.slugName, hierarchyNode.name, hierarchyNode.childrenLabel, hierarchyNode.childLabel, None, None)
   }
+
+  case class DirectoryDTO(id: Long, path: String, name: String, label: String, description: String, order: Long, pages: Seq[String])
+
+  object DirectoryDTO {
+    implicit val directoryFormat = Json.format[DirectoryDTO]
+
+    def apply(directory: Directory): DirectoryDTO = {
+      DirectoryDTO(directory.id, directory.path, directory.name, directory.label, directory.description, directory.order, directory.pages)
+    }
+  }
+
 }
 
 

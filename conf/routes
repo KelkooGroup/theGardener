@@ -31,13 +31,15 @@ DELETE        /api/hierarchy/:id                              controllers.Hierar
 
 GET           /api/menu                                       controllers.MenuController.getMenu()
 GET           /api/menu/header                                controllers.MenuController.getMenuHeader()
-GET           /api/menu/submenu/:hierarchy                     controllers.MenuController.getSubMenu(hierarchy: String)
+GET           /api/menu/submenu/:hierarchy                    controllers.MenuController.getSubMenu(hierarchy: String)
 
 GET           /api/gherkin                                    controllers.GherkinController.generateGherkin()
 
 GET           /api/config                                     controllers.ConfigController.getConfig()
 
-GET           /api/pages                                      controllers.PageController.getPagesFromPath(path: String)
+GET           /api/directories                                controllers.DirectoryController.getDirectoryFromPath(path: String)
+
+GET           /api/pages                                      controllers.PageController.getPageFromPath(path: String)
 
 # API DOCUMENTATION
 GET           /api/docs/                                      controllers.Assets.at(path="/public/swagger-ui",file="index.html")

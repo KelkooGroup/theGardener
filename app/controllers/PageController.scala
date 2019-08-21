@@ -13,7 +13,7 @@ class PageController @Inject()(pageRepository: PageRepository) extends InjectedC
 
   @ApiOperation(value = "Get pages from path", response = classOf[PageDTO])
   @ApiResponses(Array(new ApiResponse(code = 404, message = "Page not found")))
-  def getPagesFromPath(path: String): Action[AnyContent] = Action {
+  def getPageFromPath(path: String): Action[AnyContent] = Action {
     pageRepository.findByPath(path) match {
       case Some(page) => Ok(Json.toJson(PageDTO(page)))
       case _ => NotFound(s"No Page $path")

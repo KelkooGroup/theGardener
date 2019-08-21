@@ -495,7 +495,7 @@ Feature: Provide criterias
 }
 """
 
-  @level_2_technical_details @nominal_case @ready
+  @level_2_technical_details @nominal_case @valid
   Scenario: provide pages of a directory
     Given the hierarchy nodes are
       | id         | slugName   | name                 | childrenLabel | childLabel   |
@@ -534,7 +534,7 @@ Feature: Provide criterias
       | 2  | suggestion | suggestion | suggestion  | 0     | /suggestions/suggestion | suggestionsWS>master>/suggestions/suggestion | **What's a suggestion ?**             | 2           |
       | 3  | examples   | examples   | examples    | 1     | /suggestions/examples   | suggestionsWS>master>/suggestions/examples   | **Some suggestion examples**          | 2           |
       | 4  | admin      | admin      | admin       | 0     | /admin/admin            | suggestionsWS>master>/admin/admin            | **Page for the admin users**          | 3           |
-    When I perform a "GET" on following URL "/api/directory/2"
+    When I perform a "GET" on following URL "/api/directories?path=suggestionsWS>master>/suggestions/"
     Then I get a response with status "200"
     And  I get the following json response body
     """
@@ -548,6 +548,6 @@ Feature: Provide criterias
   "pages": [
     "suggestionsWS>master>/suggestions/suggestion",
     "suggestionsWS>master>/suggestions/examples"
-  ],
+  ]
 }
     """
