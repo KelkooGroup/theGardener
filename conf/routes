@@ -31,6 +31,7 @@ DELETE        /api/hierarchy/:id                              controllers.Hierar
 
 GET           /api/menu                                       controllers.MenuController.getMenu()
 GET           /api/menu/header                                controllers.MenuController.getMenuHeader()
+GET           /api/menu/submenu/:slugname                     controllers.MenuController.getSubMenu(slugname: String)
 
 GET           /api/gherkin                                    controllers.GherkinController.generateGherkin()
 

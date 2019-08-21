@@ -331,7 +331,7 @@ Feature: Provide criterias
 }
 """
 
-  @level_2_technical_details @nominal_case @ready
+  @level_2_technical_details @nominal_case @valid
   Scenario: provide sub menu
     Given the hierarchy nodes are
       | id         | slugName   | name                 | childrenLabel | childLabel   |
@@ -364,7 +364,7 @@ Feature: Provide criterias
       | 1  | root        | SuggestionsWS | Suggestions WebServices | 0     | /             | suggestionsWS>master>/             | 1        |
       | 2  | suggestions | Suggestions   | Suggestions...          | 0     | /suggestions/ | suggestionsWS>master>/suggestions/ | 1        |
       | 3  | admin       | Admin         | Administration...       | 1     | /admin/       | suggestionsWS>master>/admin/       | 1        |
-    When I perform a "GET" on following URL "/api/menu/submenu/.01."
+    When I perform a "GET" on following URL "/api/menu/submenu/eng"
     Then I get the following json response body
 """
 {
