@@ -17,7 +17,7 @@ class ProjectRepository @Inject()(db: Database) {
     featuresRootPath <- str("featuresRootPath").?
     documentationRootPath <- str("documentationRootPath").?
     variables <- str("variables").?
-  } yield Project(id, name, repositoryUrl, stableBranch, displayedBranches, featuresRootPath, documentationRootPath,variables)
+  } yield Project(id, name, repositoryUrl, stableBranch, displayedBranches, featuresRootPath, documentationRootPath, variables)
 
   def count(): Long = {
     db.withConnection { implicit connection =>
