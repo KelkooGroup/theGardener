@@ -7,7 +7,7 @@ import {MenuService} from '../../../_services/menu.service';
 import {HttpClientModule} from '@angular/common/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {of} from 'rxjs';
-import {MENU_SERVICE_RESPONSE} from '../../../test/test-data.spec';
+import {MENU_HEADER_SERVICE_RESPONSE} from '../../../test/test-data.spec';
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;
@@ -39,7 +39,7 @@ describe('HeaderComponent', () => {
     page = new Page(fixture);
 
     const fakeMenuService: MenuService = TestBed.get(MenuService);
-    spyOn(fakeMenuService, 'hierarchy').and.returnValue(of(MENU_SERVICE_RESPONSE));
+    spyOn(fakeMenuService, 'getMenuHeader').and.returnValue(of(MENU_HEADER_SERVICE_RESPONSE));
     fixture.detectChanges();
   });
 

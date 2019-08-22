@@ -1,18 +1,12 @@
-export interface DirectoryApi {
+export interface HierarchyNodeApi {
   id: string;
-  path: string;
+  hierarchy: string;
+  slugName: string;
   name: string;
-  label: string;
-  description: string;
-  order: number;
-  pages?: Array<string>;
-  children: Array<DirectoryApi>;
-}
-
-export interface BranchApi {
-  name: string;
-  path: string;
-  rootDirectory?: DirectoryApi;
+  childrenLabel: string;
+  childLabel: string;
+  children?: Array<HierarchyNodeApi>;
+  projects?: Array<ProjectApi>;
 }
 
 export interface ProjectApi {
@@ -23,15 +17,30 @@ export interface ProjectApi {
   branches: Array<BranchApi>;
 }
 
-export interface HierarchyNodeApi {
-  id: string;
-  hierarchy: string;
-  slugName: string;
+export interface BranchApi {
   name: string;
-  childrenLabel: string;
-  childLabel: string;
-  children?: Array<HierarchyNodeApi>;
-  projects?: Array<ProjectApi>;
+  path: string;
+  rootDirectory?: DirectoryApi;
+}
+export interface DirectoryApi {
+  id: string;
+  path: string;
+  name: string;
+  label: string;
+  description: string;
+  order: number;
+  pages?: Array<PageApi>;
+  children?: Array<DirectoryApi>;
+}
+
+export interface PageApi {
+  path: string;
+  relativePath: string;
+  name: string;
+  label: string;
+  description: string;
+  order: number
+  markdown?: string;
 }
 
 

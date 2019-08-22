@@ -23,7 +23,7 @@ export class NavigateMenuComponent implements OnInit {
     this.activatedRoute.params
       .pipe(
         map(params => params['name']),
-        switchMap((nodeName: string) => this.menuService.getMenuHierarchyForSelectedNode(nodeName))
+        switchMap((nodeName: string) => this.menuService.getSubMenuForNode(nodeName))
       )
       .subscribe(res => {
         this.res = res;

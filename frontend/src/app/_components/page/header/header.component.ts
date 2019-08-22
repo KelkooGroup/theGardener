@@ -20,7 +20,7 @@ export class HeaderComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.menuService.hierarchy().subscribe(
+    this.menuService.getMenuHeader().subscribe(
       result => {
         this.items = result && result.children;
       }, error => {

@@ -4,8 +4,8 @@ import {HttpClient} from '@angular/common/http';
 import {DirectoryApi, HierarchyNodeApi, ProjectApi} from '../_models/hierarchy';
 import {map} from 'rxjs/operators';
 import {MenuDirectoryHierarchy, MenuHierarchy, MenuProjectHierarchy} from '../_models/menu';
-import {of} from 'rxjs';
-import {MENU_SERVICE_RESPONSE} from '../test/test-data.spec';
+// import {of} from 'rxjs';
+// import {MENU_SERVICE_RESPONSE} from '../test/test-data.spec';
 
 @Injectable({
   providedIn: 'root'
@@ -21,8 +21,8 @@ export class MenuService {
     return this.http.get<HierarchyNodeApi>(url);
   }
 
-  getSubMenuForNode(nodeId: string): Observable<MenuHierarchy[]> {
-    const url = `api/menu/submenu/${nodeId}`;
+  getSubMenuForNode(nodeHierarchy: string): Observable<MenuHierarchy[]> {
+    const url = `api/menu/submenu/${nodeHierarchy}`;
     return this.http.get<HierarchyNodeApi>(url)
       .pipe(
         map(submenu => this.buildMenuHierarchyForNode(submenu, 0))
@@ -30,9 +30,9 @@ export class MenuService {
   }
 
   hierarchy(): Observable<HierarchyNodeApi> {
-    // const url = `api/menu`;
-    // return this.http.get<HierarchyNodeApi>(url);
-    return of(MENU_SERVICE_RESPONSE);
+    const url = `api/menu`;
+    return this.http.get<HierarchyNodeApi>(url);
+    // return of(MENU_SERVICE_RESPONSE);
   }
 
   getMenuHierarchyForSelectedNode(nodeName: string): Observable<MenuHierarchy[]> {
