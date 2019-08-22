@@ -1,3 +1,11 @@
-<mat-tab-group>
-  <mat-tab *ngFor="let page of orderedPages; trackBy: trackByPage" [label]="page.label"></mat-tab>
-</mat-tab-group>
+<nav mat-tab-nav-bar>
+  <a mat-tab-link
+     *ngFor="let page of orderedPages; trackBy: trackByPage"
+     [routerLink]="page.name"
+     routerLinkActive #rla="routerLinkActive"
+     [active]="rla.isActive">
+    {{page.label}}
+  </a>
+</nav>
+
+<router-outlet></router-outlet>

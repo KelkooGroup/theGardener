@@ -1,5 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {MenuPageHierarchy} from '../../../_models/menu';
+import {ActivatedRoute} from '@angular/router';
+import {PageService} from '../../../_services/page.service';
+import {map, switchMap} from 'rxjs/operators';
+import {PageApi} from '../../../_models/hierarchy';
 
 @Component({
   selector: 'app-navigate-content',
@@ -8,48 +11,30 @@ import {MenuPageHierarchy} from '../../../_models/menu';
 })
 export class NavigateContentComponent implements OnInit {
 
-  pages: Array<MenuPageHierarchy>;
+  pages: Array<PageApi>;
 
-  constructor() {
+  constructor(private activatedRoute: ActivatedRoute,
+              private pageService: PageService) {
   }
 
   ngOnInit() {
-    const page1: MenuPageHierarchy = {
-      name: 'context',
-      label: 'Context',
-      route: 'context',
-      type: 'Page',
-      depth: 4,
-      order: 0,
-      children: [],
-    };
-    const page2: MenuPageHierarchy = {
-      name: 'constraints',
-      label: 'Constraints',
-      route: 'constraints',
-      type: 'Page',
-      depth: 4,
-      order: 2,
-      children: [],
-    };
-    const page3: MenuPageHierarchy = {
-      name: 'hierarchy',
-      label: 'Hierarchy',
-      route: 'hierarchy',
-      type: 'Page',
-      depth: 4,
-      order: 1,
-      children: [],
-    }
-
-    this.pages = [page1, page2, page3];
+    this.activatedRoute.params
+      .pipe(
+        map(params => params['path']),
+        switchMap((path: string) => this.pageService.getDirectoriesForPath(path))
+      ).subscribe(res => {
+      if (res && res.length === 1)
+        this.pages = res[0].pages;
+      else
+        this.pages = [];
+    });
   }
 
-  trackByPage(index: number, item: MenuPageHierarchy) {
+  trackByPage(index: number, item: PageApi) {
     return item.name;
   }
 
   get orderedPages() {
-    return this.pages.sort((p1, p2) => p1.order > p2.order ? 1 : p1.order === p2.order ? 0 : -1);
+    return this.pages && this.pages.sort((p1, p2) => p1.order > p2.order ? 1 : p1.order === p2.order ? 0 : -1);
   }
 }
