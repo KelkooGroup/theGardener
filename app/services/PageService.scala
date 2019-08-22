@@ -42,7 +42,7 @@ class PageService @Inject()(config: Config, directoryRepository: DirectoryReposi
           directoryRepository.delete(currentDirectory)
         }
 
-        Directory(currentDirectory.id, currentDirectory.name, currentDirectory.label, currentDirectory.description, currentDirectory.order, currentDirectory.relativePath, currentDirectory.path, currentDirectory.branchId, pages.map(_.path), children)
+        Directory(currentDirectory.id, currentDirectory.name, currentDirectory.label, currentDirectory.description, currentDirectory.order, currentDirectory.relativePath, currentDirectory.path, currentDirectory.branchId, pages, children)
 
       }.logError(s"Error while parsing directory $path").toOption
     } else None
@@ -53,7 +53,7 @@ class PageService @Inject()(config: Config, directoryRepository: DirectoryReposi
     if (pageFile.exists()) {
       Try {
         val pageContent = FileUtils.readFileToString(pageFile, "UTF-8")
-        pageRepository.save(Page(-1, name, name, name, order, pageContent, currentDirectory.relativePath + name, currentDirectory.path + name, currentDirectory.id))
+        pageRepository.save(Page(-1, name, name, name, order, Some(pageContent), currentDirectory.relativePath + name, currentDirectory.path + name, currentDirectory.id))
 
       }.logError(s"Error while parsing page ${pageFile.getPath}").toOption
     } else None

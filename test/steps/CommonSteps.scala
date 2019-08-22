@@ -127,6 +127,8 @@ object CommonSteps extends MockitoSugar with MustMatchers {
 
 case class Configuration(path: String, value: String)
 
+case class PageRow(id: Long, name: String, label: String, description: String, order: Int, markdown: String, relativePath: String, path: String, directoryId: Long)
+
 class CommonSteps extends ScalaDsl with EN with MockitoSugar with Logging {
 
   import CommonSteps._
@@ -237,8 +239,8 @@ Scenario: providing several book suggestions
     directoryRepository.saveAll(directories.asScala)
   }
 
-  Given("""^we have those pages in the database$""") { pages: util.List[Page] =>
-    pageRepository.saveAll(pages.asScala)
+  Given("""^we have those pages in the database$""") { pages: util.List[PageRow] =>
+    pageRepository.saveAll(pages.asScala.map(p => Page(p.id, p.name, p.label, p.description, p.order, Option(p.markdown), p.relativePath, p.path, p.directoryId)))
   }
 
   Given("""^the cache is empty$""") { () =>

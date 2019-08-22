@@ -35,8 +35,8 @@ class MenuService @Inject()(hierarchyRepository: HierarchyRepository, projectRep
         branchAndPath._1 -> paths
       }
 
-      val pagePaths = pageRepository.findAllPagePath().groupBy(_.directoryId).map { case (directoryId, paths) => directoryId -> paths.map(_.path) }
-      val directories = directoryRepository.findAll().map(d => d.copy(pages = pagePaths.getOrElse(d.id, Seq())))
+      val pages = pageRepository.findAll().groupBy(_.directoryId).map { case (directoryId, pages) => directoryId -> pages }
+      val directories = directoryRepository.findAll().map(d => d.copy(pages = pages.getOrElse(d.id, Seq())))
 
       val directoryTree = directories.groupBy(_.branchId).flatMap { case (branchId, branchDirectories) =>
         val (rootDirectories, children) = branchDirectories.partition(_.relativePath == "/")

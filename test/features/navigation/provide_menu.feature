@@ -1,4 +1,4 @@
-Feature: Provide criterias
+Feature: Provide menu
 
   Background:
     Given the database is empty
@@ -538,16 +538,32 @@ Feature: Provide criterias
     Then I get a response with status "200"
     And  I get the following json response body
     """
-{
-  "id": 2,
-  "path": "suggestionsWS>master>/suggestions/",
-  "name": "suggestions",
-  "label": "Suggestions",
-  "description": "Suggestions...",
-  "order": 0,
-  "pages": [
-    "suggestionsWS>master>/suggestions/suggestion",
-    "suggestionsWS>master>/suggestions/examples"
-  ]
-}
+[
+  {
+    "id": 2,
+    "path": "suggestionsWS>master>/suggestions/",
+    "name": "suggestions",
+    "label": "Suggestions",
+    "description": "Suggestions...",
+    "order": 0,
+    "pages": [
+      {
+        "path": "suggestionsWS>master>/suggestions/suggestion",
+        "relativePath": "/suggestions/suggestion",
+        "name": "suggestion",
+        "label": "suggestion",
+        "description": "suggestion",
+        "order": 0
+      },
+      {
+        "path": "suggestionsWS>master>/suggestions/examples",
+        "relativePath": "/suggestions/examples",
+        "name": "examples",
+        "label": "examples",
+        "description": "examples",
+        "order": 1
+      }
+    ]
+  }
+]
     """

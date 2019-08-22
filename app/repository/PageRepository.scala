@@ -1,15 +1,15 @@
 package repository
 
+import anorm.SqlParser._
 import anorm._
-import anorm.SqlParser.{int, long, scalar, str}
 import javax.inject.Inject
-import models.{Page, PagePath}
+import models.Page
 import play.api.db.Database
 
 class PageRepository @Inject()(db: Database) {
 
 
-  private val parser = for {
+  private val fullParser = for {
     id <- long("id")
     name <- str("name")
     label <- str("label")
@@ -19,35 +19,41 @@ class PageRepository @Inject()(db: Database) {
     relativePath <- str("relativePath")
     path <- str("path")
     directoryId <- long("directoryId")
-  } yield Page(id, name, label, description, order, markdown, relativePath, path, directoryId)
+  } yield Page(id, name, label, description, order, Some(markdown), relativePath, path, directoryId)
 
-  private val pathParser = for {
-    directoryId <- long("directoryId")
+  private val parser = for {
+    id <- long("id")
+    name <- str("name")
+    label <- str("label")
+    description <- str("description")
+    order <- int("order")
+    relativePath <- str("relativePath")
     path <- str("path")
-  } yield PagePath(directoryId, path)
+    directoryId <- long("directoryId")
+  } yield Page(id, name, label, description, order, None, relativePath, path, directoryId)
 
-  def findAll(): Seq[Page] = {
+  def findAllWithContent(): Seq[Page] = {
     db.withConnection { implicit connection =>
-      SQL"SELECT * FROM page".as(parser.*)
+      SQL"SELECT * FROM page".as(fullParser.*)
     }
   }
 
-  def findAllPagePath(): Seq[PagePath] = {
+  def findAll(): Seq[Page] = {
     db.withConnection { implicit connection =>
-      SQL"SELECT path, directoryId FROM page".as(pathParser.*)
+      SQL"SELECT id, name, label, description, `order`, relativePath, path, directoryId FROM page".as(parser.*)
     }
   }
 
   def findAllByDirectoryId(directoryId: Long): Seq[Page] = {
     db.withConnection { implicit connection =>
-      SQL"SELECT * FROM page WHERE directoryId = $directoryId".as(parser.*)
+      SQL"SELECT id, name, label, description, `order`, relativePath, path, directoryId FROM page WHERE directoryId = $directoryId".as(parser.*)
     }
   }
 
   def save(page: Page): Page = {
     db.withConnection { implicit connection =>
       val id: Option[Long] = if (existsById(page.id) || existsByDirectoryIdAndName(page.directoryId, page.name)) {
-        SQL"""REPLACE INTO page (id, name, label, description, `order`,markdown, relativePath, path, directoryId)
+        SQL"""REPLACE INTO page (id, name, label, description, `order`, markdown, relativePath, path, directoryId)
            VALUES (${page.id},${page.name},${page.label},${page.description},${page.order},${page.markdown},${page.relativePath},${page.path},${page.directoryId})"""
           .executeUpdate()
 
@@ -58,7 +64,7 @@ class PageRepository @Inject()(db: Database) {
            VALUES (${page.name},${page.label},${page.description},${page.order},${page.markdown},${page.relativePath},${page.path},${page.directoryId})"""
           .executeInsert()
       }
-      SQL"SELECT * FROM page WHERE id = $id".as(parser.single)
+      SQL"SELECT * FROM page WHERE id = $id".as(fullParser.single)
     }
   }
 
@@ -96,20 +102,20 @@ class PageRepository @Inject()(db: Database) {
 
   def findAllById(ids: Seq[Long]): Seq[Page] = {
     db.withConnection { implicit connection =>
-      SQL"SELECT * FROM page WHERE id IN ($ids)".as(parser.*)
+      SQL"SELECT * FROM page WHERE id IN ($ids)".as(fullParser.*)
     }
   }
 
 
   def findById(id: Long): Option[Page] = {
     db.withConnection { implicit connection =>
-      SQL"SELECT * FROM page WHERE id = $id".as(parser.singleOpt)
+      SQL"SELECT * FROM page WHERE id = $id".as(fullParser.singleOpt)
     }
   }
 
   def findByDirectoryIdAndName(directoryId: Long, name: String): Option[Page] = {
     db.withConnection { implicit connection =>
-      SQL"SELECT * FROM page WHERE directoryId = $directoryId AND name = $name".as(parser.singleOpt)
+      SQL"SELECT * FROM page WHERE directoryId = $directoryId AND name = $name".as(fullParser.singleOpt)
     }
   }
 
@@ -121,7 +127,7 @@ class PageRepository @Inject()(db: Database) {
 
   def findByPath(path: String): Option[Page] = {
     db.withConnection { implicit connection =>
-      SQL"SELECT * FROM page WHERE path = $path".as(parser.singleOpt)
+      SQL"SELECT * FROM page WHERE path = $path".as(fullParser.singleOpt)
     }
   }
 

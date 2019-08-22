@@ -19,9 +19,9 @@ class StoreDirectoryAndPagesSteps extends ScalaDsl with EN with MockitoSugar {
     actualDirectories must contain theSameElementsAs expectedDirectories
   }
 
-  Then("""^we have now those pages in the database$""") { pages: util.List[Page] =>
-    val expectedPages = pages.asScala.map(d => Page(d.id, d.name, d.label, d.description, d.order, d.markdown, d.relativePath, d.path, d.directoryId))
-    val actualPages = pageRepository.findAll()
+  Then("""^we have now those pages in the database$""") { pages: util.List[PageRow] =>
+    val expectedPages = pages.asScala.map(p => Page(p.id, p.name, p.label, p.description, p.order, Option(p.markdown), p.relativePath, p.path, p.directoryId))
+    val actualPages = pageRepository.findAllWithContent()
     actualPages must contain theSameElementsAs expectedPages
   }
 }
