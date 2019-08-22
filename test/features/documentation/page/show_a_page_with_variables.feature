@@ -7,7 +7,7 @@ Feature: Generate a documentation page using some variables
     And the remote projects are empty
 
 
-  @level_2_technical_details @nominal_case @ready
+  @level_2_technical_details @nominal_case @ongoing
   Scenario: replace content of the page by variables
     Given the hierarchy nodes are
       | id   | slugName   | name              | childrenLabel | childLabel |
@@ -28,20 +28,17 @@ Feature: Generate a documentation page using some variables
     And we have those pages in the database
       | id | name       | label           | description        | order | relativePath            | path                                         | markdown                                                                              | directoryId |
       | 1  | suggestion | The suggestions | The suggestions... | 0     | /suggestions/suggestion | suggestionsWS>master>/suggestions/suggestion | **${desc}**: ${swagger.json}, ${current.project}, ${current.branch}, ${stable.branch} | 2           |
-    When I perform a "GET" on following URL "/api/pages?hierarchy=_root_suggestion&path=suggestionsWS>master>/context"
+    When I perform a "GET" on following URL "/api/pages?hierarchy=_root_suggestion&path=suggestionsWS>master>/suggestions/suggestion"
     Then I get the following json response body
 """
 {
-  "page":
-    {
-      "path": "suggestionsWS>master>/context",
-      "relativePath": "/context",
-      "name" : "context",
-      "label" : "The context",
-      "description": "Why providing suggestions",
+      "path": "suggestionsWS>master>/suggestions/suggestion",
+      "relativePath": "/suggestions/suggestion",
+      "name" : "suggestion",
+      "label" : "The suggestions",
+      "description": "The suggestions...",
       "order": "0",
       "markdown": "**Variables**: http://localhost:9000/docs/swagger.json, suggestionsWS, master, prod"
-    }
 }
 """
 
