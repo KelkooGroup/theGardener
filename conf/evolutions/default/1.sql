@@ -23,6 +23,7 @@ create table project
     stableBranch          varchar(255) not null,
     featuresRootPath      varchar(255) not null,
     documentationRootPath varchar(255),
+    variables             text,
     constraint pk_project primary key (id)
 );
 
