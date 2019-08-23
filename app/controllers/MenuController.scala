@@ -10,7 +10,7 @@ import services.MenuService
 
 
 @Api(value = "MenuController", produces = "application/json")
-class MenuController @Inject()(menuService: MenuService, hierarchyRepository: HierarchyRepository) extends InjectedController {
+class MenuController @Inject()(menuService: MenuService) extends InjectedController {
 
   @ApiOperation(value = "Get all menu items", response = classOf[MenuDTO])
   def getMenu(): Action[AnyContent] = Action {

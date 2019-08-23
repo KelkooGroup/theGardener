@@ -39,8 +39,8 @@ case class MenuDTO(id: String, hierarchy: String, slugName: String, name: String
 object MenuDTO {
   implicit val menuFormat = Json.format[MenuDTO]
 
-  def getHierarchyNode(menu: Menu) = menu.hierarchy.lastOption.getOrElse(HierarchyNode("", "", "", "", ""))
-  def getHierarchy(menu: Menu) = menu.hierarchy.map(_.slugName).filterNot(_ == "root").mkString("_", "_", "")
+  def getHierarchyNode(menu: Menu): HierarchyNode = menu.hierarchy.lastOption.getOrElse(HierarchyNode("", "", "", "", ""))
+  def getHierarchy(menu: Menu): String = menu.hierarchy.map(_.slugName).filterNot(_ == "root").mkString("_", "_", "")
 
   def apply(menu: Menu): MenuDTO = {
 
@@ -49,7 +49,7 @@ object MenuDTO {
     MenuDTO(menu.id, getHierarchy(menu), hierarchyNode.slugName, hierarchyNode.name, hierarchyNode.childrenLabel, hierarchyNode.childLabel, Some(menu.projects.map(ProjectMenuItemDTO(_))), Some(menu.children.map(MenuDTO(_))))
   }
 
-  def header(menu: Menu) = {
+  def header(menu: Menu): MenuDTO = {
     val hierarchyNode = getHierarchyNode(menu)
 
     MenuDTO(menu.id, getHierarchy(menu), hierarchyNode.slugName, hierarchyNode.name, hierarchyNode.childrenLabel, hierarchyNode.childLabel, None, None)
