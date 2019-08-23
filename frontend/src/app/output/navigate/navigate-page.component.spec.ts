@@ -2,7 +2,14 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NavigatePageComponent} from './navigate-page.component';
 import {NavigateContentComponent} from './navigate-content/navigate-content.component';
 import {NavigateMenuComponent} from './navigate-menu/navigate-menu.component';
-import {MatFormFieldModule, MatIconModule, MatSelectModule, MatSidenavModule, MatTabsModule} from '@angular/material';
+import {
+  MatFormFieldModule,
+  MatIconModule,
+  MatProgressSpinnerModule,
+  MatSelectModule,
+  MatSidenavModule,
+  MatTabsModule
+} from '@angular/material';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {ActivatedRoute} from '@angular/router';
@@ -29,6 +36,7 @@ describe('NavigatePageComponent', () => {
         MatSelectModule,
         MatIconModule,
         MatTabsModule,
+        MatProgressSpinnerModule,
         FormsModule,
         HttpClientTestingModule,
         NoopAnimationsModule,

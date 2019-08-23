@@ -152,6 +152,38 @@ describe('NavigateMenuItemComponent', () => {
     expect(component.selectedBranch.name).toEqual(projectItem.stableBranch);
   });
 
+  it('should show not branches select if only one branch', () => {
+    activatedRoute.testParams = {name: 'eng', path: 'suggestionWS'};
+    const projectItem: MenuProjectHierarchy = {
+      name: 'suggestionWS',
+      label: 'Suggestion Webservice',
+      type: 'Project',
+      stableBranch: 'qa',
+      depth: 2,
+      route: 'suggestionWS',
+      children: [
+        {
+          name: 'qa',
+          label: 'qa',
+          type: 'Branch',
+          depth: 3,
+          children: [{
+            name: 'suggestionWS',
+            label: 'suggestionWS',
+            type: 'Directory',
+            route: 'suggestionsWS>qa>/',
+            depth: 4,
+            children: [],
+          }]
+        },
+      ]
+    };
+    component.menuItem = projectItem;
+    fixture.detectChanges();
+
+    expect(page.branchSelect).toBeFalsy();
+  });
+
   it('should show directory for selected branch if node is a project', async(() => {
     activatedRoute.testParams = {name: 'eng', path: 'suggestionWS'};
     const rootDirectoryItem: MenuDirectoryHierarchy = {

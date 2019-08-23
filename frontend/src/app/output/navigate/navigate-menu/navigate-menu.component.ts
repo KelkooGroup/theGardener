@@ -10,7 +10,7 @@ import {MenuHierarchy} from '../../../_models/menu';
   styleUrls: ['./navigate-menu.component.scss'],
 })
 export class NavigateMenuComponent implements OnInit {
-  res: Array<MenuHierarchy>;
+  hierarchy: Array<MenuHierarchy>;
   depth: number;
   expanded: boolean;
 
@@ -26,7 +26,7 @@ export class NavigateMenuComponent implements OnInit {
         switchMap((nodeName: string) => this.menuService.getSubMenuForNode(nodeName))
       )
       .subscribe(res => {
-        this.res = res;
+        this.hierarchy = res;
       });
   }
 
