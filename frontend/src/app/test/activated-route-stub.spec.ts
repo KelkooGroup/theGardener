@@ -7,6 +7,7 @@ import {Injectable} from '@angular/core';
  * Use the `setParamMap()` method to add the next `paramMap` value.
  */
 @Injectable()
+// tslint:disable:variable-name
 export class ActivatedRouteStub {
   // Observable that contains a map of the parameters
   private subjectParamMap = new BehaviorSubject(convertToParamMap(this.testParamMap));
@@ -26,7 +27,7 @@ export class ActivatedRouteStub {
     this.subjectParamMap.next(this._testParamMap);
   }
 
-  private _testParams: Object;
+  private _testParams: object;
   get testParams() {
     return this._testParams;
   }
@@ -44,7 +45,7 @@ export class ActivatedRouteStub {
     this.subjectParentParamMap.next(this._testParentParamMap);
   }
 
-  private _testParentParams: Object;
+  private _testParentParams: object;
   get testParentParams() {
     return this._testParentParams;
   }

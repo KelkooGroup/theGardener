@@ -25,8 +25,7 @@ export class NavigateContentComponent implements OnInit {
       ).subscribe(res => {
       if (res && res.length === 1) {
         this.pages = res[0].pages;
-      }
-      else {
+      } else {
         this.pages = [];
       }
     });

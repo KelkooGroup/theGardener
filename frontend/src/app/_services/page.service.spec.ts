@@ -44,8 +44,8 @@ describe('PageService', () => {
       });
 
 
-    const req = httpMock.expectOne(req =>
-      req.method === 'GET' && req.url === 'api/directories' && req.params.get('path') === 'publisherManagementWS>qa>/constraints/');
+    const req = httpMock.expectOne(mockRequest =>
+      mockRequest.method === 'GET' && mockRequest.url === 'api/directories' && mockRequest.params.get('path') === 'publisherManagementWS>qa>/constraints/');
     req.flush(DIRECTORIES_SERVICE_RESPONSE);
   }));
 
@@ -60,8 +60,8 @@ describe('PageService', () => {
         expect(pages[0].markdown.startsWith('For various reasons')).toBeTruthy();
       });
 
-    const req = httpMock.expectOne(req =>
-      req.method === 'GET' && req.url === 'api/pages' && req.params.get('path') === 'publisherManagementWS>qa>/constraints/overview');
+    const req = httpMock.expectOne(mockRequest =>
+      mockRequest.method === 'GET' && mockRequest.url === 'api/pages' && mockRequest.params.get('path') === 'publisherManagementWS>qa>/constraints/overview');
     req.flush(PAGE_SERVICE_RESPONSE);
   }));
 });

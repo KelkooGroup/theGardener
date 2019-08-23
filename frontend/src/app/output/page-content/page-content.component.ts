@@ -18,10 +18,10 @@ export class PageContentComponent implements OnInit {
   }
 
   ngOnInit() {
-    combineLatest(
+    combineLatest([
       this.activatedRoute.parent.params,
       this.activatedRoute.params
-    ).pipe(
+    ]).pipe(
       map(([parentParams, params]) => {
         const name = parentParams.name;
         const path = parentParams.path;

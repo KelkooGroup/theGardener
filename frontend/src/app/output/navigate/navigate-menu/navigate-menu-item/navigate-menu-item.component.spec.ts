@@ -39,7 +39,7 @@ describe('NavigateMenuItemComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(NavigateMenuItemComponent);
     component = fixture.componentInstance;
-    page = new Page(component, fixture);
+    page = new Page(fixture);
     activatedRoute = fixture.debugElement.injector.get(ActivatedRoute) as any;
   });
 
@@ -267,8 +267,7 @@ describe('NavigateMenuItemComponent', () => {
 });
 
 class Page {
-  // @ts-ignore
-  constructor(private component: NavigateMenuItemComponent, private fixture: ComponentFixture<NavigateMenuItemComponent>) {
+  constructor(private fixture: ComponentFixture<NavigateMenuItemComponent>) {
   }
 
   get label(): HTMLElement {
