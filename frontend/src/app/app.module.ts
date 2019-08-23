@@ -44,6 +44,7 @@ import {HeaderComponent} from './_components/page/header/header.component';
 import {CdkAccordionModule} from '@angular/cdk/accordion';
 import { NavigateMenuItemComponent } from './output/navigate/navigate-menu/navigate-menu-item/navigate-menu-item.component';
 import { PageContentComponent } from './output/page-content/page-content.component';
+import { MarkdownModule } from 'ngx-markdown';
 
 const nonProductionProviders = [{
   provide: HTTP_INTERCEPTORS,
@@ -97,6 +98,7 @@ const nonProductionProviders = [{
     MatSnackBarModule,
     MatSidenavModule,
     CdkAccordionModule,
+    MarkdownModule.forRoot(),
   ],
   providers: [
     ...!environment.production ? nonProductionProviders : [],

@@ -57,6 +57,7 @@ describe('PageService', () => {
         expect(pages[0].path).toEqual('publisherManagementWS>qa>/constraints/overview');
         expect(pages[0].order).toBe(0);
         expect(pages[0].markdown).toBeDefined();
+        expect(pages[0].markdown.startsWith('For various reasons')).toBeTruthy();
       });
 
     const req = httpMock.expectOne(req =>

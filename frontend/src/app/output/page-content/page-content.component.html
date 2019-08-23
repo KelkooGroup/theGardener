@@ -1,1 +1,2 @@
-{{page | json}}
+<mat-progress-spinner *ngIf="!page"></mat-progress-spinner>
+<markdown *ngIf="page" [data]="page.markdown"></markdown>
