@@ -10,7 +10,7 @@ import {MenuHierarchy} from '../../../_models/menu';
   styleUrls: ['./navigate-menu.component.scss'],
 })
 export class NavigateMenuComponent implements OnInit {
-  res: MenuHierarchy[];
+  res: Array<MenuHierarchy>;
   depth: number;
   expanded: boolean;
 
@@ -22,7 +22,7 @@ export class NavigateMenuComponent implements OnInit {
   ngOnInit() {
     this.activatedRoute.params
       .pipe(
-        map(params => params['name']),
+        map(params => params.name),
         switchMap((nodeName: string) => this.menuService.getSubMenuForNode(nodeName))
       )
       .subscribe(res => {

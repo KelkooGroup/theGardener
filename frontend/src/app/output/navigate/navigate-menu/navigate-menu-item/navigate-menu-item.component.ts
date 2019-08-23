@@ -33,8 +33,8 @@ export class NavigateMenuItemComponent implements OnInit {
   ngOnInit() {
     this.activatedRoute.params
       .subscribe(params => {
-        this.nodeNameInUrl = params['name'];
-        this.pathInUrl = params['path'];
+        this.nodeNameInUrl = params.name;
+        this.pathInUrl = params.path;
         this.active = this.isNodeActive(this.menuItem);
         this.expanded = this.menuItem.type === 'Node' || this.active;
         if (this.menuItem.type === 'Project') {
@@ -71,7 +71,7 @@ export class NavigateMenuItemComponent implements OnInit {
     return item.name;
   }
 
-  branchComparator(branch1: MenuHierarchy, branch2: MenuHierarchy):boolean {
+  branchComparator(branch1: MenuHierarchy, branch2: MenuHierarchy): boolean {
     return branch1.name === branch2.name;
   }
 

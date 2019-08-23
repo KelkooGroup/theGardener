@@ -20,13 +20,15 @@ export class NavigateContentComponent implements OnInit {
   ngOnInit() {
     this.activatedRoute.params
       .pipe(
-        map(params => params['path']),
+        map(params => params.path),
         switchMap((path: string) => this.pageService.getDirectoriesForPath(path))
       ).subscribe(res => {
-      if (res && res.length === 1)
+      if (res && res.length === 1) {
         this.pages = res[0].pages;
-      else
+      }
+      else {
         this.pages = [];
+      }
     });
   }
 

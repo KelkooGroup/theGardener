@@ -39,7 +39,7 @@ export interface PageApi {
   name: string;
   label: string;
   description: string;
-  order: number
+  order: number;
   markdown?: string;
 }
 

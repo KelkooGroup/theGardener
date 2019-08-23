@@ -17,16 +17,16 @@ export class MenuService {
   }
 
   getMenuHeader(): Observable<HierarchyNodeApi> {
-    const url = 'api/menu/header'
+    const url = 'api/menu/header';
     return this.http.get<HierarchyNodeApi>(url);
   }
 
-  getSubMenuForNode(nodeHierarchy: string): Observable<MenuHierarchy[]> {
+  getSubMenuForNode(nodeHierarchy: string): Observable<Array<MenuHierarchy>> {
     const url = `api/menu/submenu/${nodeHierarchy}`;
     return this.http.get<HierarchyNodeApi>(url)
       .pipe(
         map(submenu => this.buildMenuHierarchyForNode(submenu, 0))
-      )
+      );
   }
 
   hierarchy(): Observable<HierarchyNodeApi> {
@@ -35,7 +35,7 @@ export class MenuService {
     // return of(MENU_SERVICE_RESPONSE);
   }
 
-  getMenuHierarchyForSelectedNode(nodeName: string): Observable<MenuHierarchy[]> {
+  getMenuHierarchyForSelectedNode(nodeName: string): Observable<Array<MenuHierarchy>> {
     return this.getMenuForSelectedRootNode(nodeName)
       .pipe(
         map(node => this.buildMenuHierarchyForNode(node, 0))
@@ -46,19 +46,19 @@ export class MenuService {
     return this.hierarchy()
       .pipe(
         map((hierarchyNode: HierarchyNodeApi) => {
-          return hierarchyNode.children.find(node => node.hierarchy === nodeName)
+          return hierarchyNode.children.find(node => node.hierarchy === nodeName);
         })
       );
   }
 
-  private buildMenuHierarchyForNode(node: HierarchyNodeApi, depth: number): MenuHierarchy[] {
+  private buildMenuHierarchyForNode(node: HierarchyNodeApi, depth: number): Array<MenuHierarchy> {
     let children: Array<MenuHierarchy> = [];
     if (node.children) {
-      children = node.children.map(c => this.buildMenuHierarchyForChild(c, depth))
+      children = node.children.map(c => this.buildMenuHierarchyForChild(c, depth));
     }
     let projects: Array<MenuHierarchy> = [];
     if (node.projects) {
-      projects = node.projects.map(p => this.buildMenuHierarchyForProject(p, depth))
+      projects = node.projects.map(p => this.buildMenuHierarchyForProject(p, depth));
     }
     const menu: Array<MenuHierarchy> = [...children, ...projects];
     return menu;
@@ -69,7 +69,7 @@ export class MenuService {
       name: node.slugName,
       label: node.name,
       type: 'Node',
-      depth: depth,
+      depth,
       children: this.buildMenuHierarchyForNode(node, depth + 1)
     };
     return menu;
@@ -80,7 +80,7 @@ export class MenuService {
       name: project.id,
       label: project.label,
       type: 'Project',
-      depth: depth,
+      depth,
       route: project.path,
       stableBranch: project.stableBranch,
       children: this.buildMenuHierarchyForBranches(project, depth + 1)
@@ -88,22 +88,22 @@ export class MenuService {
     return menu;
   }
 
-  private buildMenuHierarchyForBranches(project: ProjectApi, depth: number): MenuHierarchy[] {
+  private buildMenuHierarchyForBranches(project: ProjectApi, depth: number): Array<MenuHierarchy> {
     const branchesMenu = project.branches.map(b => {
       const branchItem: MenuHierarchy = {
         name: b.name,
         label: b.name,
         type: 'Branch',
-        depth: depth,
+        depth,
         route: b.path,
-        children: b.rootDirectory ? this.buildMenuHierarchyForRootDirectory([b.rootDirectory], depth+1): []
+        children: b.rootDirectory ? this.buildMenuHierarchyForRootDirectory([b.rootDirectory], depth + 1) : []
       };
-      return branchItem
+      return branchItem;
     });
     return branchesMenu;
   }
 
-  private buildMenuHierarchyForRootDirectory(directories: DirectoryApi[], depth: number): MenuDirectoryHierarchy[] {
+  private buildMenuHierarchyForRootDirectory(directories: Array<DirectoryApi>, depth: number): Array<MenuDirectoryHierarchy> {
     return directories.map(d => {
       const rootDirectoryItem: MenuDirectoryHierarchy = {
         name: d.name,
@@ -111,9 +111,9 @@ export class MenuService {
         type: 'Directory',
         description: d.description,
         order: d.order,
-        depth: depth,
+        depth,
         route: d.path,
-        children: this.buildMenuHierarchyForRootDirectory(d.children, depth+1),
+        children: this.buildMenuHierarchyForRootDirectory(d.children, depth + 1),
       };
       return rootDirectoryItem;
     });

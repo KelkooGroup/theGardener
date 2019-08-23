@@ -43,7 +43,7 @@ describe('NavigateContentComponent', () => {
     activatedRoute.testParams = {};
 
     page = new Page(fixture);
-    let pageService : PageService = TestBed.get(PageService);
+    const pageService: PageService = TestBed.get(PageService);
     spyOn(pageService, 'getDirectoriesForPath').and.returnValue(of(DIRECTORIES_SERVICE_RESPONSE));
     fixture.detectChanges();
   });

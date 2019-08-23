@@ -23,9 +23,9 @@ export class PageContentComponent implements OnInit {
       this.activatedRoute.params
     ).pipe(
       map(([parentParams, params]) => {
-        const name = parentParams['name'];
-        const path = parentParams['path'];
-        const page = params['page'];
+        const name = parentParams.name;
+        const path = parentParams.path;
+        const page = params.page;
         return {name, path, page};
       }),
       switchMap(pageRoute => this.pageService.getPage(`${pageRoute.path}${pageRoute.page}`))

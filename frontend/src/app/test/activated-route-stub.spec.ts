@@ -53,11 +53,11 @@ export class ActivatedRouteStub {
     this.subjectParentParams.next(this._testParentParams);
   }
 
-  private _testUrl: UrlSegment[];
+  private _testUrl: Array<UrlSegment>;
   get testUrl() {
     return this._testUrl;
   }
-  set testUrl(urlSegments: UrlSegment[]) {
+  set testUrl(urlSegments: Array<UrlSegment>) {
     this._testUrl = urlSegments;
     this.subjectUrl.next(this._testUrl);
   }

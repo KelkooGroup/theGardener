@@ -251,7 +251,7 @@ class Page {
     return this.fixture.nativeElement.querySelector('mat-select');
   }
 
-  get directories(): HTMLElement[] {
+  get directories(): Array<HTMLElement> {
     return this.fixture.nativeElement.querySelectorAll('app-navigate-menu-item');
   }
 
