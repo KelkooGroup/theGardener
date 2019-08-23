@@ -13,11 +13,10 @@ class ProjectRepository @Inject()(db: Database) {
     name <- str("name")
     repositoryUrl <- str("repositoryUrl")
     stableBranch <- str("stableBranch")
-    displayedBranches <- str("displayedBranches").?
-    featuresRootPath <- str("featuresRootPath").?
-    documentationRootPath <- str("documentationRootPath").?
-    variables <- str("variables").?
-  } yield Project(id, name, repositoryUrl, stableBranch, displayedBranches, featuresRootPath, documentationRootPath, variables)
+    featuresRootPath <- str("featuresRootPath")
+    documentationRootPath <- get[Option[String]]("documentationRootPath")
+    variables <- get[Option[String]]("variables")
+  } yield Project(id, name, repositoryUrl, stableBranch, featuresRootPath, documentationRootPath, variables)
 
   def count(): Long = {
     db.withConnection { implicit connection =>
@@ -74,8 +73,8 @@ class ProjectRepository @Inject()(db: Database) {
 
   def save(project: Project): Project = {
     db.withConnection { implicit connection =>
-      SQL"""REPLACE INTO project (id, name, repositoryUrl, stableBranch, displayedBranches, featuresRootPath, documentationRootPath)
-           VALUES (${project.id}, ${project.name}, ${project.repositoryUrl}, ${project.stableBranch}, ${project.displayedBranches}, ${project.featuresRootPath}, ${project.documentationRootPath})"""
+      SQL"""REPLACE INTO project (id, name, repositoryUrl, stableBranch, featuresRootPath, documentationRootPath)
+           VALUES (${project.id}, ${project.name}, ${project.repositoryUrl}, ${project.stableBranch}, ${project.featuresRootPath}, ${project.documentationRootPath})"""
         .executeUpdate()
 
       SQL"SELECT * FROM project WHERE id = ${project.id}".as(parser.single)
