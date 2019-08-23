@@ -109,7 +109,7 @@ describe('GherkinBackgroundComponent', () => {
     component = fixture.componentInstance;
     component.steps = steps;
     fixture.detectChanges();
-    page = new Page(fixture, component);
+    page = new Page(fixture);
   });
 
   it('should create', () => {
@@ -120,12 +120,11 @@ describe('GherkinBackgroundComponent', () => {
 });
 
 class Page {
-  constructor(private fixture: ComponentFixture<GherkinBackgroundComponent>, private component: GherkinBackgroundComponent) {
+  constructor(private fixture: ComponentFixture<GherkinBackgroundComponent>) {
 
   }
 
   get backgroundPanel(): MatExpansionPanel {
-    console.log(this.component);
     return this.fixture.debugElement.query(By.css('mat-expansion-panel')).componentInstance;
   }
 

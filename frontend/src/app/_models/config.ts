@@ -1,4 +1,4 @@
-export class Config {
+export interface Config {
   title: string;
   logoSrc: string;
 }

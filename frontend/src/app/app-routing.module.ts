@@ -1,6 +1,7 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {NavigatePageComponent} from './output/navigate/navigate-page.component';
+import {PageContentComponent} from './output/page-content/page-content.component';
 
 
 const routes: Routes = [
@@ -22,12 +23,12 @@ const routes: Routes = [
   {
     path: 'app/documentation/navigate/:name',
     component: NavigatePageComponent,
-    canActivate: []
-  },
-  {
-    path: 'app/documentation/navigate/:name/:path',
-    component: NavigatePageComponent,
-    canActivate: []
+    children: [
+      {
+        path: ':page',
+        component: PageContentComponent,
+      }
+    ]
   },
 ];
 

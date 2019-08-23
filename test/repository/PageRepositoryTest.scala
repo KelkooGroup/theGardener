@@ -13,9 +13,9 @@ class PageRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with Injec
   val db = inject[Database]
   val pageRepository = inject[PageRepository]
 
-  val page1 = Page(1, "app", "page1", "description1", 0, "appMarkdown", "team1>project_id1>branch1>", "branch1", 1)
-  val page2 = Page(2, "front", "page2", "description2", 1, "frontMarkdown", "", "project_id4>branch3>", 1)
-  val page3 = Page(3, "back", "page3", "description3", 2, "backMarkdown", "", "project_id2>branch1>", 3)
+  val page1 = Page(1, "app", "page1", "description1", 0, Some("appMarkdown"), "team1>project_id1>branch1>", "branch1", 1)
+  val page2 = Page(2, "front", "page2", "description2", 1, Some("frontMarkdown"), "", "project_id4>branch3>", 1)
+  val page3 = Page(3, "back", "page3", "description3", 2, Some("backMarkdown"), "", "project_id2>branch1>", 3)
   val pages = Seq(page1, page2, page3)
 
   override def beforeEach() {
@@ -66,12 +66,16 @@ class PageRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with Injec
       pageRepository.findById(page1.id) mustBe Some(page1)
     }
 
+    "get all pages with content" in {
+      pageRepository.findAllWithContent() must contain theSameElementsAs pages
+    }
+
     "get all pages" in {
-      pageRepository.findAll() must contain theSameElementsAs pages
+      pageRepository.findAll() must contain theSameElementsAs pages.map(_.copy(markdown = None))
     }
 
     "get all pages by projectId" in {
-      pageRepository.findAllByDirectoryId(1) must contain theSameElementsAs Seq(page1, page2)
+      pageRepository.findAllByDirectoryId(1) must contain theSameElementsAs Seq(page1, page2).map(_.copy(markdown = None))
     }
 
     "check if a page exist by id" in {
@@ -79,23 +83,23 @@ class PageRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with Injec
     }
 
     "save a page" in {
-      val newPage = Page(-1, "assets", "page1", "description4", 3, "assetsMarkdown", "", "project_id1>branch1>", 1)
+      val newPage = Page(-1, "assets", "page1", "description4", 3, Some("assetsMarkdown"), "", "project_id1>branch1>", 1)
       pageRepository.save(newPage) mustBe newPage.copy(id = 4)
     }
 
     "update a page" in {
-      val updatedPage = page1.copy(description = "rien de rien")
+      val updatedPage = page1.copy(description = "description11")
       pageRepository.save(updatedPage) mustBe updatedPage
-      pageRepository.findAll() must contain theSameElementsAs Seq(updatedPage, page2, page3)
+      pageRepository.findAllWithContent() must contain theSameElementsAs Seq(updatedPage, page2, page3)
     }
 
     "save all pages by projectId" in {
-      val page4 = Page(-1, "conf", "page4", "description5", 4, "confMarkdown", "", "project_id2>branch1>", 3)
-      val page5 = Page(-1, "test", "page5", "description6", 5, "testMarkdown", "", "project_id3>branch1>", 3)
+      val page4 = Page(-1, "conf", "page4", "description5", 4, Some("confMarkdown"), "", "project_id2>branch1>", 3)
+      val page5 = Page(-1, "test", "page5", "description6", 5, Some("testMarkdown"), "", "project_id3>branch1>", 3)
       val expectedPages = Seq(page4.copy(id = 4), page5.copy(id = 5))
 
       pageRepository.saveAll(Seq(page4, page5)) must contain theSameElementsAs expectedPages
-      pageRepository.findAll() must contain theSameElementsAs pages ++ expectedPages
+      pageRepository.findAllWithContent() must contain theSameElementsAs pages ++ expectedPages
     }
 
     "get pages by path" in {

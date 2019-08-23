@@ -1,46 +1,7 @@
-<div>
-  <a [ngStyle]="{'padding-left': ((depth+1) * 12) + 'px'}" (click)="onItemSelected(item)"
-     [ngClass]="{'active': item.route ? router.isActive(item.route, true): false, 'expanded': expanded, 'selected': item.selected}"
-     class="item">
-
-
-    <ul class="flex-container flex-direction-row flex-align-items-center flex-space-between flex-width-expand">
-      <span [ngClass]="item.itemType+'-text'" class="item-text">{{ item.displayName }}</span>
-
-      <span fxFlex *ngIf="item.itemChildren().length">
-    <span fxFlex></span>
-    <mat-icon [@indicatorRotate]="expanded ? 'expanded': 'collapsed'">
-      expand_more
-    </mat-icon>
-  </span>
-    </ul>
-
-
-  </a>
-  <div [hidden]="!expanded">
-    <div *ngIf="!item.itemOptions">
-      <app-navigate-menu *ngFor="let child of item.itemChildren()" [item]="child"
-                         [selectedOption]="item.itemOptionSelected()" [depth]="depth+1"
-                         (selection)="selectionFromChild($event)">
-      </app-navigate-menu>
-    </div>
-
-    <div *ngIf="item.itemOptions">
-
-      <div class="options" [ngStyle]="{'padding-left': ((depth+1) * 12) + 'px'}">
-        <mat-select placeholder="Stable branch by default" (selectionChange)="setSelectedOption($event.source.value)">
-          <mat-option *ngFor="let child of item.itemChildren()" [value]="child">
-            {{ child.displayName }}
-          </mat-option>
-        </mat-select>
-      </div>
-
-      <div *ngIf="selectedOption">
-        <app-navigate-menu *ngFor="let child of selectedOption.itemChildren()" [item]="child" [depth]="depth+1"
-                           (selection)="selectionFromChild($event)" [selectedOption]="item.itemOptionSelected()">
-        </app-navigate-menu>
-      </div>
-    </div>
-
+<mat-progress-spinner *ngIf="!hierarchy"></mat-progress-spinner>
+<div *ngIf="hierarchy">
+  <div *ngFor="let item of hierarchy; trackBy: trackItem; let last=last">
+    <app-navigate-menu-item [menuItem]="item"></app-navigate-menu-item>
+<!--    <hr *ngIf="!last">-->
   </div>
 </div>

@@ -12,7 +12,7 @@ import utils._
 
 import scala.util.Try
 
-case class DirectoryMeta(label: String, description: String, pages: List[String], children: List[String])
+case class DirectoryMeta(label: String, description: String, pages: Option[Seq[String]], children: Option[Seq[String]])
 
 case class Meta(directory: DirectoryMeta)
 
@@ -35,8 +35,8 @@ class PageService @Inject()(config: Config, directoryRepository: DirectoryReposi
         val name = if (isRoot) "root" else pathSplit(pathSplit.length - 1)
 
         val currentDirectory = directoryRepository.save(Directory(-1, name, meta.directory.label, meta.directory.description, order, relativePath, path, branch.id))
-        val pages: Seq[Page] = meta.directory.pages.zipWithIndex.flatMap { case (pagePath, index) => processPage(currentDirectory, localDirectoryPath, pagePath, index) }
-        val children: Seq[Directory] = meta.directory.children.zipWithIndex.flatMap { case (name, index) => processDirectory(branch, path + name + "/", localDirectoryPath + "/" + name, relativePath + name + "/", index, false) }
+        val pages: Seq[Page] = meta.directory.pages.getOrElse(Seq()).zipWithIndex.flatMap { case (pagePath, index) => processPage(currentDirectory, localDirectoryPath, pagePath, index) }
+        val children: Seq[Directory] = meta.directory.children.getOrElse(Seq()).zipWithIndex.flatMap { case (childName, index) => processDirectory(branch, path + childName + "/", localDirectoryPath + "/" + childName, relativePath + childName + "/", index, isRoot = false) }
 
         if (pages.isEmpty && children.isEmpty) {
           directoryRepository.delete(currentDirectory)
@@ -53,7 +53,7 @@ class PageService @Inject()(config: Config, directoryRepository: DirectoryReposi
     if (pageFile.exists()) {
       Try {
         val pageContent = FileUtils.readFileToString(pageFile, "UTF-8")
-        pageRepository.save(Page(-1, name, name, name, order, pageContent, currentDirectory.relativePath + name, currentDirectory.path + name, currentDirectory.id))
+        pageRepository.save(Page(-1, name, name, name, order, Some(pageContent), currentDirectory.relativePath + name, currentDirectory.path + name, currentDirectory.id))
 
       }.logError(s"Error while parsing page ${pageFile.getPath}").toOption
     } else None

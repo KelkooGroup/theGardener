@@ -8,15 +8,12 @@ import {Config} from '../_models/config';
 })
 export class ConfigService {
 
-  private url: string;
-
   constructor(private http: HttpClient) {
-    this.url = 'api/config';
   }
 
   getConfigs(): Observable<Config> {
-    return this.http.get<Config>(this.url);
+    const url = 'api/config';
+    return this.http.get<Config>(url);
   }
-
 
 }

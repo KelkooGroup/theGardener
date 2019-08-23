@@ -31,7 +31,7 @@ class GherkinController @Inject()(gherkinRepository: GherkinRepository, menuServ
 
       val projectGherkins = request.queryString.getOrElse("project", Seq()).flatMap { projectParam =>
         val params = projectParam.split(">")
-        val hierarchy = params(0).split("_").toSeq.filterNot(_.isEmpty).flatMap(hierarchyRepository.findBySlugName)
+        val hierarchy = params(0).split("_").toSeq.filterNot(slug => slug.isEmpty || slug == "root")
         val projectId = params(1)
         val project = projectRepository.findById(projectId)
         val projectName = project.map(_.name).getOrElse("")
@@ -43,7 +43,10 @@ class GherkinController @Inject()(gherkinRepository: GherkinRepository, menuServ
         val featureFilter = params.lift(3)
         val tagsFilter = params.lift(4).map(tagsAsString => tagsAsString.split(",").toSeq)
 
-        hierarchy.lastOption.flatMap { hierarchyNode =>
+
+
+
+        MenuService.findMenuSubtree(hierarchy)(menu).flatMap(_.hierarchy.lastOption).flatMap { hierarchyNode =>
           menuItemMap.get(hierarchyNode.id).flatten.map { criteria =>
             buildGherkin(criteria.hierarchy, Seq(gherkinRepository.buildProjectGherkin(ProjectMenuItem(projectId, projectName, branchName, featureFilter, tagsFilter))))
           }
@@ -51,9 +54,9 @@ class GherkinController @Inject()(gherkinRepository: GherkinRepository, menuServ
       }
 
       val nodeGherkins = request.queryString.getOrElse("node", Seq()).flatMap { nodeParam =>
-        val hierarchy = nodeParam.split("_").toSeq.filterNot(_.isEmpty).flatMap(hierarchyRepository.findBySlugName)
+        val hierarchy = nodeParam.split("_").toSeq.filterNot(_.isEmpty)
 
-        hierarchy.lastOption.map(_.id).flatMap(menuItemMap.get).flatten.map(MenuService.mergeChildrenHierarchy).getOrElse(Seq()).flatMap { hierarchyNode =>
+        MenuService.findMenuSubtree(hierarchy)(menu).flatMap(_.hierarchy.lastOption).map(_.id).flatMap(menuItemMap.get).flatten.map(MenuService.mergeChildrenHierarchy).getOrElse(Seq()).flatMap { hierarchyNode =>
           menuItemMap.get(hierarchyNode.id).flatten.map { criteria =>
             criteria.projects.map { project =>
               buildGherkin(criteria.hierarchy, Seq(gherkinRepository.buildProjectGherkin(ProjectMenuItem(project.id, project.name, project.stableBranch))))

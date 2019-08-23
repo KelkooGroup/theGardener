@@ -88,7 +88,7 @@ class GitService @Inject()(implicit ec: ExecutionContext) extends Logging {
         (created, updated, deleted)
       }
 
-    }.logError(s"Error while pull updates in $localRepository")
+    }.logError(s"Error while pulling updates in $localRepository")
   }
 
   def getRemoteBranches(url: String): Future[Seq[String]] = {
