@@ -1,7 +1,9 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {MenuHierarchy, MenuProjectHierarchy} from '../../../../_models/menu';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {ActivatedRoute, Router} from '@angular/router';
+import {Subscription} from 'rxjs';
+import {NotificationService} from '../../../../_services/notification.service';
 
 @Component({
   selector: 'app-navigate-menu-item',
@@ -17,7 +19,7 @@ import {ActivatedRoute, Router} from '@angular/router';
     ])
   ]
 })
-export class NavigateMenuItemComponent implements OnInit {
+export class NavigateMenuItemComponent implements OnInit, OnDestroy {
 
   @Input() menuItem: MenuHierarchy;
   expanded: boolean;
@@ -25,13 +27,15 @@ export class NavigateMenuItemComponent implements OnInit {
   nodeNameInUrl: string;
   pathInUrl: string;
   selectedBranch: MenuHierarchy;
+  private subscription: Subscription;
 
   constructor(private router: Router,
-              private activatedRoute: ActivatedRoute) {
+              private activatedRoute: ActivatedRoute,
+              private notificationService: NotificationService) {
   }
 
   ngOnInit() {
-    this.activatedRoute.params
+    this.subscription = this.activatedRoute.params
       .subscribe(params => {
         this.nodeNameInUrl = params.name;
         this.pathInUrl = params.path;
@@ -41,6 +45,8 @@ export class NavigateMenuItemComponent implements OnInit {
           const project = this.menuItem as MenuProjectHierarchy;
           this.selectedBranch = project.children.find(b => b.name === project.stableBranch);
         }
+      }, error => {
+        this.notificationService.showError(`Error while showing menu item ${this.menuItem.name}`, error);
       });
   }
 
@@ -58,7 +64,7 @@ export class NavigateMenuItemComponent implements OnInit {
       this.pathInUrl &&
       (this.pathInUrl === node.route ||
         // Angular router automatically removes trailing slash from URL so we need to append it to check path
-        this.pathInUrl.concat('/') === node.route );
+        this.pathInUrl.concat('/') === node.route);
     return isRouteInActivatedUrl;
   }
 
@@ -67,12 +73,16 @@ export class NavigateMenuItemComponent implements OnInit {
     return this.isRouteInActivatedUrl(node) || hasActivatedChild;
   }
 
-  trackMenuItem(index: number, item: MenuHierarchy ) {
+  trackMenuItem(index: number, item: MenuHierarchy) {
     return item.name;
   }
 
   branchComparator(branch1: MenuHierarchy, branch2: MenuHierarchy): boolean {
     return branch1.name === branch2.name;
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
 }

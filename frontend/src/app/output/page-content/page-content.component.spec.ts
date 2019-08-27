@@ -8,7 +8,7 @@ import {PageService} from '../../_services/page.service';
 import {of} from 'rxjs';
 import {MarkdownModule} from 'ngx-markdown';
 import {PageApi} from '../../_models/hierarchy';
-import {MatProgressSpinnerModule} from '@angular/material';
+import {MatProgressSpinnerModule, MatSnackBarModule} from '@angular/material';
 
 describe('PageContentComponent', () => {
   let component: PageContentComponent;
@@ -23,6 +23,7 @@ describe('PageContentComponent', () => {
       imports: [
         HttpClientTestingModule,
         MatProgressSpinnerModule,
+        MatSnackBarModule,
         MarkdownModule.forRoot(),
       ],
       providers: [
@@ -42,7 +43,7 @@ describe('PageContentComponent', () => {
 
   it('should get page content from backend and show markdown', async(() => {
     const pageService: PageService = TestBed.get(PageService);
-    spyOn(pageService, 'getPage').and.returnValue(of([PAGE_SERVICE_RESPONSE]));
+    spyOn(pageService, 'getPage').and.returnValue(of(PAGE_SERVICE_RESPONSE));
 
     activatedRoute.testParentParams = {name: '_eng', path: 'suggestionsWS>qa>/pmws/'};
     activatedRoute.testParams = {page: 'overview'};

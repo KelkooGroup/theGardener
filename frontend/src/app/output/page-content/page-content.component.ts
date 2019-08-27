@@ -1,9 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {map, switchMap} from 'rxjs/operators';
-import {combineLatest} from 'rxjs';
+import {catchError, map, switchMap} from 'rxjs/operators';
+import {combineLatest, of} from 'rxjs';
 import {PageService} from '../../_services/page.service';
 import {PageApi} from '../../_models/hierarchy';
+import {NotificationService} from '../../_services/notification.service';
 
 @Component({
   selector: 'app-page-content',
@@ -14,7 +15,8 @@ export class PageContentComponent implements OnInit {
   page: PageApi;
 
   constructor(private activatedRoute: ActivatedRoute,
-              private pageService: PageService) {
+              private pageService: PageService,
+              private notificationService: NotificationService) {
   }
 
   ngOnInit() {
@@ -28,12 +30,20 @@ export class PageContentComponent implements OnInit {
         const page = params.page;
         return {name, path, page};
       }),
-      switchMap(pageRoute => this.pageService.getPage(`${pageRoute.path}${pageRoute.page}`))
-    ).subscribe(page => {
-        if (page && page.length === 1) {
-          this.page = page[0];
+      switchMap(pageRoute => {
+        if (pageRoute.path.endsWith('/')) {
+          return this.pageService.getPage(`${pageRoute.path}${pageRoute.page}`);
+        } else {
+          return of<PageApi>();
         }
-      });
+      }),
+      catchError(err => {
+        this.notificationService.showError(`Error while loading page`, err);
+        return of<PageApi>();
+      })
+    ).subscribe(page => {
+      this.page = page;
+    });
   }
 
 }

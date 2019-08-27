@@ -1,6 +1,6 @@
 <nav mat-tab-nav-bar>
   <a mat-tab-link
-     *ngFor="let page of orderedPages; trackBy: trackByPage"
+     *ngFor="let page of pages; trackBy: trackByPage"
      [routerLink]="page.name"
      routerLinkActive #rla="routerLinkActive"
      [active]="rla.isActive">
