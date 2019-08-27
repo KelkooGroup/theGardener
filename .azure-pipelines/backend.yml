@@ -6,10 +6,18 @@ trigger:
     include:
     - '*'
   paths:
-    exclude:
-    - frontend/*
+    include:
     - .azure-pipelines/frontend.yml
-    - doc/*
+    - app/*
+    - conf/*
+    - local-conf/*
+    - project/*
+    - public/*
+    - test/*
+    - build.sbt
+    - scalastyle-config.xml
+    - sonar-project.properties
+    - version.sbt
 
 steps:
 
