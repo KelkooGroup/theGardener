@@ -3,7 +3,6 @@ import {RouterModule, Routes} from '@angular/router';
 import {NavigatePageComponent} from './output/navigate/navigate-page.component';
 import {PageContentComponent} from './output/page-content/page-content.component';
 
-
 const routes: Routes = [
   {
     path: '',

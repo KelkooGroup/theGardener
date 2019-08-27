@@ -14,6 +14,8 @@ export class ActivatedRouteStub {
   private subjectParams = new BehaviorSubject(this.testParams);
   private subjectParentParamMap = new BehaviorSubject(convertToParamMap(this.testParentParamMap));
   private subjectParentParams = new BehaviorSubject(this.testParentParams);
+  private subjectChildParamMap = new BehaviorSubject(convertToParamMap(this.testChildParamMap));
+  private subjectChildParams = new BehaviorSubject(this.testChildParams);
   private subjectUrl = new BehaviorSubject(this.testUrl);
 
   paramMap = this.subjectParamMap.asObservable();
@@ -22,6 +24,7 @@ export class ActivatedRouteStub {
   get testParamMap() {
     return this._testParamMap;
   }
+
   set testParamMap(params: {}) {
     this._testParamMap = convertToParamMap(params);
     this.subjectParamMap.next(this._testParamMap);
@@ -31,6 +34,7 @@ export class ActivatedRouteStub {
   get testParams() {
     return this._testParams;
   }
+
   set testParams(params) {
     this._testParams = params;
     this.subjectParams.next(this._testParams);
@@ -40,6 +44,7 @@ export class ActivatedRouteStub {
   get testParentParamMap() {
     return this._testParentParamMap;
   }
+
   set testParentParamMap(params: {}) {
     this._testParentParamMap = convertToParamMap(params);
     this.subjectParentParamMap.next(this._testParentParamMap);
@@ -49,15 +54,37 @@ export class ActivatedRouteStub {
   get testParentParams() {
     return this._testParentParams;
   }
+
   set testParentParams(params) {
     this._testParentParams = params;
     this.subjectParentParams.next(this._testParentParams);
+  }
+
+  private _testChildParamMap: ParamMap;
+  get testChildParamMap() {
+    return this._testChildParamMap;
+  }
+
+  set testChildParamMap(params: {}) {
+    this._testChildParamMap = convertToParamMap(params);
+    this.subjectChildParamMap.next(this._testChildParamMap);
+  }
+
+  private _testChildParams: object;
+  get testChildParams() {
+    return this._testChildParams;
+  }
+
+  set testChildParams(params) {
+    this._testChildParams = params;
+    this.subjectChildParams.next(this._testChildParams);
   }
 
   private _testUrl: Array<UrlSegment>;
   get testUrl() {
     return this._testUrl;
   }
+
   set testUrl(urlSegments: Array<UrlSegment>) {
     this._testUrl = urlSegments;
     this.subjectUrl.next(this._testUrl);
@@ -98,6 +125,17 @@ export class ActivatedRouteStub {
       },
       paramMap: this.subjectParentParamMap.asObservable(),
       params: this.subjectParentParams.asObservable(),
+    };
+  }
+
+  get firstChild() {
+    return {
+      snapshot: {
+        paramMap: this.testChildParamMap,
+        params: this.testChildParams,
+      },
+      paramMap: this.subjectChildParamMap.asObservable(),
+      params: this.subjectChildParams.asObservable(),
     };
   }
 

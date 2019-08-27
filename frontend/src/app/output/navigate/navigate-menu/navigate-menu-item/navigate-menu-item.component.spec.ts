@@ -1,7 +1,7 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {NavigateMenuItemComponent} from './navigate-menu-item.component';
-import {MatFormFieldModule, MatIconModule, MatSelectModule} from '@angular/material';
+import {MatFormFieldModule, MatIconModule, MatSelectModule, MatSnackBarModule} from '@angular/material';
 import {RouterTestingModule} from '@angular/router/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -22,6 +22,7 @@ describe('NavigateMenuItemComponent', () => {
         MatIconModule,
         MatFormFieldModule,
         MatSelectModule,
+        MatSnackBarModule,
         FormsModule,
         RouterTestingModule,
         NoopAnimationsModule,
