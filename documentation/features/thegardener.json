@@ -1,0 +1,15 @@
+{
+  "directory" :
+  {
+    "label": "the features",
+    "description": "What can afford theGardener ?",
+    "pages": [
+      "administration",
+      "documentation",
+      "navigation",
+      "synchronization"
+    ],
+    "children" :[
+    ]
+  }
+}
