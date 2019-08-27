@@ -19,7 +19,7 @@ class DirectoryRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with 
   val directory3 = Directory(3, "back", "directory3", "description3", 2, "", "project_id2>branch1>", 3, Seq(), Seq())
   val directories = Seq(directory1, directory2, directory3)
 
-  override def beforeEach() {
+  override def beforeEach(): Unit = {
     db.withConnection { implicit connection =>
       directories.foreach { directory =>
         SQL"""INSERT INTO directory (id, name, label, description, `order`, relativePath, path, branchId)
@@ -29,10 +29,11 @@ class DirectoryRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with 
     }
   }
 
-  override def afterEach() {
+  override def afterEach(): Unit = {
     db.withConnection { implicit connection =>
       SQL"TRUNCATE TABLE directory".executeUpdate()
       SQL"ALTER TABLE directory ALTER COLUMN id RESTART WITH 1".executeUpdate()
+      ()
     }
   }
 

@@ -4,12 +4,10 @@ import java.io._
 
 import akka.Done
 import akka.actor.{ActorSystem, CoordinatedShutdown}
-import akka.util.Timeout
-import com.typesafe.config._
 import javax.inject._
 import models._
 import org.apache.commons.io.FileUtils._
-import play.api.{Environment, Logging, Mode}
+import play.api.{Configuration, Environment, Logging, Mode}
 import repository._
 import utils._
 
@@ -19,19 +17,20 @@ import scala.concurrent.duration._
 class ProjectService @Inject()(projectRepository: ProjectRepository, gitService: GitService, featureService: FeatureService,
                                featureRepository: FeatureRepository, branchRepository: BranchRepository, directoryRepository: DirectoryRepository,
                                pageRepository: PageRepository, menuService: MenuService, pageService: PageService,
-                               config: Config, environment: Environment, actorSystem: ActorSystem)(implicit ec: ExecutionContext) extends Logging {
-  val projectsRootDirectory = config.getString("projects.root.directory")
-  val synchronizeInterval = config.getInt("projects.synchronize.interval")
-  val synchronizeInitialDelay = config.getInt("projects.synchronize.initial.delay")
-  val documentationMetaFile = config.getString("documentation.meta.file")
+                               config: Configuration, environment: Environment, actorSystem: ActorSystem)(implicit ec: ExecutionContext) extends Logging {
+  val projectsRootDirectory = config.get[String]("projects.root.directory")
+  val synchronizeInterval = config.get[Int]("projects.synchronize.interval")
+  val synchronizeInitialDelay = config.get[Int]("projects.synchronize.initial.delay")
+  val documentationMetaFile = config.get[String]("documentation.meta.file")
 
   if (environment.mode != Mode.Test) {
-    val synchronizeJob = actorSystem.scheduler.schedule(initialDelay = synchronizeInitialDelay.seconds, interval = synchronizeInterval.seconds)(synchronizeAll())(actorSystem.dispatcher)
+    val synchronizeJob = actorSystem.scheduler.schedule(initialDelay = synchronizeInitialDelay.seconds, interval = synchronizeInterval.seconds) {
+      synchronizeAll()
+      ()
+    }(actorSystem.dispatcher)
     CoordinatedShutdown(actorSystem).addTask(
-      CoordinatedShutdown.PhaseBeforeServiceUnbind, "cancelSynchronizeJob") { () ⇒
-      implicit val timeout = Timeout(5.seconds)
-      synchronizeJob.cancel()
-      Future.successful(Done)
+      CoordinatedShutdown.PhaseBeforeServiceUnbind, "cancelSynchronizeJob") { () =>
+      Future(synchronizeJob.cancel()).map(_ => Done)
     }
   }
 
@@ -40,7 +39,8 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
   def checkoutRemoteBranches(project: Project): Future[Unit] = {
     for {
       remoteBranches <- gitService.getRemoteBranches(project.repositoryUrl)
-    } yield checkoutBranches(project, remoteBranches.toSet)
+      _ <- checkoutBranches(project, remoteBranches.toSet)
+    } yield ()
   }
 
   private def parseAndSaveFeatures(project: Project, branch: Branch): Unit = {
@@ -69,7 +69,7 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
     }
   }
 
-  private def checkoutBranches(project: Project, branches: Set[String]) = {
+  private def checkoutBranches(project: Project, branches: Set[String]): Future[Unit] = {
     if (branches.nonEmpty) {
       logger.info(s"checkout ${project.id} branches ${branches.mkString(", ")}")
 
@@ -82,7 +82,9 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
           _ <- gitService.clone(project.repositoryUrl, localRepository)
           _ <- gitService.checkout(branchName, localRepository)
         } yield (parseAndSaveFeatures(project, branch), parseAndSaveDirectoriesAndPages(project, branch))
-      }
+
+      }.map(_ => ())
+
     } else Future.successful(())
   }
 
@@ -165,7 +167,7 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
 
     val projects = projectRepository.findAll()
 
-    FutureExt.sequentially(projects)(synchronize).map(_ => menuService.refreshCache())
+    FutureExt.sequentially(projects)(synchronize).flatMap(_ => Future.fromTry(menuService.refreshCache())).map(_ => ())
   }
 
   def synchronize(project: Project): Future[Unit] = {
@@ -189,7 +191,8 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
       for {
         _ <- checkoutBranches(project, branchesToCheckout)
         _ <- updateBranches(project, branchesToUpdate)
-      } yield deleteBranches(project.id, branchesToDelete)
+        _ <- deleteBranches(project.id, branchesToDelete)
+      } yield ()
     }
   }
 }

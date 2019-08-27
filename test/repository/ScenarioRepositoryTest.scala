@@ -1,10 +1,8 @@
 package repository
 
-import anorm.SqlParser.scalar
 import anorm._
+import models.Feature.{examplesFormat, stepFormat}
 import models._
-import models.Feature.stepFormat
-import models.Feature.examplesFormat
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
@@ -28,14 +26,14 @@ class ScenarioRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with I
     db.withConnection { implicit connection =>
       scenarios.foreach {
         case scenario: Scenario =>
-        val featureId = scenario.id
-        SQL"""INSERT INTO scenario(description, workflowStep, caseType, abstractionLevel, stepsAsJson, keyword, name, featureId)
+          val featureId = scenario.id
+          SQL"""INSERT INTO scenario(description, workflowStep, caseType, abstractionLevel, stepsAsJson, keyword, name, featureId)
               VALUES(${scenario.description}, ${scenario.workflowStep}, ${scenario.caseType}, ${scenario.abstractionLevel}, ${Json.toJson(scenario.steps).toString()}, ${scenario.keyword}, ${scenario.name}, $featureId)"""
-          .executeInsert()
-        scenario.tags.foreach { tag =>
-          SQL"REPLACE INTO tag(name) VALUES ($tag)".executeUpdate()
-          SQL"REPLACE INTO scenario_tag(scenarioId, name) VALUES(${scenario.id}, $tag)".executeUpdate()
-        }
+            .executeInsert()
+          scenario.tags.foreach { tag =>
+            SQL"REPLACE INTO tag(name) VALUES ($tag)".executeUpdate()
+            SQL"REPLACE INTO scenario_tag(scenarioId, name) VALUES(${scenario.id}, $tag)".executeUpdate()
+          }
         case scenarioOutline: ScenarioOutline =>
           val featureId = scenarioOutline.id
           SQL"""INSERT INTO scenario(description, workflowStep, caseType, abstractionLevel, stepsAsJson, keyword, name, featureId, examplesAsJson)
@@ -52,12 +50,13 @@ class ScenarioRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with I
     }
   }
 
-  override def afterEach() {
+  override def afterEach(): Unit = {
     db.withConnection { implicit connection =>
       SQL"TRUNCATE TABLE scenario".executeUpdate()
       SQL"TRUNCATE TABLE tag".executeUpdate()
       SQL"TRUNCATE TABLE scenario_tag".executeUpdate()
       SQL"ALTER TABLE scenario ALTER COLUMN id RESTART WITH 1".executeUpdate()
+      ()
     }
   }
 
@@ -68,30 +67,22 @@ class ScenarioRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with I
 
     "delete a scenario" in {
       scenarioRepository.delete(scenario1)
-      db.withConnection { implicit connection =>
-        scenarioRepository.findAll() must contain theSameElementsAs Seq(scenario2)
-      }
+      scenarioRepository.findAll() must contain theSameElementsAs Seq(scenario2)
     }
 
     "delete all scenarios" in {
       scenarioRepository.deleteAll()
-      db.withConnection { implicit connection =>
-        scenarioRepository.findAll() mustBe Seq()
-      }
+      scenarioRepository.findAll() mustBe Seq()
     }
 
     "delete all scenarios by feature id" in {
       scenarioRepository.deleteAllByFeatureId(1)
-      db.withConnection { implicit connection =>
-        scenarioRepository.findAll() must contain theSameElementsAs Seq(scenario2)
-      }
+      scenarioRepository.findAll() must contain theSameElementsAs Seq(scenario2)
     }
 
     "delete a scenario by id" in {
       scenarioRepository.deleteById(scenario1.id)
-      db.withConnection { implicit connection =>
-        scenarioRepository.findAll() must contain theSameElementsAs Seq(scenario2)
-      }
+      scenarioRepository.findAll() must contain theSameElementsAs Seq(scenario2)
     }
 
     "check if a scenario exist by id" in {

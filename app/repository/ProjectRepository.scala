@@ -31,12 +31,14 @@ class ProjectRepository @Inject()(db: Database) {
   def deleteAll(): Unit = {
     db.withConnection { implicit connection =>
       SQL"TRUNCATE TABLE project".executeUpdate()
+      ()
     }
   }
 
   def deleteAll(projects: Seq[Project]): Unit = {
     db.withConnection { implicit connection =>
       SQL"DELETE FROM project WHERE id IN (${projects.map(_.id)})".executeUpdate()
+      ()
     }
   }
 
@@ -44,6 +46,7 @@ class ProjectRepository @Inject()(db: Database) {
     db.withConnection { implicit connection =>
       SQL"DELETE FROM project WHERE id = $id".executeUpdate()
       SQL"DELETE FROM project_hierarchyNode WHERE projectId = $id".executeUpdate()
+      ()
     }
   }
 
@@ -101,6 +104,7 @@ class ProjectRepository @Inject()(db: Database) {
   def unlinkHierarchy(projectId: String, hierarchyId: String): Unit = {
     db.withConnection { implicit connection =>
       SQL"DELETE FROM project_hierarchyNode WHERE projectId = $projectId AND hierarchyId = $hierarchyId".executeUpdate()
+      ()
     }
   }
 

@@ -32,6 +32,7 @@ class HierarchyRepository @Inject()(db: Database) {
   def deleteAll(): Unit = {
     db.withConnection { implicit connection =>
       SQL"TRUNCATE TABLE hierarchyNode".executeUpdate()
+      ()
     }
   }
 
@@ -48,6 +49,7 @@ class HierarchyRepository @Inject()(db: Database) {
   def deleteById(id: String): Unit = {
     db.withConnection { implicit connection =>
       SQL"DELETE FROM hierarchyNode WHERE id = $id".executeUpdate()
+      ()
     }
   }
 

@@ -82,7 +82,7 @@ class FeatureService @Inject()(config: Config, featureRepository: FeatureReposit
         case _ => Seq()
       }
 
-      Step(id, step.getKeyword.trim, step.getText, argument)
+      Step(id.toLong, step.getKeyword.trim, step.getText, argument)
     }
   }
 
@@ -108,7 +108,7 @@ class FeatureService @Inject()(config: Config, featureRepository: FeatureReposit
       val tableHeader = examples.getTableHeader.getCells.asScala.map(_.getValue)
       val tableBody = examples.getTableBody.asScala.map(_.getCells.asScala.map(_.getValue))
 
-      Examples(id, tags, examples.getKeyword, trim(examples.getDescription), tableHeader, tableBody)
+      Examples(id.toLong, tags, examples.getKeyword, trim(examples.getDescription), tableHeader, tableBody)
     }
   }
 

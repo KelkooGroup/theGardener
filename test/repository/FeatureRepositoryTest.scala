@@ -25,7 +25,7 @@ class FeatureRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with In
   val feature2 = Feature(2, 1, "path2", Some(background1), Seq("tag1", "tag2"), Some("language2"), "keyword2", "name2", "description2", Seq(), Seq("comments2"))
   val features = Seq(feature1, feature2)
 
-  override def beforeEach() {
+  override def beforeEach(): Unit = {
     db.withConnection { implicit connection =>
       features.foreach { feature =>
         SQL"""INSERT INTO feature(branchId, path, backgroundAsJson, language, keyword, name, description, comments)
@@ -39,12 +39,13 @@ class FeatureRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with In
     }
   }
 
-  override def afterEach() {
+  override def afterEach(): Unit = {
     db.withConnection { implicit connection =>
       SQL"TRUNCATE TABLE feature".executeUpdate()
       SQL"TRUNCATE TABLE tag".executeUpdate()
       SQL"TRUNCATE TABLE feature_tag".executeUpdate()
       SQL"ALTER TABLE feature ALTER COLUMN id RESTART WITH 1".executeUpdate()
+      ()
     }
   }
 
