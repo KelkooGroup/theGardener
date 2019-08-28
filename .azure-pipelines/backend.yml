@@ -18,6 +18,24 @@ trigger:
     - scalastyle-config.xml
     - sonar-project.properties
     - version.sbt
+    
+pr:
+  branches:
+    include:
+    - '*'
+  paths:
+    include:
+    - .azure-pipelines/backend.yml
+    - app/*
+    - conf/*
+    - local-conf/*
+    - project/*
+    - public/*
+    - test/*
+    - build.sbt
+    - scalastyle-config.xml
+    - sonar-project.properties
+    - version.sbt
 
 steps:
 
