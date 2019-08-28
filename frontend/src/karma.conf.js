@@ -29,7 +29,7 @@ module.exports = function (config) {
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    browsers: process.env.CI === "true" ? ["ChromeHeadlessNoSandbox"] : ["Chrome"],
+    browsers: process.env.CI === "true" ? ["PhantomJS"] : ["Chrome"],
     customLaunchers: {
       ChromeHeadlessNoSandbox: {
         base: "ChromeHeadless",
