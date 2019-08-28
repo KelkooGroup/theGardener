@@ -13,9 +13,10 @@ class ProjectRepository @Inject()(db: Database) {
     name <- str("name")
     repositoryUrl <- str("repositoryUrl")
     stableBranch <- str("stableBranch")
-    featuresRootPath <- str("featuresRootPath")
-    documentationRootPath <- get[Option[String]]("documentationRootPath")
-  } yield Project(id, name, repositoryUrl, stableBranch, featuresRootPath, documentationRootPath)
+    displayedBranches <- str("displayedBranches").?
+    featuresRootPath <- str("featuresRootPath").?
+    documentationRootPath <- str("documentationRootPath").?
+  } yield Project(id, name, repositoryUrl, stableBranch, displayedBranches, featuresRootPath, documentationRootPath)
 
   def count(): Long = {
     db.withConnection { implicit connection =>
@@ -72,8 +73,8 @@ class ProjectRepository @Inject()(db: Database) {
 
   def save(project: Project): Project = {
     db.withConnection { implicit connection =>
-      SQL"""REPLACE INTO project (id, name, repositoryUrl, stableBranch, featuresRootPath, documentationRootPath)
-           VALUES (${project.id}, ${project.name}, ${project.repositoryUrl}, ${project.stableBranch}, ${project.featuresRootPath}, ${project.documentationRootPath})"""
+      SQL"""REPLACE INTO project (id, name, repositoryUrl, stableBranch, displayedBranches, featuresRootPath, documentationRootPath)
+           VALUES (${project.id}, ${project.name}, ${project.repositoryUrl}, ${project.stableBranch}, ${project.displayedBranches}, ${project.featuresRootPath}, ${project.documentationRootPath})"""
         .executeUpdate()
 
       SQL"SELECT * FROM project WHERE id = ${project.id}".as(parser.single)

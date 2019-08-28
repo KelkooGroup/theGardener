@@ -33,7 +33,14 @@
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": []
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "src/stylesheets"
+              ]
+            },
+            "scripts": [
+              "node_modules/marked/lib/marked.js"
+            ]
           },
           "configurations": {
             "production": {
@@ -87,6 +94,11 @@
             "styles": [
               "src/styles.scss"
             ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "src/stylesheets"
+              ]
+            },
             "assets": [
               "src/assets",
               "src/favicon.ico"

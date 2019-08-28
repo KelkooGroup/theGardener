@@ -13,13 +13,16 @@
 .header-bar {
   display: flex;
   align-items: center;
-  margin-top: 0px;
-  margin-left: 0px;
-  padding: 0px;
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  flex-wrap: wrap;
 }
 
 .header-logo, .header-navigation, .header-logo-the-gardener {
   flex: 1;
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 .header-logo {
@@ -37,7 +40,7 @@
 }
 
 .header-logo-the-gardener {
-  background-color: white;
+  color: white;
   margin-right: 10px;
   margin-top: 3px;
   text-align: right;
@@ -53,9 +56,9 @@
 }
 
 .header-navigation {
-  margin-left: 3px;
+  display: flex;
+  margin-left: 25px;
 }
-
 
 
 .header-navigation a {
@@ -63,11 +66,10 @@
   transition: all 0.3s ease; /* Add transition for hover effects */
   text-decoration: none;
   line-height: 18px;
-  color: black;
-  background: white;
+  color: white;
   padding: 15px 32px;
 }
 
 .header-navigation .active {
-  background-color: $color-link-active;
+  color: $color-link-active;
 }

@@ -1,24 +1,46 @@
-export class BranchApi {
+export interface HierarchyNodeApi {
+  id: string;
+  hierarchy: string;
+  slugName: string;
   name: string;
-  features: Array<string>;
+  childrenLabel: string;
+  childLabel: string;
+  children?: Array<HierarchyNodeApi>;
+  projects?: Array<ProjectApi>;
 }
 
-export class ProjectApi {
+export interface ProjectApi {
   id: string;
   label: string;
+  path: string;
   stableBranch: string;
   branches: Array<BranchApi>;
 }
 
-export class HierarchyNodeApi {
-  id: string;
-  slugName: string;
+export interface BranchApi {
   name: string;
-  children: Array<HierarchyNodeApi>;
-  childrenLabel: string;
-  childLabel: string;
-  projects: Array<ProjectApi>;
+  path: string;
+  rootDirectory?: DirectoryApi;
+}
+export interface DirectoryApi {
+  id: string;
+  path: string;
+  name: string;
+  label: string;
+  description: string;
+  order: number;
+  pages?: Array<PageApi>;
+  children?: Array<DirectoryApi>;
 }
 
+export interface PageApi {
+  path: string;
+  relativePath: string;
+  name: string;
+  label: string;
+  description: string;
+  order: number;
+  markdown?: string;
+}
 
 

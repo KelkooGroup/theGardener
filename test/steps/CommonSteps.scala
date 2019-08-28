@@ -20,7 +20,7 @@ import org.apache.commons.io._
 import org.eclipse.jgit.api._
 import org.scalatest._
 import org.scalatestplus.mockito._
-import play.api.Mode
+import play.api.{Application, Logging, Mode}
 import play.api.cache._
 import play.api.db._
 import play.api.inject._
@@ -39,7 +39,6 @@ import scala.collection.JavaConverters._
 import scala.concurrent._
 import scala.io.Source
 import scala.reflect._
-import play.api.Application
 
 object Injector {
   val builder = new GuiceApplicationBuilder
@@ -48,15 +47,17 @@ object Injector {
   def inject[T: ClassTag]: T = injector.instanceOf[T]
 }
 
-case class ProjectTableRow(id: String, name: String, repositoryUrl: String, stableBranch: String, featuresRootPath: String, documentationRootPath: String){
+case class ProjectTableRow(id: String, name: String, repositoryUrl: String, stableBranch: String, displayedBranches: String, featuresRootPath: String, documentationRootPath: String){
   def toProject(): Project = {
-    Project(this.id, this.name, this.repositoryUrl, this.stableBranch, this.featuresRootPath, Option(this.documentationRootPath))
+    Project(this.id, this.name, this.repositoryUrl, this.stableBranch, Option(this.displayedBranches), Option(this.featuresRootPath), Option(this.documentationRootPath))
   }
 }
 
 
 object CommonSteps extends MockitoSugar with MustMatchers {
 
+  implicit val pageFormat = Json.format[Page]
+  implicit val directoryFormat = Json.format[Directory]
   implicit val scenarioFormat = derived.flat.oformat[ScenarioDefinition]((__ \ "keyword").format[String])
   implicit val branchFormat = Json.format[Branch]
   implicit val hierarchyFormat = Json.format[HierarchyNode]
@@ -126,7 +127,9 @@ object CommonSteps extends MockitoSugar with MustMatchers {
 
 case class Configuration(path: String, value: String)
 
-class CommonSteps extends ScalaDsl with EN with MockitoSugar {
+case class PageRow(id: Long, name: String, label: String, description: String, order: Int, markdown: String, relativePath: String, path: String, directoryId: Long)
+
+class CommonSteps extends ScalaDsl with EN with MockitoSugar with Logging {
 
   import CommonSteps._
 
@@ -236,8 +239,8 @@ Scenario: providing several book suggestions
     directoryRepository.saveAll(directories.asScala)
   }
 
-  Given("""^we have those pages in the database$""") { pages: util.List[Page] =>
-    pageRepository.saveAll(pages.asScala)
+  Given("""^we have those pages in the database$""") { pages: util.List[PageRow] =>
+    pageRepository.saveAll(pages.asScala.map(p => Page(p.id, p.name, p.label, p.description, p.order, Option(p.markdown), p.relativePath, p.path, p.directoryId)))
   }
 
   Given("""^the cache is empty$""") { () =>
@@ -262,9 +265,15 @@ Scenario: providing several book suggestions
     status(response) mustBe expectedStatus.toInt
   }
 
-  Then("""^I get the following json response body$""") { expectedJson: String =>
+  Then("""^I get the following json response body$""") { expected: String =>
     contentType(response) mustBe Some(JSON)
-    contentAsJson(response) mustBe Json.parse(expectedJson.lines.map(l => if (separator == "\\" && (l.contains(""""path":""") || l.contains(""""features":"""))) l.replace("/", """\\""") else l).mkString("\n"))
+    val actualJson = contentAsJson(response)
+    val expectedJson = Json.parse(expected.lines.map(l => if (separator == "\\" && (l.contains(""""path":""") || l.contains(""""features":"""))) l.replace("/", """\\""") else l).mkString("\n"))
+
+    Files.write(Paths.get("test/actual.json".fixPathSeparator), Json.prettyPrint(actualJson).getBytes())
+    Files.write(Paths.get("test/expected.json".fixPathSeparator), Json.prettyPrint(expectedJson).getBytes())
+
+    actualJson mustBe expectedJson
   }
 
   Then("""^the page contains$""") { expectedPageContentPart: String =>

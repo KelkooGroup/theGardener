@@ -40,7 +40,7 @@ Feature: Generate a documentation page
     When I perform a "GET" on following URL "/api/pages?path=suggestionsWS>master>/context"
     Then I get the following json response body
 """
-{
+[{
   "path": "suggestionsWS>master>/context",
   "relativePath": "/context",
   "name" : "context",
@@ -48,5 +48,5 @@ Feature: Generate a documentation page
   "description": "Why providing suggestions",
   "order": 0,
   "markdown": "**Feature**: Provide book suggestions"
-}
+}]
 """

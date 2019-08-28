@@ -1,12 +1,11 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
-    "outDir": "../out-tsc/app",
-    "baseUrl": "",
-    "types": []
+    "outDir": "../out-tsc/spec",
+    "module": "es2015",
+    "baseUrl": "./",
+    "types": ["jasmine", "node"]
   },
-  "exclude": [
-    "src/test.ts",
-    "**/*.spec.ts"
-  ]
+  "files": ["test.ts", "polyfills.ts"],
+  "include": ["**/*.spec.ts", "**/*.d.ts"]
 }
