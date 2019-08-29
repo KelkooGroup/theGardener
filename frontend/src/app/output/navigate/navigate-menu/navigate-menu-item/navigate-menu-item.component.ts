@@ -43,7 +43,9 @@ export class NavigateMenuItemComponent implements OnInit, OnDestroy {
         this.expanded = this.menuItem.type === 'Node' || this.active;
         if (this.menuItem.type === 'Project') {
           const project = this.menuItem as MenuProjectHierarchy;
-          this.selectedBranch = project.children.find(b => b.name === project.stableBranch);
+          const branchInUrl = this.getBranchFromUrl();
+          const branchToSelect = branchInUrl ? branchInUrl : project.stableBranch;
+          this.selectedBranch = project.children.find(b => b.name === branchToSelect);
         }
       }, error => {
         this.notificationService.showError(`Error while showing menu item ${this.menuItem.name}`, error);
@@ -52,11 +54,19 @@ export class NavigateMenuItemComponent implements OnInit, OnDestroy {
 
   navigateToItem() {
     if (this.menuItem.route !== undefined) {
-      const targetUrl = `app/documentation/navigate/${this.nodeNameInUrl}`;
-      this.router.navigate([targetUrl, {path: this.menuItem.route}]);
+      this.router.navigate([this.targetUrl, {path: this.menuItem.route}]);
     } else {
       this.expanded = !this.expanded;
     }
+  }
+
+  navigateToSelectedBranch() {
+    console.log('selection change');
+    this.router.navigate([this.targetUrl, {path: this.selectedBranch.route}]);
+  }
+
+  private get targetUrl(): string {
+    return `app/documentation/navigate/${this.nodeNameInUrl}`;
   }
 
   isRouteInActivatedUrl(node: MenuHierarchy) {
@@ -85,4 +95,17 @@ export class NavigateMenuItemComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
+  private getBranchFromUrl(): string | undefined {
+    if (this.pathInUrl) {
+      const pathParts = this.pathInUrl.split('>');
+      if (pathParts.length > 1) {
+        return pathParts[1];
+      } else {
+        return undefined;
+      }
+    } else {
+      return undefined;
+    }
+
+  }
 }

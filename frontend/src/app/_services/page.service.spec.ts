@@ -6,7 +6,7 @@ import {
   DIRECTORIES_SERVICE_RESPONSE,
   PAGE_SERVICE_RESPONSE,
   PAGE_WITH_EXTERNAL_LINK_SERVICE_RESPONSE
-} from '../test/test-data.spec';
+} from '../_testUtils/test-data.spec';
 
 describe('PageService', () => {
   let httpMock: HttpTestingController;

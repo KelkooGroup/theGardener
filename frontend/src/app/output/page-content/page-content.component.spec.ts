@@ -3,7 +3,7 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {PageContentComponent} from './page-content.component';
 import {ActivatedRoute} from '@angular/router';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
-import {ActivatedRouteStub} from '../../test/activated-route-stub.spec';
+import {ActivatedRouteStub} from '../../_testUtils/activated-route-stub.spec';
 import {PageService} from '../../_services/page.service';
 import {of} from 'rxjs';
 import {MarkdownModule} from 'ngx-markdown';

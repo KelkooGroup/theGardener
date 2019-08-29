@@ -30,6 +30,8 @@
         <mat-select placeholder="Stable branch by default"
                     [(ngModel)]="selectedBranch"
                     [compareWith]="branchComparator"
+                    id="branchSelect"
+                    (selectionChange)="navigateToSelectedBranch()"
         >
           <mat-option *ngFor="let branch of menuItem.children; trackBy: trackMenuItem" [value]="branch">
             {{ branch.name }}
