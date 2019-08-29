@@ -45,6 +45,7 @@ import {CdkAccordionModule} from '@angular/cdk/accordion';
 import { NavigateMenuItemComponent } from './output/navigate/navigate-menu/navigate-menu-item/navigate-menu-item.component';
 import { PageContentComponent } from './output/page-content/page-content.component';
 import { MarkdownModule } from 'ngx-markdown';
+import { SafePipe } from './safe.pipe';
 
 const nonProductionProviders = [{
   provide: HTTP_INTERCEPTORS,
@@ -69,6 +70,7 @@ const nonProductionProviders = [{
     GherkinStepComponent,
     NavigateMenuItemComponent,
     PageContentComponent,
+    SafePipe,
   ],
   imports: [
     HttpClientModule,

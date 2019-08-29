@@ -6,4 +6,5 @@ import {Component} from '@angular/core';
   styleUrls: ['./navigate-page.component.scss']
 })
 export class NavigatePageComponent  {
+  url = 'http://dc1-partner-dev-pmbo-01.dev.dc1.kelkoo.net:9001/docs/';
 }
