@@ -61,7 +61,6 @@ export class NavigateMenuItemComponent implements OnInit, OnDestroy {
   }
 
   navigateToSelectedBranch() {
-    console.log('selection change');
     this.router.navigate([this.targetUrl, {path: this.selectedBranch.route}]);
   }
 

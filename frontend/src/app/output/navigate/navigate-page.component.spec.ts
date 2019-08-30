@@ -7,7 +7,7 @@ import {
   MatIconModule,
   MatProgressSpinnerModule,
   MatSelectModule,
-  MatSidenavModule, MatSnackBarModule,
+  MatSnackBarModule,
   MatTabsModule
 } from '@angular/material';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
@@ -31,7 +31,6 @@ describe('NavigatePageComponent', () => {
         NavigateMenuComponent,
         NavigateMenuItemComponent,
       ], imports: [
-        MatSidenavModule,
         MatFormFieldModule,
         MatSelectModule,
         MatIconModule,

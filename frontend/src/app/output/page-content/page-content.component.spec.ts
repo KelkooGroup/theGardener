@@ -77,7 +77,7 @@ class Page {
   constructor(private fixture: ComponentFixture<PageContentComponent>) {
   }
 
-  get pageContent(): string{
+  get pageContent(): string {
     return this.fixture.nativeElement.textContent;
   }
 

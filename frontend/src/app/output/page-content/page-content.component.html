@@ -1,5 +1,6 @@
 <mat-progress-spinner *ngIf="!page"></mat-progress-spinner>
-<markdown *ngIf="page && page.markdown" [data]="page.markdown"></markdown>
+<div *ngIf="page" class="markdown-container">
+  <div class="markdown" markdown *ngIf="page.markdown" [data]="page.markdown"></div>
 
-<iframe *ngIf="page && page.externalLink" width="100%" height="100%" [src]="page.externalLink | safe"></iframe>
-
+  <iframe *ngIf="page.externalLink" [src]="page.externalLink | safe" scrolling="yes"></iframe>
+</div>
