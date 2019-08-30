@@ -6,6 +6,9 @@ appilcation.logoSrc=<%= value("the_gardener_application_logo_src") %>
 
 play.http.filters=filters.Filters
 
+# disable cache on application index
+play.assets.cache."/public/dist/index.html"="no-cache"
+
 isAlive.initialStatus=<%= value("the_gardener_isalive_initial_status") %>
 isAlive.strOK=<%= value("the_gardener_isalive_is_alive_keyword") %>
 isAlive.strDead=<%= value("the_gardener_isalive_is_dead_keyword") %>
