@@ -1,0 +1,21 @@
+@import "backoffice";
+
+.markdown-container {
+  width: calc(100vw - 25%);
+  height: calc(100vh - 165px);
+  overflow: auto;
+
+  .markdown {
+    padding-left: $margin-left;
+  }
+
+  iframe {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: calc(100% - 5px);
+  }
+}
+
+

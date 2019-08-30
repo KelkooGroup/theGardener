@@ -7,8 +7,17 @@ trigger:
     - '*'
   paths:
     include:
-    - frontend/*
     - .azure-pipelines/frontend.yml
+    - frontend/*
+    
+pr:
+  branches:
+    include:
+    - '*'
+  paths:
+    include:
+    - .azure-pipelines/frontend.yml
+    - frontend/*
 
 steps:
 - task: NodeTool@0
