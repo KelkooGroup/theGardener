@@ -207,7 +207,8 @@ Feature: As a user, I want some book suggestions so that I can do some discovery
     """
     And the database is synchronized on the project "suggestionsWS"
     When I perform a "GET" on following URL "/api/gherkin?project=_root_suggestion>suggestionsWS"
-    Then I get the following json response body
+    Then I get a response with status "200"
+    And I get the following json response body
 """
 {
 	"id": ".",

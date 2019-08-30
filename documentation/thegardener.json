@@ -1,0 +1,15 @@
+{
+  "directory" :
+  {
+    "label": "theGardener",
+    "description": "In our documentation we trust.",
+    "pages": [
+      "why",
+      "prerequisite",
+      "changelog"
+    ],
+    "children" :[
+      "guides"
+    ]
+  }
+}

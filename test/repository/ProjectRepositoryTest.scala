@@ -14,9 +14,9 @@ class ProjectRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with In
   val db = inject[Database]
   val projectRepository = inject[ProjectRepository]
 
-  val project1 = Project("id1", "name1", "repositoryUrl1", "stableBranch1", "featuresRootPath1")
-  val project2 = Project("id2", "name2", "repositoryUrl2", "stableBranch2", "featuresRootPath2")
-  val project3 = Project("id3", "name3", "repositoryUrl3", "stableBranch3", "featuresRootPath3")
+  val project1 = Project("id1", "name1", "repositoryUrl1", "stableBranch1", Some("displayedBranches1"), Some("featuresRootPath1"), Some("documentationRootPath1"))
+  val project2 = Project("id2", "name2", "repositoryUrl2", "stableBranch2", Some("displayedBranches2"), Some("featuresRootPath2"), Some("documentationRootPath2"))
+  val project3 = Project("id3", "name3", "repositoryUrl3", "stableBranch3", Some("displayedBranches3"), Some("featuresRootPath3"), Some("documentationRootPath3"))
 
   val projects = Seq(project1, project2, project3)
 
@@ -24,8 +24,8 @@ class ProjectRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with In
     db.withConnection { implicit connection =>
 
       projects.foreach { project =>
-        SQL"""INSERT INTO project (id, name, repositoryUrl, stableBranch,featuresRootPath,documentationRootPath)
-           VALUES (${project.id}, ${project.name}, ${project.repositoryUrl},${project.stableBranch}, ${project.featuresRootPath}, ${project.documentationRootPath})"""
+        SQL"""INSERT INTO project (id, name, repositoryUrl, stableBranch, displayedBranches, featuresRootPath, documentationRootPath)
+           VALUES (${project.id}, ${project.name}, ${project.repositoryUrl},${project.stableBranch}, ${project.displayedBranches}, ${project.featuresRootPath}, ${project.documentationRootPath})"""
           .executeInsert()
       }
     }
@@ -95,22 +95,22 @@ class ProjectRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with In
     }
 
     "create a project" in {
-      val project = Project("id4", "name4", "repositoryUrl4", "stableBranch4", "featuresRootPath4")
+      val project = Project("id4", "name4", "repositoryUrl4", "stableBranch4", Some("displayedBranches4"), Some("featuresRootPath4"), Some("documentationRootPath4"))
       projectRepository.save(project)
 
       projectRepository.findById(project.id) mustBe Some(project)
     }
 
     "update a project" in {
-      val project = Project("id2", "name2bis", "repositoryUrl2bis", "stableBranch2bis", "featuresRootPath2bis")
+      val project = Project("id2", "name2bis", "repositoryUrl2bis", "stableBranch2bis", Some("displayedBranches2bis"), Some("featuresRootPath2bis"), Some("documentationRootPath2bis"))
       projectRepository.save(project)
 
       projectRepository.findById(project.id) mustBe Some(project)
     }
 
     "save all projects" in {
-      val newProjects = Seq(Project("id2", "name2bis", "repositoryUrl2bis", "stableBranch2bis", "featuresRootPath2bis"),
-        Project("id4", "name4", "repositoryUrl4", "stableBranch4", "featuresRootPath4"))
+      val newProjects = Seq(Project("id2", "name2bis", "repositoryUrl2bis", "stableBranch2bis", Some("displayedBranches2bis"), Some("featuresRootPath2bis"), Some("documentationRootPath2bis")),
+        Project("id4", "name4", "repositoryUrl4", "stableBranch4", Some("displayedBranches4"), Some("featuresRootPath4"), Some("documentationRootPath4")))
 
       projectRepository.saveAll(newProjects)
 

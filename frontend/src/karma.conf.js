@@ -6,6 +6,7 @@ process.env.CHROME_BIN = require('puppeteer').executablePath();
 module.exports = function (config) {
   config.set({
     basePath: '',
+    browserNoActivityTimeout: 30000,
     frameworks: ['jasmine', '@angular-devkit/build-angular'],
     plugins: [
       require('karma-jasmine'),
@@ -29,7 +30,13 @@ module.exports = function (config) {
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    browsers: process.env.NODE_ENV === 'CI' ? ['PhantomJS'] : ['Chrome'],
+    browsers: process.env.CI === "true" ? ["PhantomJS"] : ["Chrome"],
+    customLaunchers: {
+      ChromeHeadlessNoSandbox: {
+        base: "ChromeHeadless",
+        flags: ["--no-sandbox"] // required for Travis CI
+      }
+    },
     singleRun: false
   });
 };
