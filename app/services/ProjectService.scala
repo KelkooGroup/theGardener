@@ -9,6 +9,7 @@ import com.typesafe.config._
 import javax.inject._
 import models._
 import org.apache.commons.io.FileUtils._
+import play.api.libs.json.Json
 import play.api.{Environment, Logging, Mode}
 import repository._
 import utils._
@@ -191,5 +192,13 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
         _ <- updateBranches(project, branchesToUpdate)
       } yield deleteBranches(project.id, branchesToDelete)
     }
+  }
+
+  def getVariables(page: Page): Seq[Variable] ={
+    (for {
+      directory <- directoryRepository.findById(page.directoryId)
+      branch <- branchRepository.findById(directory.branchId)
+      project <- projectRepository.findById(branch.projectId)
+    } yield project.variables).getOrElse(Seq())
   }
 }

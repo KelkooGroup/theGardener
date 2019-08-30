@@ -18,6 +18,7 @@ class ProjectController @Inject()(projectRepository: ProjectRepository, projectS
   implicit val directoryFormat = Json.format[Directory]
   implicit val branchFormat = Json.format[Branch]
   implicit val hierarchyFormat = Json.format[HierarchyNode]
+  implicit val variableFomrat = Json.format[Variable]
   implicit val projectFormat = Json.format[Project]
 
   @ApiOperation(value = "Register a new project", code = 201, response = classOf[Project])

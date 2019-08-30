@@ -58,4 +58,11 @@ class PageService @Inject()(config: Config, directoryRepository: DirectoryReposi
       }.logError(s"Error while parsing page ${pageFile.getPath}").toOption
     } else None
   }
+
+  def replaceVariablesInMarkdown(page: Page, variables : Seq[Variable]): Page ={
+    for(variable <- variables){
+      page.markdown.getOrElse("il n'y a pas de markdown").replaceAll(variable.name,variable.value)
+    }
+    page
+  }
 }

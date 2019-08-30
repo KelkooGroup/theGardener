@@ -20,7 +20,7 @@ import org.apache.commons.io._
 import org.eclipse.jgit.api._
 import org.scalatest._
 import org.scalatestplus.mockito._
-import play.api.Mode
+import play.api.{Application,Logging, Mode}
 import play.api.cache._
 import play.api.db._
 import play.api.inject._
@@ -49,7 +49,8 @@ object Injector {
 
 case class ProjectTableRow(id: String, name: String, repositoryUrl: String, stableBranch: String, displayedBranches: String, featuresRootPath: String, documentationRootPath: String, variables: String){
   def toProject(): Project = {
-    Project(this.id, this.name, this.repositoryUrl, this.stableBranch, Option(this.displayedBranches), Option(this.featuresRootPath), Option(this.documentationRootPath), Option(this.variables))
+    implicit val variableFormat = Json.format[Variable]
+    Project(this.id, this.name, this.repositoryUrl, this.stableBranch, Option(this.displayedBranches), Option(this.featuresRootPath), Option(this.documentationRootPath), Option(this.variables).map(Json.parse(_).as[Seq[Variable]]).getOrElse(Seq()))
   }
 }
 
@@ -61,6 +62,7 @@ object CommonSteps extends MockitoSugar with MustMatchers {
   implicit val scenarioFormat = derived.flat.oformat[ScenarioDefinition]((__ \ "keyword").format[String])
   implicit val branchFormat = Json.format[Branch]
   implicit val hierarchyFormat = Json.format[HierarchyNode]
+  implicit val variableFormat = Json.format[Variable]
   implicit val projectFormat = Json.format[Project]
 
   var response: Future[Result] = _
@@ -215,14 +217,13 @@ Scenario: providing several book suggestions
     Files.write(fullPath, content.getBytes())
   }
 
-  Given("""^we have the following projects$""") { projects: util.List[ProjectTableRow] =>
+  Given("""^we have the following projects$""") { projects: java.util.List[ProjectTableRow] =>
     val projectsWithAbsoluteUrl = projects.asScala.map { project =>
       if (project.repositoryUrl.contains("target/")) project.copy(
         repositoryUrl = Paths.get(project.repositoryUrl).toUri.toString,
         featuresRootPath = project.featuresRootPath.fixPathSeparator,
         documentationRootPath = if (project.documentationRootPath != null) project.documentationRootPath.fixPathSeparator else project.documentationRootPath
       )
-
       else project
     }.map(_.toProject())
 

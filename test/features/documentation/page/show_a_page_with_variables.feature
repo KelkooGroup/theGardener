@@ -14,8 +14,8 @@ Feature: Generate a documentation page using some variables
       | .    | root       | Hierarchy root    | Views         | View       |
       | .01. | suggestion | Suggestion system | Projects      | Project    |
     And we have the following projects
-      | id            | name                    | repositoryUrl                                         | variables                                                                               | stableBranch | featuresRootPath | documentationRootPath |
-      | suggestionsWS | Suggestions WebServices | target/remote/data/GetFeatures/library/suggestionsWS/ | [{"${swagger.json}":"http://localhost:9000/docs/swagger.json"},{"${desc}":"Variables"}] | prod         | test/features    | doc                   |
+      | id            | name                    | repositoryUrl                                         | stableBranch | featuresRootPath | documentationRootPath | variables                                                                                                             |
+      | suggestionsWS | Suggestions WebServices | target/remote/data/GetFeatures/library/suggestionsWS/ | prod         | test/features    | doc                   | [{"name":"${swagger.json}","value":"http://localhost:9000/docs/swagger.json"},{"name":"${desc}","value":"Variables"}] |
     And the links between hierarchy nodes are
       | projectId     | hierarchyId |
       | suggestionsWS | .01.        |
@@ -27,7 +27,7 @@ Feature: Generate a documentation page using some variables
       | 1  | suggestions | Suggestions | Suggestions... | 0     | /suggestions/ | suggestionsWS>master>/suggestions/ | 1        |
     And we have those pages in the database
       | id | name       | label           | description        | order | relativePath            | path                                         | markdown                                                                              | directoryId |
-      | 1  | suggestion | The suggestions | The suggestions... | 0     | /suggestions/suggestion | suggestionsWS>master>/suggestions/suggestion | **${desc}**: ${swagger.json}, ${current.project}, ${current.branch}, ${stable.branch} | 2           |
+      | 1  | suggestion | The suggestions | The suggestions... | 0     | /suggestions/suggestion | suggestionsWS>master>/suggestions/suggestion | **${desc}**: ${swagger.json}, ${current.project}, ${current.branch}, ${stable.branch} | 1           |
     When I perform a "GET" on following URL "/api/pages?hierarchy=_root_suggestion&path=suggestionsWS>master>/suggestions/suggestion"
     Then I get the following json response body
 """
