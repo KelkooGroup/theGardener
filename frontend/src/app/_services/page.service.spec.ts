@@ -5,8 +5,9 @@ import {HttpClientTestingModule, HttpTestingController} from '@angular/common/ht
 import {
   DIRECTORIES_SERVICE_RESPONSE,
   PAGE_SERVICE_RESPONSE,
-  PAGE_WITH_EXTERNAL_LINK_SERVICE_RESPONSE
+  PAGE_WITH_EXTERNAL_LINK_SERVICE_RESPONSE, PAGE_WITH_SCENARIO
 } from '../_testUtils/test-data.spec';
+import {ExternalLinkPart, MarkdownPart} from '../_models/hierarchy';
 
 describe('PageService', () => {
   let httpMock: HttpTestingController;
@@ -58,8 +59,11 @@ describe('PageService', () => {
         expect(page).toBeDefined();
         expect(page.path).toEqual('publisherManagementWS>qa>/constraints/overview');
         expect(page.order).toBe(0);
-        expect(page.markdown).toBeDefined();
-        expect(page.markdown.startsWith('For various reasons')).toBeTruthy();
+        expect(page.parts).toBeDefined();
+        expect(page.parts.length).toBe(1);
+        expect(page.parts[0].type).toBe('Markdown');
+        expect((page.parts[0] as MarkdownPart).markdown).toBeDefined();
+        expect((page.parts[0] as MarkdownPart).markdown.startsWith('For various reasons')).toBeTruthy();
       });
 
     const req = httpMock.expectOne(mockRequest =>
@@ -73,12 +77,30 @@ describe('PageService', () => {
         expect(page).toBeDefined();
         expect(page.path).toEqual('publisherManagementWS>qa>/constraints/overview');
         expect(page.order).toBe(0);
-        expect(page.markdown).toBeFalsy();
-        expect(page.externalLink).toBe('http://publisher.corp.kelkoo.net/docs/#/Contact%20Management/getContact');
+        expect(page.parts.length).toBe(1);
+        expect(page.parts[0].type).toBe('ExternalLink');
+        expect((page.parts[0] as ExternalLinkPart).externalLink).toBe('http://publisher.corp.kelkoo.net/docs/#/Contact%20Management/getContact');
       });
 
     const req = httpMock.expectOne(mockRequest =>
       mockRequest.method === 'GET' && mockRequest.url === 'api/pages' && mockRequest.params.get('path') === 'publisherManagementWS>qa>/constraints/overview');
     req.flush([PAGE_WITH_EXTERNAL_LINK_SERVICE_RESPONSE]);
+  }));
+
+  it('should parse page containing scenarios', async( () => {
+    pageService.getPage('path')
+      .subscribe(page => {
+        expect(page).toBeDefined();
+        expect(page.path).toEqual('shoppingAPI>qa>/ProvideMetaInformation/feature');
+        expect(page.order).toBe(0);
+        expect(page.parts.length).toBe(2);
+        expect(page.parts[0].type).toBe('Markdown');
+        expect(page.parts[1].type).toBe('Scenario');
+        expect((page.parts[0] as MarkdownPart).markdown).toBeDefined();
+      });
+
+    const req = httpMock.expectOne(mockRequest =>
+      mockRequest.method === 'GET' && mockRequest.url === 'api/pages' && mockRequest.params.get('path') === 'path');
+    req.flush([PAGE_WITH_SCENARIO]);
   }));
 });

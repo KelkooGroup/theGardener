@@ -3,21 +3,22 @@ import {ActivatedRoute} from '@angular/router';
 import {catchError, map, switchMap} from 'rxjs/operators';
 import {combineLatest, of, Subscription} from 'rxjs';
 import {PageService} from '../../_services/page.service';
-import {PageApi} from '../../_models/hierarchy';
+import {ExternalLinkPart, MarkdownPart, Page, PagePart, ScenarioPart} from '../../_models/hierarchy';
 import {NotificationService} from '../../_services/notification.service';
+
 
 @Component({
   selector: 'app-page-content',
   templateUrl: './page-content.component.html',
   styleUrls: ['./page-content.component.scss']
 })
-export class PageContentComponent implements OnInit, OnDestroy {
-  page: PageApi;
+export class PageContentComponent implements OnInit, OnDestroy  {
+  page: Page;
   private subscription: Subscription;
 
   constructor(private activatedRoute: ActivatedRoute,
-              private notificationService: NotificationService,
-              private pageService: PageService) {
+              private pageService: PageService,
+              private notificationService: NotificationService) {
   }
 
   ngOnInit() {
@@ -35,12 +36,12 @@ export class PageContentComponent implements OnInit, OnDestroy {
         if (pageRoute.path && pageRoute.path.endsWith('_')) {
           return this.pageService.getPage(`${pageRoute.path}${pageRoute.page}`);
         } else {
-          return of<PageApi>();
+          return of<Page>();
         }
       }),
       catchError(err => {
         this.notificationService.showError(`Error while loading page`, err);
-        return of<PageApi>();
+        return of<Page>();
       })
     ).subscribe(page => {
       this.page = page;
@@ -51,4 +52,15 @@ export class PageContentComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
+  getExternalLink(part: PagePart) {
+    return (part as ExternalLinkPart).externalLink;
+  }
+
+  getMarkdown(part: PagePart) {
+    return (part as MarkdownPart).markdown;
+  }
+
+  getScenario(part: PagePart) {
+    return (part as ScenarioPart).scenarioSettings;
+  }
 }

@@ -259,6 +259,20 @@ export const PAGE_WITH_EXTERNAL_LINK_SERVICE_RESPONSE: PageApi = {
     '    ```'
 };
 
+export const PAGE_WITH_SCENARIO: PageApi = {
+  path: 'shoppingAPI>qa>/ProvideMetaInformation/feature',
+  relativePath: '/ProvideMetaInformation/feature',
+  name: 'feature',
+  label: 'feature',
+  description: 'feature',
+  order: 0,
+  markdown: 'As a developer, it can be useful to know the current version of the application. Please use the following endpoint: ' +
+    '```thegardener { "scenarios" : { "project": "shoppingApi", "branch": "${current.branch}", "feature": "api/public/ProvideMetaInformation.feature", ' +
+    '"select": { "tags" : ["@public_meta"] } } } ' +
+    '```'
+    '    ```'
+};
+
 export const MENU_SERVICE_RESPONSE: HierarchyNodeApi = {
   id: '.',
   hierarchy: '_',
