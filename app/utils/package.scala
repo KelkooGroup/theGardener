@@ -1,6 +1,6 @@
 import java.io.File
 
-import play.api.{Logger, Logging}
+import play.api.Logging
 
 import scala.concurrent._
 import scala.util.control.NonFatal

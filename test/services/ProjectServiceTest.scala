@@ -3,7 +3,6 @@ package services
 import java.io._
 
 import akka.actor.ActorSystem
-import com.typesafe.config._
 import models._
 import org.apache.commons.io.FileUtils._
 import org.mockito.Matchers._
@@ -12,12 +11,13 @@ import org.mockito._
 import org.scalatest._
 import org.scalatest.concurrent._
 import org.scalatestplus.mockito._
-import play.api.{Environment, Mode}
+import play.api.{Configuration, Environment, Mode}
 import repository._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent._
 import scala.concurrent.duration._
+import scala.util.Success
 
 class ProjectServiceTest extends WordSpec with MustMatchers with BeforeAndAfter with MockitoSugar with ScalaFutures {
   override implicit val patienceConfig = PatienceConfig(timeout = scaled(30.seconds))
@@ -39,7 +39,7 @@ class ProjectServiceTest extends WordSpec with MustMatchers with BeforeAndAfter 
   val environment = mock[Environment]
 
 
-  val projectService = new ProjectService(projectRepository, gitService, featureService, featureRepository, branchRepository, directoryRepository, pageRepository, menuService, pageService, ConfigFactory.load(),environment, ActorSystem())
+  val projectService = new ProjectService(projectRepository, gitService, featureService, featureRepository, branchRepository, directoryRepository, pageRepository, menuService, pageService, Configuration.load(Environment.simple()), environment, ActorSystem())
 
   val project = Project("suggestionsWS", "Suggestions WebServices", "git@github.com:library/suggestionsWS.git", "master", Some("^(^master$)|(^feature\\/.*$)"), Some("test/features"))
   val masterDirectory = projectService.getLocalRepository(project.id, project.stableBranch)
@@ -113,6 +113,9 @@ class ProjectServiceTest extends WordSpec with MustMatchers with BeforeAndAfter 
       when(branchRepository.save(any[Branch])).thenReturn(masterBranch)
       when(branchRepository.findByProjectIdAndName(any[String], any[String])).thenReturn(Some(masterBranch))
       when(branchRepository.findAllByProjectId(any[String])).thenReturn(Seq(masterBranch, Branch(2, bugfixBranch, isStable = false, project.id)))
+
+      when(menuService.refreshCache()).thenReturn(Success(Menu("", Seq())))
+
       when(environment.mode).thenReturn(Mode.Test)
 
       val result = projectService.synchronizeAll()

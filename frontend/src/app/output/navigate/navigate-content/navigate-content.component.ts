@@ -44,7 +44,9 @@ export class NavigateContentComponent implements OnInit, OnDestroy {
             !this.activatedRoute.firstChild.snapshot.params ||
             !this.activatedRoute.firstChild.snapshot.params.page) {
             // No child route (ie directory route). Redirect to first page
-            this.router.navigate([this.pages[0].name], {relativeTo: this.activatedRoute});
+            if (this.pages && this.pages[0] && this.pages[0].name) {
+              this.router.navigate([this.pages[0].name], {relativeTo: this.activatedRoute});
+            }
           }
         } else {
           this.pages = [];

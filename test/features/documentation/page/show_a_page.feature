@@ -50,3 +50,25 @@ Feature: Generate a documentation page
   "markdown": "**Feature**: Provide book suggestions"
 }]
 """
+
+  @level_2_technical_details @nominal_case @valid
+  Scenario: generate a documentation page
+    Given we have those directories in the database
+      | id | name | label         | description             | order | relativePath | path                   | branchId |
+      | 1  | root | SuggestionsWS | Suggestions WebServices | 0     | /            | suggestionsWS>master>/ | 1        |
+    And we have those pages in the database
+      | id | name    | label       | description               | order | relativePath | path                          | markdown                                                                                                                                  | directoryId |
+      | 1  | context | The context | Why providing suggestions | 0     | /context     | suggestionsWS>master>/context | ```thegardener { "page" : { "label" : "The context", "description": "Why providing suggestions"}}``` **Feature**: Provide book suggestions | 1           |
+    When I perform a "GET" on following URL "/api/pages?path=suggestionsWS>master>/context"
+    Then I get the following json response body
+"""
+[{
+  "path": "suggestionsWS>master>/context",
+  "relativePath": "/context",
+  "name" : "context",
+  "label" : "The context",
+  "description": "Why providing suggestions",
+  "order": 0,
+  "markdown": "**Feature**: Provide book suggestions"
+}]
+"""

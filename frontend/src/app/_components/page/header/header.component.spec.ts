@@ -7,7 +7,7 @@ import {MenuService} from '../../../_services/menu.service';
 import {HttpClientModule} from '@angular/common/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {of} from 'rxjs';
-import {MENU_HEADER_SERVICE_RESPONSE} from '../../../test/test-data.spec';
+import {MENU_HEADER_SERVICE_RESPONSE} from '../../../_testUtils/test-data.spec';
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;

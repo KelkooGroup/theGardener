@@ -41,6 +41,8 @@ GET           /api/directories                                controllers.Direct
 
 GET           /api/pages                                      controllers.PageController.getPageFromPath(path: String)
 
+GET           /api/assets                                     controllers.PageAssetController.getImageFromPath(path: String)
+
 # API DOCUMENTATION
 GET           /api/docs/                                      controllers.Assets.at(path="/public/swagger-ui",file="index.html")
 GET           /api/docs/swagger.json                          controllers.ApiHelpController.getResources

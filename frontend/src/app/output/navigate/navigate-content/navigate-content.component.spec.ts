@@ -6,8 +6,8 @@ import {of} from 'rxjs';
 import {RouterTestingModule} from '@angular/router/testing';
 import {NavigateContentComponent} from './navigate-content.component';
 import {PageService} from '../../../_services/page.service';
-import {DIRECTORIES_SERVICE_RESPONSE} from '../../../test/test-data.spec';
-import {ActivatedRouteStub} from '../../../test/activated-route-stub.spec';
+import {DIRECTORIES_SERVICE_RESPONSE} from '../../../_testUtils/test-data.spec';
+import {ActivatedRouteStub} from '../../../_testUtils/activated-route-stub.spec';
 import {MatSnackBarModule, MatTabsModule} from '@angular/material';
 
 

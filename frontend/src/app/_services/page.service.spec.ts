@@ -2,7 +2,11 @@ import {async, TestBed} from '@angular/core/testing';
 
 import {PageService} from './page.service';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
-import {DIRECTORIES_SERVICE_RESPONSE, PAGE_SERVICE_RESPONSE} from '../test/test-data.spec';
+import {
+  DIRECTORIES_SERVICE_RESPONSE,
+  PAGE_SERVICE_RESPONSE,
+  PAGE_WITH_EXTERNAL_LINK_SERVICE_RESPONSE
+} from '../_testUtils/test-data.spec';
 
 describe('PageService', () => {
   let httpMock: HttpTestingController;
@@ -61,5 +65,20 @@ describe('PageService', () => {
     const req = httpMock.expectOne(mockRequest =>
       mockRequest.method === 'GET' && mockRequest.url === 'api/pages' && mockRequest.params.get('path') === 'publisherManagementWS>qa>/constraints/overview');
     req.flush([PAGE_SERVICE_RESPONSE]);
+  }));
+
+  it('should parse markdown to find external link', async( () => {
+    pageService.getPage('publisherManagementWS>qa>/constraints/overview')
+      .subscribe(page => {
+        expect(page).toBeDefined();
+        expect(page.path).toEqual('publisherManagementWS>qa>/constraints/overview');
+        expect(page.order).toBe(0);
+        expect(page.markdown).toBeFalsy();
+        expect(page.externalLink).toBe('http://publisher.corp.kelkoo.net/docs/#/Contact%20Management/getContact');
+      });
+
+    const req = httpMock.expectOne(mockRequest =>
+      mockRequest.method === 'GET' && mockRequest.url === 'api/pages' && mockRequest.params.get('path') === 'publisherManagementWS>qa>/constraints/overview');
+    req.flush([PAGE_WITH_EXTERNAL_LINK_SERVICE_RESPONSE]);
   }));
 });

@@ -19,7 +19,7 @@ class BranchRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with Inj
   val branch3 = Branch(3, "name3", isStable = false, "project2")
   val branches = Seq(branch1, branch2, branch3)
 
-  override def beforeEach() {
+  override def beforeEach(): Unit = {
     db.withConnection { implicit connection =>
       branches.foreach { branch =>
         SQL"""INSERT INTO branch (id, name, isStable, projectId)
@@ -29,10 +29,11 @@ class BranchRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with Inj
     }
   }
 
-  override def afterEach() {
+  override def afterEach(): Unit = {
     db.withConnection { implicit connection =>
       SQL"TRUNCATE TABLE branch".executeUpdate()
       SQL"ALTER TABLE branch ALTER COLUMN id RESTART WITH 1".executeUpdate()
+      ()
     }
   }
 

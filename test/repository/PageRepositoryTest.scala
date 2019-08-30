@@ -18,7 +18,7 @@ class PageRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with Injec
   val page3 = Page(3, "back", "page3", "description3", 2, Some("backMarkdown"), "", "project_id2>branch1>", 3)
   val pages = Seq(page1, page2, page3)
 
-  override def beforeEach() {
+  override def beforeEach(): Unit = {
     db.withConnection { implicit connection =>
       pages.foreach { page =>
         SQL"""INSERT INTO page (id, name, label, description, `order`,markdown, relativePath, path, directoryId)
@@ -28,10 +28,11 @@ class PageRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with Injec
     }
   }
 
-  override def afterEach() {
+  override def afterEach(): Unit = {
     db.withConnection { implicit connection =>
       SQL"TRUNCATE TABLE page".executeUpdate()
       SQL"ALTER TABLE page ALTER COLUMN id RESTART WITH 1".executeUpdate()
+      ()
     }
   }
 
