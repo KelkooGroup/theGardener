@@ -26,7 +26,7 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatCardModule} from '@angular/material/card';
-import {MatSidenavModule, MatSnackBarModule} from '@angular/material';
+import {MatSnackBarModule} from '@angular/material';
 import {MenuService} from './_services/menu.service';
 import {GherkinService} from './_services/gherkin.service';
 import {GherkinComponent} from './output/gherkin/gherkin.component';
@@ -42,9 +42,10 @@ import {GherkinBackgroundComponent} from './output/gherkin/gherkin-background/gh
 import {GherkinStepComponent} from './output/gherkin/gherkin-step/gherkin-step.component';
 import {HeaderComponent} from './_components/page/header/header.component';
 import {CdkAccordionModule} from '@angular/cdk/accordion';
-import { NavigateMenuItemComponent } from './output/navigate/navigate-menu/navigate-menu-item/navigate-menu-item.component';
-import { PageContentComponent } from './output/page-content/page-content.component';
-import { MarkdownModule } from 'ngx-markdown';
+import {NavigateMenuItemComponent} from './output/navigate/navigate-menu/navigate-menu-item/navigate-menu-item.component';
+import {PageContentComponent} from './output/page-content/page-content.component';
+import {MarkdownModule} from 'ngx-markdown';
+import {SafePipe} from './safe.pipe';
 
 const nonProductionProviders = [{
   provide: HTTP_INTERCEPTORS,
@@ -69,6 +70,7 @@ const nonProductionProviders = [{
     GherkinStepComponent,
     NavigateMenuItemComponent,
     PageContentComponent,
+    SafePipe,
   ],
   imports: [
     HttpClientModule,
@@ -96,7 +98,6 @@ const nonProductionProviders = [{
     MatExpansionModule,
     MatProgressBarModule,
     MatSnackBarModule,
-    MatSidenavModule,
     CdkAccordionModule,
     MarkdownModule.forRoot(),
   ],

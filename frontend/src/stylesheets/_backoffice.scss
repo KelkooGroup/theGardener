@@ -2,6 +2,12 @@
 
 /* Backoffice style */
 
+$header-height: 70px;
+$footer-height: 35px;
+$menu-width: 350px;
+$margin-left: 25px;
+$total-header-footer-height: 165px;
+
 $min-width: 1200px;
 
 $font-size-h1 : 35px;
@@ -27,6 +33,7 @@ html, body {
   font-size: $font-size-text;
   font-family: $font-family;
   margin: 0;
+  overflow: hidden;
 }
 
 a {

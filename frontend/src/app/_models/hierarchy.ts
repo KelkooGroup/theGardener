@@ -41,7 +41,16 @@ export interface PageApi {
   description: string;
   order: number;
   markdown?: string;
+  externalLink?: string;
 }
 
+export interface MarkdownSettings {
+  include?: PageIncludeSettings;
+}
+
+export interface PageIncludeSettings {
+  type: string;
+  url: string;
+}
 
 

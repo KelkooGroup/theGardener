@@ -5,7 +5,7 @@ import {
   MENU_HEADER_SERVICE_RESPONSE,
   MENU_SERVICE_RESPONSE,
   MENU_SUBMENU_SERVICE_RESPONSE
-} from '../test/test-data.spec';
+} from '../_testUtils/test-data.spec';
 import {MenuHierarchy} from '../_models/menu';
 
 describe('MenuService', () => {
