@@ -13,6 +13,7 @@ import org.scalatest.concurrent._
 import org.scalatestplus.mockito._
 import play.api.{Configuration, Environment, Mode}
 import repository._
+import utils._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent._
@@ -72,9 +73,10 @@ class ProjectServiceTest extends WordSpec with MustMatchers with BeforeAndAfter 
       when(featureRepository.saveAll(any[Seq[Feature]])).thenReturn(Seq())
       when(featureRepository.findByBranchIdAndPath(any[Long], any[String])).thenReturn(None)
 
+      when(branchRepository.findByProjectIdAndName(any[String], any[String])).thenReturn(None)
       when(branchRepository.save(any[Branch])).thenReturn(Branch(1, "master", isStable = true, project.id))
 
-      val result = projectService.checkoutRemoteBranches(project)
+      val result = projectService.checkoutRemoteBranches(project).logError("Failed to checkout remote branches")
 
       whenReady(result) { _ =>
         Thread.sleep(100) // Workaround to fix flaky test issue on CI
@@ -118,7 +120,7 @@ class ProjectServiceTest extends WordSpec with MustMatchers with BeforeAndAfter 
 
       when(environment.mode).thenReturn(Mode.Test)
 
-      val result = projectService.synchronizeAll()
+      val result = projectService.synchronizeAll().logError("Failed to synchronize projects")
 
       whenReady(result) { _ =>
         Thread.sleep(100) // Workaround to fix flaky test issue on CI

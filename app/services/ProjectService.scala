@@ -76,7 +76,7 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
       FutureExt.sequentially(branches.toSeq) { branchName =>
         val localRepository = getLocalRepository(project.id, branchName)
 
-        val branch = branchRepository.save(Branch(-1, branchName, branchName == project.stableBranch, project.id))
+        val branch = branchRepository.findByProjectIdAndName(project.id, branchName).getOrElse(branchRepository.save(Branch(-1, branchName, branchName == project.stableBranch, project.id)))
 
         for {
           _ <- gitService.clone(project.repositoryUrl, localRepository)
@@ -98,49 +98,50 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
     if (branches.nonEmpty) {
       logger.info(s"update ${project.id} branches ${branches.mkString(", ")}")
 
-      FutureExt.sequentially(branches.toSeq) {
-        branchName =>
+      FutureExt.sequentially(branches.toSeq) { branchName =>
 
-          val localRepo = getLocalRepository(project.id, branchName)
-          val localRepoFile = new File(localRepo)
-          if (!localRepoFile.exists()) {
-            checkoutBranches(project, Set(branchName))
-          }
+        val localRepo = getLocalRepository(project.id, branchName)
+        val localRepoFile = new File(localRepo)
+        if (!localRepoFile.exists()) {
+          checkoutBranches(project, Set(branchName))
+        }
 
-          gitService.pull(localRepo).map {
-            case (created, updated, deleted) =>
-              branchRepository.findByProjectIdAndName(project.id, branchName).foreach {
-                branch =>
-                  if (featureRepository.findAllByBranchId(branch.id).nonEmpty) {
-                    filterFeatureFile(updated ++ deleted).flatMap(path => featureRepository.findByBranchIdAndPath(branch.id, path)).foreach(featureRepository.delete)
+        gitService.pull(localRepo).map {
+          case (created, updated, deleted) =>
+            branchRepository.findByProjectIdAndName(project.id, branchName).foreach {
+              branch =>
+                if (featureRepository.findAllByBranchId(branch.id).nonEmpty) {
+                  filterFeatureFile(updated ++ deleted).flatMap(path => featureRepository.findByBranchIdAndPath(branch.id, path)).foreach(featureRepository.delete)
 
-                    filterFeatureFile(created ++ updated).flatMap(filePath => featureService.parseFeatureFile(project.id, branch, getLocalRepository(project.id, branchName) + filePath).toOption).foreach(featureRepository.save)
+                  filterFeatureFile(created ++ updated).flatMap(filePath => featureService.parseFeatureFile(project.id, branch, getLocalRepository(project.id, branchName) + filePath).toOption).foreach(featureRepository.save)
 
-                    logger.info(s"${created.size} features created, ${updated.size} features updated and ${deleted.size} features deleted, for project ${project.id} on branch ${branch.name}")
+                  logger.info(s"${created.size} features created, ${updated.size} features updated and ${deleted.size} features deleted, for project ${project.id} on branch ${branch.name}")
+
+                } else {
+                  parseAndSaveFeatures(project, branch)
+                }
+
+                project.documentationRootPath.foreach { documentationRootPath =>
+                  if (directoryRepository.findAllByBranchId(branch.id).nonEmpty) {
+
+                    filterDocumentationMetaFile(updated ++ deleted).filter(_.contains(documentationRootPath)).flatMap { path =>
+                      directoryRepository.findByBranchIdAndRelativePath(branch.id, path.substring(path.indexOf(documentationRootPath) + documentationRootPath.length, path.length))
+                    }.foreach(directoryRepository.delete)
+
+                    filterDocumentationFile(updated ++ deleted).flatMap(path => pageRepository.findByPath(path)).foreach(pageRepository.delete)
+
+                    filterDocumentationMetaFile(created ++ updated).flatMap(directoryPath => pageService.processDirectory(branch, directoryPath, getLocalRepository(project.id, branchName) + directoryPath))
+
+                    logger.info(s"${created.size} directories created, ${updated.size} directories updated and ${deleted.size} directories deleted, for project ${project.id} on branch ${branch.name}")
 
                   } else {
-                    parseAndSaveFeatures(project, branch)
+                    parseAndSaveDirectoriesAndPages(project, branch)
                   }
-
-                  project.documentationRootPath.foreach { documentationRootPath =>
-                    if (directoryRepository.findAllByBranchId(branch.id).nonEmpty) {
-
-                      filterDocumentationMetaFile(updated ++ deleted).filter(_.contains(documentationRootPath)).flatMap { path =>
-                        directoryRepository.findByBranchIdAndRelativePath(branch.id, path.substring(path.indexOf(documentationRootPath) + documentationRootPath.length, path.length))
-                      }.foreach(directoryRepository.delete)
-
-                      filterDocumentationFile(updated ++ deleted).flatMap(path => pageRepository.findByPath(path)).foreach(pageRepository.delete)
-
-                      filterDocumentationMetaFile(created ++ updated).flatMap(directoryPath => pageService.processDirectory(branch, directoryPath, getLocalRepository(project.id, branchName) + directoryPath))
-
-                      logger.info(s"${created.size} directories created, ${updated.size} directories updated and ${deleted.size} directories deleted, for project ${project.id} on branch ${branch.name}")
-
-                    } else {
-                      parseAndSaveDirectoriesAndPages(project, branch)
-                    }
-                  }
-              }
-          }
+                }
+            }
+        }.recoverWith {
+          case _ => deleteBranches(project.id, Set(branchName)).flatMap(_ => checkoutBranches(project, Set(branchName)))
+        }
       }
     } else Future.successful(())
   }
@@ -173,7 +174,7 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
   def synchronize(project: Project): Future[Unit] = {
     logger.info(s"Start synchronizing project ${project.id}")
 
-    val localBranches = branchRepository.findAllByProjectId(project.id).map(_.name).toSet
+    val localBranches = branchRepository.findAllByProjectId(project.id).map(_.name).toSet.filter(branch => new File(getLocalRepository(project.id, branch)).exists)
 
     logger.info(s"Local branches of project ${project.id} : ${localBranches.mkString(", ")}")
 
