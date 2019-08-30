@@ -1,0 +1,13 @@
+INSERT INTO project (id, name, repositoryUrl, stableBranch, displayedBranches, featuresRootPath, documentationRootPath) VALUES ('publisherManagementWS', 'Publisher management WS', 'http://gitlab.corp.kelkoo.net/syndication/publisherManagementWS.git', 'qa', 'master|qa', 'test/features', 'doc');
+INSERT INTO project (id, name, repositoryUrl, stableBranch, displayedBranches, featuresRootPath, documentationRootPath) VALUES ('shoppingAPI', 'Shopping API', 'http://gitlab.corp.kelkoo.net/syndication/shoppingApi.git', 'qa', 'qa', 'test/features/', 'doc/features/api/Public');
+INSERT INTO project (id, name, repositoryUrl, stableBranch, displayedBranches, featuresRootPath, documentationRootPath) VALUES ('theGardener', 'theGardener', 'https://github.com/KelkooGroup/theGardener.git', 'master', 'master', 'test/features', 'documentation');
+INSERT INTO project_hierarchyNode (projectId, hierarchyId) VALUES ('publisherManagementWS', '.01.01.01.');
+INSERT INTO project_hierarchyNode (projectId, hierarchyId) VALUES ('shoppingAPI', '.01.01.02.');
+INSERT INTO project_hierarchyNode (projectId, hierarchyId) VALUES ('theGardener', '.02.01.');
+INSERT INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel) VALUES ('.', 'root', 'root', 'Views', 'View');
+INSERT INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel) VALUES ('.01.', 'eng', 'Internal', 'Areas', 'Area');
+INSERT INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel) VALUES ('.01.01.', 'publisher', 'Publisher', 'System groups', 'System group');
+INSERT INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel) VALUES ('.01.01.01.', 'internal', 'Publisher internal management', 'Projects', 'Project');
+INSERT INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel) VALUES ('.01.01.02.', 'api', 'API to publishers', 'Projects', 'Project');
+INSERT INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel) VALUES ('.02.', 'public', 'Public', 'Areas', 'Area');
+INSERT INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel) VALUES ('.02.01.', 'tools', 'Tools', 'Projects', 'Project');
