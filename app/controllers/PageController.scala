@@ -15,13 +15,29 @@ import scala.concurrent.ExecutionContext
 
 
 @Api(value = "PageController", produces = "application/json")
-class PageController @Inject()(pageRepository: PageRepository, pageService: PageService) extends InjectedController {
+class PageController @Inject()(config: Configuration, directoryRepository: DirectoryRepository, pageRepository: PageRepository, pageService: PageService) extends InjectedController {
+
+  val baseUrl = config.getOptional[String]("application.baseUrl").getOrElse("")
 
   @ApiOperation(value = "Get pages from path", response = classOf[PageDTO], responseContainer = "list")
   @ApiResponses(Array(new ApiResponse(code = 404, message = "Page not found")))
   def getPageFromPath(path: String): Action[AnyContent] = Action {
     pageRepository.findByPath(path) match {
-      case Some(page) => Ok(Json.toJson(Seq(PageDTO(page.copy(markdown = page.markdown.map(content => pageService.findPageMeta(content).map(meta => content.replace(s"""```thegardener$meta```""", "").trim).getOrElse(content)))))))
+      case Some(page) =>
+
+        val markdownWithoutMeta = page.markdown.map(content => pageService.findPageMeta(content).map(meta => content.replace(s"""```thegardener$meta```""", "").trim).getOrElse(content))
+
+        val finalMarkdown: Option[String] = markdownWithoutMeta.map { content =>
+          val images = pageService.findPageImagesWithRelativePath(content)
+
+          val path = directoryRepository.findById(page.directoryId).map(_.path).getOrElse("")
+
+
+            images.fold(content)((acc, relativePath) => acc.replace(relativePath, s"$baseUrl/api/assets?path=$path$relativePath"))
+        }
+
+        Ok(Json.toJson(Seq(PageDTO(page.copy(markdown = finalMarkdown)))))
+
       case _ => NotFound(s"No Page $path")
     }
   }

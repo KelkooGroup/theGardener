@@ -26,7 +26,8 @@ class PageService @Inject()(config: Config, directoryRepository: DirectoryReposi
   implicit val directoryMetaFormat = Json.format[DirectoryMeta]
   implicit val metaFormat = Json.format[Meta]
 
-  val pageRegex = "\\`\\`\\`thegardener([\\s\\S]*\"page\"[\\s\\S]*)\\`\\`\\`".r
+  val metaRegex = """\`\`\`thegardener([\s\S]*"page"[\s\S]*)\`\`\`""".r
+  val imageRegex = """\!\[.*\]\((.*)\)""".r
 
   def getLocalRepository(projectId: String, branch: String): String = s"$projectsRootDirectory$projectId/$branch/".fixPathSeparator
 
@@ -78,5 +79,7 @@ class PageService @Inject()(config: Config, directoryRepository: DirectoryReposi
     } else None
   }
 
-  def findPageMeta(pageContent: String): Option[String] = for (m <- pageRegex.findFirstMatchIn(pageContent)) yield m.group(1)
+  def findPageMeta(pageContent: String): Option[String] = for (m <- metaRegex.findFirstMatchIn(pageContent)) yield m.group(1)
+
+  def findPageImagesWithRelativePath(pageContent: String): Seq[String] = (for (m <- imageRegex.findAllMatchIn(pageContent)) yield m.group(1)).toSeq.filterNot(_.startsWith("http"))
 }

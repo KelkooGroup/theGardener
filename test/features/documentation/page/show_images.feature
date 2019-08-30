@@ -86,8 +86,8 @@ Feature: Include images in the documentation
 ~~ IMAGE ~~
 """
 
-  @level_2_technical_details @nominal_case @ready
-  Scenario: change url provided by the developer to access to the image through the API
+  @level_2_technical_details @nominal_case @valid
+  Scenario: change url provided by the developer to access to the image through the API - Inline-style
     Given we have the following projects
       | id            | name                    | repositoryUrl                                         | stableBranch | featuresRootPath | documentationRootPath |
       | suggestionsWS | Suggestions WebServices | target/remote/data/GetFeatures/library/suggestionsWS/ | master       | test/features    | doc                   |
@@ -102,22 +102,20 @@ Feature: Include images in the documentation
       | 1  | suggestions | Suggestions | Suggestions... | 0     | /suggestions/ | suggestionsWS>master>/suggestions/ | 1        |
     And we have those pages in the database
       | id | name       | label           | description        | order | relativePath            | path                                         | markdown                                                | directoryId |
-      | 1  | suggestion | The suggestions | The suggestions... | 0     | /suggestions/suggestion | suggestionsWS>master>/suggestions/suggestion | **Image** : ![Architecture](../assets/images/archi.png) | 2           |
-    When I perform a "GET" on following URL "/api/pages?hierarchy=_root_suggestion&path=suggestionsWS>master>/context"
+      | 1  | suggestion | The suggestions | The suggestions... | 0     | /suggestions/suggestion | suggestionsWS>master>/suggestions/suggestion | **Image** : ![Architecture](../assets/images/archi.png) | 1           |
+    When I perform a "GET" on following URL "/api/pages?path=suggestionsWS>master>/suggestions/suggestion"
     Then I get a response with status "200"
     And  I get the following json response body
 """
-{
-  "path": "suggestionsWS>master>/context",
-  "pages": [
-    {
-      "relativePath": "/context",
-      "name" : "context",
-      "label" : "The context",
-      "description": "Why providing suggestions",
-      "order": "0",
-      "markdown": "*Image** : ![Architecture](http://localhost:9000/api/assets?path=suggestionsWS>master>/suggestions/suggestion/../assets/images/archi.png)"
-    }
-  ]
-}
+[
+  {
+    "path": "suggestionsWS>master>/suggestions/suggestion",
+    "relativePath": "/suggestions/suggestion",
+    "name": "suggestion",
+    "label": "The suggestions",
+    "description": "The suggestions...",
+    "order": 0,
+    "markdown": "**Image** : ![Architecture](http://localhost:9000/api/assets?path=suggestionsWS>master>/suggestions/../assets/images/archi.png)"
+  }
+]
 """

@@ -24,7 +24,6 @@ create table project
     displayedBranches     varchar(255),
     featuresRootPath      varchar(255),
     documentationRootPath varchar(255),
-    assetsRootPath varchar(255),
     constraint pk_project primary key (id)
 );
 
