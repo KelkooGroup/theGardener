@@ -81,18 +81,21 @@ class PageRepository @Inject()(db: Database) {
   def deleteById(id: Long): Unit = {
     db.withConnection { implicit connection =>
       SQL"DELETE FROM page WHERE id = $id".executeUpdate()
+      ()
     }
   }
 
   def deleteAll(pages: Seq[Page]): Unit = {
     db.withConnection { implicit connection =>
       SQL"DELETE FROM page WHERE id IN (${pages.map(_.id)})".executeUpdate()
+      ()
     }
   }
 
   def deleteAll(): Unit = {
     db.withConnection { implicit connection =>
       SQL"TRUNCATE TABLE page".executeUpdate()
+      ()
     }
   }
 

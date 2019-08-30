@@ -1,6 +1,6 @@
 package services
 
-import com.typesafe.config.{Config, ConfigFactory}
+import com.typesafe.config.ConfigFactory
 import models.Branch
 import org.mockito.Matchers._
 import org.mockito.Mockito._

@@ -52,6 +52,7 @@ class TagRepository @Inject()(db: Database) {
       SQL"TRUNCATE TABLE tag".executeUpdate()
       SQL"TRUNCATE TABLE feature_tag".executeUpdate()
       SQL"TRUNCATE TABLE scenario_tag".executeUpdate()
+      ()
     }
   }
 

@@ -6,6 +6,7 @@ import java.io.File.separator
 import java.nio.file._
 import java.util
 
+import akka.stream.Materializer
 import anorm._
 import com.typesafe.config._
 import controllers._
@@ -80,6 +81,7 @@ object CommonSteps extends MockitoSugar with MustMatchers {
   val pageRepository = inject[PageRepository]
   val config = inject[Config]
   val cache = inject[AsyncCacheApi]
+  implicit val materializer = inject[Materializer]
 
   val applicationBuilder = builder.overrides(bind[SyncCacheApi].toInstance(new DefaultSyncCacheApi(cache))).in(Mode.Test)
 
@@ -122,6 +124,7 @@ object CommonSteps extends MockitoSugar with MustMatchers {
     git.add().addFilepattern(".").call()
 
     git.commit().setMessage(s"Add file $file").call()
+    ()
   }
 }
 
@@ -210,7 +213,7 @@ Scenario: providing several book suggestions
   }
 
   Given("""^the file "([^"]*)"$""") { (path: String, content: String) =>
-    val fullPath = Paths.get(s"target/$path".fixPathSeparator)
+    val fullPath = Paths.get(s"$path".fixPathSeparator)
     Files.createDirectories(fullPath.getParent)
     Files.write(fullPath, content.getBytes())
   }
@@ -276,6 +279,10 @@ Scenario: providing several book suggestions
     actualJson mustBe expectedJson
   }
 
+  Then("""^I get the following response body$""") { expected: String =>
+    contentAsString(response) mustBe expected
+  }
+
   Then("""^the page contains$""") { expectedPageContentPart: String =>
     val content = contentAsString(response)
     cleanHtmlWhitespaces(content) must include(cleanHtmlWhitespaces(expectedPageContentPart))
@@ -296,8 +303,6 @@ Scenario: providing several book suggestions
 
   Then("""^I get the following scenarios$""") { dataTable: DataTable =>
 
-    implicit val branchFormat = Json.format[BranchDocumentationDTO]
-    implicit val projectFormat = Json.format[ProjectDocumentationDTO]
     implicit val documentationFormat = Json.format[DocumentationDTO]
 
     val documentation = Json.parse(contentAsString(response)).as[DocumentationDTO]

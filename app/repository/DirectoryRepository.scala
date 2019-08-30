@@ -1,7 +1,7 @@
 package repository
 
+import anorm.SqlParser.{int, long, scalar, str}
 import anorm._
-import anorm.SqlParser.{bool, int, long, scalar, str}
 import javax.inject.Inject
 import models._
 import play.api.db.Database
@@ -64,18 +64,21 @@ class DirectoryRepository @Inject()(db: Database) {
   def deleteById(id: Long): Unit = {
     db.withConnection { implicit connection =>
       SQL"DELETE FROM directory WHERE id = $id".executeUpdate()
+      ()
     }
   }
 
   def deleteAll(directories: Seq[Directory]): Unit = {
     db.withConnection { implicit connection =>
       SQL"DELETE FROM directory WHERE id IN (${directories.map(_.id)})".executeUpdate()
+      ()
     }
   }
 
   def deleteAll(): Unit = {
     db.withConnection { implicit connection =>
       SQL"TRUNCATE TABLE directory".executeUpdate()
+      ()
     }
   }
 

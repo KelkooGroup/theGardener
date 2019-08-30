@@ -14,7 +14,7 @@ class FeatureRepository @Inject()(db: Database, tagRepository: TagRepository, sc
 
   val parser = for {
     id <- long("id")
-    branchId <- int("branchId")
+    branchId <- long("branchId")
     path <- str("path")
     backgroundAsJson <- get[Option[String]]("backgroundAsJson")
     language <- get[Option[String]]("language")
@@ -108,6 +108,7 @@ class FeatureRepository @Inject()(db: Database, tagRepository: TagRepository, sc
       scenarioRepository.deleteAllByFeatureId(id)
       tagRepository.deleteAllByFeatureId(id)
       SQL"DELETE FROM feature WHERE id = $id".executeUpdate()
+      ()
     }
   }
 
@@ -120,6 +121,7 @@ class FeatureRepository @Inject()(db: Database, tagRepository: TagRepository, sc
       scenarioRepository.deleteAll()
       tagRepository.deleteAll()
       SQL"TRUNCATE TABLE feature".executeUpdate()
+      ()
     }
   }
 

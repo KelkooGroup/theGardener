@@ -27,11 +27,12 @@ class HierarchyRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with 
     }
   }
 
-  override def afterEach() {
+  override def afterEach(): Unit = {
     db.withConnection { implicit connection =>
       SQL"TRUNCATE TABLE hierarchyNode".executeUpdate()
       SQL"TRUNCATE TABLE project_hierarchyNode".executeUpdate()
       SQL"TRUNCATE TABLE project".executeUpdate()
+      ()
     }
   }
 
