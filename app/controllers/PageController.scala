@@ -25,15 +25,16 @@ class PageController @Inject()(config: Configuration, directoryRepository: Direc
     pageRepository.findByPath(path) match {
       case Some(page) =>
 
-        val markdownWithoutMeta = page.markdown.map(content => pageService.findPageMeta(content).map(meta => content.replace(s"""```thegardener$meta```""", "").trim).getOrElse(content))
+        val finalMarkdown = page.markdown.map { content =>
+          pageService.findPageMeta(content).map(meta => content.replace(meta, "").trim).getOrElse(content)
 
-        val finalMarkdown: Option[String] = markdownWithoutMeta.map { content =>
+        }.map { content =>
           val images = pageService.findPageImagesWithRelativePath(content)
+          val references = pageService.findPageReferencesWithRelativePath(content)
 
           val path = directoryRepository.findById(page.directoryId).map(_.path).getOrElse("")
 
-
-            images.fold(content)((acc, relativePath) => acc.replace(relativePath, s"$baseUrl/api/assets?path=$path$relativePath"))
+          (images ++ references).fold(content)((acc, relativePath) => acc.replace(relativePath, s"$baseUrl/api/assets?path=$path$relativePath"))
         }
 
         Ok(Json.toJson(Seq(PageDTO(page.copy(markdown = finalMarkdown)))))

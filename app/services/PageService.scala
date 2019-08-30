@@ -28,6 +28,7 @@ class PageService @Inject()(config: Config, directoryRepository: DirectoryReposi
 
   val metaRegex = """\`\`\`thegardener([\s\S]*"page"[\s\S]*)\`\`\`""".r
   val imageRegex = """\!\[.*\]\((.*)\)""".r
+  val referenceRegex = """\[.*\]\:\s(\S*)""".r
 
   def getLocalRepository(projectId: String, branch: String): String = s"$projectsRootDirectory$projectId/$branch/".fixPathSeparator
 
@@ -68,7 +69,7 @@ class PageService @Inject()(config: Config, directoryRepository: DirectoryReposi
 
 
         val (label, description) = (for {
-          metaString <- findPageMeta(pageContent)
+          metaString <- findPageMetaJson(pageContent)
           meta <- Try(Json.parse(metaString).as[Meta]).toOption
           page <- meta.page
         } yield (page.label, page.description)).getOrElse((name, name))
@@ -79,7 +80,12 @@ class PageService @Inject()(config: Config, directoryRepository: DirectoryReposi
     } else None
   }
 
-  def findPageMeta(pageContent: String): Option[String] = for (m <- metaRegex.findFirstMatchIn(pageContent)) yield m.group(1)
+  def findPageMeta(pageContent: String): Option[String] = metaRegex.findFirstIn(pageContent)
+
+  def findPageMetaJson(pageContent: String): Option[String] = for (m <- metaRegex.findFirstMatchIn(pageContent)) yield m.group(1)
+
 
   def findPageImagesWithRelativePath(pageContent: String): Seq[String] = (for (m <- imageRegex.findAllMatchIn(pageContent)) yield m.group(1)).toSeq.filterNot(_.startsWith("http"))
+
+  def findPageReferencesWithRelativePath(pageContent: String): Seq[String] = (for (m <- referenceRegex.findAllMatchIn(pageContent)) yield m.group(1)).toSeq.filterNot(_.startsWith("http"))
 }
