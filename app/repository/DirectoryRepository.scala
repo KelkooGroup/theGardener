@@ -6,7 +6,7 @@ import javax.inject.Inject
 import models._
 import play.api.db.Database
 
-class DirectoryRepository @Inject()(db: Database) {
+class DirectoryRepository @Inject()(db: Database, pageRepository: PageRepository) {
 
 
   private val parser = for {
@@ -34,17 +34,18 @@ class DirectoryRepository @Inject()(db: Database) {
 
   def save(directory: Directory): Directory = {
     db.withConnection { implicit connection =>
-      val id: Option[Long] = if (existsById(directory.id) || existsByBranchIdAndName(directory.branchId, directory.name)) {
-        SQL"""REPLACE INTO directory (id, name, label, description, `order`, relativePath, path, branchId)
-           VALUES (${directory.id},${directory.name},${directory.label},${directory.description},${directory.order},${directory.relativePath},${directory.path},${directory.branchId})"""
-          .executeUpdate()
+      val id: Option[Long] = findById(directory.id).orElse(findByBranchIdAndRelativePath(directory.branchId, directory.relativePath)) match {
+        case Some(existingDirectory) =>
+          SQL"""REPLACE INTO directory (id, name, label, description, `order`, relativePath, path, branchId)
+               VALUES (${existingDirectory.id},${directory.name},${directory.label},${directory.description},${directory.order},${directory.relativePath},${directory.path},${directory.branchId})"""
+            .executeUpdate()
 
-        Some(directory.id)
+          Some(existingDirectory.id)
 
-      } else {
-        SQL"""INSERT INTO directory (name, label, description, `order`, relativePath, path, branchId)
-           VALUES (${directory.name},${directory.label},${directory.description},${directory.order},${directory.relativePath},${directory.path},${directory.branchId})"""
-          .executeInsert()
+        case _ =>
+          SQL"""INSERT INTO directory (name, label, description, `order`, relativePath, path, branchId)
+               VALUES (${directory.name},${directory.label},${directory.description},${directory.order},${directory.relativePath},${directory.path},${directory.branchId})"""
+            .executeInsert()
       }
 
       SQL"SELECT * FROM directory WHERE id = $id".as(parser.single)
@@ -63,6 +64,7 @@ class DirectoryRepository @Inject()(db: Database) {
 
   def deleteById(id: Long): Unit = {
     db.withConnection { implicit connection =>
+      pageRepository.deleteAllByDirectoryId(id)
       SQL"DELETE FROM directory WHERE id = $id".executeUpdate()
       ()
     }
@@ -70,13 +72,20 @@ class DirectoryRepository @Inject()(db: Database) {
 
   def deleteAll(directories: Seq[Directory]): Unit = {
     db.withConnection { implicit connection =>
-      SQL"DELETE FROM directory WHERE id IN (${directories.map(_.id)})".executeUpdate()
+      val ids = directories.map(_.id)
+      ids.foreach(pageRepository.deleteAllByDirectoryId)
+      SQL"DELETE FROM directory WHERE id IN ($ids)".executeUpdate()
       ()
     }
   }
 
+  def deleteAllByBranchId(branchId: Long): Unit = {
+    deleteAll(findAllByBranchId(branchId))
+  }
+
   def deleteAll(): Unit = {
     db.withConnection { implicit connection =>
+      pageRepository.deleteAll()
       SQL"TRUNCATE TABLE directory".executeUpdate()
       ()
     }
@@ -95,13 +104,13 @@ class DirectoryRepository @Inject()(db: Database) {
 
   def findById(id: Long): Option[Directory] = {
     db.withConnection { implicit connection =>
-      SQL"SELECT * FROM directory WHERE id = $id".as(parser.singleOpt)
+      SQL"SELECT * FROM directory WHERE id = $id".as(parser.*).headOption
     }
   }
 
   def findByBranchIdAndRelativePath(branchId: Long, path: String): Option[Directory] = {
     db.withConnection { implicit connection =>
-      SQL"SELECT * FROM directory WHERE branchId = $branchId AND relativePath = $path".as(parser.singleOpt)
+      SQL"SELECT * FROM directory WHERE branchId = $branchId AND relativePath = $path".as(parser.*).headOption
     }
   }
 

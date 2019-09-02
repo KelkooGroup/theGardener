@@ -32,26 +32,17 @@ class BranchRepository @Inject()(db: Database) {
 
   def save(branch: Branch): Branch = {
     db.withConnection { implicit connection =>
-      val id: Option[Long] = if (existsById(branch.id)) {
-        SQL"""REPLACE INTO branch (id, name, isStable, projectId)
-           VALUES (${branch.id}, ${branch.name}, ${branch.isStable}, ${branch.projectId})"""
-          .executeUpdate()
+      val id: Option[Long] = findById(branch.id).orElse(findByProjectIdAndName(branch.projectId, branch.name)) match {
+        case Some(existingBranch) =>
+          SQL"""REPLACE INTO branch (id, name, isStable, projectId)
+               VALUES (${existingBranch.id}, ${branch.name}, ${branch.isStable}, ${branch.projectId})"""
+            .executeUpdate()
+          Some(existingBranch.id)
 
-        Some(branch.id)
-
-      } else {
-        findByProjectIdAndName(branch.projectId, branch.name) match {
-          case Some(existingBranch) =>
-            SQL"""REPLACE INTO branch (id, name, isStable, projectId)
-                                            VALUES (${existingBranch.id}, ${branch.name}, ${branch.isStable}, ${branch.projectId})"""
-              .executeUpdate()
-            Some(existingBranch.id)
-
-
-          case None => SQL"""INSERT INTO branch (name, isStable, projectId)
-           VALUES (${branch.name}, ${branch.isStable}, ${branch.projectId})"""
+        case None =>
+          SQL"""INSERT INTO branch (name, isStable, projectId)
+               VALUES (${branch.name}, ${branch.isStable}, ${branch.projectId})"""
             .executeInsert()
-        }
       }
 
       SQL"SELECT * FROM branch WHERE id = $id".as(parser.single)
@@ -101,13 +92,13 @@ class BranchRepository @Inject()(db: Database) {
 
   def findById(id: Long): Option[Branch] = {
     db.withConnection { implicit connection =>
-      SQL"SELECT * FROM branch WHERE id = $id".as(parser.singleOpt)
+      SQL"SELECT * FROM branch WHERE id = $id".as(parser.*).headOption
     }
   }
 
   def findByProjectIdAndName(projectId: String, name: String): Option[Branch] = {
     db.withConnection { implicit connection =>
-      SQL"SELECT * FROM branch WHERE projectId = $projectId AND name = $name".as(parser.singleOpt)
+      SQL"SELECT * FROM branch WHERE projectId = $projectId AND name = $name".as(parser.*).headOption
     }
   }
 
