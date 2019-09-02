@@ -27,9 +27,10 @@ class MenuService @Inject()(hierarchyRepository: HierarchyRepository, projectRep
       val mapBranchIdProjectFeaturePath = branches.flatMap(b => mapProjectIdProject(b.projectId).featuresRootPath.map(b.id -> _)).toMap
 
       val mapBranchIdFeaturePaths = featureRepository.findAllFeaturePaths().groupBy(r => r.branchId).map { branchAndPath =>
-        val paths = branchAndPath._2.map { p =>
-          val projectFeaturePath = mapBranchIdProjectFeaturePath(branchAndPath._1).fixPathSeparator
-          p.path.substring(p.path.indexOf(projectFeaturePath) + projectFeaturePath.length + 1)
+        val paths = branchAndPath._2.flatMap { p =>
+          mapBranchIdProjectFeaturePath.get(branchAndPath._1).map(_.fixPathSeparator).map { projectFeaturePath =>
+            p.path.substring(p.path.indexOf(projectFeaturePath) + projectFeaturePath.length + 1)
+          }
         }.toSet
 
         branchAndPath._1 -> paths
