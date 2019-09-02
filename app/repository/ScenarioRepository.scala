@@ -37,6 +37,7 @@ class ScenarioRepository @Inject()(db: Database, tagRepository: TagRepository) {
     db.withConnection { implicit connection =>
       tagRepository.deleteAllScenarioTag()
       SQL"TRUNCATE TABLE scenario".executeUpdate()
+      ()
     }
   }
 
@@ -44,6 +45,7 @@ class ScenarioRepository @Inject()(db: Database, tagRepository: TagRepository) {
     db.withConnection { implicit connection =>
       tagRepository.deleteAllByScenarioId(scenarioId)
       SQL"DELETE FROM scenario WHERE id = $scenarioId".executeUpdate()
+      ()
     }
   }
 

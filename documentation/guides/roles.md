@@ -13,9 +13,10 @@ theGardener is an application that gather documentation from projects hosted on 
 
 We can list several type of interaction with the application:     
 
-- Install an instance of theGardener 
-- Configure an instance of theGardener
-- Write documentation pushed to an instance of theGardener 
-- Read documentation proposed by of theGardener
-- Contribute to theGardener development
+- Install an instance of theGardener => theOPS 
+- Configure an instance of theGardener => theAdmin
+- Write documentation pushed to an instance of theGardener => theWriter 
+- Read documentation proposed by of theGardener => theReader
+- Contribute to theGardener development => theContributor
 
+![Roles](../assets/images/theGardener_project_roles.png)

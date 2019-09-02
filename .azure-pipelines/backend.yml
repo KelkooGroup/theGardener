@@ -86,8 +86,8 @@ steps:
   displayName: 'install sonar-scanner'
 
 - script: |
-    if [ $(Build.Reason) = "PullRequest" ]; then SONAR_BRANCH="-Dsonar.pullrequest.key=$(System.PullRequest.PullRequestId) -Dsonar.pullrequest.branch=$(Build.SourceBranchName)"; else SONAR_BRANCH="-Dsonar.branch.name=$(Build.SourceBranchName)"; fi
-    sonar-scanner -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=kelkoo -Dsonar.login=6c199a8887e5909a63eb3d6ffcd70c1ca33d6757 $SONAR_BRANCH
+    if [ $(Build.Reason) = "PullRequest" ]; then SONAR_BRANCH="-Dsonar.pullrequest.key=$(System.PullRequest.PullRequestNumber) -Dsonar.pullrequest.branch=$(System.PullRequest.SourceBranch) -Dsonar.pullrequest.base=$(System.PullRequest.TargetBranch)"; else SONAR_BRANCH="-Dsonar.branch.name=$(Build.SourceBranchName)"; fi
+    sh -x -c "sonar-scanner -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=kelkoo -Dsonar.login=6c199a8887e5909a63eb3d6ffcd70c1ca33d6757 $SONAR_BRANCH"
   displayName: 'sonar-scanner'
 
 - publish: /usr/local/bin/sbt

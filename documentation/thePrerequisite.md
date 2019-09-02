@@ -2,7 +2,7 @@
 {
   "page" :
      {
-        "label": "Prerequisite",
+        "label": "thePrerequisite",
         "description": "In which context we can use theGardener ?"
      }
 }
@@ -10,7 +10,7 @@
 
 
  - **Use your favourite language** 
-   - BDD and OpenAPI is not linked to a specific language
+   - [Behavior Driven Development](https://cucumber.io/docs/bdd/) and [OpenAPI](https://swagger.io/docs/specification/about/) are not linked to a specific language
  - **Use git** 
    - theGardener scan only projects hosted on a git repository
  - **Use feature branching and merge requests**

@@ -130,7 +130,7 @@ class GetFeaturesSteps extends ScalaDsl with EN with MockitoSugar {
   }
 
   Then("""^we have now those branches in the database$""") { branches: util.List[Branch] =>
-    val expectedBranches = branches.asScala.map(b => new Branch(b.id, b.name, b.isStable, b.projectId, List()))
+    val expectedBranches = branches.asScala.map(b => Branch(b.id, b.name, b.isStable, b.projectId, List()))
     val actualBranches = branchRepository.findAll()
     actualBranches must contain theSameElementsAs expectedBranches
   }
@@ -153,17 +153,17 @@ class GetFeaturesSteps extends ScalaDsl with EN with MockitoSugar {
     actualScenarios must contain theSameElementsAs expectedScenarios
   }
 
-  Then("""^we have now those stepsAsJSon for the scenario "([^"]*)" in the database$""") { (scenarioId: Int, expectedStep: String) =>
+  Then("""^we have now those stepsAsJSon for the scenario "([^"]*)" in the database$""") { (scenarioId: Long, expectedStep: String) =>
     val actualStep = scenarioRepository.findById(scenarioId).map(_.steps)
     Json.toJson(actualStep) mustBe Json.parse(expectedStep)
   }
 
-  Then("""^we have now those examplesAsJSon for the scenario "([^"]*)" in the database$""") { (scenarioId: Int, expectedExamples: String) =>
+  Then("""^we have now those examplesAsJSon for the scenario "([^"]*)" in the database$""") { (scenarioId: Long, expectedExamples: String) =>
     val actualExamples = scenarioRepository.findById(scenarioId).map(_.asInstanceOf[ScenarioOutline].examples)
     actualExamples mustBe Some(Json.parse(expectedExamples).as[Seq[Examples]])
   }
 
-  Then("""^we have now those tags for the scenario "([^"]*)" in the database$""") { (scenarioId: Int, tags: util.List[String]) =>
+  Then("""^we have now those tags for the scenario "([^"]*)" in the database$""") { (scenarioId: Long, tags: util.List[String]) =>
     val expectedTags = tags.asScala.toList
     val actualTags = tagRepository.findAllByScenarioId(scenarioId)
     actualTags must contain theSameElementsAs expectedTags

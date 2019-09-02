@@ -31,15 +31,16 @@ class GherkinRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with In
   val scenario3 = Scenario(3, Seq("s_tag1", "s_tag3"), "abstractionLevel1", "caseType1", "workflowStep1", "keyword1", "scenario3", "description1", Seq(Step(3, "keyword1", "text1", Seq(Seq("argument1")))))
 
 
-  override def beforeEach() {
+  override def beforeEach(): Unit = {
     projectRepository.saveAll(Seq(project1))
     branchRepository.saveAll(Seq(branch1, branch2))
     featureRepository.saveAll(Seq(feature1, feature2))
     scenarioRepository.saveAll(1, Seq(scenario1, scenario2))
     scenarioRepository.saveAll(2, Seq(scenario3))
+    ()
   }
 
-  override def afterEach() {
+  override def afterEach(): Unit = {
     db.withConnection { implicit connection =>
       SQL"TRUNCATE TABLE project".executeUpdate()
       SQL"TRUNCATE TABLE branch".executeUpdate()
@@ -48,6 +49,7 @@ class GherkinRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with In
       SQL"TRUNCATE TABLE scenario".executeUpdate()
       SQL"TRUNCATE TABLE scenario_tag".executeUpdate()
       SQL"TRUNCATE TABLE tag".executeUpdate()
+      ()
     }
   }
 
