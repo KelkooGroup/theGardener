@@ -1,7 +1,7 @@
 {
   "directory" :
   {
-    "label": "the API",
+    "label": "theAPI",
     "description": "What is available in the backend API ?",
     "pages": [
       "tryit"

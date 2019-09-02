@@ -2,7 +2,7 @@
 {
   "page" :
      {
-        "label": "Change log",
+        "label": "theChangelog",
         "description": "What has been the main evolution of theGardener ?"
      }
 }
