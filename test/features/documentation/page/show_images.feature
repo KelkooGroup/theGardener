@@ -14,120 +14,83 @@ Feature: Include images in the documentation
       | .01. | suggestion | Suggestion system | Projects      | Project    |
 
 
-  @level_2_technical_details @nominal_case @ready
+  @level_2_technical_details @nominal_case @valid
   Scenario: access to images - using the path
     Given we have the following projects
-      | id            | name                    | repositoryUrl                                         | stableBranch | featuresRootPath | documentationRootPath | assetsRootPath |
-      | suggestionsWS | Suggestions WebServices | target/remote/data/GetFeatures/library/suggestionsWS/ | master       | test/features    | doc                   | doc/assets     |
+      | id            | name                    | repositoryUrl                                         | stableBranch | featuresRootPath | documentationRootPath |
+      | suggestionsWS | Suggestions WebServices | target/remote/data/GetFeatures/library/suggestionsWS/ | master       | test/features    | doc                   |
     And the links between hierarchy nodes are
       | projectId     | hierarchyId |
       | suggestionsWS | .01.        |
     And we have those branches in the database
       | id | name   | isStable | projectId     |
       | 1  | master | true     | suggestionsWS |
-    Then the file system store the file "target/data/git/suggestionsWS/master/doc/assets/images/archi.png"
+    And the file "target/data/git/suggestionsWS/master/doc/assets/images/archi.png"
 """
 ~~ IMAGE ~~
 """
-    When I perform a "GET" on following URL "/api/assets?path=suggestionsWS>master>/images/archi.png"
-    Then I get the following response body
+    When I perform a "GET" on following URL "/api/assets?path=suggestionsWS>master>/assets/images/archi.png"
+    Then I get a response with status "200"
+    And  I get the following response body
 """
 ~~ IMAGE ~~
 """
 
-  @level_2_technical_details @nominal_case @ready
+  @level_2_technical_details @nominal_case @valid
   Scenario: access to images - using the relative path - as would do a developer in its IDE from doc/api - assets is a sub directory from documentation
     Given we have the following projects
-      | id            | name                    | repositoryUrl                                         | stableBranch | featuresRootPath | documentationRootPath | assetsRootPath |
-      | suggestionsWS | Suggestions WebServices | target/remote/data/GetFeatures/library/suggestionsWS/ | master       | test/features    | doc                   | doc/assets     |
+      | id            | name                    | repositoryUrl                                         | stableBranch | featuresRootPath | documentationRootPath |
+      | suggestionsWS | Suggestions WebServices | target/remote/data/GetFeatures/library/suggestionsWS/ | master       | test/features    | doc                   |
     And the links between hierarchy nodes are
       | projectId     | hierarchyId |
       | suggestionsWS | .01.        |
     And we have those branches in the database
       | id | name   | isStable | projectId     |
       | 1  | master | true     | suggestionsWS |
-    Then the file system store the file "target/data/git/suggestionsWS/master/doc/assets/images/archi.png"
+    And the file "target/data/git/suggestionsWS/master/doc/api/archi.md"
+"""
+"""
+    And the file "target/data/git/suggestionsWS/master/doc/assets/images/archi.png"
 """
 ~~ IMAGE ~~
 """
-    When I perform a "GET" on following URL "/api/assets/relative?project=suggestionsWS&branch=master&relativePath=../assets/images/archi.png"
-    Then I get the following response body
+    When I perform a "GET" on following URL "/api/assets?path=suggestionsWS>master>/api/../assets/images/archi.png"
+    Then I get a response with status "200"
+    And  I get the following response body
 """
 ~~ IMAGE ~~
 """
 
-  @level_2_technical_details @nominal_case @ready
+  @level_2_technical_details @nominal_case @valid
   Scenario: access to images - using the relative path - as would do a developer in its IDE from doc/api/suggestions - assets is a sub directory from documentation
     Given we have the following projects
-      | id            | name                    | repositoryUrl                                         | stableBranch | featuresRootPath | documentationRootPath | assetsRootPath |
-      | suggestionsWS | Suggestions WebServices | target/remote/data/GetFeatures/library/suggestionsWS/ | master       | test/features    | doc                   | doc/assets     |
+      | id            | name                    | repositoryUrl                                         | stableBranch | featuresRootPath | documentationRootPath |
+      | suggestionsWS | Suggestions WebServices | target/remote/data/GetFeatures/library/suggestionsWS/ | master       | test/features    | doc                   |
     And the links between hierarchy nodes are
       | projectId     | hierarchyId |
       | suggestionsWS | .01.        |
     And we have those branches in the database
       | id | name   | isStable | projectId     |
       | 1  | master | true     | suggestionsWS |
-    Then the file system store the file "target/data/git/suggestionsWS/master/doc/assets/images/archi.png"
+    And the file "target/data/git/suggestionsWS/master/doc/api/suggestionsWS/archi.md"
+"""
+"""
+    And the file "target/data/git/suggestionsWS/master/doc/assets/images/archi.png"
 """
 ~~ IMAGE ~~
 """
-    When I perform a "GET" on following URL "/api/assets/relative?project=suggestionsWS&branch=master&relativePath=../../assets/images/archi.png"
-    Then I get the following response body
+    When I perform a "GET" on following URL "/api/assets?path=suggestionsWS>master>/api/suggestionsWS/../../assets/images/archi.png"
+    Then I get a response with status "200"
+    And  I get the following response body
 """
 ~~ IMAGE ~~
 """
 
-
-  @level_2_technical_details @nominal_case @ready
-  Scenario: access to images - using the relative path - as would do a developer in its IDE from doc/api - assets is not a sub directory from documentation
+  @level_2_technical_details @nominal_case @valid
+  Scenario: change url provided by the developer to access to the image through the API - Inline-style
     Given we have the following projects
-      | id            | name                    | repositoryUrl                                         | stableBranch | featuresRootPath | documentationRootPath | assetsRootPath |
-      | suggestionsWS | Suggestions WebServices | target/remote/data/GetFeatures/library/suggestionsWS/ | master       | test/features    | doc/api               | doc/assets     |
-    And the links between hierarchy nodes are
-      | projectId     | hierarchyId |
-      | suggestionsWS | .01.        |
-    And we have those branches in the database
-      | id | name   | isStable | projectId     |
-      | 1  | master | true     | suggestionsWS |
-    Then the file system store the file "target/data/git/suggestionsWS/master/doc/assets/images/archi.png"
-"""
-~~ IMAGE ~~
-"""
-    When I perform a "GET" on following URL "/api/assets/relative?project=suggestionsWS&branch=master&relativePath=../assets/images/archi.png"
-    Then I get the following response body
-"""
-~~ IMAGE ~~
-"""
-
-
-  @level_2_technical_details @nominal_case @ready
-  Scenario: access to images - using the relative path - as would do a developer in its IDE from doc/api/suggestions - assets is not a sub directory from documentation
-    Given we have the following projects
-      | id            | name                    | repositoryUrl                                         | stableBranch | featuresRootPath | documentationRootPath | assetsRootPath |
-      | suggestionsWS | Suggestions WebServices | target/remote/data/GetFeatures/library/suggestionsWS/ | master       | test/features    | doc/api               | doc/assets     |
-    And the links between hierarchy nodes are
-      | projectId     | hierarchyId |
-      | suggestionsWS | .01.        |
-    And we have those branches in the database
-      | id | name   | isStable | projectId     |
-      | 1  | master | true     | suggestionsWS |
-    Then the file system store the file "target/data/git/suggestionsWS/master/doc/assets/images/archi.png"
-"""
-~~ IMAGE ~~
-"""
-    When I perform a "GET" on following URL "/api/assets/relative?project=suggestionsWS&branch=master&relativePath=../../assets/images/archi.png"
-    Then I get the following response body
-"""
-~~ IMAGE ~~
-"""
-
-
-  @level_2_technical_details @nominal_case @ready
-  Scenario: change url provided by the developer to access to the image through the API
-    Given the application is running under "http://localhost:9000"
-    And we have the following projects
-      | id            | name                    | repositoryUrl                                         | stableBranch | featuresRootPath | documentationRootPath | assetsRootPath |
-      | suggestionsWS | Suggestions WebServices | target/remote/data/GetFeatures/library/suggestionsWS/ | master       | test/features    | doc                   | doc/assets     |
+      | id            | name                    | repositoryUrl                                         | stableBranch | featuresRootPath | documentationRootPath |
+      | suggestionsWS | Suggestions WebServices | target/remote/data/GetFeatures/library/suggestionsWS/ | master       | test/features    | doc                   |
     And the links between hierarchy nodes are
       | projectId     | hierarchyId |
       | suggestionsWS | .01.        |
@@ -139,21 +102,56 @@ Feature: Include images in the documentation
       | 1  | suggestions | Suggestions | Suggestions... | 0     | /suggestions/ | suggestionsWS>master>/suggestions/ | 1        |
     And we have those pages in the database
       | id | name       | label           | description        | order | relativePath            | path                                         | markdown                                                | directoryId |
-      | 1  | suggestion | The suggestions | The suggestions... | 0     | /suggestions/suggestion | suggestionsWS>master>/suggestions/suggestion | **Image** : ![Architecture](../assets/images/archi.png) | 2           |
-    When I perform a "GET" on following URL "/api/pages?hierarchy=_root_suggestion&path=suggestionsWS>master>/context"
-    Then I get the following json response body
+      | 1  | suggestion | The suggestions | The suggestions... | 0     | /suggestions/suggestion | suggestionsWS>master>/suggestions/suggestion | **Image** : ![Architecture](../assets/images/archi.png) | 1           |
+    When I perform a "GET" on following URL "/api/pages?path=suggestionsWS>master>/suggestions/suggestion"
+    Then I get a response with status "200"
+    And  I get the following json response body
 """
-{
-  "path": "suggestionsWS>master>/context",
-  "pages": [
-    {
-      "relativePath": "/context",
-      "name" : "context",
-      "label" : "The context",
-      "description": "Why providing suggestions",
-      "order": "0",
-      "markdown": "*Image** : ![Architecture](http://localhost:9000/api/assets/relative?project=suggestionsWS&branch=master&relativePath=../assets/images/archi.png)"
-    }
-  ]
-}
+[
+  {
+    "path": "suggestionsWS>master>/suggestions/suggestion",
+    "relativePath": "/suggestions/suggestion",
+    "name": "suggestion",
+    "label": "The suggestions",
+    "description": "The suggestions...",
+    "order": 0,
+    "markdown": "**Image** : ![Architecture](http://localhost:9000/api/assets?path=suggestionsWS>master>/suggestions/../assets/images/archi.png)"
+  }
+]
 """
+
+
+  @level_2_technical_details @nominal_case @valid
+  Scenario: change url provided by the developer to access to the image through the API - Reference-style
+    Given we have the following projects
+      | id            | name                    | repositoryUrl                                         | stableBranch | featuresRootPath | documentationRootPath |
+      | suggestionsWS | Suggestions WebServices | target/remote/data/GetFeatures/library/suggestionsWS/ | master       | test/features    | doc                   |
+    And the links between hierarchy nodes are
+      | projectId     | hierarchyId |
+      | suggestionsWS | .01.        |
+    And we have those branches in the database
+      | id | name   | isStable | projectId     |
+      | 1  | master | true     | suggestionsWS |
+    And we have those directories in the database
+      | id | name        | label       | description    | order | relativePath  | path                               | branchId |
+      | 1  | suggestions | Suggestions | Suggestions... | 0     | /suggestions/ | suggestionsWS>master>/suggestions/ | 1        |
+    And we have those pages in the database
+      | id | name       | label           | description        | order | relativePath            | path                                         | markdown                                                | directoryId |
+      | 1  | suggestion | The suggestions | The suggestions... | 0     | /suggestions/suggestion | suggestionsWS>master>/suggestions/suggestion | **Image** : ![Architecture][archi]\n[archi]: ../assets/images/archi.png | 1           |
+    When I perform a "GET" on following URL "/api/pages?path=suggestionsWS>master>/suggestions/suggestion"
+    Then I get a response with status "200"
+    And  I get the following json response body
+"""
+[
+  {
+    "path": "suggestionsWS>master>/suggestions/suggestion",
+    "relativePath": "/suggestions/suggestion",
+    "name": "suggestion",
+    "label": "The suggestions",
+    "description": "The suggestions...",
+    "order": 0,
+    "markdown": "**Image** : ![Architecture][archi]\n[archi]: http://localhost:9000/api/assets?path=suggestionsWS>master>/suggestions/../assets/images/archi.png"
+  }
+]
+"""
+

@@ -12,7 +12,7 @@ import scala.util.Try
 
 class MenuService @Inject()(hierarchyRepository: HierarchyRepository, projectRepository: ProjectRepository, branchRepository: BranchRepository, featureRepository: FeatureRepository, directoryRepository: DirectoryRepository, pageRepository: PageRepository, cache: SyncCacheApi) {
 
-  def refreshCache(): Unit = Try(getMenuTree(true))
+  def refreshCache(): Try[Menu] = Try(getMenuTree(true))
 
   def getMenu(refresh: Boolean = false): Seq[Menu] = {
     if (refresh) cache.remove(menuListCacheKey)

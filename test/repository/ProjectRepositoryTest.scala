@@ -20,7 +20,7 @@ class ProjectRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with In
 
   val projects = Seq(project1, project2, project3)
 
-  override def beforeEach() {
+  override def beforeEach(): Unit = {
     db.withConnection { implicit connection =>
 
       projects.foreach { project =>
@@ -31,12 +31,13 @@ class ProjectRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with In
     }
   }
 
-  override def afterEach() {
+  override def afterEach(): Unit = {
     db.withConnection { implicit connection =>
       SQL"TRUNCATE TABLE project".executeUpdate()
       SQL"TRUNCATE TABLE hierarchyNode".executeUpdate()
       SQL"TRUNCATE TABLE project_hierarchyNode".executeUpdate()
       SQL"TRUNCATE TABLE branch".executeUpdate()
+      ()
     }
   }
 

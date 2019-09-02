@@ -45,6 +45,7 @@ class GitServiceTest extends WordSpec with MustMatchers with BeforeAndAfter with
     git.add().addFilepattern(".").call()
 
     git.commit().setMessage(message).call()
+    ()
   }
 
   "GitService" should {
