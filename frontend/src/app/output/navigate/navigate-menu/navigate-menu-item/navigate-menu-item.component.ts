@@ -24,6 +24,7 @@ export class NavigateMenuItemComponent implements OnInit, OnDestroy {
   @Input() menuItem: MenuHierarchy;
   expanded: boolean;
   active: boolean;
+  leafSelection: boolean;
   nodeNameInUrl: string;
   pathInUrl: string;
   selectedBranch: MenuHierarchy;
@@ -40,6 +41,7 @@ export class NavigateMenuItemComponent implements OnInit, OnDestroy {
         this.nodeNameInUrl = params.name;
         this.pathInUrl = params.path;
         this.active = this.isNodeActive(this.menuItem);
+        this.leafSelection = this.isLeafSelection(this.menuItem);
         this.expanded = this.menuItem.type === 'Node' || this.active;
         if (this.menuItem.type === 'Project') {
           const project = this.menuItem as MenuProjectHierarchy;
@@ -80,6 +82,11 @@ export class NavigateMenuItemComponent implements OnInit, OnDestroy {
   isNodeActive(node: MenuHierarchy): boolean {
     const hasActivatedChild = node.children.some(c => this.isNodeActive(c));
     return this.isRouteInActivatedUrl(node) || hasActivatedChild;
+  }
+
+  isLeafSelection(node: MenuHierarchy): boolean {
+    const hasActivatedChild = node.children.some(c => this.isNodeActive(c));
+    return this.isRouteInActivatedUrl(node) && !hasActivatedChild;
   }
 
   trackMenuItem(index: number, item: MenuHierarchy) {

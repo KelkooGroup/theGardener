@@ -1,5 +1,5 @@
 <a [ngStyle]="{'padding-left': ((menuItem.depth+1) * 12) + 'px'}"
-   [ngClass]="active ? 'active': ''"
+   [ngClass]="leafSelection ? 'active': ''"
    (click)="navigateToItem()"
    class="item"
 >
