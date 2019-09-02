@@ -73,7 +73,7 @@ class ScenarioRepository @Inject()(db: Database, tagRepository: TagRepository) {
 
   def findById(scenarioId: Long): Option[ScenarioDefinition] = {
     db.withConnection { implicit connection =>
-      SQL"SELECT * FROM scenario WHERE id = $scenarioId".as(parser.singleOpt)
+      SQL"SELECT * FROM scenario WHERE id = $scenarioId".as(parser.*).headOption
     }
   }
 
@@ -108,7 +108,7 @@ class ScenarioRepository @Inject()(db: Database, tagRepository: TagRepository) {
 
       id.map(tagRepository.saveAllByScenarioId(_, scenario.tags))
 
-      SQL"SELECT * FROM scenario WHERE id = $id".as(parser.singleOpt)
+      SQL"SELECT * FROM scenario WHERE id = $id".as(parser.*).headOption
     }
   }
 
@@ -129,7 +129,7 @@ class ScenarioRepository @Inject()(db: Database, tagRepository: TagRepository) {
 
       id.map(tagRepository.saveAllByScenarioId(_, scenario.tags))
 
-      SQL"SELECT * FROM scenario WHERE id = $id".as(parser.singleOpt)
+      SQL"SELECT * FROM scenario WHERE id = $id".as(parser.*).headOption
     }
   }
 

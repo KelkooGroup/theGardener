@@ -14,9 +14,9 @@ class DirectoryRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with 
   val db = inject[Database]
   val directoryRepository = inject[DirectoryRepository]
 
-  val directory1 = Directory(1, "app", "directory1", "description1", 0, "", "project_id1>branch1>", 1, Seq(), Seq())
-  val directory2 = Directory(2, "front", "directory2", "description2", 1, "", "project_id1>branch1>", 1, Seq(), Seq())
-  val directory3 = Directory(3, "back", "directory3", "description3", 2, "", "project_id2>branch1>", 3, Seq(), Seq())
+  val directory1 = Directory(1, "directory1", "directory1", "description1", 0, "/directory1/", "project_id1>branch1>/directory1/", 1, Seq(), Seq())
+  val directory2 = Directory(2, "directory2", "directory2", "description2", 1, "/directory2/", "project_id1>branch1>/directory2/", 1, Seq(), Seq())
+  val directory3 = Directory(3, "directory3", "directory3", "description3", 2, "/directory3/", "project_id2>branch1>/directory3/", 3, Seq(), Seq())
   val directories = Seq(directory1, directory2, directory3)
 
   override def beforeEach(): Unit = {
@@ -81,19 +81,19 @@ class DirectoryRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with 
     }
 
     "save a directory" in {
-      val newDirectory = Directory(-1, "assets", "directory1", "description4", 3, "", "project_id1>branch1>", 1, Seq(), Seq())
+      val newDirectory = Directory(-1, "directory4", "directory4", "description4", 3, "/description4/", "project_id4>branch4>/description4/", 1, Seq(), Seq())
       directoryRepository.save(newDirectory) mustBe newDirectory.copy(id = 4)
     }
 
     "update a directory" in {
-      val updatedDirectory = directory1.copy(description = "rien de rien")
+      val updatedDirectory = directory1.copy(description = "description1bis")
       directoryRepository.save(updatedDirectory) mustBe updatedDirectory
       directoryRepository.findAll() must contain theSameElementsAs Seq(updatedDirectory, directory2, directory3)
     }
 
     "save all directories by projectId" in {
-      val directory4 = Directory(-1, "conf", "directory4", "description4", 4, "", "project_id2>branch1>", 3, Seq(), Seq())
-      val directory5 = Directory(-1, "test", "directory5", "description5", 5, "", "project_id3>branch1>", 3, Seq(), Seq())
+      val directory4 = Directory(-1, "directory4", "directory4", "description4", 4, "/description4/", "project_id2>branch1>/description4/", 3, Seq(), Seq())
+      val directory5 = Directory(-1, "directory5", "directory5", "description5", 5, "/description5/", "project_id5>branch5>/description5/", 3, Seq(), Seq())
       val expectedDirectories = Seq(directory4.copy(id = 4), directory5.copy(id = 5))
 
       directoryRepository.saveAll(Seq(directory4, directory5)) must contain theSameElementsAs expectedDirectories

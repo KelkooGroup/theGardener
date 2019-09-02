@@ -53,16 +53,17 @@ class FeatureRepository @Inject()(db: Database, tagRepository: TagRepository, sc
   def save(feature: Feature): Option[Feature] = {
     try {
       db.withConnection { implicit connection =>
-        val idOpt: Option[Long] = if (existsById(feature.id)) {
-          SQL"""REPLACE INTO feature(id, branchId, path, backgroundAsJson, language, keyword, name, description, comments)
-             VALUES (${feature.id}, ${feature.branchId}, ${feature.path}, ${feature.background.map(Json.toJson(_).toString)}, ${feature.language}, ${feature.keyword}, ${feature.name}, ${feature.description}, ${feature.comments.mkString("\n")})"""
-            .executeUpdate()
-          Some(feature.id)
+        val idOpt: Option[Long] = findById(feature.id).orElse(findByBranchIdAndPath(feature.branchId, feature.path)) match {
+          case Some(existingFeature) =>
+            SQL"""REPLACE INTO feature(id, branchId, path, backgroundAsJson, language, keyword, name, description, comments)
+             VALUES (${existingFeature.id}, ${feature.branchId}, ${feature.path}, ${feature.background.map(Json.toJson(_).toString)}, ${feature.language}, ${feature.keyword}, ${feature.name}, ${feature.description}, ${feature.comments.mkString("\n")})"""
+              .executeUpdate()
+            Some(feature.id)
 
-        } else {
-          SQL"""INSERT INTO feature(branchId, path, backgroundAsJson, language, keyword, name, description, comments)
+          case _ =>
+            SQL"""INSERT INTO feature(branchId, path, backgroundAsJson, language, keyword, name, description, comments)
              VALUES (${feature.branchId}, ${feature.path}, ${feature.background.map(Json.toJson(_).toString())}, ${feature.language}, ${feature.keyword}, ${feature.name}, ${feature.description}, ${feature.comments.mkString("\n")})"""
-            .executeInsert()
+              .executeInsert()
         }
 
         idOpt.foreach { id =>
@@ -73,7 +74,7 @@ class FeatureRepository @Inject()(db: Database, tagRepository: TagRepository, sc
           tagRepository.saveAllByFeatureId(id, feature.tags)
         }
 
-        SQL"SELECT * FROM feature WHERE id = $idOpt".as(parser.singleOpt)
+        SQL"SELECT * FROM feature WHERE id = $idOpt".as(parser.*).headOption
       }
     } catch {
       case e: Exception => logger.error(s"Error while saving feature ${feature.name}", e)
@@ -83,13 +84,13 @@ class FeatureRepository @Inject()(db: Database, tagRepository: TagRepository, sc
 
   def findById(id: Long): Option[Feature] = {
     db.withConnection { implicit connection =>
-      SQL"SELECT * FROM feature WHERE id = $id".as(parser.singleOpt)
+      SQL"SELECT * FROM feature WHERE id = $id".as(parser.*).headOption
     }
   }
 
   def findByBranchIdAndPath(branchId: Long, path: String): Option[Feature] = {
     db.withConnection { implicit connection =>
-      SQL"SELECT * FROM feature WHERE branchId = $branchId AND path = $path".as(parser.singleOpt)
+      SQL"SELECT * FROM feature WHERE branchId = $branchId AND path = $path".as(parser.*).headOption
     }
   }
 
