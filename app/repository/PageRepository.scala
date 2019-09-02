@@ -52,18 +52,21 @@ class PageRepository @Inject()(db: Database) {
 
   def save(page: Page): Page = {
     db.withConnection { implicit connection =>
-      val id: Option[Long] = if (existsById(page.id) || existsByDirectoryIdAndName(page.directoryId, page.name)) {
-        SQL"""REPLACE INTO page (id, name, label, description, `order`, markdown, relativePath, path, directoryId)
-           VALUES (${page.id},${page.name},${page.label},${page.description},${page.order},${page.markdown},${page.relativePath},${page.path},${page.directoryId})"""
-          .executeUpdate()
 
-        Some(page.id)
+      val id: Option[Long] = findById(page.id).orElse(findByDirectoryIdAndName(page.directoryId, page.name)) match {
+        case Some(existingPage) =>
+          SQL"""REPLACE INTO page (id, name, label, description, `order`, markdown, relativePath, path, directoryId)
+               VALUES (${existingPage.id},${page.name},${page.label},${page.description},${page.order},${page.markdown},${page.relativePath},${page.path},${page.directoryId})"""
+            .executeUpdate()
 
-      } else {
-        SQL"""INSERT INTO page (name, label, description, `order`, markdown, relativePath, path, directoryId)
-           VALUES (${page.name},${page.label},${page.description},${page.order},${page.markdown},${page.relativePath},${page.path},${page.directoryId})"""
-          .executeInsert()
+          Some(existingPage.id)
+
+        case _ =>
+          SQL"""INSERT INTO page (name, label, description, `order`, markdown, relativePath, path, directoryId)
+               VALUES (${page.name},${page.label},${page.description},${page.order},${page.markdown},${page.relativePath},${page.path},${page.directoryId})"""
+            .executeInsert()
       }
+
       SQL"SELECT * FROM page WHERE id = $id".as(fullParser.single)
     }
   }
@@ -88,6 +91,13 @@ class PageRepository @Inject()(db: Database) {
   def deleteAll(pages: Seq[Page]): Unit = {
     db.withConnection { implicit connection =>
       SQL"DELETE FROM page WHERE id IN (${pages.map(_.id)})".executeUpdate()
+      ()
+    }
+  }
+
+  def deleteAllByDirectoryId(directoryId: Long): Unit = {
+    db.withConnection { implicit connection =>
+      SQL"DELETE FROM page WHERE directoryId = $directoryId".executeUpdate()
       ()
     }
   }
