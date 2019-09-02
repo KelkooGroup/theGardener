@@ -55,13 +55,13 @@ class HierarchyRepository @Inject()(db: Database) {
 
   def findById(id: String): Option[HierarchyNode] = {
     db.withConnection { implicit connection =>
-      SQL"SELECT * FROM hierarchyNode WHERE id = $id".as(parser.singleOpt)
+      SQL"SELECT * FROM hierarchyNode WHERE id = $id".as(parser.*).headOption
     }
   }
 
   def findBySlugName(slugName: String): Option[HierarchyNode] = {
     db.withConnection { implicit connection =>
-      SQL"SELECT * FROM hierarchyNode WHERE slugName = $slugName".as(parser.singleOpt)
+      SQL"SELECT * FROM hierarchyNode WHERE slugName = $slugName".as(parser.*).headOption
     }
   }
 

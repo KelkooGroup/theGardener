@@ -130,7 +130,7 @@ Feature: Retrieve documentation pages from a project on a remote server
       | 4  | admin      | admin      | admin       | 0     | /admin/admin            | suggestionsWS>master>/admin/admin            | **Page for the admin users**          | 3           |
 
 
-  @level_1_specification @nominal_case @ready @meta
+  @level_1_specification @nominal_case @valid @meta
   Scenario: meta data of a page
     Given the server "target/data/GetPages" host under the project "library/suggestionsWS" on the branch "master" the file "doc/context.md"
 """
@@ -155,4 +155,4 @@ Feature: Retrieve documentation pages from a project on a remote server
       | 1  | root | SuggestionsWS | Suggestions WebServices | 0     | /            | suggestionsWS>master>/ | 1        |
     And we have now those pages in the database
       | id | name    | label       | description               | order | relativePath | path                          | markdown                              | directoryId |
-      | 1  | context | The context | Why providing suggestions | 0     | /context     | suggestionsWS>master>/context | **Feature**: Provide book suggestions | 1           |
+      | 1  | context | The context | Why providing suggestions | 0     | /context     | suggestionsWS>master>/context | ```thegardener\n{\n  "page" :\n     {\n        "label": "The context",\n        "description": "Why providing suggestions"\n     }\n}\n```\n\n**Feature**: Provide book suggestions | 1           |

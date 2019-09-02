@@ -70,7 +70,7 @@ class ProjectRepository @Inject()(db: Database) {
 
   def findById(id: String): Option[Project] = {
     db.withConnection { implicit connection =>
-      SQL"SELECT * FROM project WHERE id = $id".as(parser.singleOpt)
+      SQL"SELECT * FROM project WHERE id = $id".as(parser.*).headOption
     }
   }
 

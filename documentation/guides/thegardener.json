@@ -1,7 +1,7 @@
 {
   "directory" :
   {
-    "label": "Guides",
+    "label": "theGuides",
     "description": "How do we interact with theGardener ?",
     "pages": [
       "roles",

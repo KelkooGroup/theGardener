@@ -19,7 +19,7 @@ Developer are lazy, that make them good developers. They are also bored to expla
 
 ![the Problem](assets/images/theProblem.png)
 
-##theContext
+## theContext
 
 At some point, a long time ago, it was the same with tests : developer didn't want to write them as it was boring. With Test Driven Development, the test has been included in the development loop and the test became fun to write as much as it is really useful.
 
@@ -40,7 +40,7 @@ We can also make it less painful :
 
 
 
-##theSolution
+## theSolution
 
 Start using theGardener ! It allow you to :
 

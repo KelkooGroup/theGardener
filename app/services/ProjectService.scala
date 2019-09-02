@@ -153,7 +153,10 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
       Future {
         for (branch <- branches) {
           deleteDirectory(new File(getLocalRepository(projectId, branch)))
-          branchRepository.findByProjectIdAndName(projectId, branch).map(_.id).foreach(featureRepository.deleteAllByBranchId)
+          branchRepository.findByProjectIdAndName(projectId, branch).map(_.id).foreach { branchId =>
+            featureRepository.deleteAllByBranchId(branchId)
+            directoryRepository.deleteAllByBranchId(branchId)
+          }
         }
 
         branchRepository.deleteAll(branchRepository.findAllByProjectId(projectId).filter(b => branches.contains(b.name)))
