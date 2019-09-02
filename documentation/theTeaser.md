@@ -12,7 +12,7 @@
 
 **We invite you to include the documentation writing task in the development loop.** You will trust again the technical documentation of your projects. With Test Driven Development, we have included the tests in the development loop and made the tests fun. With theGardener, you will include documentation writing in the development loop **and make it fun again**, if it has been ever fun.
 
-##theProblem
+## theProblem
 
 Developer are lazy, that make them good developers. They are also bored to explain, by writing documentation, how to use the application they are developing. I know that because I'm a developer as well ;) At the end the technical documentation is written at the beginning of the project, when the developer have time or when somebody ask explicitly for it, remember they are lazy and bored... by the time the project is growing **the technical documentation is diverging from what it's actually doing. And nobody really trust the documentation written.**
 
