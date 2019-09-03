@@ -8,11 +8,13 @@ import {HttpClientModule} from '@angular/common/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {of} from 'rxjs';
 import {MENU_HEADER_SERVICE_RESPONSE} from '../../../_testUtils/test-data.spec';
+import {Router} from '@angular/router';
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;
   let fixture: ComponentFixture<HeaderComponent>;
   let page: Page;
+  let router: Router;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -27,7 +29,7 @@ describe('HeaderComponent', () => {
         BrowserAnimationsModule,
       ],
       providers: [
-        MenuService
+        MenuService,
       ]
     })
       .compileComponents();
@@ -40,10 +42,14 @@ describe('HeaderComponent', () => {
 
     const fakeMenuService: MenuService = TestBed.get(MenuService);
     spyOn(fakeMenuService, 'getMenuHeader').and.returnValue(of(MENU_HEADER_SERVICE_RESPONSE));
-    fixture.detectChanges();
+
+    // activatedRoute = fixture.debugElement.injector.get(ActivatedRoute) as any;
+    router = TestBed.get(Router);
+    spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
   });
 
   it('should show the first level of hierarchy as elements of menu with navigation', async(() => {
+    fixture.detectChanges();
     expect(component).toBeTruthy();
     expect(page.navigationItems.length).toBe(2);
     expect(page.navigationItems[0].textContent).toBe('Engineering view');
@@ -51,10 +57,12 @@ describe('HeaderComponent', () => {
     expect(page.navigationItems[1].textContent).toBe('Business view');
     expect(page.navigationItems[1].href).toMatch('/app/documentation/navigate/_biz');
   }));
+
 });
 
 class Page {
-  constructor(private fixture: ComponentFixture<HeaderComponent>) {}
+  constructor(private fixture: ComponentFixture<HeaderComponent>) {
+  }
 
   get navigationItems(): Array<HTMLBaseElement> {
     return this.fixture.nativeElement.querySelectorAll('.header-navigation > a');
