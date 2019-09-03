@@ -4,6 +4,7 @@
   width: calc(100vw - 25%);
   height: calc(100vh - 165px);
   overflow: auto;
+  color: #091A24;
 
   .markdown {
     padding-left: $margin-left;
@@ -18,4 +19,8 @@
   }
 }
 
+
+h1 {
+  padding-left: $margin-left;
+}
 

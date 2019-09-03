@@ -118,7 +118,7 @@ const EXPECTED_MENU_FOR_ENGINEERING_VIEW: Array<MenuHierarchy> = [
             type: 'Project',
             depth: 2,
             stableBranch: 'master',
-            route: 'suggestionsReports',
+            route: 'suggestionsReports>master',
             children: [
               {
                 name: 'master',
@@ -136,7 +136,7 @@ const EXPECTED_MENU_FOR_ENGINEERING_VIEW: Array<MenuHierarchy> = [
             type: 'Project',
             depth: 2,
             stableBranch: 'master',
-            route: 'suggestionsWS',
+            route: 'suggestionsWS>master>/',
             children: [
               {
                 name: 'master',
@@ -146,37 +146,26 @@ const EXPECTED_MENU_FOR_ENGINEERING_VIEW: Array<MenuHierarchy> = [
                 route: 'suggestionsWS>master',
                 children: [
                   {
-                    name: 'root',
-                    label: 'SuggestionsWS',
-                    description: 'Suggestions WebServices',
+                    name: 'suggestions',
+                    label: 'Suggestions',
+                    description: 'Suggestions...',
                     type: 'Directory',
                     depth: 4,
                     order: 0,
-                    route: 'suggestionsWS>master>/',
-                    children: [
-                      {
-                        name: 'suggestions',
-                        label: 'Suggestions',
-                        description: 'Suggestions...',
-                        type: 'Directory',
-                        depth: 5,
-                        order: 0,
-                        route: 'suggestionsWS>master>/suggestions/',
-                        children: []
-                      },
-                      {
-                        name: 'admin',
-                        label: 'Admin',
-                        description: 'Administration...',
-                        type: 'Directory',
-                        depth: 5,
-                        order: 1,
-                        route: 'suggestionsWS>master>/admin/',
-                        children: []
-                      },
-                    ]
-                  }
-                ],
+                    route: 'suggestionsWS>master>/suggestions/',
+                    children: []
+                  },
+                  {
+                    name: 'admin',
+                    label: 'Admin',
+                    description: 'Administration...',
+                    type: 'Directory',
+                    depth: 4,
+                    order: 1,
+                    route: 'suggestionsWS>master>/admin/',
+                    children: []
+                  },
+                ]
               },
               {
                 name: 'bugfix/351',
@@ -203,7 +192,7 @@ const EXPECTED_MENU_FOR_ENGINEERING_VIEW: Array<MenuHierarchy> = [
             type: 'Project',
             depth: 2,
             stableBranch: 'master',
-            route: 'usersWS',
+            route: 'usersWS>master',
             children: [
               {
                 name: 'master',

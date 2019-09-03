@@ -76,12 +76,21 @@ export class MenuService {
   }
 
   private buildMenuHierarchyForProject(project: ProjectApi, depth: number): MenuHierarchy {
+    let projectRoute = project.path;
+    if (project.branches.length === 1) {
+      projectRoute = project.branches[0].rootDirectory ? project.branches[0].rootDirectory.path : project.branches[0].path;
+    } else {
+      const stableBranch = project.branches.find(b => b.name === project.stableBranch);
+      if (stableBranch) {
+        projectRoute = stableBranch.rootDirectory ? stableBranch.rootDirectory.path : stableBranch.path;
+      }
+    }
     const menu: MenuProjectHierarchy = {
       name: project.id,
       label: project.label,
       type: 'Project',
       depth,
-      route: project.path,
+      route: projectRoute,
       stableBranch: project.stableBranch,
       children: this.buildMenuHierarchyForBranches(project, depth + 1)
     };
@@ -96,7 +105,7 @@ export class MenuService {
         type: 'Branch',
         depth,
         route: b.path,
-        children: b.rootDirectory ? this.buildMenuHierarchyForRootDirectory([b.rootDirectory], depth + 1) : []
+        children: b.rootDirectory  && b.rootDirectory.children ? this.buildMenuHierarchyForRootDirectory(b.rootDirectory.children, depth + 1) : []
       };
       return branchItem;
     });
@@ -105,7 +114,7 @@ export class MenuService {
 
   private buildMenuHierarchyForRootDirectory(directories: Array<DirectoryApi>, depth: number): Array<MenuDirectoryHierarchy> {
     return directories.map(d => {
-      const rootDirectoryItem: MenuDirectoryHierarchy = {
+      const directoryItem: MenuDirectoryHierarchy = {
         name: d.name,
         label: d.label,
         type: 'Directory',
@@ -115,7 +124,7 @@ export class MenuService {
         route: d.path,
         children: this.buildMenuHierarchyForRootDirectory(d.children, depth + 1),
       };
-      return rootDirectoryItem;
+      return directoryItem;
     });
   }
 

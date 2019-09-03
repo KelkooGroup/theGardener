@@ -31,7 +31,7 @@ export class PageContentComponent implements OnInit {
         return {name, path, page};
       }),
       switchMap(pageRoute => {
-        if (pageRoute.path.endsWith('/')) {
+        if (pageRoute.path && pageRoute.path.endsWith('/')) {
           return this.pageService.getPage(`${pageRoute.path}${pageRoute.page}`);
         } else {
           return of<PageApi>();

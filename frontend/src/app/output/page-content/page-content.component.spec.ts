@@ -56,6 +56,7 @@ describe('PageContentComponent', () => {
     expect(component).toBeTruthy();
     expect(pageService.getPage).toHaveBeenCalledWith('suggestionsWS>qa>/pmws/overview');
 
+    expect(page.title).toMatch('overview');
     expect(page.pageContent.startsWith('For various reasons'))
       .withContext(`Page content should start with "For various reasons" but was ${fixture.nativeElement.textContent}`)
       .toBeTruthy();
@@ -77,8 +78,16 @@ class Page {
   constructor(private fixture: ComponentFixture<PageContentComponent>) {
   }
 
+  get title(): string {
+    const title = this.fixture.nativeElement.querySelector('h1');
+    expect(title).toBeTruthy();
+    return title.textContent;
+  }
+
   get pageContent(): string {
-    return this.fixture.nativeElement.textContent;
+    const pageContent = this.fixture.nativeElement.querySelector('.markdown');
+    expect(pageContent).toBeTruthy();
+    return pageContent.textContent;
   }
 
   get iframe() {
