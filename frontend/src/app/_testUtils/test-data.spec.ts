@@ -201,7 +201,43 @@ export const PAGE_SERVICE_RESPONSE: PageApi = {
   description: 'overview',
   order: 0,
   // tslint:disable-next-line:max-line-length
-  markdown: 'For various reasons, the offers provided to the publishers can be filtered. We don\'t necessary want to provide all the offers to the publishers : ![Overview](../assets/images/constraints_overview.png) This is the constraints objective. The constraints can be defined manually by the **BizDevs** or automatically by the **TrafficOptimizer**. ### Reference and application The constraints are defined and stored in PMWS component. The impact of those constraints is implemented at the client level: - **eCS** and **ShoppingAPI** are filtering the call to Search6 - **FeedService** is filtering the offers provided (offers coming from OfferProcessing) - others systems are also using the constraints to filter offers provided to external clients : example GSA Exporter or COP. The constraints are stored against a profile (which is linked to a contract, which is linked to the publisher itself ([See details](thegardener://${current.project}/${current.branch}/overview))). All trackings of a profile share the same constraints. Clients are most of the time using a tracking as input data to find out what are the constraints to be applied. ### Different sources of constraints There are several ways to define the constraints : - for a publisher, [filter the merchants that can provide offers](thegardener://${current.project}/${current.branch}/constraints/for_a_publisher). - for a merchant, [filter the publishers that can receive offers](thegardener://${current.project}/${current.branch}/constraints/for_a_merchant). - moreover, [offers can be filtered for various reasons](thegardener://${current.project}/${current.branch}/constraints/for_an_offer). ![Sources](../assets/images/constraints_sources_overview.png) All those filters are cumulative : **each offer need to pass through all the filters**. In other words it\'s a AND between each constraint. We can see the impact of [those constraints on the PMBO](thegardener://${current.project}/${current.branch}/constraints/from_pmbo). '
+  markdown: 'For various reasons, the offers provided to the publishers can be filtered. We don\'t necessary want to provide all the\n' +
+    'offers to the publishers :\n' +
+    '\n' +
+    '![Overview](../assets/images/constraints_overview.png) \n' +
+    '\n' +
+    'This is the constraints objective. The constraints can be defined manually by the **BizDevs** or automatically by the\n' +
+    '**TrafficOptimizer**.\n' +
+    '\n' +
+    '### Reference and application\n' +
+    '\n' +
+    'The constraints are defined and stored in PMWS component. The impact of those constraints is implemented at the client\n' +
+    'level:\n' +
+    '- **eCS** and **ShoppingAPI** are filtering the call to Search6\n' +
+    '- **FeedService** is filtering the offers provided (offers coming from OfferProcessing)\n' +
+    '- others systems are also using the constraints to filter offers provided to external clients : example GSA Exporter or\n' +
+    'COP. \n' +
+    '\n' +
+    '\n' +
+    'The constraints are stored against a profile (which is linked to a contract, which is linked to the publisher\n' +
+    'itself ([See details](thegardener://${current.project}/${current.branch}/overview))). All trackings of a profile share\n' +
+    'the same constraints.\n' +
+    '\n' +
+    'Clients are most of the time using a tracking as input data to find out what are the constraints to be applied.\n' +
+    '\n' +
+    '### Different sources of constraints\n' +
+    '\n' +
+    'There are several ways to define the constraints :\n' +
+    '- for a publisher, [filter the merchants that can provide offers](thegardener://${current.project}/${current.branch}/constraints/for_a_publisher).  \n' +
+    '- for a merchant, [filter the publishers that can receive offers](thegardener://${current.project}/${current.branch}/constraints/for_a_merchant).\n' +
+    '- moreover, [offers can be filtered for various reasons](thegardener://${current.project}/${current.branch}/constraints/for_an_offer).\n' +
+    '\n' +
+    '![Sources](../assets/images/constraints_sources_overview.png)\n' +
+    '\n' +
+    'All those filters are cumulative : **each offer need to pass through all the filters**. In other words it\'s a AND\n' +
+    'between each constraint.  \n' +
+    '\n' +
+    'We can see the impact of [those constraints on the PMBO](thegardener://${current.project}/${current.branch}/constraints/from_pmbo). '
 };
 
 export const PAGE_WITH_EXTERNAL_LINK_SERVICE_RESPONSE: PageApi = {

@@ -39,8 +39,8 @@
         </mat-select>
       </mat-form-field>
     </div>
-    <div *ngIf="selectedBranch && selectedBranch.children && selectedBranch.children[0]">
-      <app-navigate-menu-item [menuItem]="selectedBranch.children[0]"></app-navigate-menu-item>
+    <div *ngIf="selectedBranch && selectedBranch.children">
+      <app-navigate-menu-item *ngFor="let child of selectedBranch.children" [menuItem]="child"></app-navigate-menu-item>
     </div>
   </ng-template>
 </div>
