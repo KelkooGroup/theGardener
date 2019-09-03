@@ -38,7 +38,7 @@
     "ngx-markdown": "8.1.0",
     "ngx-moment": "3.4.0",
     "ngx-numeral": "0.0.1-beta.0",
-    "rxjs": "6.5.2",
+    "rxjs": "6.5.3",
     "rxjs-compat": "6.5.2",
     "ts-option": "2.0.0",
     "tslib": "1.10.0",
