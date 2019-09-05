@@ -40,3 +40,7 @@ a {
   color: $color-link;
   cursor: pointer;
 }
+
+.mat-tab-nav-bar.mat-primary .mat-ink-bar {
+  background-color: $color-main;
+}
