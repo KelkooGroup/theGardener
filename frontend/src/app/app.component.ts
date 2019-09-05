@@ -8,7 +8,7 @@ import {ConfigService} from './_services/config.service';
 })
 export class AppComponent implements OnInit {
 
-  headerHeight = 70;
+  headerHeight = 112;
   contentHeight: number;
   footerHeight = 40;
   logoSrc: string;

@@ -105,7 +105,7 @@ export class MenuService {
         type: 'Branch',
         depth,
         route: b.path,
-        children: b.rootDirectory  && b.rootDirectory.children ? this.buildMenuHierarchyForRootDirectory(b.rootDirectory.children, depth + 1) : []
+        children: b.rootDirectory  && b.rootDirectory.children ? this.buildMenuHierarchyForRootDirectory(b.rootDirectory.children, depth) : []
       };
       return branchItem;
     });
