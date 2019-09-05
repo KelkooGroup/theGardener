@@ -92,7 +92,7 @@ export class MenuService {
       depth,
       route: projectRoute,
       stableBranch: project.stableBranch,
-      children: this.buildMenuHierarchyForBranches(project, depth + 1)
+      children: this.buildMenuHierarchyForBranches(project, depth)
     };
     return menu;
   }
@@ -105,7 +105,7 @@ export class MenuService {
         type: 'Branch',
         depth,
         route: b.path,
-        children: b.rootDirectory  && b.rootDirectory.children ? this.buildMenuHierarchyForRootDirectory(b.rootDirectory.children, depth) : []
+        children: b.rootDirectory && b.rootDirectory.children ? this.buildMenuHierarchyForRootDirectory(b.rootDirectory.children, depth + 1) : []
       };
       return branchItem;
     });

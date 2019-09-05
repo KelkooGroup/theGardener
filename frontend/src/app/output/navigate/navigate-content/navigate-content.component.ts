@@ -4,7 +4,6 @@ import {PageService} from '../../../_services/page.service';
 import {DirectoryApi, PageApi} from '../../../_models/hierarchy';
 import {sortBy} from 'lodash';
 import {of, Subscription} from 'rxjs';
-import {NotificationService} from '../../../_services/notification.service';
 import {catchError, map, switchMap} from 'rxjs/operators';
 
 @Component({
@@ -19,8 +18,7 @@ export class NavigateContentComponent implements OnInit, OnDestroy {
 
   constructor(private activatedRoute: ActivatedRoute,
               private router: Router,
-              private pageService: PageService,
-              private notificationService: NotificationService) {
+              private pageService: PageService) {
   }
 
   ngOnInit() {
@@ -53,7 +51,7 @@ export class NavigateContentComponent implements OnInit, OnDestroy {
         }
       },
       error => {
-        this.notificationService.showError(`Error loading pages`, error);
+        console.log(`Error loading pages ${error} on activated route: ${JSON.stringify(this.activatedRoute.snapshot)}`);
         this.pages = [];
       });
   }

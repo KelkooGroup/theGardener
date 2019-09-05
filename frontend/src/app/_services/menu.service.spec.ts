@@ -124,7 +124,7 @@ const EXPECTED_MENU_FOR_ENGINEERING_VIEW: Array<MenuHierarchy> = [
                 name: 'master',
                 label: 'master',
                 type: 'Branch',
-                depth: 3,
+                depth: 2,
                 route: 'suggestionsReports>master',
                 children: [],
               }
@@ -142,7 +142,7 @@ const EXPECTED_MENU_FOR_ENGINEERING_VIEW: Array<MenuHierarchy> = [
                 name: 'master',
                 label: 'master',
                 type: 'Branch',
-                depth: 3,
+                depth: 2,
                 route: 'suggestionsWS>master',
                 children: [
                   {
@@ -150,7 +150,7 @@ const EXPECTED_MENU_FOR_ENGINEERING_VIEW: Array<MenuHierarchy> = [
                     label: 'Suggestions',
                     description: 'Suggestions...',
                     type: 'Directory',
-                    depth: 4,
+                    depth: 3,
                     order: 0,
                     route: 'suggestionsWS>master>/suggestions/',
                     children: []
@@ -160,7 +160,7 @@ const EXPECTED_MENU_FOR_ENGINEERING_VIEW: Array<MenuHierarchy> = [
                     label: 'Admin',
                     description: 'Administration...',
                     type: 'Directory',
-                    depth: 4,
+                    depth: 3,
                     order: 1,
                     route: 'suggestionsWS>master>/admin/',
                     children: []
@@ -171,7 +171,7 @@ const EXPECTED_MENU_FOR_ENGINEERING_VIEW: Array<MenuHierarchy> = [
                 name: 'bugfix/351',
                 label: 'bugfix/351',
                 type: 'Branch',
-                depth: 3,
+                depth: 2,
                 route: 'suggestionsWS>bugfix/351',
                 children: [],
               }
@@ -198,7 +198,7 @@ const EXPECTED_MENU_FOR_ENGINEERING_VIEW: Array<MenuHierarchy> = [
                 name: 'master',
                 label: 'master',
                 type: 'Branch',
-                depth: 3,
+                depth: 2,
                 route: 'usersWS>master',
                 children: [],
               }

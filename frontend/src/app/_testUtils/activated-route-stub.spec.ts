@@ -30,7 +30,7 @@ export class ActivatedRouteStub {
     this.subjectParamMap.next(this._testParamMap);
   }
 
-  private _testParams: object;
+  private _testParams: object = {};
   get testParams() {
     return this._testParams;
   }
@@ -50,7 +50,7 @@ export class ActivatedRouteStub {
     this.subjectParentParamMap.next(this._testParentParamMap);
   }
 
-  private _testParentParams: object;
+  private _testParentParams: object = {};
   get testParentParams() {
     return this._testParentParams;
   }
@@ -70,7 +70,7 @@ export class ActivatedRouteStub {
     this.subjectChildParamMap.next(this._testChildParamMap);
   }
 
-  private _testChildParams: object;
+  private _testChildParams: object = {};
   get testChildParams() {
     return this._testChildParams;
   }

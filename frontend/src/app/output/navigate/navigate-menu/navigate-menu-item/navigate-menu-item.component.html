@@ -4,7 +4,7 @@
    class="item"
 >
   <ul class="menu-link">
-    <div *ngIf="menuItem.children.length>0">
+    <div id="expandIcon" *ngIf="menuItem.children.length>0">
       <div *ngIf="menuItem.depth == 0; else iconPlus">
         <div *ngIf="expanded; else collapsed">
           <i class="fas fa-chevron-down collapse-icon"></i>
