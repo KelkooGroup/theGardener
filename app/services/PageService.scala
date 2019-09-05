@@ -26,7 +26,7 @@ class PageService @Inject()(config: Config, directoryRepository: DirectoryReposi
   implicit val directoryMetaFormat = Json.format[DirectoryMeta]
   implicit val metaFormat = Json.format[Meta]
 
-  val metaRegex = """\`\`\`thegardener([\s\S]*"page"[\s\S]*)\`\`\`""".r
+  val metaRegex = """\`\`\`thegardener([\s\S]*"page"[^`]*)\`\`\`""".r
   val imageRegex = """\!\[.*\]\((.*)\)""".r
   val referenceRegex = """\[.*\]\:\s(\S*)""".r
 
