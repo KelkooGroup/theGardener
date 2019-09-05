@@ -30,7 +30,6 @@ export class PageContentComponent implements OnInit, OnDestroy {
         return {name, path, page};
       }),
       switchMap(pageRoute => {
-        console.log(pageRoute);
         if (pageRoute.path && pageRoute.path.endsWith('/')) {
           return this.pageService.getPage(`${pageRoute.path}${pageRoute.page}`);
         } else {
@@ -38,7 +37,7 @@ export class PageContentComponent implements OnInit, OnDestroy {
         }
       }),
       catchError(err => {
-        console.error(`Error while loading page on activatedRoute with params ${JSON.stringify(this.activatedRoute.snapshot.params)} and parent ${JSON.stringify(this.activatedRoute.parent.snapshot.params)}`, err);
+        console.error(`Error while loading page`, err);
         return of<PageApi>();
       })
     ).subscribe(page => {

@@ -51,7 +51,7 @@ export class NavigateContentComponent implements OnInit, OnDestroy {
         }
       },
       error => {
-        console.log(`Error loading pages ${error} on activated route: ${JSON.stringify(this.activatedRoute.snapshot)}`);
+        console.error(`Error loading pages`, error);
         this.pages = [];
       });
   }
