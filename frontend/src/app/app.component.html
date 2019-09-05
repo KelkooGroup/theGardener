@@ -1,9 +1,9 @@
 <header>
   <app-header [appTitle]="apptitle" [logoSrc]="logoSrc"></app-header>
 </header>
-<body #content class="content" (window:resize)="onResize($event)">
+<div #content class="content" (window:resize)="onResize($event)">
 <router-outlet></router-outlet>
-</body>
+</div>
 <footer>
   <app-footer></app-footer>
 </footer>

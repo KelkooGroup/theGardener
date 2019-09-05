@@ -12,17 +12,33 @@ $app-warn: mat-palette($mat-red);
 // Create the theme object (a Sass map containing all of the palettes).
 $app-theme: mat-light-theme($app-primary, $app-accent, $app-warn);
 
+.bold {
+  font-weight: bold;
+}
+
+.menu-link {
+  margin: 0;
+  display: flex;
+  align-items: center;
+//  -container flex-direction-row flex-align-items-center flex-space-between flex-width-expand
+}
+
+ul {
+  padding: 0;
+}
+
+.collapse-icon {
+  font-size: 10px;
+  padding-right: 8px;
+}
+
 .active {
   color: $color-selected-item;
 }
 
 .item {
-  min-width: 300px;
   cursor: pointer;
-  padding-top: 3px;
-  padding-left: 10px;
-  padding-right: 10px;
-  padding-bottom: 3px;
+  padding: 3px 10px;
   display: flex;
   width: auto;
   //background-color: $color-text-lighter;
@@ -31,6 +47,7 @@ $app-theme: mat-light-theme($app-primary, $app-accent, $app-warn);
 
 .item-text {
   padding-right: 3px;
+  line-height: 20px;
 }
 
 
