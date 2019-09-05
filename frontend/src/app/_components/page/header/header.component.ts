@@ -26,7 +26,7 @@ export class HeaderComponent implements OnInit {
     this.menuService.getMenuHeader().subscribe(
       result => {
         this.items = result && result.children;
-        if (!this.activatedRoute.snapshot.params || !this.activatedRoute.snapshot.params.name) {
+        if (!this.activatedRoute.firstChild || !this.activatedRoute.firstChild.snapshot.params.name) {
           if (this.items.length > 0) {
             this.router.navigate(['app/documentation/navigate/' , this.items[0].hierarchy]);
           }

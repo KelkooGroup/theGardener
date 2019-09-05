@@ -1,16 +1,17 @@
-import {AfterViewChecked, Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {AfterViewChecked, Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
 import {GherkinNode, ExpandableNode} from '../../_models/gherkin';
 import {MatTreeNestedDataSource} from '@angular/material/tree';
 import {NestedTreeControl} from '@angular/cdk/tree';
 import {ActivatedRoute} from '@angular/router';
 import {Location} from '@angular/common';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-gherkin',
   templateUrl: './gherkin.component.html',
   styleUrls: ['./gherkin.component.scss']
 })
-export class GherkinComponent implements OnInit, AfterViewChecked {
+export class GherkinComponent implements OnInit, AfterViewChecked, OnDestroy {
 
   gherkinData: Array<GherkinNode>;
 
@@ -22,16 +23,18 @@ export class GherkinComponent implements OnInit, AfterViewChecked {
 
   @Output() gherkinDisplayed: EventEmitter<boolean> = new EventEmitter();
   gherkinDisplayedEmitted = false;
+  private fragmentSubscription: Subscription;
+  private urlSubscription: Subscription;
 
 
   constructor(private location: Location, private route: ActivatedRoute) {
   }
 
   ngOnInit() {
-    this.route.url.subscribe(() => {
+    this.urlSubscription = this.route.url.subscribe(() => {
       this.url = this.location.path();
     });
-    this.route.fragment.subscribe((hash: string) => {
+    this.fragmentSubscription = this.route.fragment.subscribe((hash: string) => {
       if (hash) {
         this.hash = hash;
       }
@@ -76,6 +79,11 @@ export class GherkinComponent implements OnInit, AfterViewChecked {
   hasNestedChild = (_: number, nodeData: GherkinNode) => nodeData.hasChilden();
 
   private getChildren = (node: ExpandableNode) => node.getChilden();
+
+  ngOnDestroy(): void {
+    this.urlSubscription.unsubscribe();
+    this.fragmentSubscription.unsubscribe();
+  }
 
 
 }

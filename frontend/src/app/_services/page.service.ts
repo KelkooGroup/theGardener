@@ -48,7 +48,6 @@ export class PageService {
       .replace(THE_GARDENER_START, '')
       .replace(THE_GARDENER_END, '');
     const settings = JSON.parse(settingsString) as MarkdownSettings;
-    console.log(settings);
     return settings;
   }
 }

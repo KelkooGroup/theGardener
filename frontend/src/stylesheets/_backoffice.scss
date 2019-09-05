@@ -23,7 +23,7 @@ $font-size-text : 16px;
 $font-size-text-small: 15px;
 $font-size-text-x-small: 10px;
 $font-size-text-big: 22px;
-$font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Verdana, Arial, sans-serif;
+$font-family: Roboto, "Helvetica Neue", sans-serif;
 
 html, body {
   height: 100%;
@@ -39,4 +39,8 @@ html, body {
 a {
   color: $color-link;
   cursor: pointer;
+}
+
+.mat-tab-nav-bar.mat-primary .mat-ink-bar {
+  background-color: $color-main;
 }
