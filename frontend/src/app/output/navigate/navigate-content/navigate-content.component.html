@@ -1,4 +1,4 @@
-<nav mat-tab-nav-bar>
+<nav mat-tab-nav-bar *ngIf="pages && pages.length > 1">
   <a mat-tab-link
      *ngFor="let page of pages; trackBy: trackByPage"
      [routerLink]="page.name"
