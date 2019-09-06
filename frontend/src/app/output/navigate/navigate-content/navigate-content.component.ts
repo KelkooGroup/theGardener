@@ -5,6 +5,7 @@ import {DirectoryApi, PageApi} from '../../../_models/hierarchy';
 import {sortBy} from 'lodash';
 import {of, Subscription} from 'rxjs';
 import {catchError, map, switchMap} from 'rxjs/operators';
+import {NotificationService} from '../../../_services/notification.service';
 
 @Component({
   selector: 'app-navigate-content',
@@ -18,6 +19,7 @@ export class NavigateContentComponent implements OnInit, OnDestroy {
 
   constructor(private activatedRoute: ActivatedRoute,
               private router: Router,
+              private notificationService: NotificationService,
               private pageService: PageService) {
   }
 
@@ -25,10 +27,11 @@ export class NavigateContentComponent implements OnInit, OnDestroy {
     this.subscription = this.activatedRoute.params.pipe(
       map(params => params.path),
       switchMap((path: string) => {
-        if (path && path.endsWith('/')) {
+        if (path && path.endsWith('_')) {
           return this.pageService.getRootDirectoryForPath(path);
         } else {
-          return of<DirectoryApi>();
+          // emit one event with undefined value to force pages to be refreshed empty when changing route
+          return of<DirectoryApi>(undefined);
         }
       }),
       catchError(err => {
@@ -51,7 +54,7 @@ export class NavigateContentComponent implements OnInit, OnDestroy {
         }
       },
       error => {
-        console.error(`Error loading pages`, error);
+        this.notificationService.showError(`Error loading pages`, error);
         this.pages = [];
       });
   }

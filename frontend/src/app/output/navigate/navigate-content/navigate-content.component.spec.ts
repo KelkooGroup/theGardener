@@ -56,7 +56,7 @@ describe('NavigateContentComponent', () => {
   });
 
   it('should show tabs in the right order', () => {
-    activatedRoute.testParams = {path: 'constraints/'};
+    activatedRoute.testParams = {path: 'constraints_'};
     activatedRoute.testChildParams = {};
 
     fixture.detectChanges();
@@ -70,7 +70,7 @@ describe('NavigateContentComponent', () => {
   });
 
   it('should navigate to item when clicking on a tab', () => {
-    activatedRoute.testParams = {path: 'constraints/'};
+    activatedRoute.testParams = {path: 'constraints_'};
     activatedRoute.testChildParams = {};
 
     fixture.detectChanges();
@@ -79,7 +79,7 @@ describe('NavigateContentComponent', () => {
   });
 
   it('should redirect to first child page if route was on directory', async(() => {
-    activatedRoute.testParams = {path: 'constraints/'};
+    activatedRoute.testParams = {path: 'constraints_'};
     activatedRoute.testChildParams = {};
 
     fixture.detectChanges();
@@ -89,7 +89,7 @@ describe('NavigateContentComponent', () => {
   }));
 
   it('should not redirect if child page is already defined in route', async(() => {
-    activatedRoute.testParams = {path: 'constraints/'};
+    activatedRoute.testParams = {path: 'constraints_'};
     activatedRoute.testChildParams = {page: 'for_a_merchant'};
     fixture.detectChanges();
 

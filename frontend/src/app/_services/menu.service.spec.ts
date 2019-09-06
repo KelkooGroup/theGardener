@@ -136,7 +136,7 @@ const EXPECTED_MENU_FOR_ENGINEERING_VIEW: Array<MenuHierarchy> = [
             type: 'Project',
             depth: 2,
             stableBranch: 'master',
-            route: 'suggestionsWS>master>/',
+            route: 'suggestionsWS>master>_',
             children: [
               {
                 name: 'master',
@@ -152,7 +152,7 @@ const EXPECTED_MENU_FOR_ENGINEERING_VIEW: Array<MenuHierarchy> = [
                     type: 'Directory',
                     depth: 3,
                     order: 0,
-                    route: 'suggestionsWS>master>/suggestions/',
+                    route: 'suggestionsWS>master>_suggestions_',
                     children: []
                   },
                   {
@@ -162,7 +162,7 @@ const EXPECTED_MENU_FOR_ENGINEERING_VIEW: Array<MenuHierarchy> = [
                     type: 'Directory',
                     depth: 3,
                     order: 1,
-                    route: 'suggestionsWS>master>/admin/',
+                    route: 'suggestionsWS>master>_admin_',
                     children: []
                   },
                 ]
@@ -172,7 +172,7 @@ const EXPECTED_MENU_FOR_ENGINEERING_VIEW: Array<MenuHierarchy> = [
                 label: 'bugfix/351',
                 type: 'Branch',
                 depth: 2,
-                route: 'suggestionsWS>bugfix/351',
+                route: 'suggestionsWS>bugfix_351',
                 children: [],
               }
 

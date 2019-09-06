@@ -32,7 +32,7 @@ describe('PageService', () => {
   });
 
   it('should get list of pages for path', async(() => {
-    pageService.getRootDirectoryForPath('publisherManagementWS>qa>/constraints/')
+    pageService.getRootDirectoryForPath('publisherManagementWS>qa>_constraints_')
       .subscribe(directory => {
         expect(directory).toBeDefined();
         expect(directory.pages.length).toBe(4);
@@ -53,7 +53,7 @@ describe('PageService', () => {
   }));
 
   it('should get page for path', async(() => {
-    pageService.getPage('publisherManagementWS>qa>/constraints/overview')
+    pageService.getPage('publisherManagementWS>qa>_constraints_overview')
       .subscribe(page => {
         expect(page).toBeDefined();
         expect(page.path).toEqual('publisherManagementWS>qa>/constraints/overview');
@@ -68,7 +68,7 @@ describe('PageService', () => {
   }));
 
   it('should parse markdown to find external link', async( () => {
-    pageService.getPage('publisherManagementWS>qa>/constraints/overview')
+    pageService.getPage('publisherManagementWS>qa>_constraints_overview')
       .subscribe(page => {
         expect(page).toBeDefined();
         expect(page.path).toEqual('publisherManagementWS>qa>/constraints/overview');
