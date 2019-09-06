@@ -16,8 +16,8 @@ export class PageContentComponent implements OnInit, OnDestroy {
   private subscription: Subscription;
 
   constructor(private activatedRoute: ActivatedRoute,
-              private pageService: PageService,
-              private notificationService: NotificationService) {
+              private notificationService: NotificationService,
+              private pageService: PageService) {
   }
 
   ngOnInit() {
@@ -32,14 +32,14 @@ export class PageContentComponent implements OnInit, OnDestroy {
         return {name, path, page};
       }),
       switchMap(pageRoute => {
-        if (pageRoute.path && pageRoute.path.endsWith('/')) {
+        if (pageRoute.path && pageRoute.path.endsWith('_')) {
           return this.pageService.getPage(`${pageRoute.path}${pageRoute.page}`);
         } else {
           return of<PageApi>();
         }
       }),
       catchError(err => {
-        this.notificationService.showError(`Error while loading page`, err)
+        this.notificationService.showError(`Error while loading page`, err);
         return of<PageApi>();
       })
     ).subscribe(page => {

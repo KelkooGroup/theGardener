@@ -58,7 +58,7 @@ Feature: Generate a documentation page
       | 1  | root | SuggestionsWS | Suggestions WebServices | 0     | /            | suggestionsWS>master>/ | 1        |
     And we have those pages in the database
       | id | name    | label       | description               | order | relativePath | path                          | markdown                                                                                                                                  | directoryId |
-      | 1  | context | The context | Why providing suggestions | 0     | /context     | suggestionsWS>master>/context | ```thegardener { "page" : { "label" : "The context", "description": "Why providing suggestions"}}``` **Feature**: Provide book suggestions | 1           |
+      | 1  | context | The context | Why providing suggestions | 0     | /context     | suggestionsWS>master>/context | ```thegardener { "page" : { "label" : "The context", "description": "Why providing suggestions"}}``` **Feature**: Provide book suggestions ```thegardener { "include" : { "type" : "", "url": "http://thegardener.kelkoogroup.net/api/docs/"}}``` | 1           |
     When I perform a "GET" on following URL "/api/pages?path=suggestionsWS>master>/context"
     Then I get the following json response body
 """
@@ -69,6 +69,6 @@ Feature: Generate a documentation page
   "label" : "The context",
   "description": "Why providing suggestions",
   "order": 0,
-  "markdown": "**Feature**: Provide book suggestions"
+  "markdown" : "**Feature**: Provide book suggestions ```thegardener { \"include\" : { \"type\" : \"\", \"url\": \"http://thegardener.kelkoogroup.net/api/docs/\"}}```"
 }]
 """

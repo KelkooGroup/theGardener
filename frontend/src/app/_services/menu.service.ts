@@ -4,6 +4,7 @@ import {HttpClient} from '@angular/common/http';
 import {DirectoryApi, HierarchyNodeApi, ProjectApi} from '../_models/hierarchy';
 import {map} from 'rxjs/operators';
 import {MenuDirectoryHierarchy, MenuHierarchy, MenuProjectHierarchy} from '../_models/menu';
+import {UrlCleanerService} from './url-cleaner.service';
 // import {of} from 'rxjs';
 // import {MENU_SERVICE_RESPONSE} from '../test/test-data.spec';
 
@@ -13,7 +14,8 @@ import {MenuDirectoryHierarchy, MenuHierarchy, MenuProjectHierarchy} from '../_m
 export class MenuService {
 
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,
+              private urlCleaner: UrlCleanerService) {
   }
 
   getMenuHeader(): Observable<HierarchyNodeApi> {
@@ -90,7 +92,7 @@ export class MenuService {
       label: project.label,
       type: 'Project',
       depth,
-      route: projectRoute,
+      route: this.urlCleaner.relativePathToUrl(projectRoute),
       stableBranch: project.stableBranch,
       children: this.buildMenuHierarchyForBranches(project, depth)
     };
@@ -104,7 +106,7 @@ export class MenuService {
         label: b.name,
         type: 'Branch',
         depth,
-        route: b.path,
+        route: this.urlCleaner.relativePathToUrl(b.path),
         children: b.rootDirectory && b.rootDirectory.children ? this.buildMenuHierarchyForRootDirectory(b.rootDirectory.children, depth + 1) : []
       };
       return branchItem;
@@ -121,7 +123,7 @@ export class MenuService {
         description: d.description,
         order: d.order,
         depth,
-        route: d.path,
+        route: this.urlCleaner.relativePathToUrl(d.path),
         children: this.buildMenuHierarchyForRootDirectory(d.children, depth + 1),
       };
       return directoryItem;

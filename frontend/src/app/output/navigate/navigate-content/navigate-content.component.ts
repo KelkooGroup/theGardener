@@ -27,10 +27,11 @@ export class NavigateContentComponent implements OnInit, OnDestroy {
     this.subscription = this.activatedRoute.params.pipe(
       map(params => params.path),
       switchMap((path: string) => {
-        if (path && path.endsWith('/')) {
+        if (path && path.endsWith('_')) {
           return this.pageService.getRootDirectoryForPath(path);
         } else {
-          return of<DirectoryApi>();
+          // emit one event with undefined value to force pages to be refreshed empty when changing route
+          return of<DirectoryApi>(undefined);
         }
       }),
       catchError(err => {
@@ -53,7 +54,7 @@ export class NavigateContentComponent implements OnInit, OnDestroy {
         }
       },
       error => {
-        this.notificationService.showError(`Error while loading page`, error)
+        this.notificationService.showError(`Error loading pages`, error);
         this.pages = [];
       });
   }

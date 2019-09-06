@@ -13,8 +13,8 @@
   </ul>
 
   <ul class="header-navigation-bar">
-    <li class="header-navigation">
-      <a *ngFor="let item of items" routerLink="app/documentation/navigate/{{item.hierarchy}}/"
+    <li class="header-navigation" *ngFor="let item of items">
+      <a routerLink="app/documentation/navigate/{{item.hierarchy}}/"
          routerLinkActive="active">{{ item.name }}</a>
     </li>
   </ul>
