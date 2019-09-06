@@ -30,7 +30,7 @@ export class PageContentComponent implements OnInit, OnDestroy {
         return {name, path, page};
       }),
       switchMap(pageRoute => {
-        if (pageRoute.path && pageRoute.path.endsWith('/')) {
+        if (pageRoute.path && pageRoute.path.endsWith('_')) {
           return this.pageService.getPage(`${pageRoute.path}${pageRoute.page}`);
         } else {
           return of<PageApi>();

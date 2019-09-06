@@ -25,7 +25,7 @@ export class NavigateContentComponent implements OnInit, OnDestroy {
     this.subscription = this.activatedRoute.params.pipe(
       map(params => params.path),
       switchMap((path: string) => {
-        if (path && path.endsWith('/')) {
+        if (path && path.endsWith('_')) {
           return this.pageService.getRootDirectoryForPath(path);
         } else {
           return of<DirectoryApi>();
