@@ -30,7 +30,8 @@ export class NavigateContentComponent implements OnInit, OnDestroy {
         if (path && path.endsWith('_')) {
           return this.pageService.getRootDirectoryForPath(path);
         } else {
-          return of<DirectoryApi>();
+          // emit one event with undefined value to force pages to be refreshed empty when changing route
+          return of<DirectoryApi>(undefined);
         }
       }),
       catchError(err => {

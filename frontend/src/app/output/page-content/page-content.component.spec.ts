@@ -44,7 +44,7 @@ describe('PageContentComponent', () => {
     page = new Page(fixture);
     activatedRoute = fixture.debugElement.injector.get(ActivatedRoute) as any;
 
-    activatedRoute.testParentParams = {name: '_eng', path: 'suggestionsWS>qa>/pmws/'};
+    activatedRoute.testParentParams = {name: '_eng', path: 'suggestionsWS>qa>_pmws_'};
     activatedRoute.testParams = {page: 'overview'};
   });
 
@@ -54,7 +54,7 @@ describe('PageContentComponent', () => {
 
     fixture.detectChanges();
     expect(component).toBeTruthy();
-    expect(pageService.getPage).toHaveBeenCalledWith('suggestionsWS>qa>/pmws/overview');
+    expect(pageService.getPage).toHaveBeenCalledWith('suggestionsWS>qa>_pmws_overview');
 
     expect(page.title).toMatch('overview');
     expect(page.pageContent.startsWith('For various reasons'))
