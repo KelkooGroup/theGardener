@@ -15,7 +15,9 @@
   <ul class="header-navigation-bar">
     <li class="header-navigation" *ngFor="let item of items">
       <a routerLink="app/documentation/navigate/{{item.hierarchy}}/"
-         routerLinkActive="active">{{ item.name }}</a>
+         routerLinkActive="active" #rla=routerLinkActive
+         [ngClass]="rla.isActive ? '' : 'item-with-hover' "
+      >{{ item.name }}</a>
     </li>
   </ul>
 </div>

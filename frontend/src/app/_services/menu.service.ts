@@ -5,8 +5,6 @@ import {DirectoryApi, HierarchyNodeApi, ProjectApi} from '../_models/hierarchy';
 import {map} from 'rxjs/operators';
 import {MenuDirectoryHierarchy, MenuHierarchy, MenuProjectHierarchy} from '../_models/menu';
 import {UrlCleanerService} from './url-cleaner.service';
-// import {of} from 'rxjs';
-// import {MENU_SERVICE_RESPONSE} from '../test/test-data.spec';
 
 @Injectable({
   providedIn: 'root'
@@ -34,7 +32,6 @@ export class MenuService {
   hierarchy(): Observable<HierarchyNodeApi> {
     const url = `api/menu`;
     return this.http.get<HierarchyNodeApi>(url);
-    // return of(MENU_SERVICE_RESPONSE);
   }
 
   getMenuHierarchyForSelectedNode(nodeName: string): Observable<Array<MenuHierarchy>> {
