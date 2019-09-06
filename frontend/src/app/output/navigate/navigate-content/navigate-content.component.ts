@@ -5,6 +5,7 @@ import {DirectoryApi, PageApi} from '../../../_models/hierarchy';
 import {sortBy} from 'lodash';
 import {of, Subscription} from 'rxjs';
 import {catchError, map, switchMap} from 'rxjs/operators';
+import {NotificationService} from '../../../_services/notification.service';
 
 @Component({
   selector: 'app-navigate-content',
@@ -18,6 +19,7 @@ export class NavigateContentComponent implements OnInit, OnDestroy {
 
   constructor(private activatedRoute: ActivatedRoute,
               private router: Router,
+              private notificationService: NotificationService,
               private pageService: PageService) {
   }
 
@@ -51,7 +53,7 @@ export class NavigateContentComponent implements OnInit, OnDestroy {
         }
       },
       error => {
-        console.error(`Error loading pages`, error);
+        this.notificationService.showError(`Error loading pages`, error);
         this.pages = [];
       });
   }

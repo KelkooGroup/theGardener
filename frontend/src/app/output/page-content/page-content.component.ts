@@ -4,6 +4,7 @@ import {catchError, map, switchMap} from 'rxjs/operators';
 import {combineLatest, of, Subscription} from 'rxjs';
 import {PageService} from '../../_services/page.service';
 import {PageApi} from '../../_models/hierarchy';
+import {NotificationService} from '../../_services/notification.service';
 
 @Component({
   selector: 'app-page-content',
@@ -15,6 +16,7 @@ export class PageContentComponent implements OnInit, OnDestroy {
   private subscription: Subscription;
 
   constructor(private activatedRoute: ActivatedRoute,
+              private notificationService: NotificationService,
               private pageService: PageService) {
   }
 
@@ -37,7 +39,7 @@ export class PageContentComponent implements OnInit, OnDestroy {
         }
       }),
       catchError(err => {
-        console.error(`Error while loading page`, err);
+        this.notificationService.showError(`Error while loading page`, err);
         return of<PageApi>();
       })
     ).subscribe(page => {
