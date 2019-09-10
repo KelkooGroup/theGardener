@@ -1,8 +1,8 @@
 package steps
 
 
-import java.io._
 import java.io.File.separator
+import java.io._
 import java.nio.file._
 import java.util
 
@@ -21,7 +21,6 @@ import org.apache.commons.io._
 import org.eclipse.jgit.api._
 import org.scalatest._
 import org.scalatestplus.mockito._
-import play.api.{Application, Logging, Mode}
 import play.api.cache._
 import play.api.db._
 import play.api.inject._
@@ -30,6 +29,7 @@ import play.api.libs.json._
 import play.api.mvc._
 import play.api.test.Helpers._
 import play.api.test._
+import play.api.{Application, Logging, Mode}
 import repository._
 import resource._
 import services._
@@ -48,7 +48,7 @@ object Injector {
   def inject[T: ClassTag]: T = injector.instanceOf[T]
 }
 
-case class ProjectTableRow(id: String, name: String, repositoryUrl: String, stableBranch: String, displayedBranches: String, featuresRootPath: String, documentationRootPath: String){
+case class ProjectTableRow(id: String, name: String, repositoryUrl: String, stableBranch: String, displayedBranches: String, featuresRootPath: String, documentationRootPath: String) {
   def toProject(): Project = {
     Project(this.id, this.name, this.repositoryUrl, this.stableBranch, Option(this.displayedBranches), Option(this.featuresRootPath), Option(this.documentationRootPath))
   }
@@ -222,7 +222,7 @@ Scenario: providing several book suggestions
     val projectsWithAbsoluteUrl = projects.asScala.map { project =>
       if (project.repositoryUrl.contains("target/")) project.copy(
         repositoryUrl = Paths.get(project.repositoryUrl).toUri.toString,
-        featuresRootPath = project.featuresRootPath.fixPathSeparator,
+        featuresRootPath = if (project.featuresRootPath != null) project.featuresRootPath.fixPathSeparator else project.featuresRootPath,
         documentationRootPath = if (project.documentationRootPath != null) project.documentationRootPath.fixPathSeparator else project.documentationRootPath
       )
 
