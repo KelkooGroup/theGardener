@@ -2,6 +2,7 @@ package controllers
 
 import java.io.File
 
+import controllers.AssetAccessError.{AssetNotAllowed, AssetNotFound}
 import controllers.dto._
 import io.swagger.annotations._
 import javax.inject.Inject
@@ -44,6 +45,18 @@ class PageController @Inject()(config: Configuration, directoryRepository: Direc
   }
 }
 
+
+sealed abstract class AssetAccessError(message: String) extends Throwable(message)
+
+
+object AssetAccessError {
+
+  case class AssetNotAllowed(message: String) extends AssetAccessError(message)
+
+  case class AssetNotFound(message: String) extends AssetAccessError(message)
+
+}
+
 class PageAssetController @Inject()(config: Configuration, projectRepository: ProjectRepository)(implicit ec: ExecutionContext) extends InjectedController {
 
   val projectsRootDirectory = config.get[String]("projects.root.directory")
@@ -57,10 +70,28 @@ class PageAssetController @Inject()(config: Configuration, projectRepository: Pr
       relativePath <- params.lift(2)
 
       documentationRootPath <- projectRepository.findById(projectId).flatMap(_.documentationRootPath)
-      assetFile = new File(s"$projectsRootDirectory/$projectId/$branchName/$documentationRootPath/$relativePath")
+      assetFileAccess = accessToAsset(s"$projectsRootDirectory/$projectId/$branchName/$documentationRootPath", relativePath)
+    } yield (relativePath, assetFileAccess)) match {
 
-      if assetFile.exists()
-
-    } yield Ok.sendFile(assetFile)).getOrElse(NotFound(s"Asset $path not found"))
+      case None => NotFound("Project not found or bad configuration")
+      case Some((_, Left(AssetNotAllowed(message)))) => Forbidden(message)
+      case Some((_, Left(AssetNotFound(message)))) => NotFound(message)
+      case Some((_, Right(assetFile))) => Ok.sendFile(assetFile)
+    }
   }
+
+  def accessToAsset(documentationRootPath: String, assetRelativePath: String): Either[AssetAccessError, File] = {
+    val assetFile = new File(s"$documentationRootPath/$assetRelativePath")
+    val documentationCanonicalPath = new File(documentationRootPath).getCanonicalPath
+    val assetCanonicalPath = assetFile.getCanonicalPath
+
+    if (!assetCanonicalPath.contains(documentationCanonicalPath)) {
+      Left(AssetNotAllowed(s"Asset $assetRelativePath not allowed"))
+    } else if (!assetFile.exists()) {
+      Left(AssetNotFound(s"Asset $assetRelativePath not found"))
+    } else {
+      Right(assetFile)
+    }
+  }
+
 }

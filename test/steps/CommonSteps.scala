@@ -40,6 +40,7 @@ import scala.collection.JavaConverters._
 import scala.concurrent._
 import scala.io.Source
 import scala.reflect._
+import java.io.PrintWriter
 
 object Injector {
   val builder = new GuiceApplicationBuilder
