@@ -155,3 +155,98 @@ Feature: Include images in the documentation
 ]
 """
 
+  @level_2_technical_details @nominal_case @valid
+  Scenario: access to the image through the API - Reference-style
+    Given we have the following projects
+      | id            | name                    | repositoryUrl                                         | stableBranch | featuresRootPath | documentationRootPath |
+      | suggestionsWS | Suggestions WebServices | target/remote/data/GetFeatures/library/suggestionsWS/ | master       | test/features    | doc                   |
+    And the links between hierarchy nodes are
+      | projectId     | hierarchyId |
+      | suggestionsWS | .01.        |
+    And we have those branches in the database
+      | id | name   | isStable | projectId     |
+      | 1  | master | true     | suggestionsWS |
+    And we have those directories in the database
+      | id | name        | label       | description    | order | relativePath  | path                               | branchId |
+      | 1  | suggestions | Suggestions | Suggestions... | 0     | /suggestions/ | suggestionsWS>master>/suggestions/ | 1        |
+    And we have those pages in the database
+      | id | name       | label           | description        | order | relativePath            | path                                         | markdown                                                | directoryId |
+      | 1  | suggestion | The suggestions | The suggestions... | 0     | /suggestions/suggestion | suggestionsWS>master>/suggestions/suggestion | **Image** : ![Architecture][archi]\n[archi]: ../assets/images/archi.png | 1           |
+    And the file "target/data/git/suggestionsWS/master/doc/assets/images/archi.png"
+"""
+IMAGE ARCHI
+"""
+    And the file "target/data/git/suggestionsWS/master/doc/suggestions/suggestions.md"
+"""
+*Suggestions*
+"""
+    When I perform a "GET" on following URL "/api/assets?path=suggestionsWS>master>/suggestions/../assets/images/archi.png"
+    Then I get a response with status "200"
+    And  I get the following response body
+"""
+IMAGE ARCHI
+"""
+
+  @level_2_technical_details @error_case @valid
+  Scenario: access to a not existing file under documentationRootPath - Reference-style
+    Given we have the following projects
+      | id            | name                    | repositoryUrl                                         | stableBranch | featuresRootPath | documentationRootPath |
+      | suggestionsWS | Suggestions WebServices | target/remote/data/GetFeatures/library/suggestionsWS/ | master       | test/features    | doc                   |
+    And the links between hierarchy nodes are
+      | projectId     | hierarchyId |
+      | suggestionsWS | .01.        |
+    And we have those branches in the database
+      | id | name   | isStable | projectId     |
+      | 1  | master | true     | suggestionsWS |
+    And we have those directories in the database
+      | id | name        | label       | description    | order | relativePath  | path                               | branchId |
+      | 1  | suggestions | Suggestions | Suggestions... | 0     | /suggestions/ | suggestionsWS>master>/suggestions/ | 1        |
+    And we have those pages in the database
+      | id | name       | label           | description        | order | relativePath            | path                                         | markdown                                                | directoryId |
+      | 1  | suggestion | The suggestions | The suggestions... | 0     | /suggestions/suggestion | suggestionsWS>master>/suggestions/suggestion | **Image** : ![Architecture][archi]\n[archi]: ../assets/images/archi.png | 1           |
+    And the file "target/data/git/suggestionsWS/master/doc/assets/images/archi.png"
+"""
+IMAGE ARCHI
+"""
+    And the file "target/data/git/suggestionsWS/master/doc/suggestions/suggestions.md"
+"""
+*Suggestions*
+"""
+    When I perform a "GET" on following URL "/api/assets?path=suggestionsWS>master>/suggestions/../assets/images/architecture.png"
+    Then I get a response with status "404"
+    And  I get the following response body
+"""
+Asset /suggestions/../assets/images/architecture.png not found
+"""
+
+  @level_2_technical_details @error_case @valid
+  Scenario: access to a file not under documentationRootPath - Reference-style
+    Given we have the following projects
+      | id            | name                    | repositoryUrl                                         | stableBranch | featuresRootPath | documentationRootPath |
+      | suggestionsWS | Suggestions WebServices | target/remote/data/GetFeatures/library/suggestionsWS/ | master       | test/features    | doc                   |
+    And the links between hierarchy nodes are
+      | projectId     | hierarchyId |
+      | suggestionsWS | .01.        |
+    And we have those branches in the database
+      | id | name   | isStable | projectId     |
+      | 1  | master | true     | suggestionsWS |
+    And we have those directories in the database
+      | id | name        | label       | description    | order | relativePath  | path                               | branchId |
+      | 1  | suggestions | Suggestions | Suggestions... | 0     | /suggestions/ | suggestionsWS>master>/suggestions/ | 1        |
+    And we have those pages in the database
+      | id | name       | label           | description        | order | relativePath            | path                                         | markdown                                                | directoryId |
+      | 1  | suggestion | The suggestions | The suggestions... | 0     | /suggestions/suggestion | suggestionsWS>master>/suggestions/suggestion | **Image** : ![Architecture][archi]\n[archi]: ../assets/images/archi.png | 1           |
+    And the file "target/data/git/suggestionsWS/master/readme.md"
+"""
+readme if you can
+"""
+    And the file "target/data/git/suggestionsWS/master/doc/suggestions/suggestions.md"
+"""
+*Suggestions*
+"""
+    When I perform a "GET" on following URL "/api/assets?path=suggestionsWS>master>/suggestions/../../readme.md"
+    Then I get a response with status "403"
+    And  I get the following response body
+"""
+Asset /suggestions/../../readme.md not allowed
+"""
