@@ -8,6 +8,8 @@
 }
 ```
 
+![Roles](../assets/images/theGardener_role_writer.png)
+
 **Write your documentation in your project source code in Markdown.** As MarkDown preview is embedded in any modern IDE, you will have an immediate preview , moreover if you push your current branch you will have easily a view of the output in theGardener application before even merging your code.
 
 
@@ -89,8 +91,8 @@ To **enrich the Markdown syntax**, several additional command can be applied. Th
 
 At the top of the page, add the following module :
   
-```
-'''thegardener
+````
+```thegardener
 {
   "page" :
      {
@@ -98,8 +100,8 @@ At the top of the page, add the following module :
         "description": "How to write documentation with theGardener format ?"
      }
 }
-'''
-``` 
+```
+```` 
 
 - page
 
@@ -150,8 +152,8 @@ This feature is explained by this specific scenario:
 
 This can be useful to include the Swagger documentation. At the top of the markdown file, use this module :
 
-```
-'''thegardener
+````
+```thegardener
 {
   "include" : 
      {
@@ -159,15 +161,15 @@ This can be useful to include the Swagger documentation. At the top of the markd
         "url": "http://thegardener.kelkoogroup.net/api/docs/"
      }
 }
-''' 
 ```
+````
  
 This external web page will be display at the same place as the other pages. In other word, the text bellow this module will be ignored.  
   
 Note that we can use the variables here :
 
-```
-'''thegardener
+````
+```thegardener
 {
   "include" : 
      {
@@ -175,8 +177,8 @@ Note that we can use the variables here :
         "url": "${swagger.url}/#"
      }
 }
-'''
-``` 
+```
+````
 
 
 TODO Find an example here.
@@ -194,8 +196,8 @@ Only a few of them are meaningful for an external user who want to use your appl
   
 To include gherkin scenarios, use this module :
 
-```
-'''thegardener
+````
+```thegardener
 {
   "senarios" : 
      {
@@ -203,8 +205,8 @@ To include gherkin scenarios, use this module :
         "select": { tags : ["@nominal_case"]  }
      }
 }
-'''
-``` 
+```
+```` 
 
 Details on the settings :
 
