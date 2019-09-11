@@ -30,7 +30,7 @@ import play.api.mvc._
 import play.api.test.Helpers._
 import play.api.test._
 import play.api.{Application, Logging, Mode}
-import repository._
+import repositories._
 import resource._
 import services._
 import steps.Injector._

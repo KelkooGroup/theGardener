@@ -1,7 +1,7 @@
-package repository
+package repositories
 
-import anorm._
 import anorm.SqlParser.scalar
+import anorm._
 import models._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.play.PlaySpec

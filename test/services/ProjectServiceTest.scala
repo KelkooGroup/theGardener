@@ -12,7 +12,7 @@ import org.scalatest._
 import org.scalatest.concurrent._
 import org.scalatestplus.mockito._
 import play.api.{Configuration, Environment, Mode}
-import repository._
+import repositories._
 import utils._
 
 import scala.concurrent.ExecutionContext.Implicits.global

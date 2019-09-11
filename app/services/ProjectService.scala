@@ -8,7 +8,7 @@ import javax.inject._
 import models._
 import org.apache.commons.io.FileUtils._
 import play.api.{Configuration, Environment, Logging, Mode}
-import repository._
+import repositories._
 import utils._
 
 import scala.concurrent._
