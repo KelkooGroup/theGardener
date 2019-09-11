@@ -6,7 +6,7 @@ import javax.inject._
 import models._
 import play.api.libs.json._
 import play.api.mvc._
-import repository._
+import repositories.HierarchyRepository
 import services.MenuService
 
 @Api(value = "HierarchyController", produces = "application/json")

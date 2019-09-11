@@ -5,7 +5,7 @@ import io.swagger.annotations._
 import javax.inject.Inject
 import play.api.libs.json.Json
 import play.api.mvc._
-import repository._
+import repositories._
 
 
 @Api(value = "DirectoryController", produces = "application/json")

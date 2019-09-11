@@ -1,4 +1,4 @@
-package repository
+package repositories
 
 import anorm.SqlParser.scalar
 import anorm._

@@ -4,7 +4,7 @@ import javax.inject.Inject
 import models.HierarchyNode._
 import models._
 import play.api.cache._
-import repository._
+import repositories._
 import services.MenuService._
 import utils._
 

@@ -8,7 +8,7 @@ import gherkin.ast.GherkinDocument
 import gherkin.{AstBuilder, Parser, ast}
 import javax.inject.Inject
 import models._
-import repository.FeatureRepository
+import repositories.FeatureRepository
 import resource._
 import utils._
 

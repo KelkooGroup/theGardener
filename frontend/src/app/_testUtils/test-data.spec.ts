@@ -248,7 +248,7 @@ export const PAGE_WITH_EXTERNAL_LINK_SERVICE_RESPONSE: PageApi = {
   description: 'overview',
   order: 0,
   // tslint:disable-next-line:max-line-length
-  markdown: '\'\'\'thegardener\n' +
+  markdown: '```thegardener\n' +
     '    {\n' +
     '      "include" : \n' +
     '         {\n' +
@@ -256,7 +256,7 @@ export const PAGE_WITH_EXTERNAL_LINK_SERVICE_RESPONSE: PageApi = {
     '            "url": "http://publisher.corp.kelkoo.net/docs/#/Contact%20Management/getContact"\n' +
     '         }\n' +
     '    }\n' +
-    '    \'\'\''
+    '    ```'
 };
 
 export const MENU_SERVICE_RESPONSE: HierarchyNodeApi = {
