@@ -88,11 +88,11 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
     } else Future.successful(())
   }
 
-  def filterFeatureFile(filePaths: Seq[String]): Seq[String] = filePaths.filter(_.endsWith(".feature"))
+  def filterFeatureFile(filePaths: Seq[String], featureRootPath: Option[String]): Seq[String] = filePaths.filter(path => featureRootPath.exists(path.startsWith) && path.endsWith(".feature"))
 
-  def filterDocumentationFile(filePaths: Seq[String]): Seq[String] = filePaths.filter(_.endsWith(".md"))
+  def filterDocumentationFile(filePaths: Seq[String], documentationRootPath: Option[String]): Seq[String] = filePaths.filter(path => documentationRootPath.exists(path.startsWith) && path.endsWith(".md"))
 
-  def filterDocumentationMetaFile(filePaths: Seq[String]): Seq[String] = filePaths.filter(_.endsWith(documentationMetaFile))
+  def filterDocumentationMetaFile(filePaths: Seq[String], documentationRootPath: Option[String]): Seq[String] = filePaths.filter(path => documentationRootPath.exists(path.startsWith) && path.endsWith(documentationMetaFile))
 
   private def updateBranches(project: Project, branches: Set[String]) = {
     if (branches.nonEmpty) {
@@ -108,36 +108,50 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
 
         gitService.pull(localRepo).map {
           case (created, updated, deleted) =>
-            branchRepository.findByProjectIdAndName(project.id, branchName).foreach {
-              branch =>
-                if (featureRepository.findAllByBranchId(branch.id).nonEmpty) {
-                  filterFeatureFile(updated ++ deleted).flatMap(path => featureRepository.findByBranchIdAndPath(branch.id, path)).foreach(featureRepository.delete)
+            branchRepository.findByProjectIdAndName(project.id, branchName).foreach { branch =>
 
-                  filterFeatureFile(created ++ updated).flatMap(filePath => featureService.parseFeatureFile(project.id, branch, getLocalRepository(project.id, branchName) + filePath).toOption).foreach(featureRepository.save)
+              if (featureRepository.findAllByBranchId(branch.id).nonEmpty) {
+                val featureToCreate = filterFeatureFile(created, project.featuresRootPath)
+                val featureToUpdate = filterFeatureFile(updated, project.featuresRootPath)
+                val featureToDelete = filterFeatureFile(deleted, project.featuresRootPath)
 
-                  logger.info(s"${created.size} features created, ${updated.size} features updated and ${deleted.size} features deleted, for project ${project.id} on branch ${branch.name}")
+
+                (featureToUpdate ++ featureToDelete).flatMap(path => featureRepository.findByBranchIdAndPath(branch.id, path)).foreach(featureRepository.delete)
+
+                (featureToUpdate ++ featureToCreate).flatMap(filePath => featureService.parseFeatureFile(project.id, branch, getLocalRepository(project.id, branchName) + filePath).toOption).foreach(featureRepository.save)
+
+                logger.info(s"${featureToCreate.size} features created, ${featureToUpdate.size} features updated and ${featureToDelete.size} features deleted, for project ${project.id} on branch ${branch.name}")
+
+              } else {
+                parseAndSaveFeatures(project, branch)
+              }
+
+              project.documentationRootPath.foreach { documentationRootPath =>
+                if (directoryRepository.findAllByBranchId(branch.id).nonEmpty) {
+
+                  val directoryToCreate = filterDocumentationMetaFile(created, project.documentationRootPath)
+                  val directoryToUpdate = filterDocumentationMetaFile(updated, project.documentationRootPath)
+                  val directoryToDelete = filterDocumentationMetaFile(deleted, project.documentationRootPath)
+
+                  val pageToCreate = filterDocumentationFile(created, project.documentationRootPath)
+                  val pageToUpdate = filterDocumentationFile(updated, project.documentationRootPath)
+                  val pageToDelete = filterDocumentationFile(deleted, project.documentationRootPath)
+
+                  (directoryToUpdate ++ directoryToDelete).flatMap(path => directoryRepository.findByBranchIdAndRelativePath(branch.id, path.substring(path.indexOf(documentationRootPath) + documentationRootPath.length, path.length))).foreach(directoryRepository.delete)
+
+                  pageToDelete.flatMap(path => pageRepository.findByPath(pageService.getPagePath(project.id, branch.name, path, project.documentationRootPath.getOrElse("")))).foreach(pageRepository.delete)
+
+                  (directoryToCreate ++ directoryToUpdate).flatMap(directoryPath => pageService.processDirectory(branch, directoryPath, getLocalRepository(project.id, branchName) + directoryPath))
+
+                  pageToUpdate.flatMap(path => pageRepository.findByPath(pageService.getPagePath(project.id, branch.name, path, project.documentationRootPath.getOrElse("")))).foreach(pageService.processPage(project.id, branch.name, _, documentationRootPath))
+
+                  logger.info(s"${directoryToCreate.size} directories created, ${directoryToUpdate.size} directories updated and ${directoryToDelete.size} directories deleted, for project ${project.id} on branch ${branch.name}")
+                  logger.info(s"${pageToCreate.size} pages created, ${pageToUpdate.size} pages updated and ${pageToDelete.size} pages deleted, for project ${project.id} on branch ${branch.name}")
 
                 } else {
-                  parseAndSaveFeatures(project, branch)
+                  parseAndSaveDirectoriesAndPages(project, branch)
                 }
-
-                project.documentationRootPath.foreach { documentationRootPath =>
-                  if (directoryRepository.findAllByBranchId(branch.id).nonEmpty) {
-
-                    filterDocumentationMetaFile(updated ++ deleted).filter(_.contains(documentationRootPath)).flatMap { path =>
-                      directoryRepository.findByBranchIdAndRelativePath(branch.id, path.substring(path.indexOf(documentationRootPath) + documentationRootPath.length, path.length))
-                    }.foreach(directoryRepository.delete)
-
-                    filterDocumentationFile(updated ++ deleted).flatMap(path => pageRepository.findByPath(path)).foreach(pageRepository.delete)
-
-                    filterDocumentationMetaFile(created ++ updated).flatMap(directoryPath => pageService.processDirectory(branch, directoryPath, getLocalRepository(project.id, branchName) + directoryPath))
-
-                    logger.info(s"${created.size} directories created, ${updated.size} directories updated and ${deleted.size} directories deleted, for project ${project.id} on branch ${branch.name}")
-
-                  } else {
-                    parseAndSaveDirectoriesAndPages(project, branch)
-                  }
-                }
+              }
             }
         }.recoverWith {
           case _ => deleteBranches(project.id, Set(branchName)).flatMap(_ => checkoutBranches(project, Set(branchName)))

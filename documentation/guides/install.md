@@ -8,6 +8,11 @@
 }
 ```
 
+theGardener is an application that gather documentation from projects hosted on git repositories. 
+This application need to be installed and configured. 
+
+![Roles](../assets/images/theGardener_role_ops.png)
+
 
 **DISCLAIMER**: this procedure help to install on a local workstation the application theGardener to be able test this project. This procedure will be replaced by proper process to use it in production : the goal of the milestone [M4 Packaging](https://github.com/KelkooGroup/theGardener/milestone/3) is to provide an easy way to deploy a packaged version of this application.
 
@@ -17,7 +22,7 @@
 | :------------     | :-------------: | :------------ |
 | git               |     >= 2.20.0   | get the sources |
 | java              |     >= 1.8.0    | run sbt and scala as theGardener run over Play/Scala  |
-| sbt               |   > 1.3         | get Scala dependencies and run the Play server  |
+| sbt               |     > 1.3       | get Scala dependencies and run the Play server  |
 | npm               |      >= 6.5.0   | get Angular dependencies  |
 | ng                |      >= 7.3.8   | angular command line to serve the front end  |
 | mysql             |     ~ 8.0.?     | store and serve data |

@@ -1,7 +1,7 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {catchError, map, switchMap} from 'rxjs/operators';
-import {combineLatest, of} from 'rxjs';
+import {combineLatest, of, Subscription} from 'rxjs';
 import {PageService} from '../../_services/page.service';
 import {PageApi} from '../../_models/hierarchy';
 import {NotificationService} from '../../_services/notification.service';
@@ -11,16 +11,17 @@ import {NotificationService} from '../../_services/notification.service';
   templateUrl: './page-content.component.html',
   styleUrls: ['./page-content.component.scss']
 })
-export class PageContentComponent implements OnInit {
+export class PageContentComponent implements OnInit, OnDestroy {
   page: PageApi;
+  private subscription: Subscription;
 
   constructor(private activatedRoute: ActivatedRoute,
-              private pageService: PageService,
-              private notificationService: NotificationService) {
+              private notificationService: NotificationService,
+              private pageService: PageService) {
   }
 
   ngOnInit() {
-    combineLatest([
+    this.subscription = combineLatest([
       this.activatedRoute.parent.params,
       this.activatedRoute.params
     ]).pipe(
@@ -31,7 +32,7 @@ export class PageContentComponent implements OnInit {
         return {name, path, page};
       }),
       switchMap(pageRoute => {
-        if (pageRoute.path.endsWith('/')) {
+        if (pageRoute.path && pageRoute.path.endsWith('_')) {
           return this.pageService.getPage(`${pageRoute.path}${pageRoute.page}`);
         } else {
           return of<PageApi>();
@@ -44,6 +45,10 @@ export class PageContentComponent implements OnInit {
     ).subscribe(page => {
       this.page = page;
     });
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
 }

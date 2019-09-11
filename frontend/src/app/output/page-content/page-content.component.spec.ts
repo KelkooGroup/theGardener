@@ -44,7 +44,7 @@ describe('PageContentComponent', () => {
     page = new Page(fixture);
     activatedRoute = fixture.debugElement.injector.get(ActivatedRoute) as any;
 
-    activatedRoute.testParentParams = {name: '_eng', path: 'suggestionsWS>qa>/pmws/'};
+    activatedRoute.testParentParams = {name: '_eng', path: 'suggestionsWS>qa>_pmws_'};
     activatedRoute.testParams = {page: 'overview'};
   });
 
@@ -54,8 +54,9 @@ describe('PageContentComponent', () => {
 
     fixture.detectChanges();
     expect(component).toBeTruthy();
-    expect(pageService.getPage).toHaveBeenCalledWith('suggestionsWS>qa>/pmws/overview');
+    expect(pageService.getPage).toHaveBeenCalledWith('suggestionsWS>qa>_pmws_overview');
 
+    expect(page.title).toMatch('overview');
     expect(page.pageContent.startsWith('For various reasons'))
       .withContext(`Page content should start with "For various reasons" but was ${fixture.nativeElement.textContent}`)
       .toBeTruthy();
@@ -77,8 +78,16 @@ class Page {
   constructor(private fixture: ComponentFixture<PageContentComponent>) {
   }
 
+  get title(): string {
+    const title = this.fixture.nativeElement.querySelector('h1');
+    expect(title).toBeTruthy();
+    return title.textContent;
+  }
+
   get pageContent(): string {
-    return this.fixture.nativeElement.textContent;
+    const pageContent = this.fixture.nativeElement.querySelector('.markdown');
+    expect(pageContent).toBeTruthy();
+    return pageContent.textContent;
   }
 
   get iframe() {

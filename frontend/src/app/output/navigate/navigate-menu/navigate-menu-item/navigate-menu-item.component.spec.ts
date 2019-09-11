@@ -388,7 +388,7 @@ class Page {
   }
 
   get chevron(): HTMLElement {
-    return this.fixture.nativeElement.querySelector('mat-icon');
+    return this.fixture.nativeElement.querySelector('#expandIcon');
   }
 
   get branchSelect(): HTMLElement {

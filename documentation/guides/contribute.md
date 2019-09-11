@@ -8,22 +8,31 @@
 }
 ```
 
+theGardener is an open sourced project, it's there thank to the contributors. 
 
-TODO....
-
-Give feedback,
-Raise issues,
-Propose enhancement, 
+![Roles](../assets/images/theGardener_role_contributor.png)
 
 
-TODO
+## Want to give feedback
 
-## Develop a feature
+Want to 
+
+- Give feedback,
+- Raise issues,
+- Propose enhancement ? 
+
+Please create an issue on https://github.com/KelkooGroup/theGardener/issues/new
+
+## Want to talk to a human
+
+Join us on [Discord](https://discordapp.com/channels/417704230531366923/417704230976225281) 
+
+## Want to develop  
 
 
 ### Install a dev environment
 
-TODO
+TODO....
 
 ### Developer guide lines
 
