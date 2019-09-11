@@ -44,7 +44,7 @@
     <div *ngIf="menuItem.children.length > 1"
          class="options"
          [ngStyle]="{'padding-left': calculatePadding() + 'px'}">
-      <mat-form-field>
+      <mat-form-field class="branch-select">
         <mat-label>Branch</mat-label>
         <mat-select placeholder="Stable branch by default"
                     [(ngModel)]="selectedBranch"
