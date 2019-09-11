@@ -32,6 +32,8 @@ class PageService @Inject()(config: Config, directoryRepository: DirectoryReposi
 
   def getLocalRepository(projectId: String, branch: String): String = s"$projectsRootDirectory$projectId/$branch/".fixPathSeparator
 
+  def getPagePath(projectId: String, branch: String, path: String, documentationRootPath: String): String = s"$projectId>$branch>${path.substring(path.indexOf(documentationRootPath) + documentationRootPath.length, path.length)}".replace(".md", "")
+
   def processDirectory(branch: Branch, path: String, localDirectoryPath: String, relativePath: String = "/", order: Int = 0, isRoot: Boolean = true): Option[Directory] = {
     val metaFile = new File(localDirectoryPath + "/" + documentationMetaFile)
     if (metaFile.exists()) {
@@ -64,20 +66,32 @@ class PageService @Inject()(config: Config, directoryRepository: DirectoryReposi
   def processPage(currentDirectory: Directory, localDirectoryPath: String, name: String, order: Int): Option[Page] = {
     val pageFile = new File(localDirectoryPath + "/" + name + ".md")
     if (pageFile.exists()) {
-      Try {
-        val pageContent = FileUtils.readFileToString(pageFile, "UTF-8")
 
+      readPageContent(pageFile, name).map { case (content, label, description) =>
+        pageRepository.save(Page(-1, name, label, description, order, Some(content), currentDirectory.relativePath + name, currentDirectory.path + name, currentDirectory.id))
+      }
 
-        val (label, description) = (for {
-          metaString <- findPageMetaJson(pageContent)
-          meta <- Try(Json.parse(metaString).as[Meta]).toOption
-          page <- meta.page
-        } yield (page.label, page.description)).getOrElse((name, name))
-
-        pageRepository.save(Page(-1, name, label, description, order, Some(pageContent), currentDirectory.relativePath + name, currentDirectory.path + name, currentDirectory.id))
-
-      }.logError(s"Error while parsing page ${pageFile.getPath}").toOption
     } else None
+  }
+
+  def processPage(projectId: String, branchName: String, page: Page, documentationRootPath: String): Option[Page] = {
+    val pageFile = new File(getLocalRepository(projectId, branchName) + documentationRootPath + "/" + page.relativePath + ".md")
+    if (pageFile.exists()) {
+      readPageContent(pageFile, page.name).map { case (content, label, description) =>
+        pageRepository.save(page.copy(markdown = Some(content), label = label, description = description))
+      }
+
+    } else None
+  }
+
+  def readPageContent(page: File, name: String): Option[(String, String, String)] = {
+
+    Try(FileUtils.readFileToString(page, "UTF-8")).logError(s"Error while reading content page ${page.getPath}").toOption.map { content =>
+      (for {
+        metaString <- findPageMetaJson(content)
+        meta <- Try(Json.parse(metaString).as[Meta]).logError(s"Error while parsing meta of page ${page.getPath}").toOption.flatMap(_.page)
+      } yield (content, meta.label, meta.description)).getOrElse((content, name, name))
+    }
   }
 
   def findPageMeta(pageContent: String): Option[String] = metaRegex.findFirstIn(pageContent)

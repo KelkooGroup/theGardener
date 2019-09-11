@@ -3,7 +3,7 @@
   "page" :
      {
         "label": "Roles",
-        "description": "What are the different way to interact with theGardener ?"
+        "description": "What are the different ways to interact with theGardener ?"
      }
 }
 ```
