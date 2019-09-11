@@ -54,6 +54,6 @@ export class PageService {
   }
 }
 
-const THE_GARDENER = /'''thegardener((.)*(\n)*)*'''/;
-const THE_GARDENER_START = '\'\'\'thegardener';
-const THE_GARDENER_END = '\'\'\'';
+const THE_GARDENER = /```thegardener((.)*(\n)*)*```/;
+const THE_GARDENER_START = '```thegardener';
+const THE_GARDENER_END = '```';
