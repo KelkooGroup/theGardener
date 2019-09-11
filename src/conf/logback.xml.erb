@@ -29,7 +29,12 @@
     </appender>
 
     <logger name="play" level="<%= value("the_gardener_play_log_level") %>" />
-    <logger name="application" level="<%= value("the_gardener_kelkoo_log_level") %>" />
+    <logger name="controllers" level="<%= value("the_gardener_kelkoo_log_level") %>" />
+    <logger name="filters" level="<%= value("the_gardener_kelkoo_log_level") %>" />
+    <logger name="models" level="<%= value("the_gardener_kelkoo_log_level") %>" />
+    <logger name="repositories" level="<%= value("the_gardener_kelkoo_log_level") %>" />
+    <logger name="services" level="<%= value("the_gardener_kelkoo_log_level") %>" />
+    <logger name="utils" level="<%= value("the_gardener_kelkoo_log_level") %>" />
     <logger name="accesslog" level="INFO" additivity="false">
       <appender-ref ref="ACCESS_LOG_FILE"/>
     </logger>
