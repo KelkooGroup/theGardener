@@ -39,7 +39,7 @@
     <logger name="controllers" level="INFO" />
     <logger name="filters" level="DEBUG" />
     <logger name="models" level="DEBUG" />
-    <logger name="repository" level="DEBUG" />
+    <logger name="repositories" level="DEBUG" />
     <logger name="services" level="DEBUG" />
     <logger name="utils" level="DEBUG" />
     <logger name="accesslog" level="INFO" additivity="false">

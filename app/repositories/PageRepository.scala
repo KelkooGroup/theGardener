@@ -1,4 +1,4 @@
-package repository
+package repositories
 
 import anorm.SqlParser._
 import anorm._
@@ -122,13 +122,13 @@ class PageRepository @Inject()(db: Database) {
 
   def findById(id: Long): Option[Page] = {
     db.withConnection { implicit connection =>
-      SQL"SELECT * FROM page WHERE id = $id".as(fullParser.singleOpt)
+      SQL"SELECT * FROM page WHERE id = $id".as(fullParser.*).headOption
     }
   }
 
   def findByDirectoryIdAndName(directoryId: Long, name: String): Option[Page] = {
     db.withConnection { implicit connection =>
-      SQL"SELECT * FROM page WHERE directoryId = $directoryId AND name = $name".as(fullParser.singleOpt)
+      SQL"SELECT * FROM page WHERE directoryId = $directoryId AND name = $name".as(fullParser.*).headOption
     }
   }
 
@@ -140,7 +140,7 @@ class PageRepository @Inject()(db: Database) {
 
   def findByPath(path: String): Option[Page] = {
     db.withConnection { implicit connection =>
-      SQL"SELECT * FROM page WHERE path = $path".as(fullParser.singleOpt)
+      SQL"SELECT * FROM page WHERE path = $path".as(fullParser.*).headOption
     }
   }
 

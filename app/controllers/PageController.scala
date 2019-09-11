@@ -9,7 +9,7 @@ import javax.inject.Inject
 import play.api.Configuration
 import play.api.libs.json.Json
 import play.api.mvc._
-import repository._
+import repositories._
 import services.PageService
 
 import scala.concurrent.ExecutionContext

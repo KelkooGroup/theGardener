@@ -7,14 +7,14 @@ import javax.inject.Inject
 import models._
 import org.apache.commons.io.FileUtils
 import play.api.libs.json.Json
-import repository._
+import repositories._
 import utils._
 
 import scala.util.Try
 
-case class PageMeta(label: String, description: String)
+case class PageMeta(label: Option[String], description: Option[String])
 
-case class DirectoryMeta(label: String, description: String, pages: Option[Seq[String]], children: Option[Seq[String]])
+case class DirectoryMeta(label: Option[String], description: Option[String], pages: Option[Seq[String]], children: Option[Seq[String]])
 
 case class Meta(directory: Option[DirectoryMeta], page: Option[PageMeta])
 
@@ -43,7 +43,7 @@ class PageService @Inject()(config: Config, directoryRepository: DirectoryReposi
 
         val name = if (isRoot) "root" else pathSplit(pathSplit.length - 1)
 
-        val currentDirectory = directoryRepository.save(Directory(-1, name, meta.directory.map(_.label).getOrElse(name), meta.directory.map(_.description).getOrElse(name), order, relativePath, path, branch.id))
+        val currentDirectory = directoryRepository.save(Directory(-1, name, meta.directory.flatMap(_.label).getOrElse(name), meta.directory.flatMap(_.description).getOrElse(name), order, relativePath, path, branch.id))
 
         val pages = meta.directory.flatMap(_.pages).getOrElse(Seq()).zipWithIndex.flatMap { case (pagePath, index) =>
           processPage(currentDirectory, localDirectoryPath, pagePath, index)
@@ -90,7 +90,7 @@ class PageService @Inject()(config: Config, directoryRepository: DirectoryReposi
       (for {
         metaString <- findPageMetaJson(content)
         meta <- Try(Json.parse(metaString).as[Meta]).logError(s"Error while parsing meta of page ${page.getPath}").toOption.flatMap(_.page)
-      } yield (content, meta.label, meta.description)).getOrElse((content, name, name))
+      } yield (content, meta.label.getOrElse(name), meta.description.orElse(meta.label).getOrElse(name))).getOrElse((content, name, name))
     }
   }
 

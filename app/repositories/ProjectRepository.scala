@@ -1,4 +1,4 @@
-package repository
+package repositories
 
 import anorm.SqlParser._
 import anorm._
