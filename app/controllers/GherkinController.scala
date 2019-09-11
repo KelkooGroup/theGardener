@@ -6,9 +6,9 @@ import models._
 import play.api.Logging
 import play.api.libs.json.Json
 import play.api.mvc._
-import repository._
 import services.MenuService
 import dto._
+import repositories._
 
 
 @Api(value = "GherkinController", produces = "application/json")

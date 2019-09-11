@@ -1,4 +1,4 @@
-package repository
+package repositories
 
 import anorm._
 import controllers.dto.ProjectDocumentationDTO
