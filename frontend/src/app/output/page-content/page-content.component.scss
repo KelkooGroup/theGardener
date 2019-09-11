@@ -2,13 +2,14 @@
 
 .markdown-container {
   width: calc(100vw - 25%);
-  height: calc(100vh - 200px);
+  height: calc(100vh - 202px);
   overflow: auto;
   color: #091A24;
 
   .markdown {
     padding-left: $margin-left;
     padding-right: 40px;
+    line-height: 22px;
   }
 
   iframe {

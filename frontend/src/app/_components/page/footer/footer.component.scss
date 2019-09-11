@@ -1,22 +1,24 @@
 @import "../../../../stylesheets/backoffice";
 
 .footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 100%;
   padding-top: 3px;
   height: $footer-height;
 
   border-top: 1px solid $color-main;
   background-color: white;
+
+
+  font-size: $font-size-text-x-small;
 }
 
-.footer-text img {
+.footer-logo {
   height: 20px;
   padding-left: 2px;
   padding-right: 2px;
-}
-
-.footer-text {
-  font-size: $font-size-text-x-small;
 }
 
 

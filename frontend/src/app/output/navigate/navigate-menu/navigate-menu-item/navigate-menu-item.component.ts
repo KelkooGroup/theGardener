@@ -46,7 +46,11 @@ export class NavigateMenuItemComponent implements OnInit, OnDestroy {
 
   navigateToItem() {
     if (this.menuItem.route !== undefined) {
-      this.router.navigate([this.targetUrl, {path: this.menuItem.route}]);
+      if (this.activatedRoute.snapshot && this.activatedRoute.snapshot.params && this.menuItem.route === this.activatedRoute.snapshot.params.path) {
+        this.expanded = !this.expanded;
+      } else {
+        this.router.navigate([this.targetUrl, {path: this.menuItem.route}]);
+      }
     } else {
       this.expanded = !this.expanded;
     }
