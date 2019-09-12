@@ -2,6 +2,7 @@ import {TestBed} from '@angular/core/testing';
 
 import {MarkdownParserService} from './markdown-parser.service';
 import {
+  MARKDOWN_WITH_ESCAPED_MARKDOWN,
   PAGE_SERVICE_RESPONSE,
   PAGE_WITH_EXTERNAL_LINK_SERVICE_RESPONSE,
   PAGE_WITH_SCENARIO
@@ -49,5 +50,26 @@ describe('MarkdownParserService', () => {
     expect((matchMarkdownWithScenario[1] as ScenarioPart).scenarioSettings.branch).toEqual('${current.branch}');
     expect((matchMarkdownWithScenario[1] as ScenarioPart).scenarioSettings.feature).toEqual('api/public/ProvideMetaInformation.feature');
     expect((matchMarkdownWithScenario[1] as ScenarioPart).scenarioSettings.select.tags).toEqual(['@public_meta']);
+  });
+
+  it('should ignore escaped markdown', () => {
+    const buggyMarkdown = MARKDOWN_WITH_ESCAPED_MARKDOWN.markdown;
+    const result = service.parseMarkdown(buggyMarkdown);
+    expect(result).not.toBeNull();
+    expect(result.length).toBe(2);
+    expect(result[0].type).toBe('Markdown');
+    expect(result[1].type).toBe('Markdown');
+    expect((result[0] as MarkdownPart).markdown).toBe('**Markdown containing escaped Markdown\n');
+    expect((result[1] as MarkdownPart).markdown).toBe('````\n' +
+      '```thegardener\n' +
+      '{\n' +
+      '  "page" :\n' +
+      '     {\n' +
+      '        "label": "Write documentation",\n' +
+      '        "description": "How to write documentation with theGardener format ?"\n' +
+      '     }\n' +
+      '}\n' +
+      '```\n' +
+      '````');
   });
 });

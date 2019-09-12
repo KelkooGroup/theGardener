@@ -444,3 +444,23 @@ export const MENU_SERVICE_RESPONSE: HierarchyNodeApi = {
   ]
 };
 
+export const MARKDOWN_WITH_ESCAPED_MARKDOWN: PageApi = {
+  path: 'theGardener>master>/guides/write',
+  relativePath: '/guides/write',
+  name: 'write',
+  label: 'write',
+  description: 'write',
+  order: 3,
+  markdown: '**Markdown containing escaped Markdown\n' +
+    '````\n' +
+    '```thegardener\n' +
+    '{\n' +
+    '  "page" :\n' +
+    '     {\n' +
+    '        "label": "Write documentation",\n' +
+    '        "description": "How to write documentation with theGardener format ?"\n' +
+    '     }\n' +
+    '}\n' +
+    '```\n' +
+    '````'
+};

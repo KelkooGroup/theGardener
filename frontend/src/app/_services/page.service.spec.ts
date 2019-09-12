@@ -5,7 +5,8 @@ import {HttpClientTestingModule, HttpTestingController} from '@angular/common/ht
 import {
   DIRECTORIES_SERVICE_RESPONSE,
   PAGE_SERVICE_RESPONSE,
-  PAGE_WITH_EXTERNAL_LINK_SERVICE_RESPONSE, PAGE_WITH_SCENARIO
+  PAGE_WITH_EXTERNAL_LINK_SERVICE_RESPONSE,
+  PAGE_WITH_SCENARIO,
 } from '../_testUtils/test-data.spec';
 import {ExternalLinkPart, MarkdownPart} from '../_models/hierarchy';
 

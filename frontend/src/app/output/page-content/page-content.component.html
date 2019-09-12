@@ -1,6 +1,6 @@
 <mat-progress-spinner *ngIf="!page"></mat-progress-spinner>
 <div *ngIf="page" class="markdown-container">
-  <h1 class="page-title">{{page.title}}</h1>
+  <h1 *ngIf=page.title class="page-title">{{ page.title }}</h1>
 
   <div *ngFor="let part of page.parts">
     <div [ngSwitch]="part.type">
@@ -13,7 +13,7 @@
       </div>
       <div *ngSwitchCase="'Scenario'">
         <div id="scenario">
-          {{ getScenario(part) | json}}
+          {{ getScenario(part) | json }}
         </div>
       </div>
     </div>

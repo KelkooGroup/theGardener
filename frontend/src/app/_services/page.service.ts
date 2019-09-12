@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {DirectoryApi, Page, PageApi} from '../_models/hierarchy';
+import {DirectoryApi, Page, PageApi, PagePart} from '../_models/hierarchy';
 import {map} from 'rxjs/operators';
 import {UrlCleanerService} from './url-cleaner.service';
 import {MarkdownParserService} from './markdown-parser.service';
@@ -11,8 +11,9 @@ import {MarkdownParserService} from './markdown-parser.service';
 })
 export class PageService {
   constructor(private http: HttpClient,
-              private markdownParser: MarkdownParserService
-              private urlCleaner: UrlCleanerService) { }
+              private markdownParser: MarkdownParserService,
+              private urlCleaner: UrlCleanerService) {
+  }
 
   getRootDirectoryForPath(path: string): Observable<DirectoryApi> {
     const url = `api/directories`;
@@ -32,7 +33,7 @@ export class PageService {
         map(page => {
           const pageParts = this.markdownParser.parseMarkdown(page.markdown);
           const res: Page = {
-            title: page.description,
+            title: this.getPageTitle(page, pageParts),
             path: page.path,
             order: page.order,
             parts: pageParts
@@ -42,28 +43,11 @@ export class PageService {
       );
   }
 
-  private parseTheGardenerMarkdown(input: PageApi): PageApi {
-    if (input.markdown.match(THE_GARDENER)) {
-      const settings = this.parseTheGardenerSettings(input.markdown);
-      if (settings.include) {
-        const pageNode = Object.assign({}, input);
-        pageNode.markdown = '';
-        pageNode.externalLink = settings.include.url;
-        return pageNode;
-      }
+  private getPageTitle(page: PageApi, pageParts: Array<PagePart>): string {
+    if (pageParts.length === 1 && pageParts[0].type === 'ExternalLink' ) {
+      return undefined;
+    } else {
+      return page.description;
     }
-    return input;
-  }
-
-  private parseTheGardenerSettings(theGardener: string): MarkdownSettings {
-    const settingsString = theGardener
-      .replace(THE_GARDENER_START, '')
-      .replace(THE_GARDENER_END, '');
-    const settings = JSON.parse(settingsString) as MarkdownSettings;
-    return settings;
   }
 }
-
-const THE_GARDENER = /```thegardener((.)*(\n)*)*```/;
-const THE_GARDENER_START = '```thegardener';
-const THE_GARDENER_END = '```';
