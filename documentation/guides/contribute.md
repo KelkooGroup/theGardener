@@ -34,6 +34,35 @@ Join us on [Discord](https://discordapp.com/channels/417704230531366923/41770423
 
 TODO....
 
+### Development on Back
+
+
+TODO....
+
+Before push, 
+
+```
+sbt test
+sbt scapegoat
+```
+
+
+### Development on Front
+
+The front is under _frontend_ directory.
+
+
+TODO....
+
+Before push, 
+
+```
+ng test
+ng lint --fix
+```
+
+
+
 ### Developer guide lines
 
 1. **Eat our own dog food**: We are building an application to help BDD (Behavior Driven Development), so let's drive the development by Cucumber scenarios ! And when the application will be enough evolved, just use it for our own development and documentation.

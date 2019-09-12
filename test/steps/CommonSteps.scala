@@ -33,6 +33,7 @@ import play.api.{Application, Logging, Mode}
 import repositories._
 import resource._
 import services._
+import steps.CommonSteps.include
 import steps.Injector._
 import utils._
 
@@ -153,6 +154,15 @@ class CommonSteps extends ScalaDsl with EN with MockitoSugar with Logging {
     val newApp = applicationBuilder.overrides(bind[Config].toInstance(newConfig)).build()
 
     startServer(newApp)
+  }
+
+  Given("""^the configuration$""") { configs: util.List[Configuration] =>
+
+    configs.forEach{ conf =>
+      val value: String = app.configuration.get[String](conf.path)
+      value mustBe conf.value
+      ()
+    }
   }
 
   Given("""^the database is empty$""") { () =>
