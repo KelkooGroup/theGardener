@@ -270,7 +270,6 @@ export const PAGE_WITH_SCENARIO: PageApi = {
     '```thegardener { "scenarios" : { "project": "shoppingApi", "branch": "${current.branch}", "feature": "api/public/ProvideMetaInformation.feature", ' +
     '"select": { "tags" : ["@public_meta"] } } } ' +
     '```'
-    '    ```'
 };
 
 export const MENU_SERVICE_RESPONSE: HierarchyNodeApi = {

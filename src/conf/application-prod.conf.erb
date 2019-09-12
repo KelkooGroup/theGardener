@@ -1,8 +1,11 @@
 <% require 'kelkoo/erb_utils' %># This is the main configuration file for the application.
 # ~~~~~
-application.name="the_gardener"
-application.title=<%= value("the_gardener_application_title") %>
-appilcation.logoSrc=<%= value("the_gardener_application_logo_src") %>
+
+application.windowTitle = <%= value("the_gardener_application_window_title") %>
+application.title = <%= value("the_gardener_application_title") %>
+application.logoSrc = <%= value("the_gardener_application_logo_src") %>
+application.faviconSrc = <%= value("the_gardener_application_favicon_src") %>
+
 
 play.http.filters=filters.Filters
 
