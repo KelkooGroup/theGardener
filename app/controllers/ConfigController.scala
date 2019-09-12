@@ -10,7 +10,7 @@ import play.api.mvc._
 class ConfigController @Inject()(config: Configuration) extends InjectedController {
 
   val Config = JsObject(Seq(
-    "name" -> JsString(config.get[String]("application.name")),
+    "windowTitle" -> JsString(config.get[String]("application.windowTitle")),
     "title" -> JsString(config.get[String]("application.title")),
     "logoSrc" -> JsString(config.get[String]("application.logoSrc")),
     "faviconSrc" -> JsString(config.get[String]("application.faviconSrc"))
