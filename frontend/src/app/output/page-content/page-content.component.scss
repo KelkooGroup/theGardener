@@ -1,7 +1,7 @@
 @import "backoffice";
 
 .markdown-container {
-  width: calc(100vw - 25%);
+  width: calc(100vw - 300px);
   height: calc(100vh - 202px);
   overflow: auto;
   color: #091A24;
@@ -17,7 +17,7 @@
     margin: 0;
     padding: 0;
     width: 100%;
-    height: calc(100% - 5px);
+    height: calc(100vh - 206px);
   }
 }
 

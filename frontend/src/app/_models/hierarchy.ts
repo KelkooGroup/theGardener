@@ -41,11 +41,18 @@ export interface PageApi {
   description: string;
   order: number;
   markdown?: string;
-  externalLink?: string;
 }
 
-export interface MarkdownSettings {
+export interface Page {
+  title: string;
+  path: string;
+  order: number;
+  parts: Array<PagePart>;
+}
+
+export interface MarkdownSettings  {
   include?: PageIncludeSettings;
+  scenarios?: ScenarioIncludeSettings;
 }
 
 export interface PageIncludeSettings {
@@ -53,3 +60,29 @@ export interface PageIncludeSettings {
   url: string;
 }
 
+export interface ScenarioIncludeSettings {
+  project: string;
+  branch: string;
+  feature: string;
+  select: ScenarioFilterSettings;
+}
+
+export interface ScenarioFilterSettings {
+  tags: Array<string>;
+}
+
+export interface PagePart {
+  type: 'Markdown' | 'ExternalLink' | 'Scenario';
+}
+
+export interface MarkdownPart extends PagePart {
+  markdown: string;
+}
+
+export interface ExternalLinkPart extends PagePart {
+  externalLink: string;
+}
+
+export interface ScenarioPart extends PagePart {
+  scenarioSettings: ScenarioIncludeSettings;
+}

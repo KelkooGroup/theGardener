@@ -1,7 +1,7 @@
 @import "backoffice";
 .page {
   display: grid;
-  grid-template-columns: 20% 80%;
+  grid-template-columns: minmax(300px, 20%) 1fr;
   grid-template-areas:
     "sidebar content";
   width: 100%;
