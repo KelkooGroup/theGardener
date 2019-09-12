@@ -36,19 +36,7 @@ ul {
 .item-text {
   padding-right: 3px;
   line-height: 20px;
-}
-
-
-.node-text {
   color: $color-text-darker;
-}
-
-.project-text {
-  color: $color-text;
-}
-
-.feature-text {
-  color: $color-text-invert;
 }
 
 .options {
@@ -58,7 +46,6 @@ ul {
   margin-left: 30px;
   font-family: "courier", serif;
   font-size: $font-size-text-small;
-
 }
 
 .branch-select {
