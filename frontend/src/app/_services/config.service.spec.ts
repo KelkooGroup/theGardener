@@ -31,15 +31,20 @@ describe('ConfigService', () => {
 
   it('should parse service response', async(() => {
     configService.getConfigs().subscribe(h => {
-      expect(h.title).toBe('TitleTest');
-      expect(h.logoSrc).toBe('LogoSrcTest');
+      expect(h.windowTitle).toBe('theGardener');
+      expect(h.title).toBe('In our documentation we trust.');
+      expect(h.logoSrc).toBe('assets/images/logo-white.png');
+      expect(h.faviconSrc).toBe('assets/images/favicon.png');
     });
     const req = httpMock.expectOne('api/config');
     expect(req.request.method).toBe('GET');
     req.flush(SERVER_RESPONSE);
   }));
 });
+
 const SERVER_RESPONSE: Config = {
-  title: 'TitleTest',
-  logoSrc: 'LogoSrcTest'
+  windowTitle: 'theGardener',
+  title: 'In our documentation we trust.',
+  logoSrc: 'assets/images/logo-white.png',
+  faviconSrc: 'assets/images/favicon.png'
 };
