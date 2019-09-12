@@ -8,9 +8,6 @@ Backend [![Build Status](https://dev.azure.com/florianfauvarque/theGardener/_api
 
 See https://github.com/KelkooGroup/theGardener/wiki/Installation
 
-## How to install a version to test the application ?
-
-See https://github.com/KelkooGroup/theGardener/wiki/Installation
 
 ## How to develop locally ?
 
