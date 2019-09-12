@@ -140,7 +140,7 @@ Implicit variables that are always available :
 This feature is explained by this specific scenario:
 ```thegardener
     {
-      "senarios" : 
+      "scenarios" : 
          {
             "feature": "/page/show_a_page_with_variables.feature",
             "select": { tags : ["@nominal_case"]  }
@@ -199,7 +199,7 @@ To include gherkin scenarios, use this module :
 ````
 ```thegardener
 {
-  "senarios" : 
+  "scenarios" : 
      {
         "feature": "/page/show_a_page_with_variables.feature",
         "select": { tags : ["@nominal_case"]  }
