@@ -76,7 +76,7 @@
     "ts-node": "8.3.0",
     "tslint": "5.20.0",
     "typescript": "3.5.3",
-    "webpack": "4.40.1"
+    "webpack": "4.40.2"
   },
   "optionalDependencies": {
     "fsevents": "*"
