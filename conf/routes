@@ -48,5 +48,7 @@ GET           /api/docs/                                      controllers.Assets
 GET           /api/docs/swagger.json                          controllers.ApiHelpController.getResources
 GET           /api/docs/*file                                 controllers.Assets.at(path="/public/swagger-ui",file)
 
+#IsAlive
+GET           /HealthCheck/isAlive                            controllers.Application.isAlive
 
 
