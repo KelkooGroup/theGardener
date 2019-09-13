@@ -10,36 +10,32 @@ import play.api.Configuration
 import play.api.libs.json.Json
 import play.api.mvc._
 import repositories._
-import services.PageService
+import services.{PageService}
 
 import scala.concurrent.ExecutionContext
 
 
 @Api(value = "PageController", produces = "application/json")
-class PageController @Inject()(config: Configuration, directoryRepository: DirectoryRepository, pageRepository: PageRepository, pageService: PageService) extends InjectedController {
+class PageController @Inject()( pageRepository: PageRepository, pageService: PageService) extends InjectedController {
 
-  val baseUrl = config.getOptional[String]("application.baseUrl").getOrElse("")
 
   @ApiOperation(value = "Get pages from path", response = classOf[PageDTO], responseContainer = "list")
   @ApiResponses(Array(new ApiResponse(code = 404, message = "Page not found")))
   def getPageFromPath(path: String): Action[AnyContent] = Action {
-    pageRepository.findByPath(path) match {
-      case Some(page) =>
+    pageRepository.findByPathJoinProject(path) match {
+      case Some(pageJoinProject) =>
 
-        val finalMarkdown = page.markdown.map { content =>
-          pageService.findPageMeta(content).map(meta => content.replace(meta, "").trim).getOrElse(content)
-
-        }.map { content =>
-          val images = pageService.findPageImagesWithRelativePath(content)
-          val references = pageService.findPageReferencesWithRelativePath(content)
-
-          val path = directoryRepository.findById(page.directoryId).map(_.path).getOrElse("")
-
-          (images ++ references).fold(content)((acc, relativePath) => acc.replace(relativePath, s"$baseUrl/api/assets?path=$path$relativePath"))
+        pageService.extractMarkdown(pageJoinProject).map { markdown =>
+          pageService.splitMarkdown(markdown, path)
+        }.map { fragments =>
+          pageService.processPageFragments(fragments,pageJoinProject)
+        }  match {
+          case Some(fragments) => {
+            val json = Json.toJson(Seq(PageDTO(pageJoinProject.page, fragments)))
+            Ok(json)
+          }
+          case None => NotFound(s"No Page $path")
         }
-
-        Ok(Json.toJson(Seq(PageDTO(page.copy(markdown = finalMarkdown)))))
-
       case _ => NotFound(s"No Page $path")
     }
   }

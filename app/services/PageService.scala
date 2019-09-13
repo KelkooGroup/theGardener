@@ -3,8 +3,9 @@ package services
 import java.io.{File, FileInputStream}
 
 import com.typesafe.config.Config
+import controllers.dto.PageFragment
 import javax.inject.Inject
-import models._
+import models.{PageJoinProject, _}
 import org.apache.commons.io.FileUtils
 import play.api.libs.json.Json
 import repositories._
@@ -12,23 +13,39 @@ import utils._
 
 import scala.util.Try
 
-case class PageMeta(label: Option[String], description: Option[String])
+case class PageMeta(label: Option[String] = None, description: Option[String] = None)
 
-case class DirectoryMeta(label: Option[String], description: Option[String], pages: Option[Seq[String]], children: Option[Seq[String]])
+case class DirectoryMeta(label: Option[String] = None, description: Option[String] = None, pages: Option[Seq[String]] = None, children: Option[Seq[String]] = None)
 
-case class Meta(directory: Option[DirectoryMeta], page: Option[PageMeta])
+case class TagsModule(tags: Seq[String])
+
+case class ScenariosModule(project: Option[String] = None, branchName: Option[String] = None, feature: Option[String] = None, select: Option[TagsModule] = None)
+
+case class Module(directory: Option[DirectoryMeta] = None, page: Option[PageMeta] = None, scenarios: Option[ScenariosModule] = None)
+
+case class PageFragmentUnderProcessing(data: Option[String] = None, markdown: Option[String] = None, scenariosModule: Option[ScenariosModule] = None, scenarios: Option[Feature] = None)
+
+class PageService @Inject()(config: Config, projectRepository: ProjectRepository, directoryRepository: DirectoryRepository, pageRepository: PageRepository, gherkinRepository: GherkinRepository) {
 
 
-class PageService @Inject()(config: Config, directoryRepository: DirectoryRepository, pageRepository: PageRepository) {
-  val projectsRootDirectory = config.getString("projects.root.directory")
-  val documentationMetaFile = config.getString("documentation.meta.file")
   implicit val pageMetaFormat = Json.format[PageMeta]
   implicit val directoryMetaFormat = Json.format[DirectoryMeta]
-  implicit val metaFormat = Json.format[Meta]
 
-  val metaRegex = """\`\`\`thegardener([\s\S]*"page"[^`]*)\`\`\`""".r
+  implicit val tagsModuleFormat = Json.format[TagsModule]
+  implicit val scenariosModuleMetaFormat = Json.format[ScenariosModule]
+  implicit val metaFormat = Json.format[Module]
+
+
+  val projectsRootDirectory = config.getString("projects.root.directory")
+  val documentationMetaFile = config.getString("documentation.meta.file")
+  val baseUrl = config.getString("application.baseUrl")
+
+  val moduleStart = "```thegardener"
+  val moduleEnd = "```"
+  val pageModuleRegex = """\`\`\`thegardener([\s\S]*"page"[^`]*)\`\`\`""".r
   val imageRegex = """\!\[.*\]\((.*)\)""".r
   val referenceRegex = """\[.*\]\:\s(\S*)""".r
+  val scenariosModuleRegex = """\`\`\`thegardener([\s\S]*"scenarios"[^`]*)\`\`\`""".r
 
   def getLocalRepository(projectId: String, branch: String): String = s"$projectsRootDirectory$projectId/$branch/".fixPathSeparator
 
@@ -38,7 +55,7 @@ class PageService @Inject()(config: Config, directoryRepository: DirectoryReposi
     val metaFile = new File(localDirectoryPath + "/" + documentationMetaFile)
     if (metaFile.exists()) {
       Try {
-        val meta = Json.parse(new FileInputStream(metaFile)).as[Meta]
+        val meta = Json.parse(new FileInputStream(metaFile)).as[Module]
         val pathSplit = path.split("/")
 
         val name = if (isRoot) "root" else pathSplit(pathSplit.length - 1)
@@ -88,16 +105,89 @@ class PageService @Inject()(config: Config, directoryRepository: DirectoryReposi
 
     Try(FileUtils.readFileToString(page, "UTF-8")).logError(s"Error while reading content page ${page.getPath}").toOption.map { content =>
       (for {
-        metaString <- findPageMetaJson(content)
-        meta <- Try(Json.parse(metaString).as[Meta]).logError(s"Error while parsing meta of page ${page.getPath}").toOption.flatMap(_.page)
+        metaString <- findPageModuleJson(content)
+        meta <- parseModule(metaString, page.getPath).flatMap(_.page)
       } yield (content, meta.label.getOrElse(name), meta.description.orElse(meta.label).getOrElse(name))).getOrElse((content, name, name))
     }
   }
 
-  def findPageMeta(pageContent: String): Option[String] = metaRegex.findFirstIn(pageContent)
+  def parseModule(moduleString: String, path: String): Option[Module] = {
+    Try(Json.parse(moduleString).as[Module]).logError(s"Error while parsing module '${moduleString}' of page ${path}").toOption
+  }
 
-  def findPageMetaJson(pageContent: String): Option[String] = for (m <- metaRegex.findFirstMatchIn(pageContent)) yield m.group(1)
+  def extractMarkdown(pageJoinProject: PageJoinProject): Option[String] = {
+    pageJoinProject.page.markdown match {
+      case None => None
+      case Some(originalMarkdown) =>
+        val markdownWithoutPageModule = findPageModule(originalMarkdown).map(meta => originalMarkdown.replace(meta, "").trim).getOrElse(originalMarkdown)
+        val images = findPageImagesWithRelativePath(markdownWithoutPageModule)
+        val references = findPageReferencesWithRelativePath(markdownWithoutPageModule)
+        Some((images ++ references).fold(markdownWithoutPageModule)((acc, relativePath) => acc.replace(relativePath, s"$baseUrl/api/assets?path=${pageJoinProject.page.path}/$relativePath")))
+    }
+  }
 
+  def splitMarkdown(markdown: String, path: String): Seq[PageFragmentUnderProcessing] = {
+    scenariosModuleRegex.findFirstMatchIn(markdown) match {
+      case Some(scenarios) =>
+
+        val scenariosModuleString = scenarios.group(1)
+        val scenariosModuleJson: Option[Module] = parseModule(scenariosModuleString, path)
+        val scenariosModuleOriginal = moduleStart + scenariosModuleString + moduleEnd
+        val markdownBeforeScenarios = markdown.substring(0, markdown.indexOf(scenariosModuleOriginal))
+        val dataAfterScenario = markdown.substring(markdownBeforeScenarios.length + scenariosModuleOriginal.length, markdown.length - 1)
+
+        val ignore = new PageFragmentUnderProcessing(markdown = Some(markdownBeforeScenarios)) :: new PageFragmentUnderProcessing(data = Some(dataAfterScenario)) :: Nil
+        scenariosModuleJson match {
+          case Some(scenariosModuleJson) => scenariosModuleJson.scenarios  match {
+            case Some(scenarios) =>
+              new PageFragmentUnderProcessing(markdown = Some(markdownBeforeScenarios)) :: new PageFragmentUnderProcessing(scenariosModule = Some(scenarios)) :: new PageFragmentUnderProcessing(markdown = Some(dataAfterScenario)) :: Nil
+            case None => ignore
+          }
+          case None => ignore
+        }
+
+      case None => new PageFragmentUnderProcessing(markdown = Some(markdown)) :: Nil
+    }
+  }
+
+  def processPageFragments(fragments: Seq[PageFragmentUnderProcessing], pageJoinProject: PageJoinProject): Seq[PageFragment] = {
+    fragments.map { fragmentUnderProcessing =>
+      fragmentUnderProcessing.scenariosModule match {
+        case Some(scenariosModule) =>
+          val feature = buildFeature(scenariosModule, pageJoinProject)
+          new PageFragmentUnderProcessing(scenarios = feature)
+
+        case None => fragmentUnderProcessing
+      }
+    }.map { fragment =>
+      PageFragment(fragment)
+    }
+  }
+
+  def buildFeature(scenariosModule: ScenariosModule, currentPageJoinProject: PageJoinProject): Option[Feature] = {
+
+    val project = scenariosModule.project match {
+      case Some(projectId) => projectRepository.findById(projectId).getOrElse(currentPageJoinProject.project)
+      case None => currentPageJoinProject.project
+    }
+
+    val branchName = scenariosModule.branchName.getOrElse(currentPageJoinProject.branch.name)
+    val featureFilter = scenariosModule.feature match {
+      case Some(featureRelativePath) => Some(project.featuresRootPath.getOrElse("") + featureRelativePath)
+      case None => None
+    }
+    val tagsFilter = None
+    val filter = new ProjectMenuItem(project.id, "", branchName, featureFilter, tagsFilter)
+    val documentation = gherkinRepository.buildProjectGherkin(filter)
+
+    documentation.branches.filter(_.name.equals(branchName)).headOption.map { branch =>
+      branch.features.filter(_.path.equals(featureFilter.getOrElse(""))).headOption
+    }.flatten
+  }
+
+  def findPageModule(pageContent: String): Option[String] = pageModuleRegex.findFirstIn(pageContent)
+
+  def findPageModuleJson(pageContent: String): Option[String] = for (m <- pageModuleRegex.findFirstMatchIn(pageContent)) yield m.group(1)
 
   def findPageImagesWithRelativePath(pageContent: String): Seq[String] = (for (m <- imageRegex.findAllMatchIn(pageContent)) yield m.group(1)).toSeq.filterNot(_.startsWith("http"))
 
