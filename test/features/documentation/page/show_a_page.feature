@@ -40,15 +40,24 @@ Feature: Generate a documentation page
     When I perform a "GET" on following URL "/api/pages?path=suggestionsWS>master>/context"
     Then I get the following json response body
 """
-[{
-  "path": "suggestionsWS>master>/context",
-  "relativePath": "/context",
-  "name" : "context",
-  "label" : "The context",
-  "description": "Why providing suggestions",
-  "order": 0,
-  "markdown": "**Feature**: Provide book suggestions"
-}]
+[
+  {
+    "path": "suggestionsWS>master>/context",
+    "relativePath": "/context",
+    "name": "context",
+    "label": "The context",
+    "description": "Why providing suggestions",
+    "order": 0,
+    "content": [
+      {
+        "type": "markdown",
+        "data": {
+          "markdown": "**Feature**: Provide book suggestions"
+        }
+      }
+    ]
+  }
+]
 """
 
   @level_2_technical_details @nominal_case @valid
@@ -62,13 +71,22 @@ Feature: Generate a documentation page
     When I perform a "GET" on following URL "/api/pages?path=suggestionsWS>master>/context"
     Then I get the following json response body
 """
-[{
-  "path": "suggestionsWS>master>/context",
-  "relativePath": "/context",
-  "name" : "context",
-  "label" : "The context",
-  "description": "Why providing suggestions",
-  "order": 0,
-  "markdown" : "**Feature**: Provide book suggestions ```thegardener { \"include\" : { \"type\" : \"\", \"url\": \"http://thegardener.kelkoogroup.net/api/docs/\"}}```"
-}]
+[
+  {
+    "path": "suggestionsWS>master>/context",
+    "relativePath": "/context",
+    "name": "context",
+    "label": "The context",
+    "description": "Why providing suggestions",
+    "order": 0,
+    "content": [
+      {
+        "type": "markdown",
+        "data": {
+          "markdown": "**Feature**: Provide book suggestions ```thegardener { \"include\" : { \"type\" : \"\", \"url\": \"http://thegardener.kelkoogroup.net/api/docs/\"}}```"
+        }
+      }
+    ]
+  }
+]
 """
