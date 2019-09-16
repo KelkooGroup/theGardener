@@ -53,14 +53,14 @@ export class PageContentComponent implements OnInit, OnDestroy  {
   }
 
   getExternalLink(part: PagePart) {
-    return (part as ExternalLinkPart).externalLink;
+    return (part.data as ExternalLinkPart).externalLink;
   }
 
   getMarkdown(part: PagePart) {
-    return (part as MarkdownPart).markdown;
+    return (part.data as MarkdownPart).markdown;
   }
 
   getScenario(part: PagePart) {
-    return (part as ScenarioPart).scenarioSettings;
+    return (part.data as ScenarioPart).scenarios;
   }
 }

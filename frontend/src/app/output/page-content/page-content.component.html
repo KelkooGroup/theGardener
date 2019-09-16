@@ -11,7 +11,7 @@
         <iframe [src]="getExternalLink(part) | safe" scrolling="yes"
                 title="External Link"></iframe>
       </div>
-      <div *ngSwitchCase="'Scenario'">
+      <div *ngSwitchCase="'Scenarios'">
         <div id="scenario">
           {{ getScenario(part) | json }}
         </div>

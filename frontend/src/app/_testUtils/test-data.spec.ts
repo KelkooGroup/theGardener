@@ -201,43 +201,50 @@ export const PAGE_SERVICE_RESPONSE: PageApi = {
   description: 'overview',
   order: 0,
   // tslint:disable-next-line:max-line-length
-  markdown: 'For various reasons, the offers provided to the publishers can be filtered. We don\'t necessary want to provide all the\n' +
-    'offers to the publishers :\n' +
-    '\n' +
-    '![Overview](../assets/images/constraints_overview.png) \n' +
-    '\n' +
-    'This is the constraints objective. The constraints can be defined manually by the **BizDevs** or automatically by the\n' +
-    '**TrafficOptimizer**.\n' +
-    '\n' +
-    '### Reference and application\n' +
-    '\n' +
-    'The constraints are defined and stored in PMWS component. The impact of those constraints is implemented at the client\n' +
-    'level:\n' +
-    '- **eCS** and **ShoppingAPI** are filtering the call to Search6\n' +
-    '- **FeedService** is filtering the offers provided (offers coming from OfferProcessing)\n' +
-    '- others systems are also using the constraints to filter offers provided to external clients : example GSA Exporter or\n' +
-    'COP. \n' +
-    '\n' +
-    '\n' +
-    'The constraints are stored against a profile (which is linked to a contract, which is linked to the publisher\n' +
-    'itself ([See details](thegardener://${current.project}/${current.branch}/overview))). All trackings of a profile share\n' +
-    'the same constraints.\n' +
-    '\n' +
-    'Clients are most of the time using a tracking as input data to find out what are the constraints to be applied.\n' +
-    '\n' +
-    '### Different sources of constraints\n' +
-    '\n' +
-    'There are several ways to define the constraints :\n' +
-    '- for a publisher, [filter the merchants that can provide offers](thegardener://${current.project}/${current.branch}/constraints/for_a_publisher).  \n' +
-    '- for a merchant, [filter the publishers that can receive offers](thegardener://${current.project}/${current.branch}/constraints/for_a_merchant).\n' +
-    '- moreover, [offers can be filtered for various reasons](thegardener://${current.project}/${current.branch}/constraints/for_an_offer).\n' +
-    '\n' +
-    '![Sources](../assets/images/constraints_sources_overview.png)\n' +
-    '\n' +
-    'All those filters are cumulative : **each offer need to pass through all the filters**. In other words it\'s a AND\n' +
-    'between each constraint.  \n' +
-    '\n' +
-    'We can see the impact of [those constraints on the PMBO](thegardener://${current.project}/${current.branch}/constraints/from_pmbo). '
+  content: [
+    {
+      type: 'Markdown',
+      data: {
+        markdown: 'For various reasons, the offers provided to the publishers can be filtered. We don\'t necessary want to provide all the\n' +
+          'offers to the publishers :\n' +
+          '\n' +
+          '![Overview](../assets/images/constraints_overview.png) \n' +
+          '\n' +
+          'This is the constraints objective. The constraints can be defined manually by the **BizDevs** or automatically by the\n' +
+          '**TrafficOptimizer**.\n' +
+          '\n' +
+          '### Reference and application\n' +
+          '\n' +
+          'The constraints are defined and stored in PMWS component. The impact of those constraints is implemented at the client\n' +
+          'level:\n' +
+          '- **eCS** and **ShoppingAPI** are filtering the call to Search6\n' +
+          '- **FeedService** is filtering the offers provided (offers coming from OfferProcessing)\n' +
+          '- others systems are also using the constraints to filter offers provided to external clients : example GSA Exporter or\n' +
+          'COP. \n' +
+          '\n' +
+          '\n' +
+          'The constraints are stored against a profile (which is linked to a contract, which is linked to the publisher\n' +
+          'itself ([See details](thegardener://${current.project}/${current.branch}/overview))). All trackings of a profile share\n' +
+          'the same constraints.\n' +
+          '\n' +
+          'Clients are most of the time using a tracking as input data to find out what are the constraints to be applied.\n' +
+          '\n' +
+          '### Different sources of constraints\n' +
+          '\n' +
+          'There are several ways to define the constraints :\n' +
+          '- for a publisher, [filter the merchants that can provide offers](thegardener://${current.project}/${current.branch}/constraints/for_a_publisher).  \n' +
+          '- for a merchant, [filter the publishers that can receive offers](thegardener://${current.project}/${current.branch}/constraints/for_a_merchant).\n' +
+          '- moreover, [offers can be filtered for various reasons](thegardener://${current.project}/${current.branch}/constraints/for_an_offer).\n' +
+          '\n' +
+          '![Sources](../assets/images/constraints_sources_overview.png)\n' +
+          '\n' +
+          'All those filters are cumulative : **each offer need to pass through all the filters**. In other words it\'s a AND\n' +
+          'between each constraint.  \n' +
+          '\n' +
+          'We can see the impact of [those constraints on the PMBO](thegardener://${current.project}/${current.branch}/constraints/from_pmbo). '
+      }
+    }
+  ]
 };
 
 export const PAGE_WITH_EXTERNAL_LINK_SERVICE_RESPONSE: PageApi = {
@@ -248,28 +255,132 @@ export const PAGE_WITH_EXTERNAL_LINK_SERVICE_RESPONSE: PageApi = {
   description: 'overview',
   order: 0,
   // tslint:disable-next-line:max-line-length
-  markdown: '```thegardener\n' +
-    '    {\n' +
-    '      "include" : \n' +
-    '         {\n' +
-    '            "type": "external",\n' +
-    '            "url": "http://publisher.corp.kelkoo.net/docs/#/Contact%20Management/getContact"\n' +
-    '         }\n' +
-    '    }\n' +
-    '    ```'
+  content: [{
+    type: 'ExternalLink',
+    data: {
+      externalLink: 'http://publisher.corp.kelkoo.net/docs/#/Contact%20Management/getContact'
+    }
+  }]
 };
 
 export const PAGE_WITH_SCENARIO: PageApi = {
-  path: 'shoppingAPI>qa>/ProvideMetaInformation/feature',
-  relativePath: '/ProvideMetaInformation/feature',
-  name: 'feature',
-  label: 'feature',
-  description: 'feature',
+  path: 'suggestionsWS>master>/context',
+  relativePath: '/context',
+  name: 'context',
+  label: 'The context',
+  description: 'Why providing suggestions',
   order: 0,
-  markdown: 'As a developer, it can be useful to know the current version of the application. Please use the following endpoint: ' +
-    '```thegardener { "scenarios" : { "project": "shoppingApi", "branch": "${current.branch}", "feature": "api/public/ProvideMetaInformation.feature", ' +
-    '"select": { "tags" : ["@public_meta"] } } } ' +
-    '```'
+  content: [
+    {
+      type: 'Markdown',
+      data: {
+        markdown: '**Feature**: Provide book suggestions\n\n\n'
+      }
+    },
+    {
+      type: 'Scenarios',
+      data: {
+        scenarios: {
+          id: 692,
+          branchId: 44,
+          path: 'test/features/register_projects/register_a_project.feature',
+          background: {
+            id: 0,
+            keyword: 'Background',
+            name: '',
+            description: '',
+            steps: [
+              {
+                id: 0,
+                keyword: 'Given',
+                text: 'the database is empty',
+                argument: []
+              },
+              {
+                id: 1,
+                keyword: 'And',
+                text: 'the cache is empty',
+                argument: []
+              }
+            ]
+          },
+          tags: [],
+          language: 'en',
+          keyword: 'Feature',
+          name: 'Register a project',
+          description: 'As a user,\n  I want to register my project into theGardener\n  So that my project BDD features will be shared with all users',
+          scenarios: [
+            {
+              keyword: 'Scenario',
+              name: 'get a project',
+              description: '',
+              tags: [
+                'level_2_technical_details',
+                'nominal_case',
+                'valid'
+              ],
+              abstractionLevel: 'level_2_technical_details',
+              id: 4968,
+              caseType: 'nominal_case',
+              steps: [
+                {
+                  id: 0,
+                  keyword: 'Given',
+                  text: 'we have the following projects',
+                  argument: [
+                    [
+                      'id',
+                      'name',
+                      'repositoryUrl',
+                      'stableBranch',
+                      'featuresRootPath'
+                    ],
+                    [
+                      'suggestionsWS',
+                      'Suggestions WebServices',
+                      'git@gitlab.corp.kelkoo.net:library/suggestionsWS.git',
+                      'master',
+                      'test/features'
+                    ]
+                  ]
+                },
+                {
+                  id: 1,
+                  keyword: 'When',
+                  text: 'I perform a \"GET\" on following URL \"/api/projects/suggestionsWS\"',
+                  argument: []
+                },
+                {
+                  id: 2,
+                  keyword: 'Then',
+                  text: 'I get a response with status \"200\"',
+                  argument: []
+                },
+                {
+                  id: 3,
+                  keyword: 'And',
+                  text: 'I get the following json response body',
+                  argument: [
+                    [
+                      '{\n  \"id\": \"suggestionsWS\",\n  \"name\": \"Suggestions WebServices\",\n  \"repositoryUrl\": \"git@gitlab.corp.kelkoo.net:library/suggestionsWS.git\",\n  \"stableBranch\": \"master\",\n  \"featuresRootPath\": \"test/features\"\n}'
+                    ]
+                  ]
+                }
+              ],
+              workflowStep: 'valid'
+            }
+          ],
+          comments: []
+        }
+      }
+    },
+    {
+      type: 'Markdown',
+      data: {
+        markdown: '\n**Footer**\n\n'
+      }
+    }
+  ]
 };
 
 export const MENU_SERVICE_RESPONSE: HierarchyNodeApi = {
@@ -450,16 +561,24 @@ export const MARKDOWN_WITH_ESCAPED_MARKDOWN: PageApi = {
   label: 'write',
   description: 'write',
   order: 3,
-  markdown: '**Markdown containing escaped Markdown\n' +
-    '````\n' +
-    '```thegardener\n' +
-    '{\n' +
-    '  "page" :\n' +
-    '     {\n' +
-    '        "label": "Write documentation",\n' +
-    '        "description": "How to write documentation with theGardener format ?"\n' +
-    '     }\n' +
-    '}\n' +
-    '```\n' +
-    '````'
+  content: [
+    {
+      type: 'Markdown',
+      data: {
+        markdown: '**Markdown containing escaped Markdown\n' +
+          '````\n' +
+          '```thegardener\n' +
+          '{\n' +
+          '  "page" :\n' +
+          '     {\n' +
+          '        "label": "Write documentation",\n' +
+          '        "description": "How to write documentation with theGardener format ?"\n' +
+          '     }\n' +
+          '}\n' +
+          '```\n' +
+          '````'
+      }
+    }
+  ]
 };
+
