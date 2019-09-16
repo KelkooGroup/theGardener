@@ -63,8 +63,8 @@ describe('PageService', () => {
         expect(page.parts).toBeDefined();
         expect(page.parts.length).toBe(1);
         expect(page.parts[0].type).toBe('Markdown');
-        expect((page.parts[0] as MarkdownPart).markdown).toBeDefined();
-        expect((page.parts[0] as MarkdownPart).markdown.startsWith('For various reasons')).toBeTruthy();
+        expect((page.parts[0].data as MarkdownPart).markdown).toBeDefined();
+        expect((page.parts[0].data as MarkdownPart).markdown.startsWith('For various reasons')).toBeTruthy();
       });
 
     const req = httpMock.expectOne(mockRequest =>
@@ -80,7 +80,7 @@ describe('PageService', () => {
         expect(page.order).toBe(0);
         expect(page.parts.length).toBe(1);
         expect(page.parts[0].type).toBe('ExternalLink');
-        expect((page.parts[0] as ExternalLinkPart).externalLink).toBe('http://publisher.corp.kelkoo.net/docs/#/Contact%20Management/getContact');
+        expect((page.parts[0].data as ExternalLinkPart).externalLink).toBe('http://publisher.corp.kelkoo.net/docs/#/Contact%20Management/getContact');
       });
 
     const req = httpMock.expectOne(mockRequest =>
@@ -92,12 +92,12 @@ describe('PageService', () => {
     pageService.getPage('path')
       .subscribe(page => {
         expect(page).toBeDefined();
-        expect(page.path).toEqual('shoppingAPI>qa>/ProvideMetaInformation/feature');
+        expect(page.path).toEqual('suggestionsWS>master>/context');
         expect(page.order).toBe(0);
-        expect(page.parts.length).toBe(2);
+        expect(page.parts.length).toBe(3);
         expect(page.parts[0].type).toBe('Markdown');
-        expect(page.parts[1].type).toBe('Scenario');
-        expect((page.parts[0] as MarkdownPart).markdown).toBeDefined();
+        expect(page.parts[1].type).toBe('Scenarios');
+        expect((page.parts[0].data as MarkdownPart).markdown).toBeDefined();
       });
 
     const req = httpMock.expectOne(mockRequest =>

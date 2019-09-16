@@ -22,6 +22,7 @@ export interface BranchApi {
   path: string;
   rootDirectory?: DirectoryApi;
 }
+
 export interface DirectoryApi {
   id: string;
   path: string;
@@ -40,7 +41,7 @@ export interface PageApi {
   label: string;
   description: string;
   order: number;
-  markdown?: string;
+  content?: Array<PagePart>;
 }
 
 export interface Page {
@@ -50,7 +51,7 @@ export interface Page {
   parts: Array<PagePart>;
 }
 
-export interface MarkdownSettings  {
+export interface MarkdownSettings {
   include?: PageIncludeSettings;
   scenarios?: ScenarioIncludeSettings;
 }
@@ -72,17 +73,22 @@ export interface ScenarioFilterSettings {
 }
 
 export interface PagePart {
-  type: 'Markdown' | 'ExternalLink' | 'Scenario';
+  type: 'Markdown' | 'ExternalLink' | 'Scenarios';
+  data: MarkdownPart | ExternalLinkPart | ScenarioPart;
 }
 
-export interface MarkdownPart extends PagePart {
+export interface MarkdownPart {
   markdown: string;
 }
 
-export interface ExternalLinkPart extends PagePart {
+export interface ExternalLinkPart {
   externalLink: string;
 }
 
-export interface ScenarioPart extends PagePart {
-  scenarioSettings: ScenarioIncludeSettings;
+export interface ScenarioPart {
+  scenarios: Scenario;
+}
+
+export interface Scenario {
+
 }
