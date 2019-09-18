@@ -96,7 +96,7 @@ libraryDependencies ++= Seq(
   "com.jsuereth" %% "scala-arm" % "2.0",
   "commons-io" % "commons-io" % "2.6",
   
-  "net.ruippeixotog" %% "scala-scraper" % "2.1.0" % Test,
+  "net.ruippeixotog" %% "scala-scraper" % "2.2.0" % Test,
   "io.cucumber" %% "cucumber-scala" % "2.0.1" % Test,
   "io.cucumber" % "cucumber-junit" % "2.4.0" % Test,
   "io.cucumber" % "cucumber-picocontainer" % "2.4.0" % Test,
