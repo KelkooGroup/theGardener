@@ -41,7 +41,7 @@ export class PageService {
   }
 
   private getPageTitle(page: PageApi): string {
-    if (page.content.length === 1 && page.content[0].type === 'ExternalLink' ) {
+    if (page.content && page.content.length === 1 && page.content[0].type === 'externalLink' ) {
       return undefined;
     } else {
       return page.description;

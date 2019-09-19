@@ -73,7 +73,7 @@ export interface ScenarioFilterSettings {
 }
 
 export interface PagePart {
-  type: 'Markdown' | 'ExternalLink' | 'Scenarios';
+  type: 'markdown' | 'externalLink' | 'scenarios';
   data: MarkdownPart | ExternalLinkPart | ScenarioPart;
 }
 
