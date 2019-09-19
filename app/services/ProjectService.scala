@@ -22,6 +22,7 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
   val synchronizeInterval = config.get[Int]("projects.synchronize.interval")
   val synchronizeInitialDelay = config.get[Int]("projects.synchronize.initial.delay")
   val documentationMetaFile = config.get[String]("documentation.meta.file")
+  val synchronizeFromRemoteEnabled = config.get[Boolean]("projects.synchronize.from.remote.enabled")
 
   if (environment.mode != Mode.Test) {
     val synchronizeJob = actorSystem.scheduler.schedule(initialDelay = synchronizeInitialDelay.seconds, interval = synchronizeInterval.seconds) {
@@ -57,6 +58,7 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
   }
 
   private def countDirectories(directory: Directory): Int = 1 + directory.children.map(countDirectories).sum
+
   private def countPages(directory: Directory): Int = directory.pages.size + directory.children.map(countPages).sum
 
   private def parseAndSaveDirectoriesAndPages(project: Project, branch: Branch): Unit = {
@@ -189,28 +191,35 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
   }
 
   def synchronize(project: Project): Future[Unit] = {
-    logger.info(s"Start synchronizing project ${project.id}")
 
-    val localBranches = branchRepository.findAllByProjectId(project.id).map(_.name).toSet.filter(branch => new File(getLocalRepository(project.id, branch)).exists)
+    if (!synchronizeFromRemoteEnabled) {
+      logger.info(s"No synchronization of project ${project.id}, as this feature is disabled")
+      Future.successful()
+    } else {
 
-    logger.info(s"Local branches of project ${project.id} : ${localBranches.mkString(", ")}")
+      logger.info(s"Start synchronizing project ${project.id}")
 
-    gitService.getRemoteBranches(project.repositoryUrl).map(_.toSet).flatMap { remoteBranches =>
-      logger.info(s"Remotes branches of project ${project.id} : ${remoteBranches.mkString(", ")}")
+      val localBranches = branchRepository.findAllByProjectId(project.id).map(_.name).toSet.filter(branch => new File(getLocalRepository(project.id, branch)).exists)
 
-      val filteredRemoteBranches = remoteBranches.filter(branch => project.displayedBranches.forall(regex => branch.matches(regex)))
+      logger.info(s"Local branches of project ${project.id} : ${localBranches.mkString(", ")}")
 
-      val branchesToUpdate = localBranches.intersect(filteredRemoteBranches)
-      val branchesToCheckout = filteredRemoteBranches -- localBranches
-      val branchesToDelete = localBranches -- filteredRemoteBranches
+      gitService.getRemoteBranches(project.repositoryUrl).map(_.toSet).flatMap { remoteBranches =>
+        logger.info(s"Remotes branches of project ${project.id} : ${remoteBranches.mkString(", ")}")
 
-      logger.info(s"Project ${project.id}, displayed branches: ${project.displayedBranches}, branches to update: ${branchesToUpdate.mkString(", ")}, branches to checkout: ${branchesToCheckout.mkString(", ")}, branches to delete: ${branchesToDelete.mkString(", ")}")
+        val filteredRemoteBranches = remoteBranches.filter(branch => project.displayedBranches.forall(regex => branch.matches(regex)))
 
-      for {
-        _ <- checkoutBranches(project, branchesToCheckout)
-        _ <- updateBranches(project, branchesToUpdate)
-        _ <- deleteBranches(project.id, branchesToDelete)
-      } yield ()
+        val branchesToUpdate = localBranches.intersect(filteredRemoteBranches)
+        val branchesToCheckout = filteredRemoteBranches -- localBranches
+        val branchesToDelete = localBranches -- filteredRemoteBranches
+
+        logger.info(s"Project ${project.id}, displayed branches: ${project.displayedBranches}, branches to update: ${branchesToUpdate.mkString(", ")}, branches to checkout: ${branchesToCheckout.mkString(", ")}, branches to delete: ${branchesToDelete.mkString(", ")}")
+
+        for {
+          _ <- checkoutBranches(project, branchesToCheckout)
+          _ <- updateBranches(project, branchesToUpdate)
+          _ <- deleteBranches(project.id, branchesToDelete)
+        } yield ()
+      }
     }
   }
 }
