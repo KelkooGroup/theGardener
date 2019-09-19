@@ -115,7 +115,14 @@ Feature: Include images in the documentation
     "label": "The suggestions",
     "description": "The suggestions...",
     "order": 0,
-    "markdown": "**Image** : ![Architecture](http://localhost:9000/api/assets?path=suggestionsWS>master>/suggestions/../assets/images/archi.png)"
+    "content": [
+      {
+        "type": "markdown",
+        "data": {
+          "markdown": "**Image** : ![Architecture](http://localhost:9000/api/assets?path=suggestionsWS>master>/suggestions/suggestion/../assets/images/archi.png)"
+        }
+      }
+    ]
   }
 ]
 """
@@ -150,7 +157,14 @@ Feature: Include images in the documentation
     "label": "The suggestions",
     "description": "The suggestions...",
     "order": 0,
-    "markdown": "**Image** : ![Architecture][archi]\n[archi]: http://localhost:9000/api/assets?path=suggestionsWS>master>/suggestions/../assets/images/archi.png"
+    "content": [
+      {
+        "type": "markdown",
+        "data": {
+          "markdown": "**Image** : ![Architecture][archi]\n[archi]: http://localhost:9000/api/assets?path=suggestionsWS>master>/suggestions/suggestion/../assets/images/archi.png"
+        }
+      }
+    ]
   }
 ]
 """

@@ -553,7 +553,8 @@ Feature: Provide menu
         "name": "suggestion",
         "label": "suggestion",
         "description": "suggestion",
-        "order": 0
+        "order": 0,
+        "content":[]
       },
       {
         "path": "suggestionsWS>master>/suggestions/examples",
@@ -561,7 +562,8 @@ Feature: Provide menu
         "name": "examples",
         "label": "examples",
         "description": "examples",
-        "order": 1
+        "order": 1,
+        "content":[]
       }
     ]
   }

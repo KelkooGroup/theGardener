@@ -61,7 +61,7 @@ object MenuDTO {
     implicit val directoryFormat = Json.format[DirectoryDTO]
 
     def apply(directory: Directory): DirectoryDTO = {
-      DirectoryDTO(directory.id, directory.path, directory.name, directory.label, directory.description, directory.order, directory.pages.map(PageDTO(_)))
+      DirectoryDTO(directory.id, directory.path, directory.name, directory.label, directory.description, directory.order, directory.pages.map(PageDTO(_, Nil)))
     }
   }
 

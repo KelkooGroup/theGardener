@@ -158,7 +158,7 @@ class CommonSteps extends ScalaDsl with EN with MockitoSugar with Logging {
 
   Given("""^the configuration$""") { configs: util.List[Configuration] =>
 
-    configs.forEach{ conf =>
+    configs.forEach { conf =>
       val value: String = app.configuration.get[String](conf.path)
       value mustBe conf.value
       ()
@@ -255,6 +255,13 @@ Scenario: providing several book suggestions
   Given("""^we have those pages in the database$""") { pages: util.List[PageRow] =>
     pageRepository.saveAll(pages.asScala.map(p => Page(p.id, p.name, p.label, p.description, p.order, Option(p.markdown), p.relativePath, p.path, p.directoryId)))
   }
+
+  Given("""^we have the following markdown for the page "([^"]*)"$""") { (path: String, markdown: String) =>
+    pageRepository.findByPath(path).map { page =>
+      pageRepository.save(page.copy(markdown = Some(markdown)))
+    }
+  }
+
 
   Given("""^the cache is empty$""") { () =>
     await(cache.removeAll())
