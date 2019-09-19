@@ -57,6 +57,9 @@ play.evolutions.autoApply = true
 projects.root.directory = <%= value("the_gardener_projects_root_directory") %>
 projects.synchronize.interval = <%= value("the_gardener_projects_synchronize_interval") %>
 projects.synchronize.initial.delay = <%= value("the_gardener_projects_synchronize_initial_delay") %>
+
+projects.synchronize.from.remote.enabled = <%= value("the_gardener_projects_synchronize_from_remote_enabled") %>
+
 documentation.meta.file = <%= value("the_gardener_documentation_meta_file") %>
 
 play.server.http.idleTimeout = 60s

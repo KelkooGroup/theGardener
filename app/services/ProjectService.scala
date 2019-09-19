@@ -194,7 +194,7 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
 
     if (!synchronizeFromRemoteEnabled) {
       logger.info(s"No synchronization of project ${project.id}, as this feature is disabled")
-      Future.successful()
+      Future.successful({})
     } else {
 
       logger.info(s"Start synchronizing project ${project.id}")
