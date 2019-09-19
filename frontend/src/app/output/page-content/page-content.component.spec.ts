@@ -145,7 +145,96 @@ const SCENARIO_PART: PagePart = {
   type: 'Scenarios',
   data: {
     scenarios: {
-
+      id: '692',
+      branchId: '44',
+      path: 'test/features/register_projects/register_a_project.feature',
+      background: {
+        id: '0',
+        keyword: 'Background',
+        name: '',
+        description: '',
+        steps: [
+          {
+            id: '0',
+            keyword: 'Given',
+            text: 'the database is empty',
+            argument: []
+          },
+          {
+            id: '1',
+            keyword: 'And',
+            text: 'the cache is empty',
+            argument: []
+          }
+        ]
+      },
+      tags: [],
+      language: 'en',
+      keyword: 'Feature',
+      name: 'Register a project',
+      description: 'As a user,\n  I want to register my project into theGardener\n  So that my project BDD features will be shared with all users',
+      scenarios: [
+        {
+          keyword: 'Scenario',
+          name: 'get a project',
+          description: '',
+          tags: [
+            'level_2_technical_details',
+            'nominal_case',
+            'valid'
+          ],
+          abstractionLevel: 'level_2_technical_details',
+          id: '4968',
+          caseType: 'nominal_case',
+          steps: [
+            {
+              id: '0',
+              keyword: 'Given',
+              text: 'we have the following projects',
+              argument: [
+                [
+                  'id',
+                  'name',
+                  'repositoryUrl',
+                  'stableBranch',
+                  'featuresRootPath'
+                ],
+                [
+                  'suggestionsWS',
+                  'Suggestions WebServices',
+                  'git@gitlab.corp.kelkoo.net:library/suggestionsWS.git',
+                  'master',
+                  'test/features'
+                ]
+              ]
+            },
+            {
+              id: '1',
+              keyword: 'When',
+              text: 'I perform a \"GET\" on following URL \"/api/projects/suggestionsWS\"',
+              argument: []
+            },
+            {
+              id: '2',
+              keyword: 'Then',
+              text: 'I get a response with status \"200\"',
+              argument: []
+            },
+            {
+              id: '3',
+              keyword: 'And',
+              text: 'I get the following json response body',
+              argument: [
+                [
+                  '{\n  \"id\": \"suggestionsWS\",\n  \"name\": \"Suggestions WebServices\",\n  \"repositoryUrl\": \"git@gitlab.corp.kelkoo.net:library/suggestionsWS.git\",\n  \"stableBranch\": \"master\",\n  \"featuresRootPath\": \"test/features\"\n}'
+                ]
+              ]
+            }
+          ],
+          workflowStep: 'valid'
+        }
+      ],
+      comments: []
     }
   }
 };

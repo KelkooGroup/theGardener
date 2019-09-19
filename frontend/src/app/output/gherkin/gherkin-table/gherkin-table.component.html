@@ -1,9 +1,9 @@
-<mat-table class="book-table" [dataSource]="table.rows">
-  <ng-container [matColumnDef]="headerId" *ngFor="let headerId of table.headerIds">
-    <mat-header-cell class="book-header-cell" *matHeaderCellDef> {{ table.getHeader(headerId) }}</mat-header-cell>
-    <mat-cell class="book-cell" mat-cell *matCellDef="let row"> {{ row.getValue(headerId) }}</mat-cell>
+<mat-table class="book-table" [dataSource]="tableRows">
+  <ng-container [matColumnDef]="header" *ngFor="let header of tableHeader; index as index">
+    <mat-header-cell class="book-header-cell" *matHeaderCellDef> {{ header }}</mat-header-cell>
+    <mat-cell class="book-cell" mat-cell *matCellDef="let row"> {{ row[index] }}</mat-cell>
   </ng-container>
 
-  <mat-header-row class="book-header-row" *matHeaderRowDef="table.headerIds"></mat-header-row>
-  <mat-row class="book-row" *matRowDef="let row; columns: table.headerIds;"></mat-row>
+  <mat-header-row class="book-header-row" *matHeaderRowDef="tableHeader"></mat-header-row>
+  <mat-row class="book-row" *matRowDef="let row; columns: tableHeader"></mat-row>
 </mat-table>

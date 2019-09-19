@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {GherkinStepTable} from '../../../_models/gherkin';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-gherkin-table',
@@ -8,12 +8,15 @@ import {GherkinStepTable} from '../../../_models/gherkin';
 })
 export class GherkinTableComponent implements OnInit {
 
-  @Input() table: GherkinStepTable;
+  @Input() table: Array<Array<string>>;
+  tableHeader: Array<string>;
+  tableRows: Array<object> = [];
 
   constructor() {
   }
 
   ngOnInit() {
+    this.tableHeader = this.table[0];
+    this.tableRows = this.table.slice(1);
   }
-
 }

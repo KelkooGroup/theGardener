@@ -37,7 +37,6 @@ import {NavigatePageComponent} from './output/navigate/navigate-page.component';
 import {NavigateContentComponent} from './output/navigate/navigate-content/navigate-content.component';
 import {NavigateMenuComponent} from './output/navigate/navigate-menu/navigate-menu.component';
 import {NotificationService} from './_services/notification.service';
-import {GherkinFeatureComponent} from './output/gherkin/gherkin-feature/gherkin-feature.component';
 import {GherkinBackgroundComponent} from './output/gherkin/gherkin-background/gherkin-background.component';
 import {GherkinStepComponent} from './output/gherkin/gherkin-step/gherkin-step.component';
 import {HeaderComponent} from './_components/page/header/header.component';
@@ -65,7 +64,6 @@ const nonProductionProviders = [{
     GherkinComponent,
     GherkinTableComponent,
     GherkinLongTextComponent,
-    GherkinFeatureComponent,
     GherkinBackgroundComponent,
     GherkinStepComponent,
     NavigateMenuItemComponent,

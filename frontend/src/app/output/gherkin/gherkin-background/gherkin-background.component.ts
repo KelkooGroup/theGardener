@@ -1,19 +1,16 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {GherkinStep} from '../../../_models/gherkin';
+import {Component, Input} from '@angular/core';
+import {GherkinBackground} from '../../../_models/hierarchy';
 
 @Component({
   selector: 'app-gherkin-background',
   templateUrl: './gherkin-background.component.html',
   styleUrls: ['./gherkin-background.component.scss']
 })
-export class GherkinBackgroundComponent implements OnInit {
+export class GherkinBackgroundComponent {
 
-  @Input() steps: Array<GherkinStep>;
+  @Input() background: GherkinBackground;
 
   constructor() {
-  }
-
-  ngOnInit() {
   }
 
 }

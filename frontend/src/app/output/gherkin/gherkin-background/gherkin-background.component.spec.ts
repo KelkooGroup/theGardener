@@ -8,83 +8,30 @@ import {GherkinTableComponent} from '../gherkin-table/gherkin-table.component';
 import {GherkinLongTextComponent} from '../gherkin-long-text/gherkin-long-text.component';
 import {NgxJsonViewerModule} from 'ngx-json-viewer';
 import {BrowserAnimationsModule, NoopAnimationsModule} from '@angular/platform-browser/animations';
-import {
-  ExpandableNode,
-  GherkinStep,
-} from '../../../_models/gherkin';
+import {GherkinBackground} from '../../../_models/hierarchy';
 
 describe('GherkinBackgroundComponent', () => {
   let component: GherkinBackgroundComponent;
   let fixture: ComponentFixture<GherkinBackgroundComponent>;
   let page: Page;
-  const steps: Array<GherkinStep> = [{
-    type: 'string',
-    nodeId: 'string',
-    localId: 'string',
-    data: {
+  const background: GherkinBackground = {
+    id: 'id',
+    description: '',
+    keyword: '',
+    name: 'background',
+    steps: [{
       id: '0',
       keyword: 'Given',
       text: 'a user',
-      argument: [],
-    },
-    hasTable: false,
-    hasLongText: true,
-    longText: 'string',
-    text: null,
-    table: {
-      headers: {key: 'true', value: 'false'},
-      headerIds: ['bjr'],
-      rows: [{
-        values: {key: 'clef'}, getValue(key: string): string {
-          return 'a';
-        }
-      }],
-      getHeader(headerId: string): string {
-        return 'b';
-      }
-
-    },
-    getChilden(): Array<ExpandableNode> {
-      return null;
-    },
-    hasChilden(): boolean {
-      return true;
-    }
-  }, {
-    type: 'string',
-    nodeId: 'string',
-    localId: 'string',
-    data: {
+      argument: []
+    },{
       id: '1',
       keyword: 'When',
       text: 'we ask for suggestions',
       argument: []
-    },
-    hasTable: false,
-    hasLongText: true,
-    longText: 'string',
-    text: null,
-    table: {
-      headers: {key: 'true', value: 'false'},
-      headerIds: ['bjr'],
-      rows: [{
-        values: {key: 'clef'}, getValue(key: string): string {
-          return '';
-        }
-      }],
-      getHeader(headerId: string): string {
-        return '';
-      }
+    }]
+  };
 
-    },
-    getChilden(): Array<ExpandableNode> {
-      return null;
-    },
-    hasChilden(): boolean {
-      return true;
-    }
-
-  }];
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
@@ -107,7 +54,7 @@ describe('GherkinBackgroundComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(GherkinBackgroundComponent);
     component = fixture.componentInstance;
-    component.steps = steps;
+    component.background = background;
     fixture.detectChanges();
     page = new Page(fixture);
   });
