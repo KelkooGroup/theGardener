@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {Scenario} from '../../_models/hierarchy';
 
 @Component({
@@ -6,10 +6,15 @@ import {Scenario} from '../../_models/hierarchy';
   templateUrl: './gherkin.component.html',
   styleUrls: ['./gherkin.component.scss']
 })
-export class GherkinComponent {
-
+export class GherkinComponent implements OnInit {
   @Input() scenarios: Scenario;
 
   constructor() {
   }
+
+  ngOnInit(): void {
+    console.log(this.scenarios);
+  }
+
+
 }

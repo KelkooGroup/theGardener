@@ -1,7 +1,7 @@
 <div class="step">
   <span class="stepKeyword">{{ step.keyword }}</span>&nbsp;
-  <span [class.stepParameter]="fragment.isParameter"
-        [class.stepText]="! fragment.isParameter"
+  <span [class.step-parameter]="fragment.isParameter"
+        [class.step-text]="! fragment.isParameter"
         *ngFor="let fragment of textFragments">{{ fragment.text }}</span>
 </div>
 <div *ngIf="table" class="table pull-right">

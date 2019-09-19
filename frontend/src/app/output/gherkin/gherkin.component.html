@@ -21,14 +21,13 @@
         </ul>
       </div>
     </li>
-    <li>
+    <li *ngIf="scenario.examples">
       <div class="step">
         <span class="stepKeyword">Examples</span>&nbsp;
       </div>
+      <div class="table pull-right">
+        <app-gherkin-table [table]="scenario.examples"></app-gherkin-table>
+      </div>
     </li>
-    <div class="table pull-right">
-      <app-gherkin-table [table]="scenario.examples.table"></app-gherkin-table>
-    </div>
-
   </ul>
 </div>

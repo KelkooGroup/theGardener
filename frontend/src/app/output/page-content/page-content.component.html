@@ -1,19 +1,18 @@
 <mat-progress-spinner *ngIf="!page"></mat-progress-spinner>
 <div *ngIf="page" class="markdown-container">
   <h1 *ngIf=page.title class="page-title">{{ page.title }}</h1>
-
   <div *ngFor="let part of page.parts">
     <div [ngSwitch]="part.type">
-      <div *ngSwitchCase="'Markdown'">
+      <div *ngSwitchCase="'markdown'">
         <div class="markdown" markdown [data]="getMarkdown(part)"></div>
       </div>
-      <div *ngSwitchCase="'ExternalLink'">
+      <div *ngSwitchCase="'externalLink'">
         <iframe [src]="getExternalLink(part) | safe" scrolling="yes"
                 title="External Link"></iframe>
       </div>
-      <div *ngSwitchCase="'Scenarios'">
+      <div *ngSwitchCase="'scenarios'">
         <div id="scenario">
-          {{ getScenario(part) | json }}
+          <app-gherkin [scenarios]="getScenario(part)"></app-gherkin>
         </div>
       </div>
     </div>
