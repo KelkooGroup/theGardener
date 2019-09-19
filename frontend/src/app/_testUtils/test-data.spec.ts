@@ -281,23 +281,23 @@ export const PAGE_WITH_SCENARIO: PageApi = {
       type: 'Scenarios',
       data: {
         scenarios: {
-          id: 692,
-          branchId: 44,
+          id: '692',
+          branchId: '44',
           path: 'test/features/register_projects/register_a_project.feature',
           background: {
-            id: 0,
+            id: '0',
             keyword: 'Background',
             name: '',
             description: '',
             steps: [
               {
-                id: 0,
+                id: '0',
                 keyword: 'Given',
                 text: 'the database is empty',
                 argument: []
               },
               {
-                id: 1,
+                id: '1',
                 keyword: 'And',
                 text: 'the cache is empty',
                 argument: []
@@ -320,11 +320,11 @@ export const PAGE_WITH_SCENARIO: PageApi = {
                 'valid'
               ],
               abstractionLevel: 'level_2_technical_details',
-              id: 4968,
+              id: '4968',
               caseType: 'nominal_case',
               steps: [
                 {
-                  id: 0,
+                  id: '0',
                   keyword: 'Given',
                   text: 'we have the following projects',
                   argument: [
@@ -345,19 +345,19 @@ export const PAGE_WITH_SCENARIO: PageApi = {
                   ]
                 },
                 {
-                  id: 1,
+                  id: '1',
                   keyword: 'When',
                   text: 'I perform a \"GET\" on following URL \"/api/projects/suggestionsWS\"',
                   argument: []
                 },
                 {
-                  id: 2,
+                  id: '2',
                   keyword: 'Then',
                   text: 'I get a response with status \"200\"',
                   argument: []
                 },
                 {
-                  id: 3,
+                  id: '3',
                   keyword: 'And',
                   text: 'I get the following json response body',
                   argument: [

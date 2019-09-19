@@ -5,7 +5,9 @@
     </mat-panel-title>
   </mat-expansion-panel-header>
 
-  <div *ngFor="let step of steps">
-    <app-gherkin-step [step]="step"></app-gherkin-step>
+  <div *ngIf="background && background.steps">
+    <div *ngFor="let step of background.steps">
+      <app-gherkin-step [step]="step"></app-gherkin-step>
+    </div>
   </div>
 </mat-expansion-panel>

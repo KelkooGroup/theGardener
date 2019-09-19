@@ -1,89 +1,15 @@
-import {AfterViewChecked, Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
-import {GherkinNode, ExpandableNode} from '../../_models/gherkin';
-import {MatTreeNestedDataSource} from '@angular/material/tree';
-import {NestedTreeControl} from '@angular/cdk/tree';
-import {ActivatedRoute} from '@angular/router';
-import {Location} from '@angular/common';
-import {Subscription} from 'rxjs';
+import {Component, Input} from '@angular/core';
+import {Scenario} from '../../_models/hierarchy';
 
 @Component({
   selector: 'app-gherkin',
   templateUrl: './gherkin.component.html',
   styleUrls: ['./gherkin.component.scss']
 })
-export class GherkinComponent implements OnInit, AfterViewChecked, OnDestroy {
+export class GherkinComponent {
 
-  gherkinData: Array<GherkinNode>;
+  @Input() scenarios: Scenario;
 
-  nestedTreeControl: NestedTreeControl<ExpandableNode>;
-  nestedDataSource: MatTreeNestedDataSource<GherkinNode>;
-
-  url: string;
-  hash: string;
-
-  @Output() gherkinDisplayed: EventEmitter<boolean> = new EventEmitter();
-  gherkinDisplayedEmitted = false;
-  private fragmentSubscription: Subscription;
-  private urlSubscription: Subscription;
-
-
-  constructor(private location: Location, private route: ActivatedRoute) {
+  constructor() {
   }
-
-  ngOnInit() {
-    this.urlSubscription = this.route.url.subscribe(() => {
-      this.url = this.location.path();
-    });
-    this.fragmentSubscription = this.route.fragment.subscribe((hash: string) => {
-      if (hash) {
-        this.hash = hash;
-      }
-    });
-  }
-
-  updateGeneratedGherkin(gherkinData: Array<GherkinNode>) {
-    this.gherkinDisplayedEmitted = false;
-    this.gherkinData = gherkinData;
-    this.nestedTreeControl = new NestedTreeControl<ExpandableNode>(this.getChildren);
-    this.nestedDataSource = new MatTreeNestedDataSource();
-    this.nestedDataSource.data = this.gherkinData;
-    this.nestedTreeControl.dataNodes = this.gherkinData;
-    this.nestedTreeControl.expandAll();
-
-  }
-
-  defineHash(hash: string) {
-    this.hash = hash;
-    this.selectHash();
-  }
-
-
-  selectHash() {
-    if (this.hash) {
-      const cmp = document.getElementById(this.hash);
-      if (cmp) {
-        cmp.scrollIntoView();
-      }
-      window.location.hash = this.hash;
-    }
-  }
-
-  ngAfterViewChecked() {
-    if (!this.gherkinDisplayedEmitted) {
-      this.gherkinDisplayedEmitted = true;
-      this.gherkinDisplayed.emit(true);
-    }
-  }
-
-
-  hasNestedChild = (_: number, nodeData: GherkinNode) => nodeData.hasChilden();
-
-  private getChildren = (node: ExpandableNode) => node.getChilden();
-
-  ngOnDestroy(): void {
-    this.urlSubscription.unsubscribe();
-    this.fragmentSubscription.unsubscribe();
-  }
-
-
 }
