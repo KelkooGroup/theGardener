@@ -28,7 +28,6 @@ import {MatRadioModule} from '@angular/material/radio';
 import {MatCardModule} from '@angular/material/card';
 import {MatSnackBarModule} from '@angular/material';
 import {MenuService} from './_services/menu.service';
-import {GherkinService} from './_services/gherkin.service';
 import {GherkinComponent} from './output/gherkin/gherkin.component';
 import {GherkinTableComponent} from './output/gherkin/gherkin-table/gherkin-table.component';
 import {FooterComponent} from './_components/page/footer/footer.component';
@@ -100,7 +99,6 @@ const nonProductionProviders = [{
   providers: [
     ...!environment.production ? nonProductionProviders : [],
     MenuService,
-    GherkinService,
     NotificationService,
   ],
   bootstrap: [AppComponent]

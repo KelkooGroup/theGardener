@@ -7,7 +7,7 @@ import {ActivatedRouteStub} from '../../_testUtils/activated-route-stub.spec';
 import {PageService} from '../../_services/page.service';
 import {of} from 'rxjs';
 import {MarkdownModule} from 'ngx-markdown';
-import {Page, PagePart} from '../../_models/hierarchy';
+import {Page, PagePart} from '../../_models/page';
 import {MatProgressSpinnerModule, MatSnackBarModule, MatTableModule} from '@angular/material';
 import {SafePipe} from '../../safe.pipe';
 import {GherkinComponent} from '../gherkin/gherkin.component';

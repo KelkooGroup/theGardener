@@ -3,7 +3,7 @@ import {ActivatedRoute} from '@angular/router';
 import {catchError, map, switchMap} from 'rxjs/operators';
 import {combineLatest, of, Subscription} from 'rxjs';
 import {PageService} from '../../_services/page.service';
-import {ExternalLinkPart, MarkdownPart, Page, PagePart, ScenarioPart} from '../../_models/hierarchy';
+import {ExternalLinkPart, MarkdownPart, Page, PagePart, ScenarioPart} from '../../_models/page';
 import {NotificationService} from '../../_services/notification.service';
 
 

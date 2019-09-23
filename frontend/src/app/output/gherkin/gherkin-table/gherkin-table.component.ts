@@ -1,5 +1,4 @@
 import {Component, Input, OnInit} from '@angular/core';
-import * as _ from 'lodash';
 
 @Component({
   selector: 'app-gherkin-table',

@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Scenario} from '../../_models/hierarchy';
+import {Scenario} from '../../_models/gherkin';
 
 @Component({
   selector: 'app-gherkin',
