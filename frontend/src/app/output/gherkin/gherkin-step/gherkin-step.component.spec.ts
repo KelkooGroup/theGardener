@@ -6,7 +6,7 @@ import {GherkinLongTextComponent} from '../gherkin-long-text/gherkin-long-text.c
 import {MatExpansionModule, MatTableModule} from '@angular/material';
 import {NgxJsonViewerModule} from 'ngx-json-viewer';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
-import {GherkinStep} from '../../../_models/hierarchy';
+import {GherkinStep} from '../../../_models/gherkin';
 import {By} from '@angular/platform-browser';
 
 describe('GherkinStepComponent', () => {

@@ -8,7 +8,7 @@ import {
   PAGE_WITH_EXTERNAL_LINK_SERVICE_RESPONSE,
   PAGE_WITH_SCENARIO,
 } from '../_testUtils/test-data.spec';
-import {ExternalLinkPart, MarkdownPart} from '../_models/hierarchy';
+import {ExternalLinkPart, MarkdownPart} from '../_models/page';
 
 describe('PageService', () => {
   let httpMock: HttpTestingController;

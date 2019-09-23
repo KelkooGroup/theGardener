@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {GherkinStep, GherkinTextFragment} from '../../../_models/hierarchy';
+import {GherkinStep, GherkinTextFragment} from '../../../_models/gherkin';
 
 @Component({
   selector: 'app-gherkin-step',

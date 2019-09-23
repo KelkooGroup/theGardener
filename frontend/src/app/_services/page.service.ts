@@ -1,9 +1,10 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {DirectoryApi, Page, PageApi} from '../_models/hierarchy';
+import {DirectoryApi, PageApi} from '../_models/hierarchy';
 import {map} from 'rxjs/operators';
 import {UrlCleanerService} from './url-cleaner.service';
+import {Page} from '../_models/page';
 
 @Injectable({
   providedIn: 'root'
