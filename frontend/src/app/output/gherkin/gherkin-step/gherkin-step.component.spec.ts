@@ -161,7 +161,7 @@ class Page {
 
   get stepParameters(): Array<string> {
     const res: Array<string> = [];
-    this.fixture.nativeElement.querySelectorAll('.stepParameter')
+    this.fixture.nativeElement.querySelectorAll('.step-parameter')
       .forEach((e: HTMLElement) => {
         res.push(e.textContent.trim())
       });
@@ -170,7 +170,7 @@ class Page {
 
   get stepText(): Array<string> {
     const res: Array<string> = [];
-    this.fixture.nativeElement.querySelectorAll('.stepText')
+    this.fixture.nativeElement.querySelectorAll('.step-text')
       .forEach((e: HTMLElement) => {
         res.push(e.textContent.trim())
       });

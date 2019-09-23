@@ -13,7 +13,6 @@ export class GherkinComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.scenarios);
   }
 
 
