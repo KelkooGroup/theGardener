@@ -62,7 +62,7 @@ describe('PageService', () => {
         expect(page.order).toBe(0);
         expect(page.parts).toBeDefined();
         expect(page.parts.length).toBe(1);
-        expect(page.parts[0].type).toBe('Markdown');
+        expect(page.parts[0].type).toBe('markdown');
         expect((page.parts[0].data as MarkdownPart).markdown).toBeDefined();
         expect((page.parts[0].data as MarkdownPart).markdown.startsWith('For various reasons')).toBeTruthy();
       });
@@ -79,7 +79,7 @@ describe('PageService', () => {
         expect(page.path).toEqual('publisherManagementWS>qa>/constraints/overview');
         expect(page.order).toBe(0);
         expect(page.parts.length).toBe(1);
-        expect(page.parts[0].type).toBe('ExternalLink');
+        expect(page.parts[0].type).toBe('externalLink');
         expect((page.parts[0].data as ExternalLinkPart).externalLink).toBe('http://publisher.corp.kelkoo.net/docs/#/Contact%20Management/getContact');
       });
 
@@ -95,8 +95,8 @@ describe('PageService', () => {
         expect(page.path).toEqual('suggestionsWS>master>/context');
         expect(page.order).toBe(0);
         expect(page.parts.length).toBe(3);
-        expect(page.parts[0].type).toBe('Markdown');
-        expect(page.parts[1].type).toBe('Scenarios');
+        expect(page.parts[0].type).toBe('markdown');
+        expect(page.parts[1].type).toBe('scenarios');
         expect((page.parts[0].data as MarkdownPart).markdown).toBeDefined();
       });
 

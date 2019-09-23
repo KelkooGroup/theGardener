@@ -203,7 +203,7 @@ export const PAGE_SERVICE_RESPONSE: PageApi = {
   // tslint:disable-next-line:max-line-length
   content: [
     {
-      type: 'Markdown',
+      type: 'markdown',
       data: {
         markdown: 'For various reasons, the offers provided to the publishers can be filtered. We don\'t necessary want to provide all the\n' +
           'offers to the publishers :\n' +
@@ -256,7 +256,7 @@ export const PAGE_WITH_EXTERNAL_LINK_SERVICE_RESPONSE: PageApi = {
   order: 0,
   // tslint:disable-next-line:max-line-length
   content: [{
-    type: 'ExternalLink',
+    type: 'externalLink',
     data: {
       externalLink: 'http://publisher.corp.kelkoo.net/docs/#/Contact%20Management/getContact'
     }
@@ -272,13 +272,13 @@ export const PAGE_WITH_SCENARIO: PageApi = {
   order: 0,
   content: [
     {
-      type: 'Markdown',
+      type: 'markdown',
       data: {
         markdown: '**Feature**: Provide book suggestions\n\n\n'
       }
     },
     {
-      type: 'Scenarios',
+      type: 'scenarios',
       data: {
         scenarios: {
           id: '692',
@@ -375,7 +375,7 @@ export const PAGE_WITH_SCENARIO: PageApi = {
       }
     },
     {
-      type: 'Markdown',
+      type: 'markdown',
       data: {
         markdown: '\n**Footer**\n\n'
       }
@@ -563,7 +563,7 @@ export const MARKDOWN_WITH_ESCAPED_MARKDOWN: PageApi = {
   order: 3,
   content: [
     {
-      type: 'Markdown',
+      type: 'markdown',
       data: {
         markdown: '**Markdown containing escaped Markdown\n' +
           '````\n' +

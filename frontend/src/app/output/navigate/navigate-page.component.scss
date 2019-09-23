@@ -12,11 +12,9 @@
   grid-area: sidebar;
   border-right: 1px solid rgba(0, 0, 0, 0.12);
   padding-top: 10px;
-  height: calc(100vh - 202px);
   overflow: auto;
 }
 
 .content {
   grid-area: content;
-  max-height: 100%;
 }

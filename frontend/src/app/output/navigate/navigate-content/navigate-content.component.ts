@@ -66,4 +66,15 @@ export class NavigateContentComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
+
+  calculateHeight(): number {
+    const headerHeight = this.hasTabs ? 50 : 0;
+    const pageHeight = 150 + headerHeight;
+    console.log(pageHeight);
+    return pageHeight;
+  }
+
+  get hasTabs(): boolean {
+    return this.pages && this.pages.length > 1;
+  }
 }

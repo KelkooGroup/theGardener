@@ -1,9 +1,11 @@
-<header>
-  <app-header [appTitle]="apptitle" [logoSrc]="logoSrc"></app-header>
-</header>
-<div #content class="content" (window:resize)="onResize($event)">
-<router-outlet></router-outlet>
+<div class="page">
+  <header>
+    <app-header [appTitle]="appTitle" [logoSrc]="logoSrc"></app-header>
+  </header>
+  <div class="content">
+    <router-outlet></router-outlet>
+  </div>
+  <footer>
+    <app-footer></app-footer>
+  </footer>
 </div>
-<footer>
-  <app-footer></app-footer>
-</footer>

@@ -1,12 +1,9 @@
 @import "backoffice";
 
 .markdown-container {
-  width: calc(100vw - 300px);
-  height: calc(100vh - 202px);
-  overflow: auto;
-  color: #091A24;
+  color: $color-text-darker;
 
-  .markdown {
+  .markdown, .scenario {
     padding-left: $margin-left;
     padding-right: 40px;
     line-height: 22px;
