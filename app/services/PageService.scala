@@ -3,7 +3,7 @@ package services
 import java.io.{File, FileInputStream}
 
 import com.typesafe.config.Config
-import controllers.dto.PageFragment
+import controllers.dto.{PageFragment}
 import javax.inject.Inject
 import models.{PageJoinProject, _}
 import org.apache.commons.io.FileUtils
@@ -21,9 +21,31 @@ case class TagsModule(tags: Seq[String])
 
 case class ScenariosModule(project: Option[String] = None, branchName: Option[String] = None, feature: Option[String] = None, select: Option[TagsModule] = None)
 
-case class Module(directory: Option[DirectoryMeta] = None, page: Option[PageMeta] = None, scenarios: Option[ScenariosModule] = None)
+case class IncludeExternalPageModule(url: String)
 
-case class PageFragmentUnderProcessing(data: Option[String] = None, markdown: Option[String] = None, scenariosModule: Option[ScenariosModule] = None, scenarios: Option[Feature] = None)
+object IncludeExternalPageModule {
+  implicit val pageFormat = Json.format[IncludeExternalPageModule]
+}
+
+case class Module(directory: Option[DirectoryMeta] = None,
+                  page: Option[PageMeta] = None,
+                  scenarios: Option[ScenariosModule] = None,
+                  includeExternalPage: Option[IncludeExternalPageModule] = None)
+
+sealed trait PageFragmentUnderProcessingStatus
+
+case object PageFragmentStatusMakdown extends PageFragmentUnderProcessingStatus
+
+case object PageFragmentStatusMakdownEscape extends PageFragmentUnderProcessingStatus
+
+case object PageFragmentStatusModule extends PageFragmentUnderProcessingStatus
+
+case class PageFragmentUnderProcessing(status: PageFragmentUnderProcessingStatus = PageFragmentStatusMakdown,
+                                       data: Option[String] = None,
+                                       markdown: Option[String] = None,
+                                       scenariosModule: Option[ScenariosModule] = None,
+                                       scenarios: Option[Feature] = None,
+                                       includeExternalPage: Option[IncludeExternalPageModule] = None)
 
 class PageService @Inject()(config: Config, projectRepository: ProjectRepository, directoryRepository: DirectoryRepository, pageRepository: PageRepository, gherkinRepository: GherkinRepository) {
 
@@ -40,12 +62,13 @@ class PageService @Inject()(config: Config, projectRepository: ProjectRepository
   val documentationMetaFile = config.getString("documentation.meta.file")
   val baseUrl = config.getString("application.baseUrl")
 
-  val moduleStart = "```thegardener"
-  val moduleEnd = "```"
-  val pageModuleRegex = """\`\`\`thegardener([\s\S]*"page"[^`]*)\`\`\`""".r
-  val imageRegex = """\!\[.*\]\((.*)\)""".r
-  val referenceRegex = """\[.*\]\:\s(\S*)""".r
-  val scenariosModuleRegex = """\`\`\`thegardener([\s\S]*"scenarios"[^`]*)\`\`\`""".r
+  val MarkdownEscape = "````"
+  val MarkdownCodeStart = "```"
+  val ModuleStart = s"```thegardener"
+  val ModuleEnd = "```"
+  val PageModuleRegex = """\`\`\`thegardener([\s\S]*"page"[^`]*)\`\`\`""".r
+  val ImageRegex = """\!\[.*\]\((.*)\)""".r
+  val ReferenceRegex = """\[.*\]\:\s(\S*)""".r
 
   def getLocalRepository(projectId: String, branch: String): String = s"$projectsRootDirectory$projectId/$branch/".fixPathSeparator
 
@@ -112,56 +135,135 @@ class PageService @Inject()(config: Config, projectRepository: ProjectRepository
   }
 
   def parseModule(moduleString: String, path: String): Option[Module] = {
-    Try(Json.parse(moduleString).as[Module]).logError(s"Error while parsing module '${moduleString}' of page ${path}").toOption
+    Try(Json.parse(moduleString.trim).as[Module]).logError(s"Error while parsing module '${moduleString}' of page ${path}").toOption
   }
+
 
   def extractMarkdown(pageJoinProject: PageJoinProject): Option[String] = {
     pageJoinProject.page.markdown match {
       case None => None
       case Some(originalMarkdown) =>
-        val markdownWithoutPageModule = findPageModule(originalMarkdown).map(meta => originalMarkdown.replace(meta, "").trim).getOrElse(originalMarkdown)
-        val images = findPageImagesWithRelativePath(markdownWithoutPageModule)
-        val references = findPageReferencesWithRelativePath(markdownWithoutPageModule)
-        Some((images ++ references).fold(markdownWithoutPageModule)((acc, relativePath) => acc.replace(relativePath, s"$baseUrl/api/assets?path=${pageJoinProject.page.path}/$relativePath")))
+        Some(findPageModule(originalMarkdown).map(meta => originalMarkdown.replace(meta, "").trim).getOrElse(originalMarkdown))
     }
   }
 
+  def appendCurrentLine(fragment: PageFragmentUnderProcessing, line: String): PageFragmentUnderProcessing = {
+    fragment.data match {
+      case Some(data) => fragment.copy(data = Some(data + "\n" + line))
+      case None => fragment.copy(data = Some(line))
+    }
+  }
+
+
   def splitMarkdown(markdown: String, path: String): Seq[PageFragmentUnderProcessing] = {
-    scenariosModuleRegex.findFirstMatchIn(markdown) match {
-      case Some(scenarios) =>
+    markdown.split('\n').foldLeft((Seq[PageFragmentUnderProcessing](), new PageFragmentUnderProcessing())) { (fragmentsAndCurrent, line) =>
+      fragmentsAndCurrent match {
+        case (fragments, currentFragment) =>
+          processPageFragmentLine(line, path, fragments, currentFragment)
+      }
+    }._1
+  }
 
-        val scenariosModuleString = scenarios.group(1)
-        val scenariosModuleJson: Option[Module] = parseModule(scenariosModuleString, path)
-        val scenariosModuleOriginal = moduleStart + scenariosModuleString + moduleEnd
-        val markdownBeforeScenarios = markdown.substring(0, markdown.indexOf(scenariosModuleOriginal))
-        val dataAfterScenario = markdown.substring(markdownBeforeScenarios.length + scenariosModuleOriginal.length, markdown.length - 1)
+  private def processPageFragmentLine(line: String, path: String, fragments: Seq[PageFragmentUnderProcessing], currentFragment: PageFragmentUnderProcessing): (Seq[PageFragmentUnderProcessing], PageFragmentUnderProcessing) = {
+    val currentFragmentWithNewLine = appendCurrentLine(currentFragment, line)
+    val newFragmentWithNewLine = appendCurrentLine(new PageFragmentUnderProcessing(), line)
 
-        val ignore = new PageFragmentUnderProcessing(markdown = Some(markdownBeforeScenarios)) :: new PageFragmentUnderProcessing(data = Some(dataAfterScenario)) :: Nil
-        scenariosModuleJson match {
-          case Some(scenariosModuleJson) => scenariosModuleJson.scenarios  match {
-            case Some(scenarios) =>
-              new PageFragmentUnderProcessing(markdown = Some(markdownBeforeScenarios)) :: new PageFragmentUnderProcessing(scenariosModule = Some(scenarios)) :: new PageFragmentUnderProcessing(markdown = Some(dataAfterScenario)) :: Nil
-            case None => ignore
-          }
-          case None => ignore
+    currentFragment.status match {
+
+      case PageFragmentStatusMakdownEscape =>
+
+        if (line.trim.startsWith(MarkdownEscape)) {
+          (fragments :+ currentFragment.copy(markdown = currentFragment.data), newFragmentWithNewLine.copy(status = PageFragmentStatusMakdownEscape))
+
+        } else {
+          (fragments, currentFragmentWithNewLine)
         }
 
-      case None => new PageFragmentUnderProcessing(markdown = Some(markdown)) :: Nil
+      case PageFragmentStatusModule =>
+
+        processPageFragmentModule(line, path, fragments, currentFragment, currentFragmentWithNewLine)
+
+      case _ =>
+
+        if (line.trim.startsWith(MarkdownEscape)) {
+          (fragments :+ currentFragment.copy(markdown = currentFragment.data), newFragmentWithNewLine.copy(status = PageFragmentStatusMakdownEscape))
+
+        } else if (line.trim.startsWith(ModuleStart)) {
+          (fragments :+ currentFragment.copy(markdown = currentFragment.data), newFragmentWithNewLine.copy(status = PageFragmentStatusModule))
+
+        } else {
+          (fragments, currentFragmentWithNewLine)
+        }
+    }
+  }
+
+  private def processPageFragmentModule(line: String, path: String, fragments: Seq[PageFragmentUnderProcessing], currentFragment: PageFragmentUnderProcessing, currentFragmentWithNewLine: PageFragmentUnderProcessing) = {
+    if (line.trim.startsWith(MarkdownCodeStart)) {
+
+      val module = currentFragment.data match {
+        case Some(data) =>
+          parseModule(data.replace(ModuleStart, ""), path)
+        case _ => None
+      }
+
+      module match {
+        case Some(module) =>
+
+          module.scenarios match {
+
+            case Some(scenarios) => (fragments :+ currentFragment.copy(scenariosModule = Some(scenarios)), new PageFragmentUnderProcessing())
+            case _ =>
+
+              module.includeExternalPage match {
+
+                case Some(include) => (fragments :+ currentFragment.copy(includeExternalPage = Some(include)), new PageFragmentUnderProcessing())
+                case _ =>
+                  (fragments, new PageFragmentUnderProcessing())
+
+              }
+          }
+        case _ =>
+          (fragments, new PageFragmentUnderProcessing())
+      }
+    } else {
+      (fragments, currentFragmentWithNewLine)
     }
   }
 
   def processPageFragments(fragments: Seq[PageFragmentUnderProcessing], pageJoinProject: PageJoinProject): Seq[PageFragment] = {
-    fragments.map { fragmentUnderProcessing =>
-      fragmentUnderProcessing.scenariosModule match {
-        case Some(scenariosModule) =>
-          val feature = buildFeature(scenariosModule, pageJoinProject)
-          new PageFragmentUnderProcessing(scenarios = feature)
+    fragments.map {
+      fragmentUnderProcessing =>
 
-        case None => fragmentUnderProcessing
-      }
-    }.map { fragment =>
-      PageFragment(fragment)
-    }
+        fragmentUnderProcessing.status match {
+
+          case PageFragmentStatusModule =>
+            fragmentUnderProcessing.scenariosModule match {
+              case Some(scenariosModule) =>
+                val feature = buildFeature(scenariosModule, pageJoinProject)
+                new PageFragmentUnderProcessing(scenarios = feature)
+              case _ =>
+                fragmentUnderProcessing
+            }
+
+          case PageFragmentStatusMakdown =>
+            fragmentUnderProcessing.markdown match {
+              case Some(rawMarkdown) =>
+                val images = findPageImagesWithRelativePath(rawMarkdown)
+                val references = findPageReferencesWithRelativePath(rawMarkdown)
+                val markdown = (images ++ references).fold(rawMarkdown)((acc, relativePath) => acc.replace(relativePath, s"$baseUrl/api/assets?path=${pageJoinProject.page.path}/$relativePath"))
+                new PageFragmentUnderProcessing(markdown = Some(markdown))
+              case _ =>
+                fragmentUnderProcessing
+            }
+
+          case _ =>
+            fragmentUnderProcessing
+        }
+
+    }.map {
+      fragment =>
+        PageFragment(fragment)
+    }.filter(fragment => fragment.`type` != PageFragment.TypeUnknown)
   }
 
   def buildFeature(scenariosModule: ScenariosModule, currentPageJoinProject: PageJoinProject): Option[Feature] = {
@@ -176,20 +278,25 @@ class PageService @Inject()(config: Config, projectRepository: ProjectRepository
       case Some(featureRelativePath) => Some(project.featuresRootPath.getOrElse("") + featureRelativePath)
       case None => None
     }
-    val tagsFilter = None
-    val filter = new ProjectMenuItem(project.id, "", branchName, featureFilter, tagsFilter)
+    val tagsFilter = scenariosModule.select match {
+      case Some(select) =>
+        Some(select.tags)
+      case _ => None
+    }
+    val filter = new ProjectMenuItem(project.id, project.name, branchName, featureFilter, tagsFilter)
     val documentation = gherkinRepository.buildProjectGherkin(filter)
 
-    documentation.branches.filter(_.name.equals(branchName)).headOption.map { branch =>
-      branch.features.filter(_.path.equals(featureFilter.getOrElse(""))).headOption
+    documentation.branches.filter(_.name.equals(branchName)).headOption.map {
+      branch =>
+        branch.features.filter(_.path.equals(featureFilter.getOrElse(""))).headOption
     }.flatten
   }
 
-  def findPageModule(pageContent: String): Option[String] = pageModuleRegex.findFirstIn(pageContent)
+  def findPageModule(pageContent: String): Option[String] = PageModuleRegex.findFirstIn(pageContent)
 
-  def findPageModuleJson(pageContent: String): Option[String] = for (m <- pageModuleRegex.findFirstMatchIn(pageContent)) yield m.group(1)
+  def findPageModuleJson(pageContent: String): Option[String] = for (m <- PageModuleRegex.findFirstMatchIn(pageContent)) yield m.group(1)
 
-  def findPageImagesWithRelativePath(pageContent: String): Seq[String] = (for (m <- imageRegex.findAllMatchIn(pageContent)) yield m.group(1)).toSeq.filterNot(_.startsWith("http"))
+  def findPageImagesWithRelativePath(pageContent: String): Seq[String] = (for (m <- ImageRegex.findAllMatchIn(pageContent)) yield m.group(1)).toSeq.filterNot(_.startsWith("http"))
 
-  def findPageReferencesWithRelativePath(pageContent: String): Seq[String] = (for (m <- referenceRegex.findAllMatchIn(pageContent)) yield m.group(1)).toSeq.filterNot(_.startsWith("http"))
+  def findPageReferencesWithRelativePath(pageContent: String): Seq[String] = (for (m <- ReferenceRegex.findAllMatchIn(pageContent)) yield m.group(1)).toSeq.filterNot(_.startsWith("http"))
 }
