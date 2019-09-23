@@ -26,7 +26,7 @@ class PageController @Inject()( pageRepository: PageRepository, pageService: Pag
       case Some(pageJoinProject) =>
 
         pageService.extractMarkdown(pageJoinProject).map { markdown =>
-          pageService.splitMarkdown(markdown, path)
+          pageService.splitMarkdown(markdown + "\n````", path)
         }.map { fragments =>
           pageService.processPageFragments(fragments,pageJoinProject)
         }  match {

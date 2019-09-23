@@ -128,6 +128,11 @@ class GherkinRepository @Inject()(db: Database) {
       SQL(query).as(parserGherkinRowJoin *)
     }
 
+    val tagFilterSet = projectMenu.tagsFilter match {
+      case Some(tagsFilter) =>
+        tagsFilter.map(tag => tag.replaceAll("@", "")).toSet
+      case _ => Set[String]()
+    }
     val branchGherkin = if (rows.nonEmpty) {
       val branch = Branch(rows.head.branchId, rows.head.branchName, rows.head.branchIsStable, projectMenu.projectId)
       val features = rows.groupBy(r => r.featureId).foldLeft(List[Feature]()) { (features, rowByFeature) =>
@@ -141,22 +146,25 @@ class GherkinRepository @Inject()(db: Database) {
           val scenarioId = rowByScenario._1
           val scenarioRow = rowByScenario._2.head
           val scenarioTags = mapScenarioTags.getOrElse(scenarioId, Set())
-
-          val scenario: ScenarioDefinition = if (scenarioRow.scenarioExamplesAsJson.isEmpty) {
-            Scenario(scenarioRow.scenarioId, scenarioTags.toSeq, scenarioRow.scenarioAbstractionLevel, scenarioRow.scenarioCaseType, scenarioRow.scenarioWorkflowStep, scenarioRow.scenarioKeyword,
-              scenarioRow.scenarioName, scenarioRow.scenarioDescription, Json.parse(scenarioRow.scenarioStepsAsJson).as[Seq[Step]])
+          if (tagFilterSet.subsetOf(scenarioTags)) {
+            val scenario: ScenarioDefinition = if (scenarioRow.scenarioExamplesAsJson.isEmpty) {
+              Scenario(scenarioRow.scenarioId, scenarioTags.toSeq, scenarioRow.scenarioAbstractionLevel, scenarioRow.scenarioCaseType, scenarioRow.scenarioWorkflowStep, scenarioRow.scenarioKeyword,
+                scenarioRow.scenarioName, scenarioRow.scenarioDescription, Json.parse(scenarioRow.scenarioStepsAsJson).as[Seq[Step]])
+            } else {
+              ScenarioOutline(scenarioRow.scenarioId, scenarioTags.toSeq, scenarioRow.scenarioAbstractionLevel, scenarioRow.scenarioCaseType, scenarioRow.scenarioWorkflowStep, scenarioRow.scenarioKeyword,
+                scenarioRow.scenarioName, scenarioRow.scenarioDescription, Json.parse(scenarioRow.scenarioStepsAsJson).as[Seq[Step]], scenarioRow.scenarioExamplesAsJson.map(Json.parse(_).as[Seq[Examples]]).getOrElse(Seq()))
+            }
+            scenario :: scenarios
           } else {
-            ScenarioOutline(scenarioRow.scenarioId, scenarioTags.toSeq, scenarioRow.scenarioAbstractionLevel, scenarioRow.scenarioCaseType, scenarioRow.scenarioWorkflowStep, scenarioRow.scenarioKeyword,
-              scenarioRow.scenarioName, scenarioRow.scenarioDescription, Json.parse(scenarioRow.scenarioStepsAsJson).as[Seq[Step]], scenarioRow.scenarioExamplesAsJson.map(Json.parse(_).as[Seq[Examples]]).getOrElse(Seq()))
+            scenarios
           }
-          scenario :: scenarios
         }
+
         val featureTags = mapFeatureTags.getOrElse(featureId, Set())
         Feature(featureId, featureRow.branchId, featureRow.featurePath,
           featureRow.featureBackgroundAsJson.map(Json.parse(_).as[Background]), featureTags.toSeq, featureRow.featureLanguage, featureRow.featureKeyword,
           featureRow.featureName, featureRow.featureDescription, scenarios) :: features
       }
-
       Seq(BranchDocumentationDTO(branch, features))
 
     } else Seq()
