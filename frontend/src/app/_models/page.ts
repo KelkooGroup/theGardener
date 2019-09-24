@@ -8,16 +8,16 @@ export interface Page {
 }
 
 export interface PagePart {
-  type: 'markdown' | 'externalLink' | 'scenarios';
-  data: MarkdownPart | ExternalLinkPart | ScenarioPart;
+  type: 'markdown' | 'includeExternalPage' | 'scenarios';
+  data: MarkdownPart | IncludeExternalPagePart | ScenarioPart;
 }
 
 export interface MarkdownPart {
   markdown: string;
 }
 
-export interface ExternalLinkPart {
-  externalLink: string;
+export interface IncludeExternalPagePart {
+  includeExternalPage: string;
 }
 
 export interface ScenarioPart {

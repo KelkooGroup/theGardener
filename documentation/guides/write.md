@@ -155,9 +155,8 @@ This can be useful to include the Swagger documentation. At the top of the markd
 ````
 ```thegardener
 {
-  "include" : 
+  "includeExternalPage" : 
      {
-        "type": "external",
         "url": "http://thegardener.kelkoogroup.net/api/docs/"
      }
 }
@@ -171,9 +170,8 @@ Note that we can use the variables here :
 ````
 ```thegardener
 {
-  "include" : 
+  "includeExternalPage" : 
      {
-        "type": "external",
         "url": "${swagger.url}/#"
      }
 }

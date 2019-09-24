@@ -4,7 +4,7 @@ Feature: Provide menu
     Given the database is empty
     And the cache is empty
 
-  @level_2_technical_details @nominal_case @valid
+  @level_2_technical_details @nominal_case @valid @documentation
   Scenario: provide menu
     Given the hierarchy nodes are
       | id         | slugName   | name                 | childrenLabel | childLabel   |

@@ -139,9 +139,9 @@ const PAGE_SERVICE_RESPONSE: Page = {
 };
 
 const EXTERNAL_LINK_PART: PagePart = {
-  type: 'externalLink',
+  type: 'includeExternalPage',
   data: {
-    externalLink: 'http://publisher.corp.kelkoo.net/docs/#/Contact%20Management/getContact'
+    includeExternalPage: 'http://publisher.corp.kelkoo.net/docs/#/Contact%20Management/getContact'
   }
 };
 
