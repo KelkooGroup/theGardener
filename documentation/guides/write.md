@@ -41,7 +41,8 @@ For instance, for the project _myProject_
 
 This file should have the following format :
 
-```
+````
+```thegardener
 {
   "directory" :
   {
@@ -58,6 +59,7 @@ This file should have the following format :
   }
 }
 ```
+````
 
 - directory
 
@@ -143,7 +145,7 @@ This feature is explained by this specific scenario:
       "scenarios" : 
          {
             "feature": "/page/show_a_page_with_variables.feature",
-            "select": { tags : ["@nominal_case"]  }
+            "select": { "tags" : ["@nominal_case"]  }
          }
     }
 ```
@@ -200,7 +202,7 @@ To include gherkin scenarios, use this module :
   "scenarios" : 
      {
         "feature": "/page/show_a_page_with_variables.feature",
-        "select": { tags : ["@nominal_case"]  }
+        "select": { "tags" : ["@nominal_case"]  }
      }
 }
 ```
