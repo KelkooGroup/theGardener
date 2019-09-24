@@ -57,7 +57,7 @@ class Page {
   }
 
   get title(): HTMLElement {
-    return this.fixture.nativeElement.querySelector('h1');
+    return this.fixture.nativeElement.querySelector('h3');
   }
 
   get background(): HTMLElement {

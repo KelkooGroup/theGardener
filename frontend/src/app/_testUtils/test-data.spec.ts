@@ -256,9 +256,9 @@ export const PAGE_WITH_EXTERNAL_LINK_SERVICE_RESPONSE: PageApi = {
   order: 0,
   // tslint:disable-next-line:max-line-length
   content: [{
-    type: 'externalLink',
+    type: 'includeExternalPage',
     data: {
-      externalLink: 'http://publisher.corp.kelkoo.net/docs/#/Contact%20Management/getContact'
+      includeExternalPage: 'http://publisher.corp.kelkoo.net/docs/#/Contact%20Management/getContact'
     }
   }]
 };

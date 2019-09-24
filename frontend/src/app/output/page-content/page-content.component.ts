@@ -3,7 +3,7 @@ import {ActivatedRoute} from '@angular/router';
 import {catchError, map, switchMap} from 'rxjs/operators';
 import {combineLatest, of, Subscription} from 'rxjs';
 import {PageService} from '../../_services/page.service';
-import {ExternalLinkPart, MarkdownPart, Page, PagePart, ScenarioPart} from '../../_models/page';
+import {IncludeExternalPagePart, MarkdownPart, Page, PagePart, ScenarioPart} from '../../_models/page';
 import {NotificationService} from '../../_services/notification.service';
 
 
@@ -53,7 +53,7 @@ export class PageContentComponent implements OnInit, OnDestroy  {
   }
 
   getExternalLink(part: PagePart) {
-    return (part.data as ExternalLinkPart).externalLink;
+    return (part.data as IncludeExternalPagePart).includeExternalPage;
   }
 
   getMarkdown(part: PagePart) {

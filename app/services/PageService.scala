@@ -64,7 +64,7 @@ class PageService @Inject()(config: Config, projectRepository: ProjectRepository
 
   val MarkdownEscape = "````"
   val MarkdownCodeStart = "```"
-  val ModuleStart = s"```thegardener"
+  val ModuleStart = "```thegardener"
   val ModuleEnd = "```"
   val PageModuleRegex = """\`\`\`thegardener([\s\S]*"page"[^`]*)\`\`\`""".r
   val ImageRegex = """\!\[.*\]\((.*)\)""".r

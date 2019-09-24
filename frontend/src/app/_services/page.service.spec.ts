@@ -8,7 +8,7 @@ import {
   PAGE_WITH_EXTERNAL_LINK_SERVICE_RESPONSE,
   PAGE_WITH_SCENARIO,
 } from '../_testUtils/test-data.spec';
-import {ExternalLinkPart, MarkdownPart} from '../_models/page';
+import {IncludeExternalPagePart, MarkdownPart} from '../_models/page';
 
 describe('PageService', () => {
   let httpMock: HttpTestingController;
@@ -79,8 +79,8 @@ describe('PageService', () => {
         expect(page.path).toEqual('publisherManagementWS>qa>/constraints/overview');
         expect(page.order).toBe(0);
         expect(page.parts.length).toBe(1);
-        expect(page.parts[0].type).toBe('externalLink');
-        expect((page.parts[0].data as ExternalLinkPart).externalLink).toBe('http://publisher.corp.kelkoo.net/docs/#/Contact%20Management/getContact');
+        expect(page.parts[0].type).toBe('includeExternalPage');
+        expect((page.parts[0].data as IncludeExternalPagePart).includeExternalPage).toBe('http://publisher.corp.kelkoo.net/docs/#/Contact%20Management/getContact');
       });
 
     const req = httpMock.expectOne(mockRequest =>

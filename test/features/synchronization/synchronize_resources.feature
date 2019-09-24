@@ -10,7 +10,7 @@ Feature: Synchronize resources from a project on a remote server
     And the cache is empty
 
 
-  @level_1_specification @nominal_case @valid
+  @level_1_specification @nominal_case @valid @documentation
   Scenario: Synchronize the features of a project with a webhook
     Given we have the following projects
       | id            | name                    | repositoryUrl                                  | stableBranch | featuresRootPath |
@@ -25,7 +25,7 @@ Feature: As a user, I want some book suggestions so that I can do some discovery
 Feature: As a user, I want some book suggestions so that I can do some discovery
     """
 
-  @level_1_specification @nominal_case @valid
+  @level_1_specification @nominal_case @valid @documentation
   Scenario: Synchronize the features of all the projects with a scheduler
     Given we have the following configuration
       | path                               | value |

@@ -1,6 +1,6 @@
 Feature: Provide configuration
 
-  @level_2_technical_details @nominal_case @valid
+  @level_2_technical_details @nominal_case @valid @documentation
   Scenario: provide configuration
     Given the configuration
       | path                    | value                          |
