@@ -16,3 +16,18 @@ Markdown files, feature files, assets are synchronized from the git repositories
          }
     }
 ```
+
+
+Pages are computed when the synchronization from the remote server is done. The pages are always ready to be served :
+
+```thegardener
+    {
+      "scenarios" :
+         {
+            "feature": "/synchronization/store_computed_pages_in_cache.feature",
+            "select": { "tags" : ["@documentation"]  }
+         }
+    }
+```
+ 
+

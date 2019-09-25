@@ -51,7 +51,7 @@ Feature: As a user Tim, I want some book suggestions so that I can do some disco
     Then the suggestions are popular and available books adapted to the age of the user
 
     """
-    And the database is synchronized on the project "suggestionsWS"
+    And the project "suggestionsWS" is synchronized
     And we have those directories in the database
       | id | name | label              | description             | order | relativePath | path                        | branchId |
       | 1  | root | SuggestionsWS      | Suggestions WebServices | 0     | /            | suggestionsWS>master>/      | 1        |

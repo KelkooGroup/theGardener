@@ -5,6 +5,7 @@ import java.util
 import cucumber.api.scala._
 import models._
 import org.scalatestplus.mockito._
+import org.mockito.Mockito.{times, _}
 
 import scala.collection.JavaConverters._
 
@@ -24,4 +25,22 @@ class StoreDirectoryAndPagesSteps extends ScalaDsl with EN with MockitoSugar {
     val actualPages = pageRepository.findAllWithContent()
     actualPages must contain theSameElementsAs expectedPages
   }
+
+  Given("""^page computation count is reset$"""){ () =>
+    reset(spyPageService)
+  }
+
+  Then("""^page "([^"]*)" has been computed only one time$"""){ (path:String) =>
+    verifyComputationTimes(path, 1)
+  }
+
+  Then("""^page "([^"]*)" has been computed (\d+) times$"""){ (path:String, times:Int) =>
+    verifyComputationTimes(path, times)
+  }
+
+  def verifyComputationTimes(path:String, nb:Int)  ={
+    verify(spyPageService,times(nb)).computePageFromPathUsingDatabase(path)
+  }
+
+
 }

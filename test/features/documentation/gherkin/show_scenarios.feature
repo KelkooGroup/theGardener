@@ -31,7 +31,7 @@ Feature: As a user Tim, I want some book suggestions so that I can do some disco
     When we ask for suggestions
     Then the suggestions are popular and available books adapted to the age of the user
     """
-    And the database is synchronized on the project "suggestionsWS"
+    And the project "suggestionsWS" is synchronized
     When I perform a "GET" on following URL "/api/gherkin?project=_root_suggestion>suggestionsWS>master>provide_book_suggestions.feature"
     Then I get the following json response body
 """
@@ -114,7 +114,7 @@ Scenario: one service on which the suggestion system depends on is down
     Then the system is temporary not available
 
     """
-    And the database is synchronized on the project "suggestionsWS"
+    And the project "suggestionsWS" is synchronized
     When I perform a "GET" on following URL "/api/gherkin?project=_root_suggestion>suggestionsWS"
     Then I get the following json response body
 """
@@ -205,7 +205,7 @@ Feature: As a user, I want some book suggestions so that I can do some discovery
     Then the suggestions are popular and available books adapted to the age of the user
 
     """
-    And the database is synchronized on the project "suggestionsWS"
+    And the project "suggestionsWS" is synchronized
     When I perform a "GET" on following URL "/api/gherkin?project=_root_suggestion>suggestionsWS"
     Then I get a response with status "200"
     And I get the following json response body
@@ -305,7 +305,7 @@ Feature: As a user Tim, I want some book suggestions so that I can do some disco
     When we ask for suggestions
     Then the suggestions are popular and available books adapted to the age of the user
     """
-    And the database is synchronized on the project "suggestionsWS"
+    And the project "suggestionsWS" is synchronized
     When I perform a "GET" on following URL "/api/gherkin?project=_root_suggestion>suggestionsWS>master>provide_book_suggestions.feature"
     Then I get the following json response body
 """
@@ -414,7 +414,7 @@ Examples:
       | Tim       | 1                  |
 
     """
-    And the database is synchronized on the project "suggestionsWS"
+    And the project "suggestionsWS" is synchronized
     When I perform a "GET" on following URL "/api/gherkin?project=_root_suggestion>suggestionsWS"
     Then I get the following json response body
 """

@@ -88,7 +88,7 @@ class GetFeaturesSteps extends ScalaDsl with EN with MockitoSugar {
     }
   }
 
-  Given("""^the database is synchronized on the project "([^"]*)"$""") { project: String =>
+  Given("""^the project "([^"]*)" is synchronized$""") { project: String =>
     response = route(app, FakeRequest("POST", s"/api/projects/$project/synchronize")).get
     await(response)
   }

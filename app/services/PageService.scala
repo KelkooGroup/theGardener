@@ -7,6 +7,7 @@ import javax.inject.Inject
 import models.{PageJoinProject, _}
 import org.apache.commons.io.FileUtils
 import play.api.Configuration
+import play.api.cache.SyncCacheApi
 import play.api.libs.json.Json
 import repositories._
 import utils._
@@ -47,7 +48,9 @@ case class PageFragmentUnderProcessing(status: PageFragmentUnderProcessingStatus
                                        scenarios: Option[Feature] = None,
                                        includeExternalPage: Option[IncludeExternalPageModule] = None)
 
-class PageService @Inject()(config: Configuration, projectRepository: ProjectRepository, directoryRepository: DirectoryRepository, pageRepository: PageRepository, gherkinRepository: GherkinRepository) {
+case class PageWithContent(page: Page, content: Seq[PageFragment])
+
+class PageService @Inject()(config: Configuration, projectRepository: ProjectRepository, directoryRepository: DirectoryRepository, pageRepository: PageRepository, gherkinRepository: GherkinRepository, cache: SyncCacheApi) {
 
 
   implicit val pageMetaFormat = Json.format[PageMeta]
@@ -103,13 +106,47 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
     } else None
   }
 
+  def computePageFromPath(path: String, refresh: Boolean = false): Option[PageWithContent] = {
+    val key = computePageCacheKey(path)
+    if (refresh) {
+      val page = computePageFromPathUsingDatabase(path)
+      cache.set(key, page)
+      page
+    } else {
+      cache.getOrElseUpdate(key) {
+        computePageFromPathUsingDatabase(path)
+      }
+    }
+  }
+
+  private def computePageCacheKey(path: String): String = s"page_$path"
+
+  def computePageFromPathUsingDatabase(path: String): Option[PageWithContent] = {
+    pageRepository.findByPathJoinProject(path) match {
+      case Some(pageJoinProject) =>
+
+        extractMarkdown(pageJoinProject).map { markdown =>
+          splitMarkdown(markdown + "\n````", path)
+        }.map { fragments =>
+          processPageFragments(fragments, pageJoinProject)
+        } match {
+          case Some(fragments) => {
+            Some(PageWithContent(pageJoinProject.page, fragments))
+          }
+          case _ => None
+        }
+      case _ => None
+    }
+  }
+
   def processPage(currentDirectory: Directory, localDirectoryPath: String, name: String, order: Int): Option[Page] = {
     val pageFile = new File(localDirectoryPath + "/" + name + ".md")
     if (pageFile.exists()) {
 
-      readPageContent(pageFile, name).map { case (content, label, description) =>
+      val pageOption = readPageContent(pageFile, name).map { case (content, label, description) =>
         pageRepository.save(Page(-1, name, label, description, order, Some(content), currentDirectory.relativePath + name, currentDirectory.path + name, currentDirectory.id))
       }
+      cachePage(pageOption)
 
     } else None
   }
@@ -117,11 +154,20 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
   def processPage(projectId: String, branchName: String, page: Page, documentationRootPath: String): Option[Page] = {
     val pageFile = new File(getLocalRepository(projectId, branchName) + documentationRootPath + "/" + page.relativePath + ".md")
     if (pageFile.exists()) {
-      readPageContent(pageFile, page.name).map { case (content, label, description) =>
+      val pageOption = readPageContent(pageFile, page.name).map { case (content, label, description) =>
         pageRepository.save(page.copy(markdown = Some(content), label = label, description = description))
       }
+      cachePage(pageOption)
 
     } else None
+  }
+
+  private def cachePage(pageOption: Option[Page]): Option[Page] = {
+    pageOption match {
+      case Some(page) => cache.set(computePageCacheKey(page.path), computePageFromPathUsingDatabase(page.path))
+      case _ =>
+    }
+    pageOption
   }
 
   def readPageContent(page: File, name: String): Option[(String, String, String)] = {
