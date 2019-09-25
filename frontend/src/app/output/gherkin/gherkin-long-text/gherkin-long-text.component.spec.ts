@@ -54,6 +54,6 @@ class Page {
   }
 
   get longText(): HTMLElement {
-    return this.fixture.nativeElement.querySelector('.longText');
+    return this.fixture.nativeElement.querySelector('.long-text');
   }
 }
