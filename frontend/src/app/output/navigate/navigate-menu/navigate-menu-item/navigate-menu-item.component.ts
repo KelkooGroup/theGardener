@@ -70,6 +70,7 @@ export class NavigateMenuItemComponent implements OnInit, OnDestroy {
       (this.pathInUrl === node.route ||
         // Angular router automatically removes trailing slash from URL so we need to append it to check path
         this.pathInUrl.concat('/') === node.route);
+    console.log(`Node ${node.route} is in activated URL ${this.pathInUrl} = ${isRouteInActivatedUrl}`);
     return isRouteInActivatedUrl;
   }
 
