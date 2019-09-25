@@ -39,7 +39,6 @@ describe('GherkinComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-    expect(page.title.textContent.trim()).toEqual('As a doc reader I want to be able to see scenarios');
     expect(page.background).toBeTruthy();
     expect(page.backgroundSteps.length).toBe(1);
 
@@ -54,10 +53,6 @@ describe('GherkinComponent', () => {
 class Page {
   constructor(private fixture: ComponentFixture<GherkinComponent>) {
 
-  }
-
-  get title(): HTMLElement {
-    return this.fixture.nativeElement.querySelector('h3');
   }
 
   get background(): HTMLElement {
