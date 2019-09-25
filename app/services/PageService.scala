@@ -2,11 +2,11 @@ package services
 
 import java.io.{File, FileInputStream}
 
-import com.typesafe.config.Config
-import controllers.dto.{PageFragment}
+import controllers.dto.PageFragment
 import javax.inject.Inject
 import models.{PageJoinProject, _}
 import org.apache.commons.io.FileUtils
+import play.api.Configuration
 import play.api.libs.json.Json
 import repositories._
 import utils._
@@ -47,7 +47,7 @@ case class PageFragmentUnderProcessing(status: PageFragmentUnderProcessingStatus
                                        scenarios: Option[Feature] = None,
                                        includeExternalPage: Option[IncludeExternalPageModule] = None)
 
-class PageService @Inject()(config: Config, projectRepository: ProjectRepository, directoryRepository: DirectoryRepository, pageRepository: PageRepository, gherkinRepository: GherkinRepository) {
+class PageService @Inject()(config: Configuration, projectRepository: ProjectRepository, directoryRepository: DirectoryRepository, pageRepository: PageRepository, gherkinRepository: GherkinRepository) {
 
 
   implicit val pageMetaFormat = Json.format[PageMeta]
@@ -58,9 +58,9 @@ class PageService @Inject()(config: Config, projectRepository: ProjectRepository
   implicit val metaFormat = Json.format[Module]
 
 
-  val projectsRootDirectory = config.getString("projects.root.directory")
-  val documentationMetaFile = config.getString("documentation.meta.file")
-  val baseUrl = config.getString("application.baseUrl")
+  val projectsRootDirectory = config.get[String]("projects.root.directory")
+  val documentationMetaFile = config.get[String]("documentation.meta.file")
+  val baseUrl = config.getOptional[String]("application.baseUrl").getOrElse("")
 
   val MarkdownEscape = "````"
   val MarkdownCodeStart = "```"
