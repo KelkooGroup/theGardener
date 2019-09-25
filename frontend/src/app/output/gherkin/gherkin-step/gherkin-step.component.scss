@@ -1,9 +1,17 @@
 @import '_colors.scss';
 
+.step {
+  margin-bottom: 3px;
+}
+
 .step-parameter {
   color: $color-text-invert;
 }
 
 .step-text {
-  color: $color-text-dark;
+  color: $color-text-darker;
+}
+
+li {
+  width: 100%;
 }
