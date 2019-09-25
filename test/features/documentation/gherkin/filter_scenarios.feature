@@ -98,9 +98,9 @@ Feature: As an admin, I want register a user
     When we ask for a user registration
     Then the user is registered
     """
-    And the database is synchronized on the project "suggestionsWS"
-    And the database is synchronized on the project "suggestionsReports"
-    And the database is synchronized on the project "usersWS"
+    And the project "suggestionsWS" is synchronized
+    And the project "suggestionsReports" is synchronized
+    And the project "usersWS" is synchronized
 
   @level_1_specification @nominal_case @ready
   Scenario: generate documentation of a project given a specific branch

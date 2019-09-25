@@ -92,7 +92,7 @@ Feature: Retrieve documentation pages from a project on a remote server
       | doc/suggestions/suggestion.md | **What's a suggestion ?**             |
       | doc/suggestions/examples.md   | **Some suggestion examples**          |
       | doc/admin/admin.md            | **Page for the admin users**          |
-    And the database is synchronized on the project "suggestionsWS"
+    And the project "suggestionsWS" is synchronized
     And the server "target/data/GetPages" host under the project "library/suggestionsWS" on the branch "master" the file "doc/context.md"
     """
     **Feature**: Provide new awesome book suggestions

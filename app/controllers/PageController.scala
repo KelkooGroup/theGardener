@@ -16,27 +16,15 @@ import scala.concurrent.ExecutionContext
 
 
 @Api(value = "PageController", produces = "application/json")
-class PageController @Inject()( pageRepository: PageRepository, pageService: PageService) extends InjectedController {
+class PageController @Inject()( pageService: PageService) extends InjectedController {
 
 
   @ApiOperation(value = "Get pages from path", response = classOf[PageDTO], responseContainer = "list")
   @ApiResponses(Array(new ApiResponse(code = 404, message = "Page not found")))
   def getPageFromPath(path: String): Action[AnyContent] = Action {
-    pageRepository.findByPathJoinProject(path) match {
-      case Some(pageJoinProject) =>
-
-        pageService.extractMarkdown(pageJoinProject).map { markdown =>
-          pageService.splitMarkdown(markdown + "\n````", path)
-        }.map { fragments =>
-          pageService.processPageFragments(fragments,pageJoinProject)
-        }  match {
-          case Some(fragments) => {
-            val json = Json.toJson(Seq(PageDTO(pageJoinProject.page, fragments)))
-            Ok(json)
-          }
-          case None => NotFound(s"No Page $path")
-        }
-      case _ => NotFound(s"No Page $path")
+    pageService.computePageFromPath(path) match{
+      case Some(pageWithContent) => Ok(Json.toJson( Seq(PageDTO(pageWithContent.page,pageWithContent.content))))
+      case None => NotFound(s"No Page $path")
     }
   }
 }

@@ -21,6 +21,7 @@ import org.apache.commons.io._
 import org.eclipse.jgit.api._
 import org.scalatest._
 import org.scalatestplus.mockito._
+import org.mockito.Mockito._
 import play.api.cache._
 import play.api.db._
 import play.api.inject._
@@ -80,11 +81,14 @@ object CommonSteps extends MockitoSugar with MustMatchers {
   val tagRepository = inject[TagRepository]
   val directoryRepository = inject[DirectoryRepository]
   val pageRepository = inject[PageRepository]
+  val pageService = inject[PageService]
+  val spyPageService = spy(pageService)
   val config = inject[Config]
   val cache = inject[AsyncCacheApi]
   implicit val materializer = inject[Materializer]
 
-  val applicationBuilder = builder.overrides(bind[SyncCacheApi].toInstance(new DefaultSyncCacheApi(cache))).in(Mode.Test)
+  val applicationBuilder = builder.overrides(bind[SyncCacheApi].toInstance(new DefaultSyncCacheApi(cache)),
+                                             bind[PageService].toInstance(spyPageService)).in(Mode.Test)
 
   var app: Application = _
 
