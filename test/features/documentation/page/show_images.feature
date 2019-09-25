@@ -119,7 +119,7 @@ Feature: Include images in the documentation
       {
         "type": "markdown",
         "data": {
-          "markdown": "**Image** : ![Architecture](http://localhost:9000/api/assets?path=suggestionsWS>master>/suggestions/suggestion/../assets/images/archi.png)"
+          "markdown": "**Image** : ![Architecture](http://localhost:9000/api/assets?path=suggestionsWS>master>/suggestions/../assets/images/archi.png)"
         }
       }
     ]
@@ -161,7 +161,7 @@ Feature: Include images in the documentation
       {
         "type": "markdown",
         "data": {
-          "markdown": "**Image** : ![Architecture][archi]\n[archi]: http://localhost:9000/api/assets?path=suggestionsWS>master>/suggestions/suggestion/../assets/images/archi.png"
+          "markdown": "**Image** : ![Architecture][archi]\n[archi]: http://localhost:9000/api/assets?path=suggestionsWS>master>/suggestions/../assets/images/archi.png"
         }
       }
     ]

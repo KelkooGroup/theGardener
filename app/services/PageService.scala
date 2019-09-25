@@ -250,7 +250,7 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
               case Some(rawMarkdown) =>
                 val images = findPageImagesWithRelativePath(rawMarkdown)
                 val references = findPageReferencesWithRelativePath(rawMarkdown)
-                val markdown = (images ++ references).fold(rawMarkdown)((acc, relativePath) => acc.replace(relativePath, s"$baseUrl/api/assets?path=${pageJoinProject.page.path}/$relativePath"))
+                val markdown = (images ++ references).fold(rawMarkdown)((acc, relativePath) => acc.replace(relativePath, s"$baseUrl/api/assets?path=${pageJoinProject.directory.path}$relativePath"))
                 new PageFragmentUnderProcessing(markdown = Some(markdown))
               case _ =>
                 fragmentUnderProcessing
