@@ -44,9 +44,9 @@ describe('GherkinComponent', () => {
 
     expect(page.scenarios.length).toBe(3);
     expect(page.examples.length).toBe(0);
-    expect(page.getScenarioIcon(0)).toEqual(['tag fas fa-graduation-cap fa-sm']);
-    expect(page.getScenarioIcon(1)).toEqual(['tag fas fa-times-circle fa-sm']);
-    expect(page.getScenarioIcon(2)).toEqual(['tag fas fa-cogs fa-sm', 'tag fas fa-exclamation-triangle fa-sm']);
+    expect(page.getScenarioIcon(0)).toEqual(['scenario-icon far fa-clipboard fa-sm']);
+    expect(page.getScenarioIcon(1)).toEqual(['scenario-icon far fa-clipboard fa-sm', 'tag fas fa-times-circle fa-sm']);
+    expect(page.getScenarioIcon(2)).toEqual(['scenario-icon far fa-clipboard fa-sm', 'tag fas fa-cogs fa-sm', 'tag fas fa-exclamation-triangle fa-sm']);
   });
 });
 
