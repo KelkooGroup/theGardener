@@ -4,11 +4,14 @@
   font-weight: bold;
 }
 
+.active {
+  color: $color-selected-item;
+}
+
 .menu-link {
   margin: 0;
   display: flex;
   align-items: center;
-//  -container flex-direction-row flex-align-items-center flex-space-between flex-width-expand
 }
 
 ul {
@@ -20,23 +23,17 @@ ul {
   padding-right: 8px;
 }
 
-.active {
-  color: $color-selected-item;
-}
-
 .item {
   cursor: pointer;
   padding: 3px 10px;
   display: flex;
   width: auto;
-  //background-color: $color-text-lighter;
   font-size: $font-size-text-small;
 }
 
 .item-text {
   padding-right: 3px;
   line-height: 20px;
-  color: $color-text-darker;
 }
 
 .options {
