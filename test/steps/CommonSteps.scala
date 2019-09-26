@@ -83,12 +83,15 @@ object CommonSteps extends MockitoSugar with MustMatchers {
   val pageRepository = inject[PageRepository]
   val pageService = inject[PageService]
   val spyPageService = spy(pageService)
+  val replicaService = inject[ReplicaService]
+  val spyReplicaService = spy(replicaService)
   val config = inject[Config]
   val cache = inject[AsyncCacheApi]
   implicit val materializer = inject[Materializer]
 
   val applicationBuilder = builder.overrides(bind[SyncCacheApi].toInstance(new DefaultSyncCacheApi(cache)),
-                                             bind[PageService].toInstance(spyPageService)).in(Mode.Test)
+                                             bind[PageService].toInstance(spyPageService),
+                                             bind[ReplicaService].toInstance(spyReplicaService)).in(Mode.Test)
 
   var app: Application = _
 
