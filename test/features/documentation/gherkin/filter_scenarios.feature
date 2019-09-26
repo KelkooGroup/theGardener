@@ -151,7 +151,7 @@ Feature: As an admin, I want register a user
       | .01.01.01. | suggestionsWS | test/features/provide_book_suggestions.feature | suggestions of popular and available books adapted to the age of the user |
       | .01.01.01. | suggestionsWS | test/features/admin.feature                    | admin scenario                                                            |
 
-  @level_1_specification @nominal_case @valid
+  @level_1_specification @nominal_case @valid @ongoing
   Scenario: generate documentation with all scenarios of a project
     When I perform a "GET" on following URL "/api/gherkin?project=_eng_library_suggestion>suggestionsWS"
     Then I get the following scenarios
