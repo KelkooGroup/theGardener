@@ -114,11 +114,11 @@ See [the current page](https://github.com/KelkooGroup/theGardener/blob/master/do
 
 #### Use variables
 
+_TODO Show how to get those values. Not yet avaialable see [Issue 64](https://github.com/KelkooGroup/theGardener/issues/63)_
+
+
 During the configuration of the project in theGardener, we can define variables at project level. This allow to externalise some values that we do not want to hard code in the documentation. For instance, server, urls... 
 It can be useful to define swagger documentation urls for example.
-
-_TODO Show how to get those values._
-
 
 For instance :
 ```json
@@ -178,10 +178,7 @@ Note that we can use the variables here :
 ```
 ````
 
-
-TODO Find an example here.
-
-See [an example](https://github.com/KelkooGroup/theGardener/blob/????) in context.
+See [an example](https://github.com/KelkooGroup/theGardener/blob/master/documentation/api/tryit.md) in context.
   
   
 #### Include gherkin scenarios
