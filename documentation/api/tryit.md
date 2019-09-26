@@ -8,9 +8,8 @@
 ```
 ```thegardener
 {
-  "include" : 
+  "includeExternalPage" : 
      {
-        "type": "external",
         "url": "http://thegardener.kelkoogroup.net/api/docs/"
      }
 }
