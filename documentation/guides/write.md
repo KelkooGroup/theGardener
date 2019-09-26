@@ -41,8 +41,7 @@ For instance, for the project _myProject_
 
 This file should have the following format :
 
-````
-```thegardener
+```
 {
   "directory" :
   {
@@ -59,7 +58,6 @@ This file should have the following format :
   }
 }
 ```
-````
 
 - directory
 
