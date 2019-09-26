@@ -698,5 +698,5 @@ Feature: As a user Tim, I want some book suggestions so that I can do some disco
     When I perform a "GET" on following URL "/api/pages?path=suggestionsWS>master>/context"
     Then I get the following response body
 """
-[{"path":"suggestionsWS>master>/context","relativePath":"/context","name":"context","label":"The context","description":"Why providing suggestions","order":0,"content":[{"type":"markdown","data":{"markdown":"**Feature**: Provide book suggestions\n"}},{"type":"markdown","data":{"markdown":"````\n```thegardener\n    {\n      \"scenarios\" :\n         {\n            \"feature\": \"/provide_book_suggestions.feature\"\n         }\n    }\n```"}},{"type":"markdown","data":{"markdown":"````\n\n**Footer**\n"}}]}]
+[{"path":"suggestionsWS>master>/context","relativePath":"/context","name":"context","label":"The context","description":"Why providing suggestions","order":0,"content":[{"type":"markdown","data":{"markdown":"**Feature**: Provide book suggestions\n\n````\n```thegardener\n    {\n      \"scenarios\" :\n         {\n            \"feature\": \"/provide_book_suggestions.feature\"\n         }\n    }\n```\n````\n\n**Footer**\n"}}]}]
 """

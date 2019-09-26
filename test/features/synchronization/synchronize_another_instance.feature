@@ -16,7 +16,7 @@ Feature: As a user, I want some book suggestions so that I can do some discovery
 """
     And the replica call count is reset
 
-  @level_1_specification @nominal_case @valid @documentation @ongoing
+  @level_1_specification @nominal_case @valid @documentation
   Scenario: Once resources are synchronized, trigger the synchronization of another instance
 
     When the synchronization action is triggered by the webhook for project "suggestionsWS"
