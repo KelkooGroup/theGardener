@@ -65,6 +65,7 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
   val documentationMetaFile = config.get[String]("documentation.meta.file")
   val baseUrl = config.getOptional[String]("application.baseUrl").getOrElse("")
 
+  val MarkdownEnd = "~#~{~}~#~"
   val MarkdownEscape = "````"
   val MarkdownCodeStart = "```"
   val ModuleStart = "```thegardener"
@@ -125,8 +126,8 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
     pageRepository.findByPathJoinProject(path) match {
       case Some(pageJoinProject) =>
 
-        extractMarkdown(pageJoinProject).map { markdown =>
-          splitMarkdown(markdown + "\n````", path)
+        pageJoinProject.page.markdown.map { markdown =>
+          splitMarkdown(  s"$markdown\n$MarkdownEnd", path)
         }.map { fragments =>
           processPageFragments(fragments, pageJoinProject)
         } match {
@@ -184,15 +185,6 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
     Try(Json.parse(moduleString.trim).as[Module]).logError(s"Error while parsing module '${moduleString}' of page ${path}").toOption
   }
 
-
-  def extractMarkdown(pageJoinProject: PageJoinProject): Option[String] = {
-    pageJoinProject.page.markdown match {
-      case None => None
-      case Some(originalMarkdown) =>
-        Some(findPageModule(originalMarkdown).map(meta => originalMarkdown.replace(meta, "").trim).getOrElse(originalMarkdown))
-    }
-  }
-
   def appendCurrentLine(fragment: PageFragmentUnderProcessing, line: String): PageFragmentUnderProcessing = {
     fragment.data match {
       case Some(data) => fragment.copy(data = Some(data + "\n" + line))
@@ -219,7 +211,7 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
       case PageFragmentStatusMakdownEscape =>
 
         if (line.trim.startsWith(MarkdownEscape)) {
-          (fragments :+ currentFragment.copy(markdown = currentFragment.data), newFragmentWithNewLine.copy(status = PageFragmentStatusMakdownEscape))
+          (fragments, currentFragmentWithNewLine.copy(status = PageFragmentStatusMakdown))
 
         } else {
           (fragments, currentFragmentWithNewLine)
@@ -231,8 +223,11 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
 
       case _ =>
 
-        if (line.trim.startsWith(MarkdownEscape)) {
-          (fragments :+ currentFragment.copy(markdown = currentFragment.data), newFragmentWithNewLine.copy(status = PageFragmentStatusMakdownEscape))
+        if (line.trim.startsWith(MarkdownEnd)) {
+          (fragments :+ currentFragment.copy(markdown = currentFragment.data), new PageFragmentUnderProcessing())
+
+        } else if (line.trim.startsWith(MarkdownEscape)) {
+          (fragments, currentFragmentWithNewLine.copy(status = PageFragmentStatusMakdownEscape))
 
         } else if (line.trim.startsWith(ModuleStart)) {
           (fragments :+ currentFragment.copy(markdown = currentFragment.data), newFragmentWithNewLine.copy(status = PageFragmentStatusModule))

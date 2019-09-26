@@ -66,8 +66,8 @@ Feature: Generate a documentation page
       | id | name | label         | description             | order | relativePath | path                   | branchId |
       | 1  | root | SuggestionsWS | Suggestions WebServices | 0     | /            | suggestionsWS>master>/ | 1        |
     And we have those pages in the database
-      | id | name    | label       | description               | order | relativePath | path                          | markdown                                                                                                                                  | directoryId |
-      | 1  | context | The context | Why providing suggestions | 0     | /context     | suggestionsWS>master>/context | ```thegardener { "page" : { "label" : "The context", "description": "Why providing suggestions"}}``` **Feature**: Provide book suggestions ```thegardener { "include" : { "type" : "", "url": "http://thegardener.kelkoogroup.net/api/docs/"}}``` | 1           |
+      | id | name    | label       | description               | order | relativePath | path                          | markdown                                                                                                                                   | directoryId |
+      | 1  | context | The context | Why providing suggestions | 0     | /context     | suggestionsWS>master>/context | ```thegardener\n { "page" : { "label" : "The context", "description": "Why providing suggestions"}}\n```\n**Feature**: Provide book suggestions | 1           |
     When I perform a "GET" on following URL "/api/pages?path=suggestionsWS>master>/context"
     Then I get the following json response body
 """
@@ -83,7 +83,7 @@ Feature: Generate a documentation page
       {
         "type": "markdown",
         "data": {
-          "markdown": "**Feature**: Provide book suggestions ```thegardener { \"include\" : { \"type\" : \"\", \"url\": \"http://thegardener.kelkoogroup.net/api/docs/\"}}```"
+          "markdown": "**Feature**: Provide book suggestions"
         }
       }
     ]
