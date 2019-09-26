@@ -1,11 +1,16 @@
 @import '_backoffice.scss';
 
 .bold {
+  color: $color-text-darker;
   font-weight: bold;
 }
 
 .active {
   color: $color-selected-item;
+}
+
+.default {
+  color: $color-text-darker;
 }
 
 .menu-link {
