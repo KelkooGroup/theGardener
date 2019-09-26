@@ -64,3 +64,7 @@ documentation.meta.file = <%= value("the_gardener_documentation_meta_file") %>
 
 play.server.http.idleTimeout = 60s
 play.server.akka.requestTimeout = 40s
+
+<% if has_variable?("the_gardener_replica_url") %>
+replica.url= "<%= value("the_gardener_replica_url") %>"
+<% end %>
