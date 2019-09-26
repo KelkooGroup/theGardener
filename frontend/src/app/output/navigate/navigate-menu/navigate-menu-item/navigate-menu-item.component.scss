@@ -1,7 +1,16 @@
 @import '_backoffice.scss';
 
 .bold {
+  color: $color-text-darker;
   font-weight: bold;
+}
+
+.active {
+  color: $color-selected-item;
+}
+
+.default {
+  color: $color-text-darker;
 }
 
 .menu-link {
@@ -19,10 +28,6 @@ ul {
   padding-right: 8px;
 }
 
-.active {
-  color: $color-selected-item;
-}
-
 .item {
   cursor: pointer;
   padding: 3px 10px;
@@ -36,19 +41,6 @@ ul {
   line-height: 20px;
 }
 
-
-.node-text {
-  color: $color-text-darker;
-}
-
-.project-text {
-  color: $color-text;
-}
-
-.feature-text {
-  color: $color-text-invert;
-}
-
 .options {
   padding-top: 15px;
   padding-right: 15px;
@@ -56,17 +48,8 @@ ul {
   margin-left: 30px;
   font-family: "courier", serif;
   font-size: $font-size-text-small;
-
 }
 
 .branch-select {
   width: 100%;
-}
-
-.expanded, .options {
-  //background-color: $color-border-lighter;
-}
-
-.selected {
-  background-color: $color-text-light;
 }

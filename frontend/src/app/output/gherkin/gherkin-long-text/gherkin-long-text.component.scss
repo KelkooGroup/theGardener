@@ -1,3 +1,5 @@
+@import "_colors.scss";
+
 .params {
   margin: 20px 30px;
   width: 100%;
@@ -9,4 +11,25 @@
 
 .json, .long-text {
   padding-left: 10px;
+}
+$type-colors: (
+  string: $color-text,
+  number: $color-text,
+  boolean: $color-text,
+  date: $color-text,
+  array: $color-text-dark,
+  object: $color-text-dark,
+  function: $color-text-dark,
+  'null': $color-text-invert-light,
+  undefined: $color-text-invert-light
+);
+
+@each $type, $color in $type-colors {
+  ::ng-deep .segment-type-#{$type} > .segment-main > .segment-value {
+    color: $color !important;
+  }
+}
+
+::ng-deep .segment > .segment-main > .segment-key {
+  color: $color-text-darker !important;
 }
