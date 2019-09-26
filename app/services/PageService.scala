@@ -44,6 +44,7 @@ case object PageFragmentStatusModule extends PageFragmentUnderProcessingStatus
 case class PageFragmentUnderProcessing(status: PageFragmentUnderProcessingStatus = PageFragmentStatusMakdown,
                                        data: Option[String] = None,
                                        markdown: Option[String] = None,
+                                       page: Option[PageMeta] = None,
                                        scenariosModule: Option[ScenariosModule] = None,
                                        scenarios: Option[Feature] = None,
                                        includeExternalPage: Option[IncludeExternalPageModule] = None)
@@ -127,7 +128,7 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
       case Some(pageJoinProject) =>
 
         pageJoinProject.page.markdown.map { markdown =>
-          splitMarkdown(  s"$markdown\n$MarkdownEnd", path)
+          splitMarkdown(s"$markdown\n$MarkdownEnd", path)
         }.map { fragments =>
           processPageFragments(fragments, pageJoinProject)
         } match {
@@ -175,8 +176,7 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
 
     Try(FileUtils.readFileToString(page, "UTF-8")).logError(s"Error while reading content page ${page.getPath}").toOption.map { content =>
       (for {
-        metaString <- findPageModuleJson(content)
-        meta <- parseModule(metaString, page.getPath).flatMap(_.page)
+        meta <- findPageModule(content)
       } yield (content, meta.label.getOrElse(name), meta.description.orElse(meta.label).getOrElse(name))).getOrElse((content, name, name))
     }
   }
@@ -193,7 +193,7 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
   }
 
 
-  def splitMarkdown(markdown: String, path: String): Seq[PageFragmentUnderProcessing] = {
+  def splitMarkdown(markdown: String, path: String = ""): Seq[PageFragmentUnderProcessing] = {
     markdown.split('\n').foldLeft((Seq[PageFragmentUnderProcessing](), new PageFragmentUnderProcessing())) { (fragmentsAndCurrent, line) =>
       fragmentsAndCurrent match {
         case (fragments, currentFragment) =>
@@ -250,17 +250,22 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
       module match {
         case Some(module) =>
 
-          module.scenarios match {
-
-            case Some(scenarios) => (fragments :+ currentFragment.copy(scenariosModule = Some(scenarios)), new PageFragmentUnderProcessing())
+          module.page match {
+            case Some(page) => (fragments :+ currentFragment.copy(page = Some(page)), new PageFragmentUnderProcessing())
             case _ =>
 
-              module.includeExternalPage match {
+              module.scenarios match {
 
-                case Some(include) => (fragments :+ currentFragment.copy(includeExternalPage = Some(include)), new PageFragmentUnderProcessing())
+                case Some(scenarios) => (fragments :+ currentFragment.copy(scenariosModule = Some(scenarios)), new PageFragmentUnderProcessing())
                 case _ =>
-                  (fragments, new PageFragmentUnderProcessing())
 
+                  module.includeExternalPage match {
+
+                    case Some(include) => (fragments :+ currentFragment.copy(includeExternalPage = Some(include)), new PageFragmentUnderProcessing())
+                    case _ =>
+                      (fragments, new PageFragmentUnderProcessing())
+
+                  }
               }
           }
         case _ =>
@@ -333,9 +338,9 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
     }.flatten
   }
 
-  def findPageModule(pageContent: String): Option[String] = PageModuleRegex.findFirstIn(pageContent)
-
-  def findPageModuleJson(pageContent: String): Option[String] = for (m <- PageModuleRegex.findFirstMatchIn(pageContent)) yield m.group(1)
+  def findPageModule(pageContent: String): Option[PageMeta] = {
+    splitMarkdown(pageContent).find(_.page.isDefined).flatMap(_.page)
+  }
 
   def findPageImagesWithRelativePath(pageContent: String): Seq[String] = (for (m <- ImageRegex.findAllMatchIn(pageContent)) yield m.group(1)).toSeq.filterNot(_.startsWith("http"))
 
