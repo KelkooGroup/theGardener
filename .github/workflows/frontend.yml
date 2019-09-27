@@ -1,0 +1,60 @@
+name: Frontend Workflow
+
+on: 
+  push:
+    paths:
+      - '.github/workflows/frontend.yml'
+      - 'frontend/*'
+  pull_request:
+    paths:
+      - '.github/workflows/frontend.yml'
+      - 'frontend/*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout Repo
+      uses: actions/checkout@v1
+    
+    - name: Install Node.js
+      uses: actions/setup-node@master
+      with:
+        node-version: '10.x'
+
+    - name: npm install
+      working-directory: frontend
+      run: |
+        npm install -g @angular/cli
+        npm install
+        cd ./node_modules/protractor && npm i webdriver-manager@latest && cd ../..
+        npm run pree2e
+    
+    - name: npm test
+      working-directory: frontend
+      run: |
+        export CI=true
+        ./node_modules/tslint/bin/tslint -t json -o report.json --project . --force
+        ng test --watch=false --progress=false --code-coverage
+        ng e2e
+        
+    - name: ng build --prod
+      working-directory: frontend
+      run: ng build --no-progress --prod --outputPath ../public/dist
+      
+    - name: install sonar-scanner
+      run: |
+        sudo mkdir /opt/sonarscanner
+        cd /opt/sonarscanner
+        sudo wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.0.0.1744-linux.zip
+        sudo unzip sonar-scanner-cli-4.0.0.1744-linux.zip
+        sudo nano sonar-scanner-cli-4.0.0.1744-linux/conf/sonar-scanner.properties
+        sudo chmod +x sonar-scanner-4.0.0.1744-linux/bin/sonar-scanner
+        sudo ln -s /opt/sonarscanner/sonar-scanner-4.0.0.1744-linux/bin/sonar-scanner /usr/local/bin/sonar-scanner
+
+    - name: sonar-scanner
+      working-directory: frontend
+      run: |
+        if [ $(Build.Reason) = "PullRequest" ]; then SONAR_BRANCH="-Dsonar.pullrequest.key=$(System.PullRequest.PullRequestNumber) -Dsonar.pullrequest.branch=$(System.PullRequest.SourceBranch) -Dsonar.pullrequest.base=$(System.PullRequest.TargetBranch)"; else SONAR_BRANCH="-Dsonar.branch.name=$(Build.SourceBranchName)"; fi
+        sh -x -c "sonar-scanner -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=kelkoo -Dsonar.login=6c199a8887e5909a63eb3d6ffcd70c1ca33d6757 $SONAR_BRANCH"
