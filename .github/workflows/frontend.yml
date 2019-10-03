@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Checkout Repo
+    - name: Checkout
       uses: actions/checkout@v1
     
     - name: Install Node.js
