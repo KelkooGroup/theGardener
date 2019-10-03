@@ -45,6 +45,7 @@ jobs:
       
     - name: install sonar-scanner
       run: |
+        export TERM=linux
         sudo mkdir /opt/sonarscanner
         cd /opt/sonarscanner
         sudo wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.0.0.1744-linux.zip
