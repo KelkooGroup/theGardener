@@ -44,6 +44,7 @@ jobs:
       run: ng build --no-progress --prod --outputPath ../public/dist
       
     - name: install sonar-scanner
+      continue-on-error: true
       run: |
         export TERM=linux
         sudo mkdir /opt/sonarscanner
@@ -57,5 +58,5 @@ jobs:
     - name: sonar-scanner
       working-directory: frontend
       run: |
-        if [ $(Build.Reason) = "PullRequest" ]; then SONAR_BRANCH="-Dsonar.pullrequest.key=$(System.PullRequest.PullRequestNumber) -Dsonar.pullrequest.branch=$(System.PullRequest.SourceBranch) -Dsonar.pullrequest.base=$(System.PullRequest.TargetBranch)"; else SONAR_BRANCH="-Dsonar.branch.name=$(Build.SourceBranchName)"; fi
+        if [ ${{ github.event_name }} = "pull_request" ]; then SONAR_BRANCH="-Dsonar.pullrequest.key=${{ github.event.number }} -Dsonar.pullrequest.branch=${{ github.head_ref }} -Dsonar.pullrequest.base=${{ github.base_ref }}"; else SONAR_BRANCH="-Dsonar.branch.name=${{ github.head_ref }}"; fi
         sh -x -c "sonar-scanner -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=kelkoo -Dsonar.login=6c199a8887e5909a63eb3d6ffcd70c1ca33d6757 $SONAR_BRANCH"
