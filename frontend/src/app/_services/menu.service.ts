@@ -4,8 +4,7 @@ import {HttpClient} from '@angular/common/http';
 import {DirectoryApi, HierarchyNodeApi, ProjectApi} from '../_models/hierarchy';
 import {map} from 'rxjs/operators';
 import {MenuDirectoryHierarchy, MenuHierarchy, MenuProjectHierarchy} from '../_models/menu';
-// import {of} from 'rxjs';
-// import {MENU_SERVICE_RESPONSE} from '../test/test-data.spec';
+import {UrlCleanerService} from './url-cleaner.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +12,8 @@ import {MenuDirectoryHierarchy, MenuHierarchy, MenuProjectHierarchy} from '../_m
 export class MenuService {
 
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,
+              private urlCleaner: UrlCleanerService) {
   }
 
   getMenuHeader(): Observable<HierarchyNodeApi> {
@@ -32,7 +32,6 @@ export class MenuService {
   hierarchy(): Observable<HierarchyNodeApi> {
     const url = `api/menu`;
     return this.http.get<HierarchyNodeApi>(url);
-    // return of(MENU_SERVICE_RESPONSE);
   }
 
   getMenuHierarchyForSelectedNode(nodeName: string): Observable<Array<MenuHierarchy>> {
@@ -76,14 +75,23 @@ export class MenuService {
   }
 
   private buildMenuHierarchyForProject(project: ProjectApi, depth: number): MenuHierarchy {
+    let projectRoute = project.path;
+    if (project.branches.length === 1) {
+      projectRoute = project.branches[0].rootDirectory ? project.branches[0].rootDirectory.path : project.branches[0].path;
+    } else {
+      const stableBranch = project.branches.find(b => b.name === project.stableBranch);
+      if (stableBranch) {
+        projectRoute = stableBranch.rootDirectory ? stableBranch.rootDirectory.path : stableBranch.path;
+      }
+    }
     const menu: MenuProjectHierarchy = {
       name: project.id,
       label: project.label,
       type: 'Project',
       depth,
-      route: project.path,
+      route: this.urlCleaner.relativePathToUrl(projectRoute),
       stableBranch: project.stableBranch,
-      children: this.buildMenuHierarchyForBranches(project, depth + 1)
+      children: this.buildMenuHierarchyForBranches(project, depth)
     };
     return menu;
   }
@@ -95,8 +103,8 @@ export class MenuService {
         label: b.name,
         type: 'Branch',
         depth,
-        route: b.path,
-        children: b.rootDirectory ? this.buildMenuHierarchyForRootDirectory([b.rootDirectory], depth + 1) : []
+        route: this.urlCleaner.relativePathToUrl(b.path),
+        children: b.rootDirectory && b.rootDirectory.children ? this.buildMenuHierarchyForRootDirectory(b.rootDirectory.children, depth + 1) : []
       };
       return branchItem;
     });
@@ -105,17 +113,17 @@ export class MenuService {
 
   private buildMenuHierarchyForRootDirectory(directories: Array<DirectoryApi>, depth: number): Array<MenuDirectoryHierarchy> {
     return directories.map(d => {
-      const rootDirectoryItem: MenuDirectoryHierarchy = {
+      const directoryItem: MenuDirectoryHierarchy = {
         name: d.name,
         label: d.label,
         type: 'Directory',
         description: d.description,
         order: d.order,
         depth,
-        route: d.path,
+        route: this.urlCleaner.relativePathToUrl(d.path),
         children: this.buildMenuHierarchyForRootDirectory(d.children, depth + 1),
       };
-      return rootDirectoryItem;
+      return directoryItem;
     });
   }
 

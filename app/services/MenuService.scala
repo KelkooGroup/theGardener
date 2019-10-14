@@ -4,7 +4,7 @@ import javax.inject.Inject
 import models.HierarchyNode._
 import models._
 import play.api.cache._
-import repository._
+import repositories._
 import services.MenuService._
 import utils._
 
@@ -12,7 +12,7 @@ import scala.util.Try
 
 class MenuService @Inject()(hierarchyRepository: HierarchyRepository, projectRepository: ProjectRepository, branchRepository: BranchRepository, featureRepository: FeatureRepository, directoryRepository: DirectoryRepository, pageRepository: PageRepository, cache: SyncCacheApi) {
 
-  def refreshCache(): Unit = Try(getMenuTree(true))
+  def refreshCache(): Try[Menu] = Try(getMenuTree(true))
 
   def getMenu(refresh: Boolean = false): Seq[Menu] = {
     if (refresh) cache.remove(menuListCacheKey)
@@ -27,9 +27,10 @@ class MenuService @Inject()(hierarchyRepository: HierarchyRepository, projectRep
       val mapBranchIdProjectFeaturePath = branches.flatMap(b => mapProjectIdProject(b.projectId).featuresRootPath.map(b.id -> _)).toMap
 
       val mapBranchIdFeaturePaths = featureRepository.findAllFeaturePaths().groupBy(r => r.branchId).map { branchAndPath =>
-        val paths = branchAndPath._2.map { p =>
-          val projectFeaturePath = mapBranchIdProjectFeaturePath(branchAndPath._1).fixPathSeparator
-          p.path.substring(p.path.indexOf(projectFeaturePath) + projectFeaturePath.length + 1)
+        val paths = branchAndPath._2.flatMap { p =>
+          mapBranchIdProjectFeaturePath.get(branchAndPath._1).map(_.fixPathSeparator).map { projectFeaturePath =>
+            p.path.substring(p.path.indexOf(projectFeaturePath) + projectFeaturePath.length + 1)
+          }
         }.toSet
 
         branchAndPath._1 -> paths

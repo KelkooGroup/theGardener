@@ -5,7 +5,6 @@ import io.swagger.annotations._
 import javax.inject.Inject
 import play.api.libs.json.Json
 import play.api.mvc._
-import repository.HierarchyRepository
 import services.MenuService
 
 

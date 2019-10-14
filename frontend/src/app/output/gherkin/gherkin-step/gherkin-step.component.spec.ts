@@ -6,45 +6,13 @@ import {GherkinLongTextComponent} from '../gherkin-long-text/gherkin-long-text.c
 import {MatExpansionModule, MatTableModule} from '@angular/material';
 import {NgxJsonViewerModule} from 'ngx-json-viewer';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
-import {ExpandableNode, GherkinStep} from '../../../_models/gherkin';
+import {GherkinStep} from '../../../_models/gherkin';
+import {By} from '@angular/platform-browser';
 
 describe('GherkinStepComponent', () => {
   let component: GherkinStepComponent;
   let fixture: ComponentFixture<GherkinStepComponent>;
-  const step: GherkinStep = {
-    type: 'string',
-    nodeId: 'string',
-    localId: 'string',
-    data: {
-      id: '0',
-      keyword: 'Given',
-      text: 'a user',
-      argument: [],
-    },
-    hasTable: false,
-    hasLongText: true,
-    longText: 'string',
-    text: null,
-    table: {
-      headers: {key: 'true', value: 'false'},
-      headerIds: ['bjr'],
-      rows: [{
-        values: {key: 'clef'}, getValue(key: string): string {
-          return 'c';
-        }
-      }],
-      getHeader(headerId: string): string {
-        return 'd';
-      }
-
-    },
-    getChilden(): Array<ExpandableNode> {
-      return new Array<ExpandableNode>();
-    },
-    hasChilden(): boolean {
-      return false;
-    }
-  };
+  let page: Page;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -64,12 +32,160 @@ describe('GherkinStepComponent', () => {
 
   beforeEach(() => {
     fixture = TestBed.createComponent(GherkinStepComponent);
+    page = new Page(fixture);
+  });
+
+  it('should show simple step', () => {
+    const simpleStep: GherkinStep = {
+      id: '4',
+      keyword: 'Then',
+      text: 'the suggestions are popular and available books adapted to the age of the user',
+      argument: []
+    };
+    component = fixture.componentInstance;
+    component.step = simpleStep;
+    fixture.detectChanges();
+
+    expect(component).toBeTruthy();
+    expect(component.longText).toBeFalsy();
+    expect(component.textFragments).toEqual([{
+      text: 'the suggestions are popular and available books adapted to the age of the user',
+      isParameter: false
+    }]);
+    expect(component.table).toBeFalsy();
+    expect(page.keyword).toEqual('Then');
+    expect(page.stepText).toEqual(['the suggestions are popular and available books adapted to the age of the user']);
+  });
+
+  it('should show step with arguments', () => {
+    const simpleStep: GherkinStep = {
+      id: '0',
+      keyword: 'Given',
+      text: 'the user "Tim"',
+      argument: []
+    };
+    component = fixture.componentInstance;
+    component.step = simpleStep;
+    fixture.detectChanges();
+
+    expect(component).toBeTruthy();
+    expect(component.longText).toBeFalsy();
+    expect(component.textFragments).toEqual([
+      {text: 'the user ', isParameter: false},
+      {text: 'Tim', isParameter: true},
+    ]);
+    expect(component.table).toBeFalsy();
+    expect(page.keyword).toEqual('Given');
+    expect(page.stepText).toEqual(['the user']);
+    expect(page.stepParameters).toEqual(['Tim']);
+  });
+
+  it('should show step with multiple arguments', () => {
+    const simpleStep: GherkinStep = {
+      id: '0',
+      keyword: 'Given',
+      text: 'we ask for "3" suggestions from "2" different categories',
+      argument: []
+    };
+    component = fixture.componentInstance;
+    component.step = simpleStep;
+    fixture.detectChanges();
+
+    expect(page.keyword).toEqual('Given');
+    expect(page.stepText).toEqual(['we ask for', 'suggestions from', 'different categories']);
+    expect(page.stepParameters).toEqual(['3', '2']);
+  });
+
+  it('should show step with table', () => {
+    const simpleStep: GherkinStep = {
+      id: '2',
+      keyword: 'And',
+      text: 'the popular categories for this age are',
+      argument: [
+        ['categoryId', 'categoryName'],
+        ['cat1', 'Walt Disney'],
+        ['cat2', 'Picture books'],
+        ['cat3', 'Bedtime stories']
+      ]
+    };
+    component = fixture.componentInstance;
+    component.step = simpleStep;
+    fixture.detectChanges();
+
+    expect(page.keyword).toEqual('And');
+    expect(page.table).toBeTruthy();
+    expect(page.stepText).toEqual(['the popular categories for this age are'])
+    expect(page.table.table).toEqual([
+      ['categoryId', 'categoryName'],
+      ['cat1', 'Walt Disney'],
+      ['cat2', 'Picture books'],
+      ['cat3', 'Bedtime stories']
+    ]);
+  });
+
+  it('should show step with long text', () => {
+    const step: GherkinStep = {
+      id: '0',
+      keyword: 'Given',
+      text: 'a user with description',
+      argument: [
+        [
+          '   I\'m happy to read book from this library.\n   Having suggestions is a good idea.'
+        ]
+      ]
+    };
     component = fixture.componentInstance;
     component.step = step;
     fixture.detectChanges();
-  });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+    expect(page.keyword).toEqual('Given');
+    expect(page.stepText).toEqual(['a user with description']);
+    expect(page.longText.longText).toEqual('   I\'m happy to read book from this library.\n   Having suggestions is a good idea.');
   });
 });
+
+class Page {
+  constructor(private fixture: ComponentFixture<GherkinStepComponent>) {
+
+  }
+
+  get keyword(): string {
+    const keyword: HTMLElement = this.fixture.nativeElement.querySelector('.stepKeyword');
+    expect(keyword).toBeTruthy();
+    return keyword.textContent;
+  }
+
+  get textContent(): string {
+    return this.fixture.nativeElement.textContent;
+  }
+
+  get stepParameters(): Array<string> {
+    const res: Array<string> = [];
+    this.fixture.nativeElement.querySelectorAll('.step-parameter')
+      .forEach((e: HTMLElement) => {
+        res.push(e.textContent.trim())
+      });
+    return res;
+  }
+
+  get stepText(): Array<string> {
+    const res: Array<string> = [];
+    this.fixture.nativeElement.querySelectorAll('.step-text')
+      .forEach((e: HTMLElement) => {
+        res.push(e.textContent.trim())
+      });
+    return res;
+  }
+
+  get table(): GherkinTableComponent {
+    const table = this.fixture.debugElement.query(By.css('app-gherkin-table'));
+    expect(table).toBeTruthy();
+    return table.componentInstance as GherkinTableComponent;
+  }
+
+  get longText(): GherkinLongTextComponent {
+    const longText = this.fixture.debugElement.query(By.css('app-gherkin-long-text'));
+    expect(longText).toBeTruthy();
+    return longText.componentInstance as GherkinLongTextComponent;
+  }
+}

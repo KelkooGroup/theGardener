@@ -1,0 +1,17 @@
+@import '_colors.scss';
+
+.step {
+  margin-bottom: 3px;
+}
+
+.step-parameter {
+  font-style: italic;
+}
+
+.step-text {
+  color: $color-text-darker;
+}
+
+li {
+  width: 100%;
+}

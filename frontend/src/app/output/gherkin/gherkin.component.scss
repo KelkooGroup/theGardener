@@ -1,142 +1,28 @@
-@import "../../../stylesheets/backoffice";
+@import "_backoffice.scss";
 
-.documentation-tree-invisible {
-  display: none;
+.background-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  margin-top: 15px;
 }
 
-
-.documentation-tree ul,
-.documentation-tree li {
-  margin-top: 0;
-  margin-bottom: 0;
-  list-style-type: none;
-  padding-left: 1px;
-}
-
-.pull-right {
-  margin-left: 5px;
-  padding-left: 5px;
-}
-
-.documentationNode {
-  color: $color-text-dark;
-}
-
-.level1 {
-  font-size: $font-size-h3;
-}
-
-.level2 {
-  font-size: $font-size-h4;
-}
-
-.level3 {
-  font-size: $font-size-h5;
-}
-
-.level4 {
-  font-size: $font-size-h6;
-}
-
-.level5 {
-  font-size: $font-size-h7;
-}
-
-.level6 {
-  font-size: $font-size-h8;
-}
-
-.level7 {
-  font-size: $font-size-h9;
-}
-
-.project, .branch, .feature, .scenario, .step, .table {
-  color: $color-text-darker;
-}
-
-.project {
-  font-size: $font-size-h3;
-}
-
-.branch {
-  font-family: "courier", serif;
-  font-size: $font-size-text-x-small;
-  width: 50%;
-  padding-left: 10px;
-}
-
-.feature {
-  margin-top: 5px;
-  font-size: $font-size-h4;
-}
-
-.feature-description {
-  margin-top: 5px;
-  font-size: $font-size-text;
-}
-
-.background {
-  padding-left: 50px;
-}
-
-.scenario {
-  margin-top: 6px;
-  font-size: $font-size-h5;
+.scenario-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  margin-top: 15px;
 }
 
 .tag {
-  color: $color-text-invert;
-  font-weight: lighter;
-  padding-right: 4px;
-  font-size: $font-size-text-big;
+  margin-right: 5px;
+  color:  #808080;
 }
 
-.tags {
-  font-style: italic;
-  font-weight: lighter;
-  font-size: $font-size-text-x-small;
-  font-family: "courier", serif;
-  color: $color-text-darker;
+.scenario-icon {
+  font-size: 24px;
 }
 
-.steps {
-  margin-top: 2px;
-  margin-bottom: 2px;
+li {
+  width: 100%;
 }
-
-.step {
-  margin-top: 6px;
-  font-size: $font-size-text;
-}
-
-.table {
-  margin-top: 2px;
-}
-
-.stepKeyword {
-  font-weight: 600;
-  color: $color-text-dark;
-}
-
-.stepParameter {
-  background-color: $color-text-lighter;
-  color: $color-text;
-  font-size: $font-size-text;
-  font-weight: 500;
-}
-
-.stepText {
-  color: $color-text-dark;
-}
-
-.bookLink {
-  color: $color-border-light;
-  cursor: pointer;
-  text-decoration: none;
-  padding-left: 5px;
-}
-
-.bookLink li {
-  height: 10px;
-}
-

@@ -1,11 +1,12 @@
 package steps
 
 
-import java.io._
 import java.io.File.separator
+import java.io._
 import java.nio.file._
 import java.util
 
+import akka.stream.Materializer
 import anorm._
 import com.typesafe.config._
 import controllers._
@@ -21,6 +22,7 @@ import org.eclipse.jgit.api._
 import org.scalatest._
 import org.scalatestplus.mockito._
 import play.api.{Application,Logging, Mode}
+import org.mockito.Mockito._
 import play.api.cache._
 import play.api.db._
 import play.api.inject._
@@ -29,9 +31,11 @@ import play.api.libs.json._
 import play.api.mvc._
 import play.api.test.Helpers._
 import play.api.test._
-import repository._
+import play.api.{Application, Logging, Mode}
+import repositories._
 import resource._
 import services._
+import steps.CommonSteps.include
 import steps.Injector._
 import utils._
 
@@ -80,10 +84,17 @@ object CommonSteps extends MockitoSugar with MustMatchers {
   val tagRepository = inject[TagRepository]
   val directoryRepository = inject[DirectoryRepository]
   val pageRepository = inject[PageRepository]
+  val pageService = inject[PageService]
+  val spyPageService = spy(pageService)
+  val replicaService = inject[ReplicaService]
+  val spyReplicaService = spy(replicaService)
   val config = inject[Config]
   val cache = inject[AsyncCacheApi]
+  implicit val materializer = inject[Materializer]
 
-  val applicationBuilder = builder.overrides(bind[SyncCacheApi].toInstance(new DefaultSyncCacheApi(cache))).in(Mode.Test)
+  val applicationBuilder = builder.overrides(bind[SyncCacheApi].toInstance(new DefaultSyncCacheApi(cache)),
+                                             bind[PageService].toInstance(spyPageService),
+                                             bind[ReplicaService].toInstance(spyReplicaService)).in(Mode.Test)
 
   var app: Application = _
 
@@ -124,6 +135,7 @@ object CommonSteps extends MockitoSugar with MustMatchers {
     git.add().addFilepattern(".").call()
 
     git.commit().setMessage(s"Add file $file").call()
+    ()
   }
 }
 
@@ -152,6 +164,15 @@ class CommonSteps extends ScalaDsl with EN with MockitoSugar with Logging {
     val newApp = applicationBuilder.overrides(bind[Config].toInstance(newConfig)).build()
 
     startServer(newApp)
+  }
+
+  Given("""^the configuration$""") { configs: util.List[Configuration] =>
+
+    configs.forEach { conf =>
+      val value: String = app.configuration.get[String](conf.path)
+      value mustBe conf.value
+      ()
+    }
   }
 
   Given("""^the database is empty$""") { () =>
@@ -212,16 +233,16 @@ Scenario: providing several book suggestions
   }
 
   Given("""^the file "([^"]*)"$""") { (path: String, content: String) =>
-    val fullPath = Paths.get(s"target/$path".fixPathSeparator)
+    val fullPath = Paths.get(s"$path".fixPathSeparator)
     Files.createDirectories(fullPath.getParent)
     Files.write(fullPath, content.getBytes())
   }
 
-  Given("""^we have the following projects$""") { projects: java.util.List[ProjectTableRow] =>
+  Given("""^we have the following projects$""") { projects: util.List[ProjectTableRow] =>
     val projectsWithAbsoluteUrl = projects.asScala.map { project =>
       if (project.repositoryUrl.contains("target/")) project.copy(
         repositoryUrl = Paths.get(project.repositoryUrl).toUri.toString,
-        featuresRootPath = project.featuresRootPath.fixPathSeparator,
+        featuresRootPath = if (project.featuresRootPath != null) project.featuresRootPath.fixPathSeparator else project.featuresRootPath,
         documentationRootPath = if (project.documentationRootPath != null) project.documentationRootPath.fixPathSeparator else project.documentationRootPath
       )
       else project
@@ -243,6 +264,13 @@ Scenario: providing several book suggestions
   Given("""^we have those pages in the database$""") { pages: util.List[PageRow] =>
     pageRepository.saveAll(pages.asScala.map(p => Page(p.id, p.name, p.label, p.description, p.order, Option(p.markdown), p.relativePath, p.path, p.directoryId)))
   }
+
+  Given("""^we have the following markdown for the page "([^"]*)"$""") { (path: String, markdown: String) =>
+    pageRepository.findByPath(path).map { page =>
+      pageRepository.save(page.copy(markdown = Some(markdown)))
+    }
+  }
+
 
   Given("""^the cache is empty$""") { () =>
     await(cache.removeAll())
@@ -277,6 +305,10 @@ Scenario: providing several book suggestions
     actualJson mustBe expectedJson
   }
 
+  Then("""^I get the following response body$""") { expected: String =>
+    contentAsString(response) mustBe expected
+  }
+
   Then("""^the page contains$""") { expectedPageContentPart: String =>
     val content = contentAsString(response)
     cleanHtmlWhitespaces(content) must include(cleanHtmlWhitespaces(expectedPageContentPart))
@@ -297,8 +329,6 @@ Scenario: providing several book suggestions
 
   Then("""^I get the following scenarios$""") { dataTable: DataTable =>
 
-    implicit val branchFormat = Json.format[BranchDocumentationDTO]
-    implicit val projectFormat = Json.format[ProjectDocumentationDTO]
     implicit val documentationFormat = Json.format[DocumentationDTO]
 
     val documentation = Json.parse(contentAsString(response)).as[DocumentationDTO]

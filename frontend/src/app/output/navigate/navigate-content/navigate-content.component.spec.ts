@@ -1,20 +1,21 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {of} from 'rxjs';
 import {RouterTestingModule} from '@angular/router/testing';
 import {NavigateContentComponent} from './navigate-content.component';
-import {MatTabsModule} from '@angular/material';
 import {PageService} from '../../../_services/page.service';
-import {DIRECTORIES_SERVICE_RESPONSE} from '../../../test/test-data.spec';
-import {ActivatedRouteStub} from '../../../test/activated-route-stub.spec';
+import {DIRECTORIES_SERVICE_RESPONSE} from '../../../_testUtils/test-data.spec';
+import {ActivatedRouteStub} from '../../../_testUtils/activated-route-stub.spec';
+import {MatSnackBarModule, MatTabsModule} from '@angular/material';
 
 
 describe('NavigateContentComponent', () => {
   let component: NavigateContentComponent;
   let fixture: ComponentFixture<NavigateContentComponent>;
   let activatedRoute: ActivatedRouteStub;
+  let router: Router;
   let page: Page;
 
   beforeEach(async(() => {
@@ -26,6 +27,7 @@ describe('NavigateContentComponent', () => {
         NoopAnimationsModule,
         RouterTestingModule,
         MatTabsModule,
+        MatSnackBarModule,
       ], providers: [
         {
           provide: ActivatedRoute,
@@ -39,16 +41,25 @@ describe('NavigateContentComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(NavigateContentComponent);
     component = fixture.componentInstance;
-    activatedRoute = fixture.debugElement.injector.get(ActivatedRoute) as any;
-    activatedRoute.testParams = {};
-
     page = new Page(fixture);
     const pageService: PageService = TestBed.get(PageService);
-    spyOn(pageService, 'getDirectoriesForPath').and.returnValue(of(DIRECTORIES_SERVICE_RESPONSE));
-    fixture.detectChanges();
+    spyOn(pageService, 'getRootDirectoryForPath').and.returnValue(of(DIRECTORIES_SERVICE_RESPONSE));
+
+    router = TestBed.get(Router);
+    spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+
+    activatedRoute = fixture.debugElement.injector.get(ActivatedRoute) as any;
+  });
+
+  afterAll(() => {
+    fixture.destroy();
   });
 
   it('should show tabs in the right order', () => {
+    activatedRoute.testParams = {path: 'constraints_'};
+    activatedRoute.testChildParams = {};
+
+    fixture.detectChanges();
     expect(component).toBeTruthy();
     expect(page.tabs).toBeTruthy();
     expect(page.tabs.length).toBe(4);
@@ -59,8 +70,33 @@ describe('NavigateContentComponent', () => {
   });
 
   it('should navigate to item when clicking on a tab', () => {
+    activatedRoute.testParams = {path: 'constraints_'};
+    activatedRoute.testChildParams = {};
+
+    fixture.detectChanges();
     const href = page.tabs[2].getAttribute('ng-reflect-router-link');
-    expect(href).toEqual('for_an_offer');  });
+    expect(href).toEqual('for_an_offer');
+  });
+
+  it('should redirect to first child page if route was on directory', async(() => {
+    activatedRoute.testParams = {path: 'constraints_'};
+    activatedRoute.testChildParams = {};
+
+    fixture.detectChanges();
+    fixture.whenStable().then(() => {
+      expect(router.navigate).toHaveBeenCalledWith(['overview'], {relativeTo: activatedRoute});
+    });
+  }));
+
+  it('should not redirect if child page is already defined in route', async(() => {
+    activatedRoute.testParams = {path: 'constraints_'};
+    activatedRoute.testChildParams = {page: 'for_a_merchant'};
+    fixture.detectChanges();
+
+    fixture.whenStable().then(() => {
+      expect(router.navigate).not.toHaveBeenCalled();
+    });
+  }));
 });
 
 class Page {

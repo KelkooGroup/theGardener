@@ -1,11 +1,12 @@
-<nav mat-tab-nav-bar>
+<nav mat-tab-nav-bar *ngIf="hasTabs">
   <a mat-tab-link
-     *ngFor="let page of orderedPages; trackBy: trackByPage"
+     *ngFor="let page of pages; trackBy: trackByPage"
      [routerLink]="page.name"
      routerLinkActive #rla="routerLinkActive"
      [active]="rla.isActive">
     {{ page.label }}
   </a>
 </nav>
-
-<router-outlet></router-outlet>
+<div class="content" [ngStyle]="{'max-height': 'calc(100vh - ' + calculateHeight() + 'px)'}">
+  <router-outlet></router-outlet>
+</div>

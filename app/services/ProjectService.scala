@@ -4,14 +4,12 @@ import java.io._
 
 import akka.Done
 import akka.actor.{ActorSystem, CoordinatedShutdown}
-import akka.util.Timeout
-import com.typesafe.config._
 import javax.inject._
 import models._
 import org.apache.commons.io.FileUtils._
 import play.api.libs.json.Json
-import play.api.{Environment, Logging, Mode}
-import repository._
+import play.api.{Configuration, Environment, Logging, Mode}
+import repositories._
 import utils._
 
 import scala.concurrent._
@@ -20,19 +18,21 @@ import scala.concurrent.duration._
 class ProjectService @Inject()(projectRepository: ProjectRepository, gitService: GitService, featureService: FeatureService,
                                featureRepository: FeatureRepository, branchRepository: BranchRepository, directoryRepository: DirectoryRepository,
                                pageRepository: PageRepository, menuService: MenuService, pageService: PageService,
-                               config: Config, environment: Environment, actorSystem: ActorSystem)(implicit ec: ExecutionContext) extends Logging {
-  val projectsRootDirectory = config.getString("projects.root.directory")
-  val synchronizeInterval = config.getInt("projects.synchronize.interval")
-  val synchronizeInitialDelay = config.getInt("projects.synchronize.initial.delay")
-  val documentationMetaFile = config.getString("documentation.meta.file")
+                               config: Configuration, environment: Environment, actorSystem: ActorSystem)(implicit ec: ExecutionContext) extends Logging {
+  val projectsRootDirectory = config.get[String]("projects.root.directory")
+  val synchronizeInterval = config.get[Int]("projects.synchronize.interval")
+  val synchronizeInitialDelay = config.get[Int]("projects.synchronize.initial.delay")
+  val documentationMetaFile = config.get[String]("documentation.meta.file")
+  val synchronizeFromRemoteEnabled = config.get[Boolean]("projects.synchronize.from.remote.enabled")
 
   if (environment.mode != Mode.Test) {
-    val synchronizeJob = actorSystem.scheduler.schedule(initialDelay = synchronizeInitialDelay.seconds, interval = synchronizeInterval.seconds)(synchronizeAll())(actorSystem.dispatcher)
+    val synchronizeJob = actorSystem.scheduler.schedule(initialDelay = synchronizeInitialDelay.seconds, interval = synchronizeInterval.seconds) {
+      synchronizeAll()
+      ()
+    }(actorSystem.dispatcher)
     CoordinatedShutdown(actorSystem).addTask(
-      CoordinatedShutdown.PhaseBeforeServiceUnbind, "cancelSynchronizeJob") { () ⇒
-      implicit val timeout = Timeout(5.seconds)
-      synchronizeJob.cancel()
-      Future.successful(Done)
+      CoordinatedShutdown.PhaseBeforeServiceUnbind, "cancelSynchronizeJob") { () =>
+      Future(synchronizeJob.cancel()).map(_ => Done)
     }
   }
 
@@ -41,7 +41,8 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
   def checkoutRemoteBranches(project: Project): Future[Unit] = {
     for {
       remoteBranches <- gitService.getRemoteBranches(project.repositoryUrl)
-    } yield checkoutBranches(project, remoteBranches.toSet)
+      _ <- checkoutBranches(project, remoteBranches.toSet)
+    } yield ()
   }
 
   private def parseAndSaveFeatures(project: Project, branch: Branch): Unit = {
@@ -58,6 +59,7 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
   }
 
   private def countDirectories(directory: Directory): Int = 1 + directory.children.map(countDirectories).sum
+
   private def countPages(directory: Directory): Int = directory.pages.size + directory.children.map(countPages).sum
 
   private def parseAndSaveDirectoriesAndPages(project: Project, branch: Branch): Unit = {
@@ -70,76 +72,93 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
     }
   }
 
-  private def checkoutBranches(project: Project, branches: Set[String]) = {
+  private def checkoutBranches(project: Project, branches: Set[String]): Future[Unit] = {
     if (branches.nonEmpty) {
       logger.info(s"checkout ${project.id} branches ${branches.mkString(", ")}")
 
       FutureExt.sequentially(branches.toSeq) { branchName =>
         val localRepository = getLocalRepository(project.id, branchName)
 
-        val branch = branchRepository.save(Branch(-1, branchName, branchName == project.stableBranch, project.id))
+        val branch = branchRepository.findByProjectIdAndName(project.id, branchName).getOrElse(branchRepository.save(Branch(-1, branchName, branchName == project.stableBranch, project.id)))
 
         for {
           _ <- gitService.clone(project.repositoryUrl, localRepository)
           _ <- gitService.checkout(branchName, localRepository)
         } yield (parseAndSaveFeatures(project, branch), parseAndSaveDirectoriesAndPages(project, branch))
-      }
+
+      }.map(_ => ())
+
     } else Future.successful(())
   }
 
-  def filterFeatureFile(filePaths: Seq[String]): Seq[String] = filePaths.filter(_.endsWith(".feature"))
+  def filterFeatureFile(filePaths: Seq[String], featureRootPath: Option[String]): Seq[String] = filePaths.filter(path => featureRootPath.exists(path.startsWith) && path.endsWith(".feature"))
 
-  def filterDocumentationFile(filePaths: Seq[String]): Seq[String] = filePaths.filter(_.endsWith(".md"))
+  def filterDocumentationFile(filePaths: Seq[String], documentationRootPath: Option[String]): Seq[String] = filePaths.filter(path => documentationRootPath.exists(path.startsWith) && path.endsWith(".md"))
 
-  def filterDocumentationMetaFile(filePaths: Seq[String]): Seq[String] = filePaths.filter(_.endsWith(documentationMetaFile))
+  def filterDocumentationMetaFile(filePaths: Seq[String], documentationRootPath: Option[String]): Seq[String] = filePaths.filter(path => documentationRootPath.exists(path.startsWith) && path.endsWith(documentationMetaFile))
 
   private def updateBranches(project: Project, branches: Set[String]) = {
     if (branches.nonEmpty) {
       logger.info(s"update ${project.id} branches ${branches.mkString(", ")}")
 
-      FutureExt.sequentially(branches.toSeq) {
-        branchName =>
+      FutureExt.sequentially(branches.toSeq) { branchName =>
 
-          val localRepo = getLocalRepository(project.id, branchName)
-          val localRepoFile = new File(localRepo)
-          if (!localRepoFile.exists()) {
-            checkoutBranches(project, Set(branchName))
-          }
+        val localRepo = getLocalRepository(project.id, branchName)
+        val localRepoFile = new File(localRepo)
+        if (!localRepoFile.exists()) {
+          checkoutBranches(project, Set(branchName))
+        }
 
-          gitService.pull(localRepo).map {
-            case (created, updated, deleted) =>
-              branchRepository.findByProjectIdAndName(project.id, branchName).foreach {
-                branch =>
-                  if (featureRepository.findAllByBranchId(branch.id).nonEmpty) {
-                    filterFeatureFile(updated ++ deleted).flatMap(path => featureRepository.findByBranchIdAndPath(branch.id, path)).foreach(featureRepository.delete)
+        gitService.pull(localRepo).map {
+          case (created, updated, deleted) =>
+            branchRepository.findByProjectIdAndName(project.id, branchName).foreach { branch =>
 
-                    filterFeatureFile(created ++ updated).flatMap(filePath => featureService.parseFeatureFile(project.id, branch, getLocalRepository(project.id, branchName) + filePath).toOption).foreach(featureRepository.save)
+              if (featureRepository.findAllByBranchId(branch.id).nonEmpty) {
+                val featureToCreate = filterFeatureFile(created, project.featuresRootPath)
+                val featureToUpdate = filterFeatureFile(updated, project.featuresRootPath)
+                val featureToDelete = filterFeatureFile(deleted, project.featuresRootPath)
 
-                    logger.info(s"${created.size} features created, ${updated.size} features updated and ${deleted.size} features deleted, for project ${project.id} on branch ${branch.name}")
 
-                  } else {
-                    parseAndSaveFeatures(project, branch)
-                  }
+                (featureToUpdate ++ featureToDelete).flatMap(path => featureRepository.findByBranchIdAndPath(branch.id, path)).foreach(featureRepository.delete)
 
-                  project.documentationRootPath.foreach { documentationRootPath =>
-                    if (directoryRepository.findAllByBranchId(branch.id).nonEmpty) {
+                (featureToUpdate ++ featureToCreate).flatMap(filePath => featureService.parseFeatureFile(project.id, branch, getLocalRepository(project.id, branchName) + filePath).toOption).foreach(featureRepository.save)
 
-                      filterDocumentationMetaFile(updated ++ deleted).filter(_.contains(documentationRootPath)).flatMap { path =>
-                        directoryRepository.findByBranchIdAndRelativePath(branch.id, path.substring(path.indexOf(documentationRootPath) + documentationRootPath.length, path.length))
-                      }.foreach(directoryRepository.delete)
+                logger.info(s"${featureToCreate.size} features created, ${featureToUpdate.size} features updated and ${featureToDelete.size} features deleted, for project ${project.id} on branch ${branch.name}")
 
-                      filterDocumentationFile(updated ++ deleted).flatMap(path => pageRepository.findByPath(path)).foreach(pageRepository.delete)
-
-                      filterDocumentationMetaFile(created ++ updated).flatMap(directoryPath => pageService.processDirectory(branch, directoryPath, getLocalRepository(project.id, branchName) + directoryPath))
-
-                      logger.info(s"${created.size} directories created, ${updated.size} directories updated and ${deleted.size} directories deleted, for project ${project.id} on branch ${branch.name}")
-
-                    } else {
-                      parseAndSaveDirectoriesAndPages(project, branch)
-                    }
-                  }
+              } else {
+                parseAndSaveFeatures(project, branch)
               }
-          }
+
+              project.documentationRootPath.foreach { documentationRootPath =>
+                if (directoryRepository.findAllByBranchId(branch.id).nonEmpty) {
+
+                  val directoryToCreate = filterDocumentationMetaFile(created, project.documentationRootPath)
+                  val directoryToUpdate = filterDocumentationMetaFile(updated, project.documentationRootPath)
+                  val directoryToDelete = filterDocumentationMetaFile(deleted, project.documentationRootPath)
+
+                  val pageToCreate = filterDocumentationFile(created, project.documentationRootPath)
+                  val pageToUpdate = filterDocumentationFile(updated, project.documentationRootPath)
+                  val pageToDelete = filterDocumentationFile(deleted, project.documentationRootPath)
+
+                  (directoryToUpdate ++ directoryToDelete).flatMap(path => directoryRepository.findByBranchIdAndRelativePath(branch.id, path.substring(path.indexOf(documentationRootPath) + documentationRootPath.length, path.length))).foreach(directoryRepository.delete)
+
+                  pageToDelete.flatMap(path => pageRepository.findByPath(pageService.getPagePath(project.id, branch.name, path, project.documentationRootPath.getOrElse("")))).foreach(pageRepository.delete)
+
+                  (directoryToCreate ++ directoryToUpdate).flatMap(directoryPath => pageService.processDirectory(branch, directoryPath, getLocalRepository(project.id, branchName) + directoryPath))
+
+                  pageToUpdate.flatMap(path => pageRepository.findByPath(pageService.getPagePath(project.id, branch.name, path, project.documentationRootPath.getOrElse("")))).foreach(pageService.processPage(project.id, branch.name, _, documentationRootPath))
+
+                  logger.info(s"${directoryToCreate.size} directories created, ${directoryToUpdate.size} directories updated and ${directoryToDelete.size} directories deleted, for project ${project.id} on branch ${branch.name}")
+                  logger.info(s"${pageToCreate.size} pages created, ${pageToUpdate.size} pages updated and ${pageToDelete.size} pages deleted, for project ${project.id} on branch ${branch.name}")
+
+                } else {
+                  parseAndSaveDirectoriesAndPages(project, branch)
+                }
+              }
+            }
+        }.recoverWith {
+          case _ => deleteBranches(project.id, Set(branchName)).flatMap(_ => checkoutBranches(project, Set(branchName)))
+        }
       }
     } else Future.successful(())
   }
@@ -151,7 +170,10 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
       Future {
         for (branch <- branches) {
           deleteDirectory(new File(getLocalRepository(projectId, branch)))
-          branchRepository.findByProjectIdAndName(projectId, branch).map(_.id).foreach(featureRepository.deleteAllByBranchId)
+          branchRepository.findByProjectIdAndName(projectId, branch).map(_.id).foreach { branchId =>
+            featureRepository.deleteAllByBranchId(branchId)
+            directoryRepository.deleteAllByBranchId(branchId)
+          }
         }
 
         branchRepository.deleteAll(branchRepository.findAllByProjectId(projectId).filter(b => branches.contains(b.name)))
@@ -166,31 +188,39 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
 
     val projects = projectRepository.findAll()
 
-    FutureExt.sequentially(projects)(synchronize).map(_ => menuService.refreshCache())
+    FutureExt.sequentially(projects)(synchronize).flatMap(_ => Future.fromTry(menuService.refreshCache())).map(_ => ())
   }
 
   def synchronize(project: Project): Future[Unit] = {
-    logger.info(s"Start synchronizing project ${project.id}")
 
-    val localBranches = branchRepository.findAllByProjectId(project.id).map(_.name).toSet
+    if (!synchronizeFromRemoteEnabled) {
+      logger.info(s"No synchronization of project ${project.id}, as this feature is disabled")
+      Future.successful({})
+    } else {
 
-    logger.info(s"Local branches of project ${project.id} : ${localBranches.mkString(", ")}")
+      logger.info(s"Start synchronizing project ${project.id}")
 
-    gitService.getRemoteBranches(project.repositoryUrl).map(_.toSet).flatMap { remoteBranches =>
-      logger.info(s"Remotes branches of project ${project.id} : ${remoteBranches.mkString(", ")}")
+      val localBranches = branchRepository.findAllByProjectId(project.id).map(_.name).toSet.filter(branch => new File(getLocalRepository(project.id, branch)).exists)
 
-      val filteredRemoteBranches = remoteBranches.filter(branch => project.displayedBranches.forall(regex => branch.matches(regex)))
+      logger.info(s"Local branches of project ${project.id} : ${localBranches.mkString(", ")}")
 
-      val branchesToUpdate = localBranches.intersect(filteredRemoteBranches)
-      val branchesToCheckout = filteredRemoteBranches -- localBranches
-      val branchesToDelete = localBranches -- filteredRemoteBranches
+      gitService.getRemoteBranches(project.repositoryUrl).map(_.toSet).flatMap { remoteBranches =>
+        logger.info(s"Remotes branches of project ${project.id} : ${remoteBranches.mkString(", ")}")
 
-      logger.info(s"Project ${project.id}, displayed branches: ${project.displayedBranches}, branches to update: ${branchesToUpdate.mkString(", ")}, branches to checkout: ${branchesToCheckout.mkString(", ")}, branches to delete: ${branchesToDelete.mkString(", ")}")
+        val filteredRemoteBranches = remoteBranches.filter(branch => project.displayedBranches.forall(regex => branch.matches(regex)))
 
-      for {
-        _ <- checkoutBranches(project, branchesToCheckout)
-        _ <- updateBranches(project, branchesToUpdate)
-      } yield deleteBranches(project.id, branchesToDelete)
+        val branchesToUpdate = localBranches.intersect(filteredRemoteBranches)
+        val branchesToCheckout = filteredRemoteBranches -- localBranches
+        val branchesToDelete = localBranches -- filteredRemoteBranches
+
+        logger.info(s"Project ${project.id}, displayed branches: ${project.displayedBranches}, branches to update: ${branchesToUpdate.mkString(", ")}, branches to checkout: ${branchesToCheckout.mkString(", ")}, branches to delete: ${branchesToDelete.mkString(", ")}")
+
+        for {
+          _ <- checkoutBranches(project, branchesToCheckout)
+          _ <- updateBranches(project, branchesToUpdate)
+          _ <- deleteBranches(project.id, branchesToDelete)
+        } yield ()
+      }
     }
   }
 

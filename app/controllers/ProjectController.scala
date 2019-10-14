@@ -6,13 +6,15 @@ import javax.inject._
 import models._
 import play.api.libs.json._
 import play.api.mvc._
-import repository._
+import repositories._
 import services._
 
 import scala.concurrent._
 
 @Api(value = "ProjectController", produces = "application/json")
-class ProjectController @Inject()(projectRepository: ProjectRepository, projectService: ProjectService, hierarchyRepository: HierarchyRepository, branchRepository: BranchRepository, menuService: MenuService)(implicit ec: ExecutionContext) extends InjectedController {
+class ProjectController @Inject()(projectRepository: ProjectRepository, projectService: ProjectService, hierarchyRepository: HierarchyRepository,
+                                  branchRepository: BranchRepository, menuService: MenuService, replicaService: ReplicaService)
+                                 (implicit ec: ExecutionContext) extends InjectedController {
 
   implicit val pageFormat = Json.format[Page]
   implicit val directoryFormat = Json.format[Directory]
@@ -145,7 +147,7 @@ class ProjectController @Inject()(projectRepository: ProjectRepository, projectS
   @ApiResponses(Array(new ApiResponse(code = 404, message = "Project not found")))
   def synchronizeProject(@ApiParam("Project id") id: String): Action[AnyContent] = Action.async {
     projectRepository.findById(id)
-      .map(projectService.synchronize(_).map(_ => menuService.refreshCache()).map(_ => Ok))
+      .map(projectService.synchronize(_).map(_ => menuService.refreshCache()).map(_ => replicaService.triggerSychronizeOnReplica(id)).map(_ => Ok))
       .getOrElse(Future.successful(NotFound(s"No project $id")))
 
   }

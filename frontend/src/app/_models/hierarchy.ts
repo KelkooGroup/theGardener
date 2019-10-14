@@ -1,3 +1,5 @@
+import {PagePart} from './page';
+
 export interface HierarchyNodeApi {
   id: string;
   hierarchy: string;
@@ -22,6 +24,7 @@ export interface BranchApi {
   path: string;
   rootDirectory?: DirectoryApi;
 }
+
 export interface DirectoryApi {
   id: string;
   path: string;
@@ -40,8 +43,5 @@ export interface PageApi {
   label: string;
   description: string;
   order: number;
-  markdown?: string;
+  content?: Array<PagePart>;
 }
-
-
-

@@ -1,8 +1,20 @@
-mat-sidenav-container {
-  min-height: 100vh;
+@import "backoffice";
+.page {
+  display: grid;
+  grid-template-columns: minmax(300px, 20%) 1fr;
+  grid-template-areas:
+    "sidebar content";
+  width: 100%;
+  height: 100%;
 }
 
-mat-sidenav-content {
-  min-width: 100vw;
-  padding-left: 25px;
+.side-nav {
+  grid-area: sidebar;
+  border-right: 1px solid rgba(0, 0, 0, 0.12);
+  padding-top: 10px;
+  overflow: auto;
+}
+
+.content {
+  grid-area: content;
 }

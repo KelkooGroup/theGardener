@@ -7,7 +7,7 @@ import {
   MatIconModule,
   MatProgressSpinnerModule,
   MatSelectModule,
-  MatSidenavModule,
+  MatSnackBarModule,
   MatTabsModule
 } from '@angular/material';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
@@ -31,12 +31,12 @@ describe('NavigatePageComponent', () => {
         NavigateMenuComponent,
         NavigateMenuItemComponent,
       ], imports: [
-        MatSidenavModule,
         MatFormFieldModule,
         MatSelectModule,
         MatIconModule,
         MatTabsModule,
         MatProgressSpinnerModule,
+        MatSnackBarModule,
         FormsModule,
         HttpClientTestingModule,
         NoopAnimationsModule,
@@ -46,6 +46,7 @@ describe('NavigatePageComponent', () => {
           provide: ActivatedRoute,
           useValue: {
             params: of({name: 'eng'}),
+            firstChild: of(),
           }
         }
       ]

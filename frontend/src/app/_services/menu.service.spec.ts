@@ -5,7 +5,7 @@ import {
   MENU_HEADER_SERVICE_RESPONSE,
   MENU_SERVICE_RESPONSE,
   MENU_SUBMENU_SERVICE_RESPONSE
-} from '../test/test-data.spec';
+} from '../_testUtils/test-data.spec';
 import {MenuHierarchy} from '../_models/menu';
 
 describe('MenuService', () => {
@@ -118,13 +118,13 @@ const EXPECTED_MENU_FOR_ENGINEERING_VIEW: Array<MenuHierarchy> = [
             type: 'Project',
             depth: 2,
             stableBranch: 'master',
-            route: 'suggestionsReports',
+            route: 'suggestionsReports>master',
             children: [
               {
                 name: 'master',
                 label: 'master',
                 type: 'Branch',
-                depth: 3,
+                depth: 2,
                 route: 'suggestionsReports>master',
                 children: [],
               }
@@ -136,54 +136,43 @@ const EXPECTED_MENU_FOR_ENGINEERING_VIEW: Array<MenuHierarchy> = [
             type: 'Project',
             depth: 2,
             stableBranch: 'master',
-            route: 'suggestionsWS',
+            route: 'suggestionsWS>master>_',
             children: [
               {
                 name: 'master',
                 label: 'master',
                 type: 'Branch',
-                depth: 3,
+                depth: 2,
                 route: 'suggestionsWS>master',
                 children: [
                   {
-                    name: 'root',
-                    label: 'SuggestionsWS',
-                    description: 'Suggestions WebServices',
+                    name: 'suggestions',
+                    label: 'Suggestions',
+                    description: 'Suggestions...',
                     type: 'Directory',
-                    depth: 4,
+                    depth: 3,
                     order: 0,
-                    route: 'suggestionsWS>master>/',
-                    children: [
-                      {
-                        name: 'suggestions',
-                        label: 'Suggestions',
-                        description: 'Suggestions...',
-                        type: 'Directory',
-                        depth: 5,
-                        order: 0,
-                        route: 'suggestionsWS>master>/suggestions/',
-                        children: []
-                      },
-                      {
-                        name: 'admin',
-                        label: 'Admin',
-                        description: 'Administration...',
-                        type: 'Directory',
-                        depth: 5,
-                        order: 1,
-                        route: 'suggestionsWS>master>/admin/',
-                        children: []
-                      },
-                    ]
-                  }
-                ],
+                    route: 'suggestionsWS>master>_suggestions_',
+                    children: []
+                  },
+                  {
+                    name: 'admin',
+                    label: 'Admin',
+                    description: 'Administration...',
+                    type: 'Directory',
+                    depth: 3,
+                    order: 1,
+                    route: 'suggestionsWS>master>_admin_',
+                    children: []
+                  },
+                ]
               },
               {
                 name: 'bugfix/351',
                 label: 'bugfix/351',
                 type: 'Branch',
-                depth: 3,
-                route: 'suggestionsWS>bugfix/351',
+                depth: 2,
+                route: 'suggestionsWS>bugfix_351',
                 children: [],
               }
 
@@ -203,13 +192,13 @@ const EXPECTED_MENU_FOR_ENGINEERING_VIEW: Array<MenuHierarchy> = [
             type: 'Project',
             depth: 2,
             stableBranch: 'master',
-            route: 'usersWS',
+            route: 'usersWS>master',
             children: [
               {
                 name: 'master',
                 label: 'master',
                 type: 'Branch',
-                depth: 3,
+                depth: 2,
                 route: 'usersWS>master',
                 children: [],
               }

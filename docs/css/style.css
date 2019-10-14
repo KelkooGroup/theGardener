@@ -482,6 +482,15 @@ a:hover {
   color: #4d546f;
 }
 
+.list li  {
+  list-style-type: circle;
+}
+
+.strong {
+  font-weight: bold;
+}
+
+
 .service-bg {
   position: absolute;
   right: 0;

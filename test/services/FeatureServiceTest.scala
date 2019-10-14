@@ -1,12 +1,12 @@
 package services
 
-import com.typesafe.config.{Config, ConfigFactory}
+import com.typesafe.config.ConfigFactory
 import models.Branch
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import org.scalatest._
 import org.scalatestplus.mockito._
-import repository.FeatureRepository
+import repositories.FeatureRepository
 
 class FeatureServiceTest extends WordSpec with MustMatchers with MockitoSugar {
 

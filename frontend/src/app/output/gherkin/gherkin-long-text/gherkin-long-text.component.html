@@ -1,3 +1,10 @@
-<div *ngIf="isJson">
-  <ngx-json-viewer [json]="json"></ngx-json-viewer>
+<div class="params">
+  <div *ngIf="isJson; else simpleTextBlock" class="json">
+    <ngx-json-viewer [json]="json"></ngx-json-viewer>
+  </div>
+  <ng-template #simpleTextBlock>
+    <div class="long-text">
+      {{longText}}
+    </div>
+  </ng-template>
 </div>

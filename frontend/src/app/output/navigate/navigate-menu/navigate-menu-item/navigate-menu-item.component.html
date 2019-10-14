@@ -1,13 +1,32 @@
-<a [ngStyle]="{'padding-left': ((menuItem.depth+1) * 12) + 'px'}"
-   [ngClass]="active ? 'active': ''"
+<a [ngStyle]="{'padding-left': calculatePadding() + 'px'}"
+   [ngClass]="leafSelection ? 'active': active ? 'bold' : 'default'"
    (click)="navigateToItem()"
    class="item"
 >
-  <ul class="flex-container flex-direction-row flex-align-items-center flex-space-between flex-width-expand">
+  <ul class="menu-link">
+    <div id="expandIcon" *ngIf="menuItem.children.length>0">
+      <div *ngIf="menuItem.depth == 0; else iconPlus">
+        <div *ngIf="expanded; else collapsed">
+          <i class="fas fa-chevron-down collapse-icon"></i>
+        </div>
+        <ng-template #collapsed>
+          <div *ngIf="!expanded">
+            <i class="fas fa-chevron-right collapse-icon"></i>
+          </div>
+        </ng-template>
+      </div>
+      <ng-template #iconPlus>
+        <div *ngIf="expanded; else collapsed">
+          <i class="fas fa-minus collapse-icon"></i>
+        </div>
+        <ng-template #collapsed>
+          <div *ngIf="!expanded">
+            <i class="fas fa-plus collapse-icon"></i>
+          </div>
+        </ng-template>
+      </ng-template>
+    </div>
     <span class="item-text">{{ menuItem.label }}</span>
-    <mat-icon *ngIf="menuItem.children.length>0" [@indicatorRotate]="expanded ? 'expanded': 'collapsed'">
-      expand_more
-    </mat-icon>
   </ul>
 </a>
 
@@ -24,12 +43,14 @@
   <ng-template #projectBlock>
     <div *ngIf="menuItem.children.length > 1"
          class="options"
-         [ngStyle]="{'padding-left': ((menuItem.depth+1) * 12) + 'px'}">
-      <mat-form-field>
+         [ngStyle]="{'padding-left': calculatePadding() + 'px'}">
+      <mat-form-field class="branch-select">
         <mat-label>Branch</mat-label>
         <mat-select placeholder="Stable branch by default"
                     [(ngModel)]="selectedBranch"
                     [compareWith]="branchComparator"
+                    id="branchSelect"
+                    (selectionChange)="navigateToSelectedBranch()"
         >
           <mat-option *ngFor="let branch of menuItem.children; trackBy: trackMenuItem" [value]="branch">
             {{ branch.name }}
@@ -37,8 +58,8 @@
         </mat-select>
       </mat-form-field>
     </div>
-    <div *ngIf="selectedBranch && selectedBranch.children && selectedBranch.children[0]">
-      <app-navigate-menu-item [menuItem]="selectedBranch.children[0]"></app-navigate-menu-item>
+    <div *ngIf="selectedBranch && selectedBranch.children">
+      <app-navigate-menu-item *ngFor="let child of selectedBranch.children" [menuItem]="child"></app-navigate-menu-item>
     </div>
   </ng-template>
 </div>

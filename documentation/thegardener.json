@@ -1,13 +1,20 @@
 {
   "directory" :
   {
-    "label": "TheGardener",
-    "description": "TheGardener",
+    "label": "theGardener",
+    "description": "In our documentation we trust.",
     "pages": [
-      "description"
+      "theTeaser",
+      "theProject",
+      "theRoots",
+      "thePrerequisite",
+      "theChangelog",
+      "thePlan"
     ],
     "children" :[
-      "context"
+      "guides",
+      "features",
+      "api"
     ]
   }
 }

@@ -1,5 +1,6 @@
 package controllers
 
+import com.github.ghik.silencer.silent
 import controllers.Assets.Asset
 import javax.inject.Inject
 import play.api.mvc._
@@ -11,6 +12,7 @@ class Application @Inject()(assets: Assets) extends InjectedController {
     Redirect("/app/")
   }
 
+  @silent("never used")
   def app(path: String): Action[AnyContent] = assets.at("dist/index.html")
 
   def assets(file: Asset): Action[AnyContent] = assets.versioned(path = "/public", file)

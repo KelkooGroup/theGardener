@@ -26,9 +26,8 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatCardModule} from '@angular/material/card';
-import {MatSidenavModule, MatSnackBarModule} from '@angular/material';
+import {MatSnackBarModule} from '@angular/material';
 import {MenuService} from './_services/menu.service';
-import {GherkinService} from './_services/gherkin.service';
 import {GherkinComponent} from './output/gherkin/gherkin.component';
 import {GherkinTableComponent} from './output/gherkin/gherkin-table/gherkin-table.component';
 import {FooterComponent} from './_components/page/footer/footer.component';
@@ -37,14 +36,13 @@ import {NavigatePageComponent} from './output/navigate/navigate-page.component';
 import {NavigateContentComponent} from './output/navigate/navigate-content/navigate-content.component';
 import {NavigateMenuComponent} from './output/navigate/navigate-menu/navigate-menu.component';
 import {NotificationService} from './_services/notification.service';
-import {GherkinFeatureComponent} from './output/gherkin/gherkin-feature/gherkin-feature.component';
-import {GherkinBackgroundComponent} from './output/gherkin/gherkin-background/gherkin-background.component';
 import {GherkinStepComponent} from './output/gherkin/gherkin-step/gherkin-step.component';
 import {HeaderComponent} from './_components/page/header/header.component';
 import {CdkAccordionModule} from '@angular/cdk/accordion';
-import { NavigateMenuItemComponent } from './output/navigate/navigate-menu/navigate-menu-item/navigate-menu-item.component';
-import { PageContentComponent } from './output/page-content/page-content.component';
-import { MarkdownModule } from 'ngx-markdown';
+import {NavigateMenuItemComponent} from './output/navigate/navigate-menu/navigate-menu-item/navigate-menu-item.component';
+import {PageContentComponent} from './output/page-content/page-content.component';
+import {MarkdownModule} from 'ngx-markdown';
+import {SafePipe} from './safe.pipe';
 
 const nonProductionProviders = [{
   provide: HTTP_INTERCEPTORS,
@@ -64,11 +62,10 @@ const nonProductionProviders = [{
     GherkinComponent,
     GherkinTableComponent,
     GherkinLongTextComponent,
-    GherkinFeatureComponent,
-    GherkinBackgroundComponent,
     GherkinStepComponent,
     NavigateMenuItemComponent,
     PageContentComponent,
+    SafePipe,
   ],
   imports: [
     HttpClientModule,
@@ -96,14 +93,12 @@ const nonProductionProviders = [{
     MatExpansionModule,
     MatProgressBarModule,
     MatSnackBarModule,
-    MatSidenavModule,
     CdkAccordionModule,
     MarkdownModule.forRoot(),
   ],
   providers: [
     ...!environment.production ? nonProductionProviders : [],
     MenuService,
-    GherkinService,
     NotificationService,
   ],
   bootstrap: [AppComponent]

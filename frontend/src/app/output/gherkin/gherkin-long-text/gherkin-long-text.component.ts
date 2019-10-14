@@ -10,18 +10,14 @@ export class GherkinLongTextComponent implements OnInit {
   @Input() longText: string;
 
   isJson: boolean;
-  json: any;
+  json: object;
 
   constructor() {
   }
 
   ngOnInit() {
-    this.jsonText = this.longText;
-  }
-
-  set jsonText(text: string) {
     try {
-      this.json = JSON.parse(text);
+      this.json = JSON.parse(this.longText);
       this.isJson = true;
     } catch (e) {
       this.isJson = false;

@@ -31,7 +31,7 @@ Feature: As a user Tim, I want some book suggestions so that I can do some disco
     When we ask for suggestions
     Then the suggestions are popular and available books adapted to the age of the user
     """
-    And the database is synchronized on the project "suggestionsWS"
+    And the project "suggestionsWS" is synchronized
     When I perform a "GET" on following URL "/api/gherkin?project=_root_suggestion>suggestionsWS>master>provide_book_suggestions.feature"
     Then I get the following json response body
 """
@@ -114,7 +114,7 @@ Scenario: one service on which the suggestion system depends on is down
     Then the system is temporary not available
 
     """
-    And the database is synchronized on the project "suggestionsWS"
+    And the project "suggestionsWS" is synchronized
     When I perform a "GET" on following URL "/api/gherkin?project=_root_suggestion>suggestionsWS"
     Then I get the following json response body
 """
@@ -205,7 +205,7 @@ Feature: As a user, I want some book suggestions so that I can do some discovery
     Then the suggestions are popular and available books adapted to the age of the user
 
     """
-    And the database is synchronized on the project "suggestionsWS"
+    And the project "suggestionsWS" is synchronized
     When I perform a "GET" on following URL "/api/gherkin?project=_root_suggestion>suggestionsWS"
     Then I get a response with status "200"
     And I get the following json response body
@@ -290,6 +290,112 @@ Feature: As a user, I want some book suggestions so that I can do some discovery
 """
 
   @level_2_technical_details @nominal_case @valid
+  Scenario: generate documentation with a long text parameter - json output
+    Given the server "target/remote/data/GetFeatures" host under the project "library/suggestionsWS" on the branch "master" the file "test/features/provide_book_suggestions.feature"
+    """
+Feature: As a user Tim, I want some book suggestions so that I can do some discovery
+
+  @level_0_high_level @nominal_case @draft
+  Scenario: providing several book suggestions
+    Given a user with description
+    \"\"\"
+       I'm happy to read book from this library.
+       Having suggestions is a good idea.
+    \"\"\"
+    When we ask for suggestions
+    Then the suggestions are popular and available books adapted to the age of the user
+    """
+    And the project "suggestionsWS" is synchronized
+    When I perform a "GET" on following URL "/api/gherkin?project=_root_suggestion>suggestionsWS>master>provide_book_suggestions.feature"
+    Then I get the following json response body
+"""
+{
+  "id": ".",
+  "slugName": "root",
+  "name": "Hierarchy root",
+  "childrenLabel": "Views",
+  "childLabel": "View",
+  "projects": [],
+  "children": [
+    {
+      "id": ".01.",
+      "slugName": "suggestion",
+      "name": "Suggestion system",
+      "childrenLabel": "Projects",
+      "childLabel": "Project",
+      "projects": [
+        {
+          "id": "suggestionsWS",
+          "name": "Suggestions WebServices",
+          "branches": [
+            {
+              "id": 1,
+              "name": "master",
+              "isStable": true,
+              "features": [
+                {
+                  "id": 1,
+                  "branchId": 1,
+                  "path": "test/features/provide_book_suggestions.feature",
+                  "tags": [],
+                  "language": "en",
+                  "keyword": "Feature",
+                  "name": "As a user Tim, I want some book suggestions so that I can do some discovery",
+                  "description": "",
+                  "scenarios": [
+                    {
+                      "name": "providing several book suggestions",
+                      "workflowStep": "draft",
+                      "description": "",
+                      "id": 1,
+                      "keyword": "Scenario",
+                      "abstractionLevel": "level_0_high_level",
+                      "steps": [
+                        {
+                          "id": 0,
+                          "keyword": "Given",
+                          "text": "a user with description",
+                          "argument": [
+                            [
+                              "   I'm happy to read book from this library.\n   Having suggestions is a good idea."
+                            ]
+                          ]
+                        },
+                        {
+                          "id": 1,
+                          "keyword": "When",
+                          "text": "we ask for suggestions",
+                          "argument": []
+                        },
+                        {
+                          "id": 2,
+                          "keyword": "Then",
+                          "text": "the suggestions are popular and available books adapted to the age of the user",
+                          "argument": []
+                        }
+                      ],
+                      "tags": [
+                        "draft",
+                        "level_0_high_level",
+                        "nominal_case"
+                      ],
+                      "caseType": "nominal_case"
+                    }
+                  ],
+                  "comments": []
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "children": []
+    }
+  ]
+}
+"""
+
+  @level_2_technical_details @nominal_case @valid
   Scenario: generate documentation with a outline scenario - json output
     Given the server "target/remote/data/GetFeatures" host under the project "library/suggestionsWS" on the branch "master" the file "test/features/provide_book_suggestions.feature"
     """
@@ -308,7 +414,7 @@ Examples:
       | Tim       | 1                  |
 
     """
-    And the database is synchronized on the project "suggestionsWS"
+    And the project "suggestionsWS" is synchronized
     When I perform a "GET" on following URL "/api/gherkin?project=_root_suggestion>suggestionsWS"
     Then I get the following json response body
 """

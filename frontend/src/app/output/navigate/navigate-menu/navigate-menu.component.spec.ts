@@ -4,7 +4,13 @@ import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {ActivatedRoute} from '@angular/router';
 import {of} from 'rxjs';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
-import {MatFormFieldModule, MatIconModule, MatProgressSpinnerModule, MatSelectModule} from '@angular/material';
+import {
+  MatFormFieldModule,
+  MatIconModule,
+  MatProgressSpinnerModule,
+  MatSelectModule,
+  MatSnackBarModule
+} from '@angular/material';
 import {RouterTestingModule} from '@angular/router/testing';
 import {NavigateMenuItemComponent} from './navigate-menu-item/navigate-menu-item.component';
 import {FormsModule} from '@angular/forms';
@@ -24,6 +30,7 @@ describe('NavigateMenuComponent', () => {
         MatSelectModule,
         MatIconModule,
         MatProgressSpinnerModule,
+        MatSnackBarModule,
         FormsModule,
         NoopAnimationsModule,
         HttpClientTestingModule,

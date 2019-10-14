@@ -4,7 +4,7 @@ Feature: Provide menu
     Given the database is empty
     And the cache is empty
 
-  @level_2_technical_details @nominal_case @valid
+  @level_2_technical_details @nominal_case @valid @documentation
   Scenario: provide menu
     Given the hierarchy nodes are
       | id         | slugName   | name                 | childrenLabel | childLabel   |
@@ -553,7 +553,8 @@ Feature: Provide menu
         "name": "suggestion",
         "label": "suggestion",
         "description": "suggestion",
-        "order": 0
+        "order": 0,
+        "content":[]
       },
       {
         "path": "suggestionsWS>master>/suggestions/examples",
@@ -561,7 +562,8 @@ Feature: Provide menu
         "name": "examples",
         "label": "examples",
         "description": "examples",
-        "order": 1
+        "order": 1,
+        "content":[]
       }
     ]
   }

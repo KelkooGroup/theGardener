@@ -1,7 +1,6 @@
 <mat-progress-spinner *ngIf="!hierarchy"></mat-progress-spinner>
-<div *ngIf="hierarchy">
+<div *ngIf="hierarchy" class="menu">
   <div *ngFor="let item of hierarchy; trackBy: trackItem; let last=last">
     <app-navigate-menu-item [menuItem]="item"></app-navigate-menu-item>
-<!--    <hr *ngIf="!last">-->
   </div>
 </div>

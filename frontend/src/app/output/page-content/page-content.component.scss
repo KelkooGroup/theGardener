@@ -1,0 +1,25 @@
+@import "backoffice";
+
+.markdown-container {
+  color: $color-text-darker;
+
+  .markdown, .scenario {
+    padding-left: $margin-left;
+    padding-right: 40px;
+    line-height: 22px;
+  }
+
+  iframe {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: calc(100vh - 206px);
+  }
+}
+
+
+h1 {
+  padding-left: $margin-left;
+}
+

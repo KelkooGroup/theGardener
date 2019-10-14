@@ -1,16 +1,27 @@
-@import "../../../../stylesheets/backoffice";
+@import "_colors.scss";
 
+.params {
+  margin: 20px 30px;
+  width: 100%;
+  padding: 10px 0;
+  box-shadow: 2px 0px 8px 1px rgba(0,0,0,.12);
+  font-size: 14px;
+  line-height: 18px;
+}
 
+.json, .long-text {
+  padding-left: 10px;
+}
 $type-colors: (
   string: $color-text,
-  number: $color-text-invert-light,
-  boolean: $color-text-invert-light,
-  date: $color-text-invert-light,
-  array: $color-text,
-  object: $color-text,
-  function: $color-text,
-  'null': $color-text-invert,
-  undefined: $color-text-invert
+  number: $color-text,
+  boolean: $color-text,
+  date: $color-text,
+  array: $color-text-dark,
+  object: $color-text-dark,
+  function: $color-text-dark,
+  'null': $color-text-invert-light,
+  undefined: $color-text-invert-light
 );
 
 @each $type, $color in $type-colors {
@@ -19,11 +30,6 @@ $type-colors: (
   }
 }
 
-::ng-deep .segment-main > .segment-key {
-  color: $color-text-dark !important;
-}
-
-::ng-deep .segment-main > .segment-value {
-  font-size: $font-size-text-small !important;
-  font-family: "courier", serif;
+::ng-deep .segment > .segment-main > .segment-key {
+  color: $color-text-darker !important;
 }

@@ -1,56 +1,67 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {MenuHierarchy, MenuProjectHierarchy} from '../../../../_models/menu';
-import {animate, state, style, transition, trigger} from '@angular/animations';
 import {ActivatedRoute, Router} from '@angular/router';
+import {Subscription} from 'rxjs';
+import {NotificationService} from '../../../../_services/notification.service';
 
 @Component({
   selector: 'app-navigate-menu-item',
   templateUrl: './navigate-menu-item.component.html',
   styleUrls: ['./navigate-menu-item.component.scss'],
-  animations: [
-    trigger('indicatorRotate', [
-      state('collapsed', style({transform: 'rotate(0deg)'})),
-      state('expanded', style({transform: 'rotate(180deg)'})),
-      transition('expanded <=> collapsed',
-        animate('225ms cubic-bezier(0.4,0.0,0.2,1)')
-      ),
-    ])
-  ]
 })
-export class NavigateMenuItemComponent implements OnInit {
+export class NavigateMenuItemComponent implements OnInit, OnDestroy {
 
   @Input() menuItem: MenuHierarchy;
   expanded: boolean;
   active: boolean;
+  leafSelection: boolean;
   nodeNameInUrl: string;
   pathInUrl: string;
   selectedBranch: MenuHierarchy;
+  private subscription: Subscription;
 
   constructor(private router: Router,
-              private activatedRoute: ActivatedRoute) {
+              private activatedRoute: ActivatedRoute,
+              private notificationService: NotificationService) {
   }
 
   ngOnInit() {
-    this.activatedRoute.params
+    this.subscription = this.activatedRoute.params
       .subscribe(params => {
         this.nodeNameInUrl = params.name;
         this.pathInUrl = params.path;
         this.active = this.isNodeActive(this.menuItem);
+        this.leafSelection = this.isLeafSelection(this.menuItem);
         this.expanded = this.menuItem.type === 'Node' || this.active;
         if (this.menuItem.type === 'Project') {
           const project = this.menuItem as MenuProjectHierarchy;
-          this.selectedBranch = project.children.find(b => b.name === project.stableBranch);
+          const branchInUrl = this.getBranchFromUrl();
+          const branchToSelect = branchInUrl ? branchInUrl : project.stableBranch;
+          this.selectedBranch = project.children.find(b => b.name === branchToSelect);
         }
+      }, error => {
+        this.notificationService.showError(`Error while showing menu item ${this.menuItem.name}`, error);
       });
   }
 
   navigateToItem() {
     if (this.menuItem.route !== undefined) {
-      const targetUrl = `app/documentation/navigate/${this.nodeNameInUrl}`;
-      this.router.navigate([targetUrl, {path: this.menuItem.route}]);
+      if (this.activatedRoute.snapshot && this.activatedRoute.snapshot.params && this.menuItem.route === this.activatedRoute.snapshot.params.path) {
+        this.expanded = !this.expanded;
+      } else {
+        this.router.navigate([this.targetUrl, {path: this.menuItem.route}]);
+      }
     } else {
       this.expanded = !this.expanded;
     }
+  }
+
+  navigateToSelectedBranch() {
+    this.router.navigate([this.targetUrl, {path: this.selectedBranch.route}]);
+  }
+
+  private get targetUrl(): string {
+    return `app/documentation/navigate/${this.nodeNameInUrl}`;
   }
 
   isRouteInActivatedUrl(node: MenuHierarchy) {
@@ -58,7 +69,7 @@ export class NavigateMenuItemComponent implements OnInit {
       this.pathInUrl &&
       (this.pathInUrl === node.route ||
         // Angular router automatically removes trailing slash from URL so we need to append it to check path
-        this.pathInUrl.concat('/') === node.route );
+        this.pathInUrl.concat('/') === node.route);
     return isRouteInActivatedUrl;
   }
 
@@ -67,7 +78,12 @@ export class NavigateMenuItemComponent implements OnInit {
     return this.isRouteInActivatedUrl(node) || hasActivatedChild;
   }
 
-  trackMenuItem(index: number, item: MenuHierarchy ) {
+  isLeafSelection(node: MenuHierarchy): boolean {
+    const hasActivatedChild = node.children.some(c => this.isNodeActive(c));
+    return this.isRouteInActivatedUrl(node) && !hasActivatedChild;
+  }
+
+  trackMenuItem(index: number, item: MenuHierarchy) {
     return item.name;
   }
 
@@ -75,4 +91,25 @@ export class NavigateMenuItemComponent implements OnInit {
     return branch1.name === branch2.name;
   }
 
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
+
+  calculatePadding(): number {
+    return (this.menuItem.depth + 1) * 16 + (+(this.menuItem.children.length === 0) * 12);
+  }
+
+  private getBranchFromUrl(): string | undefined {
+    if (this.pathInUrl) {
+      const pathParts = this.pathInUrl.split('>');
+      if (pathParts.length > 1) {
+        return pathParts[1];
+      } else {
+        return undefined;
+      }
+    } else {
+      return undefined;
+    }
+
+  }
 }

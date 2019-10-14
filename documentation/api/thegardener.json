@@ -1,0 +1,12 @@
+{
+  "directory" :
+  {
+    "label": "theAPI",
+    "description": "What is available in the backend API ?",
+    "pages": [
+      "tryit"
+    ],
+    "children" :[
+    ]
+  }
+}
