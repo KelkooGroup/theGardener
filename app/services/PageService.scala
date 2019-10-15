@@ -2,7 +2,7 @@ package services
 
 import java.io.{File, FileInputStream}
 
-import controllers.dto.PageFragment
+import controllers.dto.{PageFragment, PageFragmentContent}
 import javax.inject.Inject
 import models.{PageJoinProject, _}
 import org.apache.commons.io.FileUtils
@@ -346,11 +346,22 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
 
   def findPageReferencesWithRelativePath(pageContent: String): Seq[String] = (for (m <- ReferenceRegex.findAllMatchIn(pageContent)) yield m.group(1)).toSeq.filterNot(_.startsWith("http"))
 
-  def replaceVariablesInMarkdown(page: Page, variables : Seq[Variable]): Page ={
-    for(variable <- variables){
-      page.markdown.getOrElse("il n'y a pas de markdown").replaceAll(variable.name,variable.value)
+  def replaceVariablesInMarkdown(content: Seq[PageFragment], variables: Seq[Variable]): Seq[PageFragment] = {
+    content.map(pageFragment =>
+      if (pageFragment.`type` == "markdown") {
+        PageFragment(pageFragment.`type`, PageFragmentContent(replaceVariableInString(pageFragment.data.markdown.getOrElse("there is no markdown"), variables, 0)))
+      }else {
+        pageFragment
+      }
+    )
+  }
+
+  def replaceVariableInString(texte: String, variables: Seq[Variable], index: Int): Option[String] = {
+    if (index != variables.length) {
+      replaceVariableInString(texte.replace(variables(index).name, variables(index).value), variables, index + 1)
+    } else {
+      Option(texte)
     }
-    page
   }
 
 }

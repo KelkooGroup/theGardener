@@ -7,7 +7,6 @@ import controllers.dto._
 import io.swagger.annotations._
 import javax.inject.Inject
 import play.api.Configuration
-import models.Variable
 import play.api.libs.json.Json
 import play.api.mvc._
 import repositories._
@@ -17,15 +16,15 @@ import scala.concurrent.ExecutionContext
 
 
 @Api(value = "PageController", produces = "application/json")
-class PageController @Inject()(pageRepository: PageRepository, projectService: ProjectService, pageService : PageService) extends InjectedController {
+class PageController @Inject()(projectService: ProjectService, pageService : PageService) extends InjectedController {
 
   @ApiOperation(value = "Get pages from path", response = classOf[PageDTO], responseContainer = "list")
   @ApiResponses(Array(new ApiResponse(code = 404, message = "Page not found")))
   def getPageFromPath(path: String): Action[AnyContent] = Action {
     pageService.computePageFromPath(path) match{
-      case Some(pageWithContent) => val variables = projectService.getVariables(page)
-        Ok(Json.toJson(Seq(PageDTO(pageservice.replaceVariablesInMarkdown(page,variables)))))
-        Ok(Json.toJson( Seq(PageDTO(pageWithContent.page,pageWithContent.content))))
+      case Some(pageWithContent) =>
+        val variables = projectService.getVariables(pageWithContent.page)
+        Ok(Json.toJson( Seq(PageDTO(pageWithContent.page,pageService.replaceVariablesInMarkdown(pageWithContent.content,variables.getOrElse(Seq()))))))
       case None => NotFound(s"No Page $path")
     }
   }

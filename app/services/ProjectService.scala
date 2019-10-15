@@ -7,7 +7,6 @@ import akka.actor.{ActorSystem, CoordinatedShutdown}
 import javax.inject._
 import models._
 import org.apache.commons.io.FileUtils._
-import play.api.libs.json.Json
 import play.api.{Configuration, Environment, Logging, Mode}
 import repositories._
 import utils._
@@ -224,11 +223,12 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
     }
   }
 
-  def getVariables(page: Page): Seq[Variable] ={
-    (for {
+  def getVariables(page: Page): Option[Seq[Variable]] ={
+    for {
       directory <- directoryRepository.findById(page.directoryId)
       branch <- branchRepository.findById(directory.branchId)
       project <- projectRepository.findById(branch.projectId)
-    } yield project.variables).getOrElse(Seq())
+      availableImplicitVariable = Seq(Variable(s"$${project.current}", s"${project.name}"), Variable(s"$${branch.current}", s"${branch.name}"), Variable(s"$${branch.stable}", s"${project.stableBranch}"))
+    } yield project.variables.getOrElse(Seq()).++(availableImplicitVariable)
   }
 }

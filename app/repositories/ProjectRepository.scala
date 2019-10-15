@@ -20,7 +20,7 @@ class ProjectRepository @Inject()(db: Database) {
     featuresRootPath <- str("featuresRootPath").?
     documentationRootPath <- str("documentationRootPath").?
     variables <-  str("variables").?
-  } yield Project(id, name, repositoryUrl, stableBranch, displayedBranches, featuresRootPath, documentationRootPath, variables.map(Json.parse(_).as[Seq[Variable]]).getOrElse(Seq()))
+  } yield Project(id, name, repositoryUrl, stableBranch, displayedBranches, featuresRootPath, documentationRootPath, variables.map(Json.parse(_).as[Seq[Variable]]))
 
   def count(): Long = {
     db.withConnection { implicit connection =>
@@ -81,7 +81,7 @@ class ProjectRepository @Inject()(db: Database) {
   def save(project: Project): Project = {
     db.withConnection { implicit connection =>
       SQL"""REPLACE INTO project (id, name, repositoryUrl, stableBranch, displayedBranches, featuresRootPath, documentationRootPath, variables)
-           VALUES (${project.id}, ${project.name}, ${project.repositoryUrl}, ${project.stableBranch}, ${project.displayedBranches}, ${project.featuresRootPath}, ${project.documentationRootPath}, ${Json.toJson(project.variables).toString()})""" //todo check if work
+           VALUES (${project.id}, ${project.name}, ${project.repositoryUrl}, ${project.stableBranch}, ${project.displayedBranches}, ${project.featuresRootPath}, ${project.documentationRootPath}, ${project.variables.map(Json.toJson(_).toString())})""" //todo check if work
         .executeUpdate()
 
       SQL"SELECT * FROM project WHERE id = ${project.id}".as(parser.single)
