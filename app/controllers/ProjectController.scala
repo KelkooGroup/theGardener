@@ -62,6 +62,43 @@ class ProjectController @Inject()(projectRepository: ProjectRepository, projectS
     }
   }
 
+  @ApiOperation(value = "Get variables from a project", response = classOf[Seq[Variable]])
+  @ApiResponses(Array(new ApiResponse(code = 404, message = "Project not found")))
+  def getVariables(@ApiParam("Project id") id: String): Action[AnyContent] = Action {
+    projectRepository.findById(id) match {
+
+      case Some(project) =>
+
+        Ok(Json.toJson(project.variables))
+
+      case _ => NotFound(s"No project $id")
+    }
+  }
+
+  @ApiOperation(value = "Update variables of a project", response = classOf[Project])
+  @ApiImplicitParams(Array(new ApiImplicitParam(value = "The variables to update", required = true, dataType = "Seq[models.Variable]", paramType = "body")))
+  @ApiResponses(Array(
+    new ApiResponse(code = 400, message = "Incorrect json"),
+    new ApiResponse(code = 404, message = "Project not found"))
+  )
+  def updateVariables(@ApiParam("Project id") id: String): Action[Seq[Variable]] = Action(parse.json[Seq[Variable]]) { implicit request =>
+    val variables = request.body
+
+    projectRepository.findById(id) match {
+
+      case Some(project) =>
+
+        projectRepository.save(project.copy(variables = if (variables.nonEmpty) Some(variables) else None))
+
+        menuService.refreshCache()
+
+        Ok(Json.toJson(projectRepository.findById(id)))
+
+      case _ => NotFound(s"No project $id")
+    }
+
+  }
+
   @ApiOperation(value = "Update a project", response = classOf[Project])
   @ApiImplicitParams(Array(new ApiImplicitParam(value = "The project to update", required = true, dataType = "models.Project", paramType = "body")))
   @ApiResponses(Array(
