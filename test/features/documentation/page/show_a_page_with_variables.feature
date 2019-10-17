@@ -7,7 +7,7 @@ Feature: Generate a documentation page using some variables
     And the remote projects are empty
 
 
-  @level_2_technical_details @nominal_case @ongoing
+  @level_2_technical_details @nominal_case @valid
   Scenario: replace content of the page by variables
     Given the hierarchy nodes are
       | id   | slugName   | name              | childrenLabel | childLabel |

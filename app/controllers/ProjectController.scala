@@ -87,8 +87,9 @@ class ProjectController @Inject()(projectRepository: ProjectRepository, projectS
     projectRepository.findById(id) match {
 
       case Some(project) =>
+       val newVariables = project.variables.getOrElse(Seq()) ++ variables
 
-        projectRepository.save(project.copy(variables = if (variables.nonEmpty) Some(variables) else None))
+        projectRepository.save(project.copy(variables = if (newVariables.nonEmpty) Some(newVariables) else None))
 
         menuService.refreshCache()
 

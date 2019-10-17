@@ -14,7 +14,7 @@ Feature: Include images in the documentation
       | .01. | suggestion | Suggestion system | Projects      | Project    |
 
 
-  @level_2_technical_details @nominal_case @ongoing
+  @level_2_technical_details @nominal_case @valid
   Scenario: access to images - using the path
     Given we have the following projects
       | id            | name                    | repositoryUrl                                         | stableBranch | featuresRootPath | documentationRootPath |
@@ -36,7 +36,7 @@ Feature: Include images in the documentation
 ~~ IMAGE ~~
 """
 
-  @level_2_technical_details @nominal_case @ongoing
+  @level_2_technical_details @nominal_case @valid
   Scenario: access to images - using the relative path - as would do a developer in its IDE from doc/api - assets is a sub directory from documentation
     Given we have the following projects
       | id            | name                    | repositoryUrl                                         | stableBranch | featuresRootPath | documentationRootPath |
@@ -61,7 +61,7 @@ Feature: Include images in the documentation
 ~~ IMAGE ~~
 """
 
-  @level_2_technical_details @nominal_case @ongoing
+  @level_2_technical_details @nominal_case @valid
   Scenario: access to images - using the relative path - as would do a developer in its IDE from doc/api/suggestions - assets is a sub directory from documentation
     Given we have the following projects
       | id            | name                    | repositoryUrl                                         | stableBranch | featuresRootPath | documentationRootPath |
@@ -169,7 +169,7 @@ Feature: Include images in the documentation
 ]
 """
 
-  @level_2_technical_details @nominal_case @ongoing
+  @level_2_technical_details @nominal_case @valid
   Scenario: access to the image through the API - Reference-style
     Given we have the following projects
       | id            | name                    | repositoryUrl                                         | stableBranch | featuresRootPath | documentationRootPath |
@@ -201,7 +201,7 @@ IMAGE ARCHI
 IMAGE ARCHI
 """
 
-  @level_2_technical_details @error_case @ongoing
+  @level_2_technical_details @error_case @valid
   Scenario: access to a not existing file under documentationRootPath - Reference-style
     Given we have the following projects
       | id            | name                    | repositoryUrl                                         | stableBranch | featuresRootPath | documentationRootPath |
@@ -233,7 +233,7 @@ IMAGE ARCHI
 Asset /suggestions/../assets/images/architecture.png not found
 """
 
-  @level_2_technical_details @error_case @ongoing
+  @level_2_technical_details @error_case @valid
   Scenario: access to a file not under documentationRootPath - Reference-style
     Given we have the following projects
       | id            | name                    | repositoryUrl                                         | stableBranch | featuresRootPath | documentationRootPath |
