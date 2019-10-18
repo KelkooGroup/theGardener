@@ -6,7 +6,7 @@ import controllers.dto.PageFragment
 import javax.inject.Inject
 import models.{PageJoinProject, _}
 import org.apache.commons.io.FileUtils
-import play.api.Configuration
+import play.api.{Configuration, Logging}
 import play.api.cache.SyncCacheApi
 import play.api.libs.json.Json
 import repositories._
@@ -51,7 +51,7 @@ case class PageFragmentUnderProcessing(status: PageFragmentUnderProcessingStatus
 
 case class PageWithContent(page: Page, content: Seq[PageFragment])
 
-class PageService @Inject()(config: Configuration, projectRepository: ProjectRepository, directoryRepository: DirectoryRepository, pageRepository: PageRepository, gherkinRepository: GherkinRepository, cache: SyncCacheApi) {
+class PageService @Inject()(config: Configuration, projectRepository: ProjectRepository, directoryRepository: DirectoryRepository, pageRepository: PageRepository, gherkinRepository: GherkinRepository, cache: SyncCacheApi) extends Logging {
 
 
   implicit val pageMetaFormat = Json.format[PageMeta]
