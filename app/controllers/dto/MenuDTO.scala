@@ -1,4 +1,4 @@
-package controllers.dto
+ package controllers.dto
 
 import models._
 import play.api.libs.json.Json
@@ -34,7 +34,17 @@ object ProjectMenuItemDTO {
   }
 }
 
-case class MenuDTO(id: String, hierarchy: String, slugName: String, name: String, childrenLabel: String, childLabel: String, projects: Option[Seq[ProjectMenuItemDTO]], children: Option[Seq[MenuDTO]])
+case class DirectoryDTO(id: Long, path: String, name: String, label: String, description: String, order: Int, pages: Seq[PageDTO])
+
+ object DirectoryDTO {
+   implicit val directoryFormat = Json.format[DirectoryDTO]
+
+   def apply(directory: Directory): DirectoryDTO = {
+     DirectoryDTO(directory.id, directory.path, directory.name, directory.label, directory.description, directory.order, directory.pages.map(PageDTO(_, Nil)))
+   }
+ }
+
+case class MenuDTO(id: String, hierarchy: String, slugName: String, name: String, childrenLabel: String, childLabel: String, projects: Option[Seq[ProjectMenuItemDTO]], children: Option[Seq[MenuDTO]], directory: Option[DirectoryDTO])
 
 object MenuDTO {
   implicit val menuFormat = Json.format[MenuDTO]
@@ -45,25 +55,17 @@ object MenuDTO {
   def apply(menu: Menu): MenuDTO = {
 
     val hierarchyNode = getHierarchyNode(menu)
-
-    MenuDTO(menu.id, getHierarchy(menu), hierarchyNode.slugName, hierarchyNode.name, hierarchyNode.childrenLabel, hierarchyNode.childLabel, Some(menu.projects.map(ProjectMenuItemDTO(_))), Some(menu.children.map(MenuDTO(_))))
+    val directory = menu.directory.flatMap{ directory => Some(DirectoryDTO(directory)) }
+    MenuDTO(menu.id, getHierarchy(menu), hierarchyNode.slugName, hierarchyNode.name, hierarchyNode.childrenLabel, hierarchyNode.childLabel, Some(menu.projects.map(ProjectMenuItemDTO(_))), Some(menu.children.map(MenuDTO(_)) ), directory  )
   }
 
   def header(menu: Menu): MenuDTO = {
     val hierarchyNode = getHierarchyNode(menu)
 
-    MenuDTO(menu.id, getHierarchy(menu), hierarchyNode.slugName, hierarchyNode.name, hierarchyNode.childrenLabel, hierarchyNode.childLabel, None, None)
+    MenuDTO(menu.id, getHierarchy(menu), hierarchyNode.slugName, hierarchyNode.name, hierarchyNode.childrenLabel, hierarchyNode.childLabel, None, None, None)
   }
 
-  case class DirectoryDTO(id: Long, path: String, name: String, label: String, description: String, order: Int, pages: Seq[PageDTO])
 
-  object DirectoryDTO {
-    implicit val directoryFormat = Json.format[DirectoryDTO]
-
-    def apply(directory: Directory): DirectoryDTO = {
-      DirectoryDTO(directory.id, directory.path, directory.name, directory.label, directory.description, directory.order, directory.pages.map(PageDTO(_, Nil)))
-    }
-  }
 
 }
 
