@@ -9,7 +9,7 @@ import play.api.libs.json.Json
 
 
 class ProjectRepository @Inject()(db: Database) {
-  implicit val Variable = Json.format[Variable]
+  implicit val variableFormat = Json.format[Variable]
 
   private val parser = for {
     id <- str("id")
