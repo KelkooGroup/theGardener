@@ -30,7 +30,7 @@ class PageServiceTest extends WordSpec with MustMatchers with BeforeAndAfter wit
 
   val variables = Seq(Variable(s"$${name1}", "value"),Variable(s"$${name2}", "value2"))
   val contentWithMarkdown = Seq(PageFragment("markdown", PageFragmentContent(Some(s"$${name1}"))))
-  val contentWithExternalPage = Seq(PageFragment("includeExternalPage", PageFragmentContent(Some(s"$${name1}"))))
+  val contentWithExternalPage = Seq(PageFragment("includeExternalPage", PageFragmentContent(None,None,Some(s"$${name1}"))))
   val contentWithTwoFragment = contentWithMarkdown ++ contentWithExternalPage
 
   before {
@@ -43,7 +43,7 @@ class PageServiceTest extends WordSpec with MustMatchers with BeforeAndAfter wit
     }
 
     "Replace Variables in Markdown" in {
-      pageService.replaceVariablesInMarkdown(contentWithTwoFragment, variables) must contain theSameElementsAs Seq(PageFragment("markdown", PageFragmentContent(Some(s"value"))),PageFragment("includeExternalPage", PageFragmentContent(Some(s"value"))))
+      pageService.replaceVariablesInMarkdown(contentWithTwoFragment, variables) must contain theSameElementsAs Seq(PageFragment("markdown", PageFragmentContent(Some(s"value"))),PageFragment("includeExternalPage", PageFragmentContent(None,None,Some(s"value"))))
     }
   }
 

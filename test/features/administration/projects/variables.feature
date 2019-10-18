@@ -4,7 +4,7 @@ Feature: get and update variables of a project
     Given the database is empty
     And the cache is empty
 
-  @level_2_technical_details @nominal_case @ongoing
+  @level_2_technical_details @nominal_case @valid
   Scenario: get variables from a project
     Given we have the following projects
       | id            | name                    | repositoryUrl                                        | stableBranch | featuresRootPath | documentationRootPath | variables                                                                                                             |
@@ -38,7 +38,7 @@ Feature: get and update variables of a project
 ]
   """
 
-  @level_2_technical_details @nominal_case @ongoing
+  @level_2_technical_details @nominal_case @valid
   Scenario: update variables of a project
     Given we have the following projects
       | id            | name                    | repositoryUrl                                        | stableBranch | featuresRootPath | documentationRootPath | variables                                                                      |

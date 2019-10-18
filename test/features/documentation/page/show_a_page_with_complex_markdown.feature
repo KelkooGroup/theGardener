@@ -61,7 +61,7 @@ Feature: As a user Tim, I want some book suggestions so that I can do some disco
       | 1  | context | The context | Why providing suggestions | 0     | /context     | suggestionsWS>master>/context      |          | 1           |
       | 2  | context | The context | Why providing suggestions | 0     | /context     | suggestionsReports>master>/context |          | 2           |
 
-  @level_2_technical_details @nominal_case @ongoing
+  @level_2_technical_details @nominal_case @valid
   Scenario: generate a documentation page with all scenarios of a feature
     Given we have the following markdown for the page "suggestionsWS>master>/context"
 """
