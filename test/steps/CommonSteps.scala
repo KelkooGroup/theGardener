@@ -21,7 +21,7 @@ import org.apache.commons.io._
 import org.eclipse.jgit.api._
 import org.scalatest._
 import org.scalatestplus.mockito._
-import play.api.{Application,Logging, Mode}
+import play.api.{Application, Logging, Mode}
 import org.mockito.Mockito._
 import play.api.cache._
 import play.api.db._
@@ -271,6 +271,9 @@ Scenario: providing several book suggestions
     }
   }
 
+  Given("""^we have the following variables$"""){ variables : String =>
+    variables
+  }
 
   Given("""^the cache is empty$""") { () =>
     await(cache.removeAll())

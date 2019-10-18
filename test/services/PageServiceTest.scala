@@ -30,8 +30,8 @@ class PageServiceTest extends WordSpec with MustMatchers with BeforeAndAfter wit
 
   val variables = Seq(Variable(s"$${name1}", "value"),Variable(s"$${name2}", "value2"))
   val contentWithMarkdown = Seq(PageFragment("markdown", PageFragmentContent(Some(s"$${name1}"))))
-  val contentWithoutMarkdown = Seq(PageFragment("includeExternalPage", PageFragmentContent(Some(s"$${name1}"))))
-  val contentWithTwoFragment = contentWithMarkdown ++ contentWithoutMarkdown
+  val contentWithExternalPage = Seq(PageFragment("includeExternalPage", PageFragmentContent(Some(s"$${name1}"))))
+  val contentWithTwoFragment = contentWithMarkdown ++ contentWithExternalPage
 
   before {
     Mockito.reset(pageRepository)
@@ -42,12 +42,8 @@ class PageServiceTest extends WordSpec with MustMatchers with BeforeAndAfter wit
       pageService.replaceVariablesInMarkdown(contentWithMarkdown, variables) must contain theSameElementsAs Seq(PageFragment("markdown", PageFragmentContent(Some(s"value"))))
     }
 
-    "Not Replace if it's not markdown" in {
-      pageService.replaceVariablesInMarkdown(contentWithoutMarkdown, variables) must contain theSameElementsAs contentWithoutMarkdown
-    }
-
     "Replace Variables in Markdown" in {
-      pageService.replaceVariablesInMarkdown(contentWithTwoFragment, variables) must contain theSameElementsAs (Seq(PageFragment("markdown", PageFragmentContent(Some(s"value")))) ++ contentWithoutMarkdown)
+      pageService.replaceVariablesInMarkdown(contentWithTwoFragment, variables) must contain theSameElementsAs Seq(PageFragment("markdown", PageFragmentContent(Some(s"value"))),PageFragment("includeExternalPage", PageFragmentContent(Some(s"value"))))
     }
   }
 

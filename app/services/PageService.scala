@@ -348,7 +348,7 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
 
   def replaceVariablesInMarkdown(content: Seq[PageFragment], variables: Seq[Variable]): Seq[PageFragment] = {
     content.map(pageFragment =>
-      if (pageFragment.`type` == "markdown") {
+      if (pageFragment.`type` == "markdown" || pageFragment.`type` == "includeExternalPage") {
         PageFragment(pageFragment.`type`, PageFragmentContent(replaceVariableInString(pageFragment.data.markdown.getOrElse("there is no markdown"), variables, 0)))
       }else {
         pageFragment
