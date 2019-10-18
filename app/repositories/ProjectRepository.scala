@@ -81,7 +81,7 @@ class ProjectRepository @Inject()(db: Database) {
   def save(project: Project): Project = {
     db.withConnection { implicit connection =>
       SQL"""REPLACE INTO project (id, name, repositoryUrl, stableBranch, displayedBranches, featuresRootPath, documentationRootPath, variables)
-           VALUES (${project.id}, ${project.name}, ${project.repositoryUrl}, ${project.stableBranch}, ${project.displayedBranches}, ${project.featuresRootPath}, ${project.documentationRootPath}, ${project.variables.map(Json.toJson(_).toString())})""" //todo check if work
+           VALUES (${project.id}, ${project.name}, ${project.repositoryUrl}, ${project.stableBranch}, ${project.displayedBranches}, ${project.featuresRootPath}, ${project.documentationRootPath}, ${project.variables.map(Json.toJson(_).toString())})"""
         .executeUpdate()
 
       SQL"SELECT * FROM project WHERE id = ${project.id}".as(parser.single)
