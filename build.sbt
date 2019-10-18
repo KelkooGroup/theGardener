@@ -74,7 +74,7 @@ publishArtifact in(Compile, packageDoc) := false
 //Removing the top level directory
 topLevelDirectory := None
 
-val silencerVersion = "1.4.4"
+val silencerVersion = "1.4.3"
 libraryDependencies ++= Seq(
   ws,
   filters,
@@ -82,13 +82,14 @@ libraryDependencies ++= Seq(
   evolutions,
   jdbc,
   caffeine,
+  "com.kelkoo.common" %% "playScalaCommon" % "2.1.2",
   "ch.qos.logback" % "logback-access" % "1.2.3",
   "net.logstash.logback" % "logstash-logback-encoder" % "6.2",
   "com.typesafe.play" %% "play-json" % "2.7.4",
   "org.julienrf" %% "play-json-derived-codecs" % "6.0.0",
   "io.cucumber" % "gherkin" % "5.2.0",
   "com.typesafe.play" %% "anorm" % "2.5.3",
-  "mysql" % "mysql-connector-java" % "8.0.18",
+  "mysql" % "mysql-connector-java" % "5.1.48",
   "org.eclipse.jgit" % "org.eclipse.jgit" % "5.1.2.201810061102-r",
   "io.swagger" %% "swagger-play2" % "1.7.1",
   "com.h2database" % "h2" % "1.4.199",
