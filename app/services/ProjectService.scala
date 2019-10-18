@@ -111,55 +111,81 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
         gitService.pull(localRepo).map {
           case (created, updated, deleted) =>
             branchRepository.findByProjectIdAndName(project.id, branchName).foreach { branch =>
-
-              if (featureRepository.findAllByBranchId(branch.id).nonEmpty) {
-                val featureToCreate = filterFeatureFile(created, project.featuresRootPath)
-                val featureToUpdate = filterFeatureFile(updated, project.featuresRootPath)
-                val featureToDelete = filterFeatureFile(deleted, project.featuresRootPath)
-
-
-                (featureToUpdate ++ featureToDelete).flatMap(path => featureRepository.findByBranchIdAndPath(branch.id, path)).foreach(featureRepository.delete)
-
-                (featureToUpdate ++ featureToCreate).flatMap(filePath => featureService.parseFeatureFile(project.id, branch, getLocalRepository(project.id, branchName) + filePath).toOption).foreach(featureRepository.save)
-
-                logger.info(s"${featureToCreate.size} features created, ${featureToUpdate.size} features updated and ${featureToDelete.size} features deleted, for project ${project.id} on branch ${branch.name}")
-
-              } else {
-                parseAndSaveFeatures(project, branch)
-              }
-
-              project.documentationRootPath.foreach { documentationRootPath =>
-                if (directoryRepository.findAllByBranchId(branch.id).nonEmpty) {
-
-                  val directoryToCreate = filterDocumentationMetaFile(created, project.documentationRootPath)
-                  val directoryToUpdate = filterDocumentationMetaFile(updated, project.documentationRootPath)
-                  val directoryToDelete = filterDocumentationMetaFile(deleted, project.documentationRootPath)
-
-                  val pageToCreate = filterDocumentationFile(created, project.documentationRootPath)
-                  val pageToUpdate = filterDocumentationFile(updated, project.documentationRootPath)
-                  val pageToDelete = filterDocumentationFile(deleted, project.documentationRootPath)
-
-                  (directoryToUpdate ++ directoryToDelete).flatMap(path => directoryRepository.findByBranchIdAndRelativePath(branch.id, path.substring(path.indexOf(documentationRootPath) + documentationRootPath.length, path.length))).foreach(directoryRepository.delete)
-
-                  pageToDelete.flatMap(path => pageRepository.findByPath(pageService.getPagePath(project.id, branch.name, path, project.documentationRootPath.getOrElse("")))).foreach(pageRepository.delete)
-
-                  (directoryToCreate ++ directoryToUpdate).flatMap(directoryPath => pageService.processDirectory(branch, directoryPath, getLocalRepository(project.id, branchName) + directoryPath))
-
-                  pageToUpdate.flatMap(path => pageRepository.findByPath(pageService.getPagePath(project.id, branch.name, path, project.documentationRootPath.getOrElse("")))).foreach(pageService.processPage(project.id, branch.name, _, documentationRootPath))
-
-                  logger.info(s"${directoryToCreate.size} directories created, ${directoryToUpdate.size} directories updated and ${directoryToDelete.size} directories deleted, for project ${project.id} on branch ${branch.name}")
-                  logger.info(s"${pageToCreate.size} pages created, ${pageToUpdate.size} pages updated and ${pageToDelete.size} pages deleted, for project ${project.id} on branch ${branch.name}")
-
-                } else {
-                  parseAndSaveDirectoriesAndPages(project, branch)
-                }
-              }
+              sychronizeOneBranchFeatures(project, branch, created, updated, deleted)
+              synchronizeOneBranchPages(project, branch, created, updated, deleted)
             }
         }.recoverWith {
           case _ => deleteBranches(project.id, Set(branchName)).flatMap(_ => checkoutBranches(project, Set(branchName)))
         }
       }
     } else Future.successful(())
+  }
+
+  case class DeltaFileSystemDatabase(directoryToCreate: Seq[String], directoryToUpdate: Seq[String], directoryToDelete: Seq[String], pageToCreate: Seq[String], pageToUpdate: Seq[String], pageToDelete: Seq[String]) {
+
+    def onlyUpdatedPages: Boolean = {
+      (directoryToCreate ++ directoryToUpdate ++ directoryToDelete).isEmpty && (pageToCreate ++ pageToDelete).isEmpty && pageToUpdate.nonEmpty
+    }
+
+    def directoriesRefactoring: Boolean = {
+      (directoryToCreate ++ directoryToUpdate ++ directoryToDelete).nonEmpty
+    }
+
+    def pagesRefactoring: Boolean = {
+      (directoryToCreate ++ directoryToUpdate ++ directoryToDelete).nonEmpty
+    }
+  }
+
+
+  private def synchronizeOneBranchPages(project: Project, branch: Branch, created: Seq[String], updated: Seq[String], deleted: Seq[String]) = {
+    project.documentationRootPath.foreach { documentationRootPath =>
+      if (directoryRepository.findAllByBranchId(branch.id).nonEmpty) {
+
+        val delta = computeDeltaFileSystemDatabase(project, created, updated, deleted)
+        if (delta.onlyUpdatedPages) {
+          logger.info(s"update ${delta.pageToUpdate.size} pages, for project ${project.id} on branch ${branch.name}")
+          delta.pageToUpdate.flatMap(path => pageRepository.findByPath(pageService.getPagePath(project.id, branch.name, path, project.documentationRootPath.getOrElse("")))).foreach(pageService.processPage(project.id, branch.name, _, documentationRootPath))
+
+        } else if (delta.directoriesRefactoring || delta.pagesRefactoring) {
+          logger.info(s"init directories and pages, as there where some pages or directories refactoring, for project ${project.id} on branch ${branch.name}")
+          pageRepository.deleteAllByStartingPath(project.id + ">" + branch.name + ">/")
+          directoryRepository.deleteAllByStartingPath(project.id + ">" + branch.name + ">/")
+          parseAndSaveDirectoriesAndPages(project, branch)
+        }
+      } else {
+        parseAndSaveDirectoriesAndPages(project, branch)
+      }
+    }
+  }
+
+  private def computeDeltaFileSystemDatabase(project: Project, created: Seq[String], updated: Seq[String], deleted: Seq[String]): DeltaFileSystemDatabase = {
+    val directoryToCreate = filterDocumentationMetaFile(created, project.documentationRootPath)
+    val directoryToUpdate = filterDocumentationMetaFile(updated, project.documentationRootPath)
+    val directoryToDelete = filterDocumentationMetaFile(deleted, project.documentationRootPath)
+
+    val pageToCreate = filterDocumentationFile(created, project.documentationRootPath)
+    val pageToUpdate = filterDocumentationFile(updated, project.documentationRootPath)
+    val pageToDelete = filterDocumentationFile(deleted, project.documentationRootPath)
+
+    DeltaFileSystemDatabase(directoryToCreate, directoryToUpdate, directoryToDelete, pageToCreate, pageToUpdate, pageToDelete)
+  }
+
+  private def sychronizeOneBranchFeatures(project: Project, branch: Branch, created: Seq[String], updated: Seq[String], deleted: Seq[String]) = {
+    if (featureRepository.findAllByBranchId(branch.id).nonEmpty) {
+      val featureToCreate = filterFeatureFile(created, project.featuresRootPath)
+      val featureToUpdate = filterFeatureFile(updated, project.featuresRootPath)
+      val featureToDelete = filterFeatureFile(deleted, project.featuresRootPath)
+
+
+      (featureToUpdate ++ featureToDelete).flatMap(path => featureRepository.findByBranchIdAndPath(branch.id, path)).foreach(featureRepository.delete)
+
+      (featureToUpdate ++ featureToCreate).flatMap(filePath => featureService.parseFeatureFile(project.id, branch, getLocalRepository(project.id, branch.name) + filePath).toOption).foreach(featureRepository.save)
+
+      logger.info(s"${featureToCreate.size} features created, ${featureToUpdate.size} features updated and ${featureToDelete.size} features deleted, for project ${project.id} on branch ${branch.name}")
+
+    } else {
+      parseAndSaveFeatures(project, branch)
+    }
   }
 
   def deleteBranches(projectId: String, branches: Set[String]): Future[Unit] = {
@@ -190,10 +216,19 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
     FutureExt.sequentially(projects)(synchronize).flatMap(_ => Future.fromTry(menuService.refreshCache())).map(_ => ())
   }
 
+  def refreshAllPages(project: Project): Unit = {
+    logger.info(s"The pages from ${project.name} will be computed again from the database only")
+    pageRepository.findAllByProjectId(project.id).map { page =>
+      pageService.computePageFromPathUsingDatabase(page.path)
+    }
+    ()
+  }
+
   def synchronize(project: Project): Future[Unit] = {
 
     if (!synchronizeFromRemoteEnabled) {
       logger.info(s"No synchronization of project ${project.id}, as this feature is disabled")
+      refreshAllPages(project)
       Future.successful({})
     } else {
 
