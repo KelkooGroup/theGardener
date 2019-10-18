@@ -21,6 +21,7 @@ import org.apache.commons.io._
 import org.eclipse.jgit.api._
 import org.scalatest._
 import org.scalatestplus.mockito._
+import play.api.{Application, Logging, Mode}
 import org.mockito.Mockito._
 import play.api.cache._
 import play.api.db._
@@ -50,9 +51,10 @@ object Injector {
   def inject[T: ClassTag]: T = injector.instanceOf[T]
 }
 
-case class ProjectTableRow(id: String, name: String, repositoryUrl: String, stableBranch: String, displayedBranches: String, featuresRootPath: String, documentationRootPath: String) {
+case class ProjectTableRow(id: String, name: String, repositoryUrl: String, stableBranch: String, displayedBranches: String, featuresRootPath: String, documentationRootPath: String, variables: String){
   def toProject(): Project = {
-    Project(this.id, this.name, this.repositoryUrl, this.stableBranch, Option(this.displayedBranches), Option(this.featuresRootPath), Option(this.documentationRootPath))
+    implicit val variableFormat = Json.format[Variable]
+    Project(this.id, this.name, this.repositoryUrl, this.stableBranch, Option(this.displayedBranches), Option(this.featuresRootPath), Option(this.documentationRootPath), Option(variables).map(Json.parse(_).as[Seq[Variable]]))
   }
 }
 
@@ -64,6 +66,7 @@ object CommonSteps extends MockitoSugar with MustMatchers {
   implicit val scenarioFormat = derived.flat.oformat[ScenarioDefinition]((__ \ "keyword").format[String])
   implicit val branchFormat = Json.format[Branch]
   implicit val hierarchyFormat = Json.format[HierarchyNode]
+  implicit val variableFormat = Json.format[Variable]
   implicit val projectFormat = Json.format[Project]
 
   var response: Future[Result] = _
@@ -242,7 +245,6 @@ Scenario: providing several book suggestions
         featuresRootPath = if (project.featuresRootPath != null) project.featuresRootPath.fixPathSeparator else project.featuresRootPath,
         documentationRootPath = if (project.documentationRootPath != null) project.documentationRootPath.fixPathSeparator else project.documentationRootPath
       )
-
       else project
     }.map(_.toProject())
 
@@ -269,6 +271,12 @@ Scenario: providing several book suggestions
     }
   }
 
+  Given("""^we have the following variables from project "([^"]*)"$"""){ (projectId : String, Requestvariables : String) =>
+    projectRepository.findById(projectId).map { project =>
+      projectRepository.save(project.copy(variables = Some(Json.parse(Requestvariables).as[Seq[Variable]])))
+    }
+
+  }
 
   Given("""^the cache is empty$""") { () =>
     await(cache.removeAll())

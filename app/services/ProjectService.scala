@@ -4,6 +4,7 @@ import java.io._
 
 import akka.Done
 import akka.actor.{ActorSystem, CoordinatedShutdown}
+import com.github.ghik.silencer.silent
 import javax.inject._
 import models._
 import org.apache.commons.io.FileUtils._
@@ -254,5 +255,15 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
         } yield ()
       }
     }
+  }
+
+  @silent("Interpolated") @silent("missing interpolator")
+  def getVariables(page: Page): Option[Seq[Variable]] ={
+    for {
+      directory <- directoryRepository.findById(page.directoryId)
+      branch <- branchRepository.findById(directory.branchId)
+      project <- projectRepository.findById(branch.projectId)
+      availableImplicitVariable = Seq(Variable("${project.current}", s"${project.name}"), Variable("${branch.current}", s"${branch.name}"), Variable("${branch.stable}", s"${project.stableBranch}"))
+    } yield project.variables.getOrElse(Seq()).++(availableImplicitVariable)
   }
 }

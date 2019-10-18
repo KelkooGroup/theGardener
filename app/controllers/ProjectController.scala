@@ -20,6 +20,7 @@ class ProjectController @Inject()(projectRepository: ProjectRepository, projectS
   implicit val directoryFormat = Json.format[Directory]
   implicit val branchFormat = Json.format[Branch]
   implicit val hierarchyFormat = Json.format[HierarchyNode]
+  implicit val variableFomrat = Json.format[Variable]
   implicit val projectFormat = Json.format[Project]
 
   @ApiOperation(value = "Register a new project", code = 201, response = classOf[Project])
@@ -59,6 +60,44 @@ class ProjectController @Inject()(projectRepository: ProjectRepository, projectS
 
       case _ => NotFound(s"No project $id")
     }
+  }
+
+  @ApiOperation(value = "Get variables from a project", response = classOf[Seq[Variable]])
+  @ApiResponses(Array(new ApiResponse(code = 404, message = "Project not found")))
+  def getVariables(@ApiParam("Project id") id: String): Action[AnyContent] = Action {
+    projectRepository.findById(id) match {
+
+      case Some(project) =>
+
+        Ok(Json.toJson(project.variables))
+
+      case _ => NotFound(s"No project $id")
+    }
+  }
+
+  @ApiOperation(value = "Update variables of a project", response = classOf[Project])
+  @ApiImplicitParams(Array(new ApiImplicitParam(value = "The variables to update", required = true, dataType = "Seq[models.Variable]", paramType = "body")))
+  @ApiResponses(Array(
+    new ApiResponse(code = 400, message = "Incorrect json"),
+    new ApiResponse(code = 404, message = "Project not found"))
+  )
+  def updateVariables(@ApiParam("Project id") id: String): Action[Seq[Variable]] = Action(parse.json[Seq[Variable]]) { implicit request =>
+    val variables = request.body
+
+    projectRepository.findById(id) match {
+
+      case Some(project) =>
+       val newVariables = project.variables.getOrElse(Seq()) ++ variables
+
+        projectRepository.save(project.copy(variables = if (newVariables.nonEmpty) Some(newVariables) else None))
+
+        menuService.refreshCache()
+
+        Ok(Json.toJson(projectRepository.findById(id)))
+
+      case _ => NotFound(s"No project $id")
+    }
+
   }
 
   @ApiOperation(value = "Update a project", response = classOf[Project])

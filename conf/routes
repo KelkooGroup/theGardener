@@ -22,7 +22,8 @@ POST          /api/projects/:id/synchronize                   controllers.Projec
 GET           /api/projects/:id/hierarchy                     controllers.ProjectController.getLinkProjectToHierarchy(id: String)
 POST          /api/projects/:id/hierarchy/:hierarchyId        controllers.ProjectController.linkProjectToHierarchy(id: String, hierarchyId : String)
 DELETE        /api/projects/:id/hierarchy/:hierarchyId        controllers.ProjectController.deleteLinkProjectToHierarchy(id: String, hierarchyId : String)
-
+GET           /api/projects/:id/variables                     controllers.ProjectController.getVariables(id: String)
+PUT           /api/projects/:id/variables                     controllers.ProjectController.updateVariables(id: String)
 
 POST          /api/hierarchy                                  controllers.HierarchyController.addHierarchy()
 GET           /api/hierarchy                                  controllers.HierarchyController.getAllHierarchies()

@@ -131,4 +131,5 @@ Feature: Register a project
     When I perform a "DELETE" on following URL "/api/projects/suggestionsWS"
     Then I get a response with status "200"
     And  the projects settings are now
-      | id            | name                    | repositoryUrl                                        | stableBranch | featuresRootPath |
+      | id | name | repositoryUrl | stableBranch | featuresRootPath |
+

@@ -5,8 +5,11 @@ import anorm._
 import javax.inject.Inject
 import models._
 import play.api.db.Database
+import play.api.libs.json.Json
+
 
 class ProjectRepository @Inject()(db: Database) {
+  implicit val variableFormat = Json.format[Variable]
 
   private val parser = for {
     id <- str("id")
@@ -16,7 +19,8 @@ class ProjectRepository @Inject()(db: Database) {
     displayedBranches <- str("displayedBranches").?
     featuresRootPath <- str("featuresRootPath").?
     documentationRootPath <- str("documentationRootPath").?
-  } yield Project(id, name, repositoryUrl, stableBranch, displayedBranches, featuresRootPath, documentationRootPath)
+    variables <-  str("variables").?
+  } yield Project(id, name, repositoryUrl, stableBranch, displayedBranches, featuresRootPath, documentationRootPath, variables.map(Json.parse(_).as[Seq[Variable]]))
 
   def count(): Long = {
     db.withConnection { implicit connection =>
@@ -76,8 +80,8 @@ class ProjectRepository @Inject()(db: Database) {
 
   def save(project: Project): Project = {
     db.withConnection { implicit connection =>
-      SQL"""REPLACE INTO project (id, name, repositoryUrl, stableBranch, displayedBranches, featuresRootPath, documentationRootPath)
-           VALUES (${project.id}, ${project.name}, ${project.repositoryUrl}, ${project.stableBranch}, ${project.displayedBranches}, ${project.featuresRootPath}, ${project.documentationRootPath})"""
+      SQL"""REPLACE INTO project (id, name, repositoryUrl, stableBranch, displayedBranches, featuresRootPath, documentationRootPath, variables)
+           VALUES (${project.id}, ${project.name}, ${project.repositoryUrl}, ${project.stableBranch}, ${project.displayedBranches}, ${project.featuresRootPath}, ${project.documentationRootPath}, ${project.variables.map(Json.toJson(_).toString())})"""
         .executeUpdate()
 
       SQL"SELECT * FROM project WHERE id = ${project.id}".as(parser.single)
