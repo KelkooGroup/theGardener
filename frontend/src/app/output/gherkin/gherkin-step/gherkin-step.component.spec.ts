@@ -114,7 +114,7 @@ describe('GherkinStepComponent', () => {
 
     expect(page.keyword).toEqual('And');
     expect(page.table).toBeTruthy();
-    expect(page.stepText).toEqual(['the popular categories for this age are'])
+    expect(page.stepText).toEqual(['the popular categories for this age are']);
     expect(page.table.table).toEqual([
       ['categoryId', 'categoryName'],
       ['cat1', 'Walt Disney'],
@@ -163,7 +163,7 @@ class Page {
     const res: Array<string> = [];
     this.fixture.nativeElement.querySelectorAll('.step-parameter')
       .forEach((e: HTMLElement) => {
-        res.push(e.textContent.trim())
+        res.push(e.textContent.trim());
       });
     return res;
   }
@@ -172,7 +172,7 @@ class Page {
     const res: Array<string> = [];
     this.fixture.nativeElement.querySelectorAll('.step-text')
       .forEach((e: HTMLElement) => {
-        res.push(e.textContent.trim())
+        res.push(e.textContent.trim());
       });
     return res;
   }
