@@ -271,8 +271,11 @@ Scenario: providing several book suggestions
     }
   }
 
-  Given("""^we have the following variables$"""){ variables : String =>
-    variables
+  Given("""^we have the following variables from project "([^"]*)"$"""){ (projectId : String, Requestvariables : String) =>
+    projectRepository.findById(projectId).map { project =>
+      projectRepository.save(project.copy(variables = Some(Json.parse(Requestvariables).as[Seq[Variable]])))
+    }
+
   }
 
   Given("""^the cache is empty$""") { () =>

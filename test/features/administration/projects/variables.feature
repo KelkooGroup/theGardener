@@ -7,9 +7,9 @@ Feature: get and update variables of a project
   @level_2_technical_details @nominal_case @valid
   Scenario: get variables from a project
     Given we have the following projects
-      | id            | name                    | repositoryUrl                                        | stableBranch | featuresRootPath | documentationRootPath | variables                                                                                                             |
-      | suggestionsWS | Suggestions WebServices | git@gitlab.corp.kelkoo.net:library/suggestionsWS.git | master       | test/features    | doc                   | [{"name":"${swagger.json}","value":"http://localhost:9000/docs/swagger.json"},{"name":"${desc}","value":"Variables"}] |
-    Given  we have the following variables
+      | id            | name                    | repositoryUrl                                        | stableBranch | featuresRootPath | documentationRootPath |
+      | suggestionsWS | Suggestions WebServices | git@gitlab.corp.kelkoo.net:library/suggestionsWS.git | master       | test/features    | doc                   |
+    Given  we have the following variables from project "suggestionsWS"
     """
    [
      {
@@ -41,9 +41,9 @@ Feature: get and update variables of a project
   @level_2_technical_details @nominal_case @valid
   Scenario: update variables of a project
     Given we have the following projects
-      | id            | name                    | repositoryUrl                                        | stableBranch | featuresRootPath | documentationRootPath | variables                                                                      |
-      | suggestionsWS | Suggestions WebServices | git@gitlab.corp.kelkoo.net:library/suggestionsWS.git | master       | test/features    | doc                   | [{"name":"${swagger.json}","value":"http://localhost:9000/docs/swagger.json"}] |
-    Given  we have the following variables
+      | id            | name                    | repositoryUrl                                        | stableBranch | featuresRootPath | documentationRootPath |
+      | suggestionsWS | Suggestions WebServices | git@gitlab.corp.kelkoo.net:library/suggestionsWS.git | master       | test/features    | doc                   |
+    Given  we have the following variables from project "suggestionsWS"
     """
    [
      {
@@ -52,7 +52,7 @@ Feature: get and update variables of a project
      }
    ]
     """
-    When I perform a "POST" on following URL "/api/projects/suggestionsWS/variables" with json body
+    When I perform a "PUT" on following URL "/api/projects/suggestionsWS/variables" with json body
         """
 [
   {
