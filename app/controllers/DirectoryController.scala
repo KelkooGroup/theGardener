@@ -1,6 +1,6 @@
 package controllers
 
-import controllers.dto.MenuDTO.DirectoryDTO
+import controllers.dto.DirectoryDTO
 import io.swagger.annotations._
 import javax.inject.Inject
 import play.api.libs.json.Json

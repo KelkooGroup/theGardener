@@ -9,6 +9,7 @@ import play.api.db.Database
 class DirectoryRepository @Inject()(db: Database, pageRepository: PageRepository) {
 
 
+
   private val parser = for {
     id <- long("id")
     name <- str("name")
@@ -114,6 +115,12 @@ class DirectoryRepository @Inject()(db: Database, pageRepository: PageRepository
   def findById(id: Long): Option[Directory] = {
     db.withConnection { implicit connection =>
       SQL"SELECT * FROM directory WHERE id = $id".as(parser.*).headOption
+    }
+  }
+
+  def findByPath(path: String): Option[Directory] = {
+    db.withConnection { implicit connection =>
+      SQL"SELECT * FROM directory WHERE path = $path  limit 1".as(parser.*).headOption
     }
   }
 

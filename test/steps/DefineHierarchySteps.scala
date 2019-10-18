@@ -1,7 +1,5 @@
 package steps
 
-import java.util
-
 import anorm._
 import cucumber.api.DataTable
 import cucumber.api.scala.{EN, ScalaDsl}
@@ -18,8 +16,21 @@ class DefineHierarchySteps extends ScalaDsl with EN with MockitoSugar {
     hierarchyRepository.deleteAll()
   }
 
-  Given("""^the hierarchy nodes are$""") { hierarchies: util.List[HierarchyNode] =>
-    hierarchyRepository.saveAll(hierarchies.asScala)
+  Given("""^the hierarchy nodes are$""") {table: DataTable =>
+    val hierarchies = buildHierarchyNodes(table)
+    hierarchyRepository.saveAll(hierarchies)
+  }
+
+  private def buildHierarchyNodes(table: DataTable) = {
+    table.asMaps(classOf[String], classOf[String]).asScala.map(_.asScala).map { f =>
+
+      val directoryPath = if (f.keys.exists(_ == "directoryPath")) {
+        if (f("directoryPath") == "") None else Some(f("directoryPath"))
+      } else None
+      HierarchyNode(
+        f("id"), f("slugName"), f("name"), f("childrenLabel"), f("childLabel"), directoryPath
+      )
+    }
   }
 
   Given("""^there is no links from projects to hierarchy nodes$""") { () =>
@@ -44,8 +55,8 @@ class DefineHierarchySteps extends ScalaDsl with EN with MockitoSugar {
     }
   }
 
-  Then("""^the hierarchy nodes are now$""") { hierarchy: util.List[HierarchyNode] =>
-    val exceptedHierarchies = hierarchy.asScala
+  Then("""^the hierarchy nodes are now$""") { table: DataTable =>
+    val exceptedHierarchies = buildHierarchyNodes(table)
     val actualHierarchies = hierarchyRepository.findAll()
     actualHierarchies must contain theSameElementsAs (exceptedHierarchies)
   }
