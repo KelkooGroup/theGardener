@@ -52,7 +52,10 @@ class MenuService @Inject()(hierarchyRepository: HierarchyRepository, projectRep
             }
           ))
         }
-        Menu(hierarchyNode.id, Seq(hierarchyNode), projects.sortBy(_.id))
+        val pages : Option[Directory] = hierarchyNode.directoryPath.flatMap{ directoryPath =>
+          directoryRepository.findByPath(directoryPath)
+        }
+        Menu(hierarchyNode.id, Seq(hierarchyNode), projects.sortBy(_.id), Seq(),pages)
       }.sortBy(_.id)
     }
   }

@@ -7,19 +7,20 @@ Feature: Provide menu
   @level_2_technical_details @nominal_case @valid @documentation
   Scenario: provide menu
     Given the hierarchy nodes are
-      | id         | slugName   | name                 | childrenLabel | childLabel   |
-      | .          | root       | Hierarchy root       | Views         | View         |
-      | .01.       | eng        | Engineering view     | System groups | System group |
-      | .02.       | biz        | Business view        | Units         | Unit         |
-      | .01.01.    | library    | Library system group | Systems       | System       |
-      | .01.01.01. | suggestion | Suggestion system    | Projects      | Project      |
-      | .01.01.02. | user       | User system          | Projects      | Project      |
-      | .01.01.03. | search     | Search system        | Projects      | Project      |
+      | id         | slugName   | name                 | childrenLabel | childLabel   | directoryPath       |
+      | .          | root       | Hierarchy root       | Views         | View         |                     |
+      | .01.       | eng        | Engineering view     | System groups | System group |                     |
+      | .02.       | biz        | Business view        | Units         | Unit         |                     |
+      | .01.01.    | library    | Library system group | Systems       | System       | libraryDoc>master>/ |
+      | .01.01.01. | suggestion | Suggestion system    | Projects      | Project      |                     |
+      | .01.01.02. | user       | User system          | Projects      | Project      |                     |
+      | .01.01.03. | search     | Search system        | Projects      | Project      |                     |
     And we have the following projects
-      | id                 | name                    | repositoryUrl                                              | stableBranch | featuresRootPath |
-      | suggestionsWS      | Suggestions WebServices | target/remote/data/GetFeatures/library/suggestionsWS/      | master       | test/features    |
-      | suggestionsReports | Suggestions Reports     | target/remote/data/GetFeatures/library/suggestionsReports/ | master       | test/features    |
-      | usersWS            | Users WebServices       | target/remote/data/GetFeatures/library/usersWS/            | master       | test/features    |
+      | id                 | name                                | repositoryUrl                                              | stableBranch | featuresRootPath |
+      | suggestionsWS      | Suggestions WebServices             | target/remote/data/GetFeatures/library/suggestionsWS/      | master       | test/features    |
+      | suggestionsReports | Suggestions Reports                 | target/remote/data/GetFeatures/library/suggestionsReports/ | master       | test/features    |
+      | usersWS            | Users WebServices                   | target/remote/data/GetFeatures/library/usersWS/            | master       | test/features    |
+      | libraryDoc         | library  system group documentation | target/remote/data/GetFeatures/library/libraryDoc/         | master       |                  |
     And the links between hierarchy nodes are
       | projectId          | hierarchyId |
       | suggestionsWS      | .01.01.01.  |
@@ -32,11 +33,13 @@ Feature: Provide menu
       | 2  | bugfix/351 | false    | suggestionsWS      |
       | 3  | master     | true     | suggestionsReports |
       | 4  | master     | true     | usersWS            |
+      | 5  | master     | true     | libraryDoc         |
     And we have those directories in the database
-      | id | name        | label         | description             | order | relativePath  | path                               | branchId |
-      | 1  | root        | SuggestionsWS | Suggestions WebServices | 0     | /             | suggestionsWS>master>/             | 1        |
-      | 2  | suggestions | Suggestions   | Suggestions...          | 0     | /suggestions/ | suggestionsWS>master>/suggestions/ | 1        |
-      | 3  | admin       | Admin         | Administration...       | 1     | /admin/       | suggestionsWS>master>/admin/       | 1        |
+      | id | name        | label         | description                        | order | relativePath  | path                               | branchId |
+      | 1  | root        | SuggestionsWS | Suggestions WebServices            | 0     | /             | suggestionsWS>master>/             | 1        |
+      | 2  | suggestions | Suggestions   | Suggestions...                     | 0     | /suggestions/ | suggestionsWS>master>/suggestions/ | 1        |
+      | 3  | admin       | Admin         | Administration...                  | 1     | /admin/       | suggestionsWS>master>/admin/       | 1        |
+      | 4  | libraryDoc  | libraryDoc    | library system group documentation | 0     | /             | libraryDoc>master>/                | 5        |
     When I perform a "GET" on following URL "/api/menu"
     Then I get a response with status "200"
     And  I get the following json response body
@@ -66,6 +69,15 @@ Feature: Provide menu
           "name": "Library system group",
           "childrenLabel": "Systems",
           "childLabel": "System",
+          "directory" : {
+              "id": 4,
+              "path": "libraryDoc>master>/",
+              "name": "libraryDoc",
+              "label": "libraryDoc",
+              "description": "library system group documentation",
+              "order": 0,
+              "pages": []
+          },
           "projects": [],
           "children": [
             {
