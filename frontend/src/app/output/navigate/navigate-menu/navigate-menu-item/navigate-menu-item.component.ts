@@ -103,7 +103,7 @@ export class NavigateMenuItemComponent implements OnInit, OnDestroy {
     if (this.pathInUrl) {
       const pathParts = this.pathInUrl.split('>');
       if (pathParts.length > 1) {
-        return pathParts[1];
+        return pathParts[1].replace('_', '/');
       } else {
         return undefined;
       }

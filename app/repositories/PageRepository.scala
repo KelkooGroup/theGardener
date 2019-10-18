@@ -87,6 +87,37 @@ class PageRepository @Inject()(db: Database) {
     }
   }
 
+  def findAllByProjectId(projectId: String): Seq[Page] = {
+    db.withConnection { implicit connection =>
+      SQL"""select  pg.*,
+                   d.id as d_id,
+                   d.name as d_name,
+                   d.label as d_label,
+                   d.description as d_description,
+                   d.`order` as d_order,
+                   d.relativePath as d_relativePath,
+                   d.path as d_path,
+                   d.branchId as d_branchId,
+                   b.id as b_id,
+                   b.name as b_name,
+                   b.isStable as b_isStable,
+                   b.projectId as b_projectId,
+                   p.id as p_id,
+                   p.name as p_name,
+                   p.repositoryUrl as p_repositoryUrl,
+                   p.stableBranch as p_stableBranch,
+                   p.displayedBranches as p_displayedBranches,
+                   p.featuresRootPath as p_featuresRootPath,
+                   p.documentationRootPath as p_documentationRootPath
+                  from page pg
+                      join directory d on d.id = pg.directoryId
+                      join branch b on b.id = d.branchId
+                      join project p on p.id = b.projectId
+                       where p.id = $projectId
+               """.as(parser.*)
+    }
+  }
+
   def findAllByDirectoryId(directoryId: Long): Seq[Page] = {
     db.withConnection { implicit connection =>
       SQL"SELECT id, name, label, description, `order`, relativePath, path, directoryId FROM page WHERE directoryId = $directoryId".as(parser.*)
@@ -137,6 +168,14 @@ class PageRepository @Inject()(db: Database) {
       ()
     }
   }
+
+  def deleteAllByStartingPath(basePath: String): Unit = {
+    db.withConnection { implicit connection =>
+      SQL(s"DELETE FROM page WHERE path like '${basePath}%' ") .executeUpdate()
+      ()
+    }
+  }
+
 
   def deleteAllByDirectoryId(directoryId: Long): Unit = {
     db.withConnection { implicit connection =>

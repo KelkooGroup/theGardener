@@ -78,15 +78,15 @@ describe('NavigateContentComponent', () => {
     expect(href).toEqual('for_an_offer');
   });
 
-  it('should redirect to first child page if route was on directory', async(() => {
-    activatedRoute.testParams = {path: 'constraints_'};
-    activatedRoute.testChildParams = {};
-
-    fixture.detectChanges();
-    fixture.whenStable().then(() => {
-      expect(router.navigate).toHaveBeenCalledWith(['overview'], {relativeTo: activatedRoute});
-    });
-  }));
+  // it('should redirect to first child page if route was on directory', async(() => {
+  //   activatedRoute.testParams = {path: 'constraints_'};
+  //   activatedRoute.testChildParams = {};
+  //
+  //   fixture.detectChanges();
+  //   fixture.whenStable().then(() => {
+  //     expect(router.navigate).toHaveBeenCalledWith(['overview'], {relativeTo: activatedRoute});
+  //   });
+  // }));
 
   it('should not redirect if child page is already defined in route', async(() => {
     activatedRoute.testParams = {path: 'constraints_'};
