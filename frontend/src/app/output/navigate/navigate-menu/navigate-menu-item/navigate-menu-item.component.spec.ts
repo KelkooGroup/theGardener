@@ -262,6 +262,47 @@ describe('NavigateMenuItemComponent', () => {
     expect(router.navigate).toHaveBeenCalledWith(['app/documentation/navigate/_eng', {path: 'suggestionWS>branch1>/'}]);
   });
 
+  it('should navigate to the right URL when selecting a branch with / in the name', () => {
+    activatedRoute.testParams = {name: '_eng', path: 'suggestionWS'};
+    const projectItem: MenuProjectHierarchy = {
+      name: 'suggestionWS',
+      label: 'Suggestion Webservice',
+      type: 'Project',
+      stableBranch: 'qa',
+      depth: 2,
+      route: 'suggestionWS',
+      children: [
+        {
+          name: 'qa',
+          label: 'qa',
+          type: 'Branch',
+          depth: 3,
+          route: 'suggestionWS>qa>/',
+          children: []
+        },
+        {
+          name: 'foo/bar',
+          label: 'Branch 1',
+          type: 'Branch',
+          depth: 3,
+          route: 'suggestionWS>foo_bar>/',
+          children: []
+        },
+      ]
+    };
+    component.menuItem = projectItem;
+    fixture.detectChanges();
+
+    const router: Router = TestBed.get(Router);
+    spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+
+    // when
+    page.selectBranch('foo/bar');
+
+    // then
+    expect(router.navigate).toHaveBeenCalledWith(['app/documentation/navigate/_eng', {path: 'suggestionWS>foo_bar>/'}]);
+  });
+
   it('should not show branches select if only one branch', () => {
     activatedRoute.testParams = {name: '_eng', path: 'suggestionWS'};
     const projectItem: MenuProjectHierarchy = {

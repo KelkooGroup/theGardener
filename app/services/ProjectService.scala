@@ -184,10 +184,8 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
 
   def synchronizeAll(): Future[Unit] = {
     logger.info("Start synchronizing projects")
-
     val projects = projectRepository.findAll()
-
-    FutureExt.sequentially(projects)(synchronize).flatMap(_ => Future.fromTry(menuService.refreshCache())).map(_ => ())
+    FutureExt.sequentially(projects)(synchronize).flatMap(_ => Future.fromTry(menuService.refreshCache())).map(_ => logger.info(s"${projects.size} projects synchronized"))
   }
 
   def synchronize(project: Project): Future[Unit] = {
