@@ -114,9 +114,6 @@ See [the current page](https://github.com/KelkooGroup/theGardener/blob/master/do
 
 #### Use variables
 
-_TODO Show how to get those values. Not yet avaialable see [Issue 64](https://github.com/KelkooGroup/theGardener/issues/63)_
-
-
 During the configuration of the project in theGardener, we can define variables at project level. This allow to externalise some values that we do not want to hard code in the documentation. For instance, server, urls... 
 It can be useful to define swagger documentation urls for example.
 
@@ -130,11 +127,13 @@ For instance :
 
 Note: we do not assume of the format of the variable name: it a simple replaceAll in that data at display time of the page.
 
-Implicit variables that are always available : 
-   
-- ${project.name}: the current project name
-- ${branch.current}: the current branch name
-- ${branch.stable}: the stable branch name defined at project level
+Implicit variables that are always available :
+
+- *project.current*: the current project name
+- *branch.current*: the current branch name
+- *branch.stable*: the stable branch name defined at project level
+
+Note: don't forget to surround implicit variables by ${}
 
 
 This feature is explained by this specific scenario:

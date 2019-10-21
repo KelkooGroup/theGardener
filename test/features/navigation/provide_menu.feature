@@ -306,14 +306,24 @@ Feature: Provide menu
   @level_2_technical_details @nominal_case @valid
   Scenario: provide menu header
     Given the hierarchy nodes are
-      | id         | slugName   | name                 | childrenLabel | childLabel   |
-      | .          | root       | Hierarchy root       | Views         | View         |
-      | .01.       | eng        | Engineering view     | System groups | System group |
-      | .02.       | biz        | Business view        | Units         | Unit         |
-      | .01.01.    | library    | Library system group | Systems       | System       |
-      | .01.01.01. | suggestion | Suggestion system    | Projects      | Project      |
-      | .01.01.02. | user       | User system          | Projects      | Project      |
-      | .01.01.03. | search     | Search system        | Projects      | Project      |
+      | id         | slugName   | name                 | childrenLabel | childLabel   | directoryPath     |
+      | .          | root       | Hierarchy root       | Views         | View         | meta>master>/     |
+      | .01.       | eng        | Engineering view     | System groups | System group | meta>master>/eng/ |
+      | .02.       | biz        | Business view        | Units         | Unit         |                   |
+      | .01.01.    | library    | Library system group | Systems       | System       |                   |
+      | .01.01.01. | suggestion | Suggestion system    | Projects      | Project      |                   |
+      | .01.01.02. | user       | User system          | Projects      | Project      |                   |
+      | .01.01.03. | search     | Search system        | Projects      | Project      |                   |
+    And we have the following projects
+      | id   | name | repositoryUrl                                | stableBranch | featuresRootPath |
+      | meta | meta | target/remote/data/GetFeatures/library/meta/ | master       |                  |
+    And we have those branches in the database
+      | id | name   | isStable | projectId  |
+      | 1  | master | true     | meta |
+    And we have those directories in the database
+      | id | name | label | description | order | relativePath | path              | branchId |
+      | 1  | root | root  | root        | 0     | /            | meta>master>/     | 1        |
+      | 2  | eng  | eng   | eng         | 0     | /eng/        | meta>master>/eng/ | 1        |
     When I perform a "GET" on following URL "/api/menu/header"
     Then I get a response with status "200"
     And  I get the following json response body
@@ -325,6 +335,15 @@ Feature: Provide menu
   "name": "Hierarchy root",
   "childrenLabel": "Views",
   "childLabel": "View",
+  "directory" : {
+      "id": 1,
+      "path": "meta>master>/",
+      "name": "root",
+      "label": "root",
+      "description": "root",
+      "order": 0,
+      "pages": []
+  },
   "children": [
     {
       "id": ".01.",
@@ -332,7 +351,16 @@ Feature: Provide menu
       "slugName": "eng",
       "name": "Engineering view",
       "childrenLabel": "System groups",
-      "childLabel": "System group"
+      "childLabel": "System group",
+      "directory" : {
+        "id": 2,
+        "path": "meta>master>/eng/",
+        "name": "eng",
+        "label": "eng",
+        "description": "eng",
+        "order": 0,
+        "pages": []
+      }
     },
     {
       "id": ".02.",

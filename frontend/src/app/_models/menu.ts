@@ -5,6 +5,7 @@ export interface MenuHierarchy {
   depth: number;
   route?: string;
   children: Array<MenuHierarchy | MenuProjectHierarchy>;
+  directory? : string;
 }
 
 export interface MenuProjectHierarchy extends MenuHierarchy {
