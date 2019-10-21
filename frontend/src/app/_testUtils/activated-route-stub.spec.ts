@@ -16,6 +16,7 @@ export class ActivatedRouteStub {
   private subjectParentParams = new BehaviorSubject(this.testParentParams);
   private subjectChildParamMap = new BehaviorSubject(convertToParamMap(this.testChildParamMap));
   private subjectChildParams = new BehaviorSubject(this.testChildParams);
+  private subjectChildUrl = new BehaviorSubject(this.testChildUrl);
   private subjectUrl = new BehaviorSubject(this.testUrl);
 
   paramMap = this.subjectParamMap.asObservable();
@@ -80,6 +81,17 @@ export class ActivatedRouteStub {
     this.subjectChildParams.next(this._testChildParams);
   }
 
+  private _testChildUrl: Array<UrlSegment>;
+  get testChildUrl() {
+    return this._testChildUrl;
+  }
+
+  set testChildUrl(childUrl: Array<UrlSegment>) {
+    this._testChildUrl = childUrl;
+    this.subjectChildUrl.next(this._testChildUrl);
+  }
+
+
   private _testUrl: Array<UrlSegment>;
   get testUrl() {
     return this._testUrl;
@@ -133,9 +145,11 @@ export class ActivatedRouteStub {
       snapshot: {
         paramMap: this.testChildParamMap,
         params: this.testChildParams,
+        url: this.testChildUrl,
       },
       paramMap: this.subjectChildParamMap.asObservable(),
       params: this.subjectChildParams.asObservable(),
+      url: this.subjectChildUrl.asObservable(),
     };
   }
 

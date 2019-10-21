@@ -9,6 +9,7 @@ export interface HierarchyNodeApi {
   childLabel: string;
   children?: Array<HierarchyNodeApi>;
   projects?: Array<ProjectApi>;
+  directory?: DirectoryApi;
 }
 
 export interface ProjectApi {
