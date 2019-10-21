@@ -1,5 +1,8 @@
 # --- !Ups
 
+ALTER TABLE project
+  ADD variables text AFTER documentationRootPath;
+
 ALTER TABLE hierarchyNode
   ADD directoryPath varchar(255) NULL AFTER childLabel;
 
@@ -8,4 +11,5 @@ ALTER TABLE hierarchyNode
 ALTER TABLE hierarchyNode
   DROP COLUMN directoryPath;
 
-DROP INDEX globalid_idx on history;
+ALTER TABLE project
+  DROP COLUMN variables text ;
