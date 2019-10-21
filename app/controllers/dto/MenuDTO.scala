@@ -61,8 +61,8 @@ object MenuDTO {
 
   def header(menu: Menu): MenuDTO = {
     val hierarchyNode = getHierarchyNode(menu)
-
-    MenuDTO(menu.id, getHierarchy(menu), hierarchyNode.slugName, hierarchyNode.name, hierarchyNode.childrenLabel, hierarchyNode.childLabel, None, None, None)
+    val directory = menu.directory.flatMap{ directory => Some(DirectoryDTO(directory)) }
+    MenuDTO(menu.id, getHierarchy(menu), hierarchyNode.slugName, hierarchyNode.name, hierarchyNode.childrenLabel, hierarchyNode.childLabel, None, None, directory )
   }
 
 

@@ -50,6 +50,7 @@ describe('HeaderComponent', () => {
     spyOn(fakeMenuService, 'getMenuHeader').and.returnValue(of(MENU_HEADER_SERVICE_RESPONSE));
 
     activatedRoute = fixture.debugElement.injector.get(ActivatedRoute) as any;
+    activatedRoute.testChildUrl = [];
     router = TestBed.get(Router);
     spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
   });
@@ -63,9 +64,7 @@ describe('HeaderComponent', () => {
     expect(page.navigationItems.length).toBe(2);
     expect(page.navigationItems[0].textContent).toBe('Engineering view');
     // ng-reflect---- properties are for debugging / devtime only, and they're truncated so they don't dump huge amounts of data into the DOM.
-    expect(page.navigationItems[0].getAttribute('ng-reflect-router-link')).toMatch('app/documentation/navigate/_en');
     expect(page.navigationItems[1].textContent).toBe('Business view');
-    expect(page.navigationItems[1].getAttribute('ng-reflect-router-link')).toMatch('app/documentation/navigate/_bi');
   }));
 
   it('should navigate to first element if no route is set', async(() => {
