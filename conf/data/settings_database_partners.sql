@@ -3,10 +3,10 @@
 INSERT INTO project (id, name, repositoryUrl, stableBranch,  displayedBranches, featuresRootPath, documentationRootPath, variables) VALUES ( 'publisherSystems',      'publisher', 'http://gitlab.corp.kelkoo.net/syndication/thegardener-publisher-data.git', 'master', 'master', 'documentation', 'documentation', null);
 
 
-INSERT INTO project (id, name, repositoryUrl, stableBranch,  displayedBranches, featuresRootPath, documentationRootPath, variables) VALUES ( 'shoppingAPI',              'Shopping API', 'http://gitlab.corp.kelkoo.net/syndication/shoppingApi.git', 'qa', 'qa', 'test/features', 'documentation', null);
-INSERT INTO project (id, name, repositoryUrl, stableBranch,  displayedBranches, featuresRootPath, documentationRootPath, variables) VALUES ( 'ecs',              'eCommerce Services', 'http://gitlab.corp.kelkoo.net/syndication/ecsFrontApp.git', 'qa', 'qa', 'test/features', 'documentation', null);
-INSERT INTO project (id, name, repositoryUrl, stableBranch,  displayedBranches, featuresRootPath, documentationRootPath, variables) VALUES ( 'leadService',              'Lead service', 'http://gitlab.corp.kelkoo.net/syndication/kls.git', 'qa', 'qa', 'test/features', 'documentation', null);
-INSERT INTO project (id, name, repositoryUrl, stableBranch , displayedBranches, featuresRootPath, documentationRootPath, variables) VALUES ( 'feedService',    'Feed service', 'http://gitlab.corp.kelkoo.net/syndication/publisherFeedSparkApplication.git', 'qa', 'qa', 'features', 'documentation', null);
+INSERT INTO project (id, name, repositoryUrl, stableBranch,  displayedBranches, featuresRootPath, documentationRootPath, variables) VALUES ( 'shoppingAPI',              'Shopping API', 'http://gitlab.corp.kelkoo.net/syndication/shoppingApi.git', 'qa', 'qa', 'test/features', 'documentation/Public', null);
+INSERT INTO project (id, name, repositoryUrl, stableBranch,  displayedBranches, featuresRootPath, documentationRootPath, variables) VALUES ( 'ecs',              'eCommerce Services', 'http://gitlab.corp.kelkoo.net/syndication/ecsFrontApp.git', 'qa', 'qa', 'test/features', 'documentation/Public', null);
+INSERT INTO project (id, name, repositoryUrl, stableBranch,  displayedBranches, featuresRootPath, documentationRootPath, variables) VALUES ( 'leadService',              'Lead service', 'http://gitlab.corp.kelkoo.net/syndication/kls.git', 'qa', 'qa', 'test/features', 'documentation/Public', null);
+INSERT INTO project (id, name, repositoryUrl, stableBranch , displayedBranches, featuresRootPath, documentationRootPath, variables) VALUES ( 'feedService',    'Feed service', 'http://gitlab.corp.kelkoo.net/syndication/publisherFeedSparkApplication.git', 'qa', 'qa', 'features', 'documentation/Public', null);
 
 
 

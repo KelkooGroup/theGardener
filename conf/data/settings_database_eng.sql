@@ -94,11 +94,11 @@ INSERT INTO thegardener.project_hierarchyNode (projectId, hierarchyId) VALUES ( 
 INSERT INTO thegardener.project_hierarchyNode (projectId, hierarchyId) VALUES (  'revenueCalculation',                   '.02.');
 
 
-INSERT INTO thegardener.project_hierarchyNode (projectId, hierarchyId) VALUES (    'googleShoppingAdsBidderServices',           '.03.')
+INSERT INTO thegardener.project_hierarchyNode (projectId, hierarchyId) VALUES (    'googleShoppingAdsBidderServices',           '.03.');
 
-INSERT INTO thegardener.project_hierarchyNode (projectId, hierarchyId) VALUES (     'copGoogleExporter',          '.04.')
+INSERT INTO thegardener.project_hierarchyNode (projectId, hierarchyId) VALUES (     'copGoogleExporter',          '.04.');
 
-INSERT INTO thegardener.project_hierarchyNode (projectId, hierarchyId) VALUES (     'fraudCheck',              '.05.')
-INSERT INTO thegardener.project_hierarchyNode (projectId, hierarchyId) VALUES (     'tacCalculation',          '.05.')
+INSERT INTO thegardener.project_hierarchyNode (projectId, hierarchyId) VALUES (     'fraudCheck',              '.05.');
+INSERT INTO thegardener.project_hierarchyNode (projectId, hierarchyId) VALUES (     'tacCalculation',          '.05.');
 
 INSERT INTO thegardener.project_hierarchyNode (projectId, hierarchyId) VALUES ('theGardener', '.06.');
