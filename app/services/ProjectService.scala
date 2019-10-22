@@ -211,8 +211,7 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
   }
 
 
-
-  val lockFile =  s"${projectsRootDirectory}globalSynchroOnGoing".fixPathSeparator
+  val lockFile = s"${projectsRootDirectory}globalSynchroOnGoing".fixPathSeparator
 
   def isGlobalSynchroOnGoing(): Boolean = {
     new File(lockFile).exists()
@@ -220,13 +219,13 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
 
   def canStartGlobalSynchro(): Boolean = {
     if (isGlobalSynchroOnGoing) {
-      return false
+      false
     } else {
-      return new File(lockFile).createNewFile()
+      new File(lockFile).createNewFile()
     }
   }
 
-  def finishGlobalSynchro():Unit = new File(lockFile).delete()
+  def finishGlobalSynchro(): Boolean = new File(lockFile).delete()
 
   def synchronizeAll(): Future[Unit] = {
 
@@ -238,6 +237,7 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
       FutureExt.sequentially(projects)(synchronize).flatMap(_ => Future.fromTry(menuService.refreshCache())).map { _ =>
         logger.info(s"Synchronization of ${projects.size} projects is finished")
         finishGlobalSynchro
+        ()
       }
 
     } else {
