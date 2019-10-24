@@ -25,6 +25,7 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
   val documentationMetaFile = config.get[String]("documentation.meta.file")
   val synchronizeFromRemoteEnabled = config.get[Boolean]("projects.synchronize.from.remote.enabled")
 
+
   if (environment.mode != Mode.Test) {
     val synchronizeJob = actorSystem.scheduler.schedule(initialDelay = synchronizeInitialDelay.seconds, interval = synchronizeInterval.seconds) {
       synchronizeAll()
@@ -254,21 +255,12 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
   def finishGlobalSynchro(): Boolean = new File(lockFile).delete()
 
   def synchronizeAll(): Future[Unit] = {
+    logger.info("Start synchronizing projects")
 
-    if (canStartGlobalSynchro) {
-      logger.info("Start synchronizing projects")
+    val projects = projectRepository.findAll()
 
-      val projects = projectRepository.findAll()
-
-      FutureExt.sequentially(projects)(synchronize).flatMap(_ => Future.fromTry(menuService.refreshCache())).map { _ =>
-        logger.info(s"Synchronization of ${projects.size} projects is finished")
-        finishGlobalSynchro
-        ()
-      }
-
-    } else {
-      logger.info("Synchronization already ongoing. Abort")
-      Future.successful(())
+    FutureExt.sequentially(projects)(synchronize).flatMap(_ => Future.fromTry(menuService.refreshCache())).map { _ =>
+      logger.info(s"Synchronization of ${projects.size} projects is finished")
     }
   }
 
@@ -314,9 +306,8 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
     }
   }
 
-  @silent("Interpolated")
-  @silent("missing interpolator")
-  def getVariables(page: Page): Option[Seq[Variable]] = {
+  @silent("Interpolated") @silent("missing interpolator")
+  def getVariables(page: Page): Option[Seq[Variable]] ={
     for {
       directory <- directoryRepository.findById(page.directoryId)
       branch <- branchRepository.findById(directory.branchId)
