@@ -56,13 +56,13 @@ Feature: Provide some tools to operate the application when something is not wor
       | 1  | context | context | context     | 0     | /context     | suggestionsWS>master>/context | **Feature**: Provide book suggestions DB DIFF | 1           |
 
 
-  @level_2_technical_details @nominal_case @valid
+  @level_2_technical_details @nominal_case @valid @data_refresh
   Scenario: force refresh the menu
     When I perform a "POST" on following URL "/api/admin/menu/refresh"
     Then I get a response with status "200"
     And the menu has been reloaded
 
-  @level_2_technical_details @nominal_case @valid
+  @level_2_technical_details @nominal_case @valid @data_refresh
   Scenario: force a project refresh from the disk
     When I perform a "POST" on following URL "/api/admin/projects/suggestionsWS/refreshFromDisk"
     Then I get a response with status "200"
@@ -82,7 +82,7 @@ Feature: Provide some tools to operate the application when something is not wor
       | 2  | context | context | context     | 0     | /context     | suggestionsWS>master>/context | **Feature**: Provide book suggestions LOCAL DIFF | 2           |
 
 
-  @level_1_specifications @nominal_case @valid
+  @level_1_specifications @nominal_case @valid @data_refresh
   Scenario: force all projects refresh from the disk
     When I perform a "POST" on following URL "/api/admin/projects/refreshFromDisk"
     Then I get a response with status "200"
@@ -93,7 +93,7 @@ Feature: Provide some tools to operate the application when something is not wor
 """
 
 
-  @level_2_technical_details @nominal_case @valid
+  @level_2_technical_details @nominal_case @valid @data_refresh
   Scenario: force a project refresh from the remote git repository
     When I perform a "POST" on following URL "/api/admin/projects/suggestionsWS/refreshFromRemoteGitRepository"
     Then I get a response with status "200"
@@ -113,7 +113,7 @@ Feature: Provide some tools to operate the application when something is not wor
       | 2  | context | context | context     | 0     | /context     | suggestionsWS>master>/context | **Feature**: Provide book suggestions | 2           |
 
 
-  @level_1_specifications @nominal_case @valid
+  @level_1_specifications @nominal_case @valid @data_refresh
   Scenario: force all projects refresh from the remote git repository
     When I perform a "POST" on following URL "/api/admin/projects/refreshFromRemoteGitRepository"
     Then I get a response with status "200"
