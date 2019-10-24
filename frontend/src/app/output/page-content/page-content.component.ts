@@ -12,7 +12,7 @@ import {NotificationService} from '../../_services/notification.service';
   templateUrl: './page-content.component.html',
   styleUrls: ['./page-content.component.scss']
 })
-export class PageContentComponent implements OnInit, OnDestroy  {
+export class PageContentComponent implements OnInit, OnDestroy {
   page: Page;
   private subscription: Subscription;
 
