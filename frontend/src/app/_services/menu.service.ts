@@ -71,7 +71,7 @@ export class MenuService {
       depth,
       children: this.buildMenuHierarchyForNode(node, depth + 1)
     };
-    if (node.directory){
+    if (node.directory) {
       menu.directory = node.directory.path;
     }
     return menu;

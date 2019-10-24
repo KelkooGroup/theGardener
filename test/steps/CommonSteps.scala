@@ -51,7 +51,7 @@ object Injector {
   def inject[T: ClassTag]: T = injector.instanceOf[T]
 }
 
-case class ProjectTableRow(id: String, name: String, repositoryUrl: String, stableBranch: String, displayedBranches: String, featuresRootPath: String, documentationRootPath: String, variables: String){
+case class ProjectTableRow(id: String, name: String, repositoryUrl: String, stableBranch: String, displayedBranches: String, featuresRootPath: String, documentationRootPath: String, variables: String) {
   def toProject(): Project = {
     implicit val variableFormat = Json.format[Variable]
     Project(this.id, this.name, this.repositoryUrl, this.stableBranch, Option(this.displayedBranches), Option(this.featuresRootPath), Option(this.documentationRootPath), Option(variables).map(Json.parse(_).as[Seq[Variable]]))
@@ -86,15 +86,22 @@ object CommonSteps extends MockitoSugar with MustMatchers {
   val pageRepository = inject[PageRepository]
   val pageService = inject[PageService]
   val spyPageService = spy(pageService)
+  val menuService = inject[MenuService]
+  val spyMenuService = spy(menuService)
+  val projectService = inject[ProjectService]
+  val spyProjectService = spy(projectService)
   val replicaService = inject[ReplicaService]
   val spyReplicaService = spy(replicaService)
+  val gitService = Injector.inject[GitService]
   val config = inject[Config]
   val cache = inject[AsyncCacheApi]
   implicit val materializer = inject[Materializer]
 
   val applicationBuilder = builder.overrides(bind[SyncCacheApi].toInstance(new DefaultSyncCacheApi(cache)),
-                                             bind[PageService].toInstance(spyPageService),
-                                             bind[ReplicaService].toInstance(spyReplicaService)).in(Mode.Test)
+    bind[PageService].toInstance(spyPageService),
+    bind[MenuService].toInstance(spyMenuService),
+    bind[ProjectService].toInstance(spyProjectService),
+    bind[ReplicaService].toInstance(spyReplicaService)).in(Mode.Test)
 
   var app: Application = _
 
@@ -271,7 +278,7 @@ Scenario: providing several book suggestions
     }
   }
 
-  Given("""^we have the following variables from project "([^"]*)"$"""){ (projectId : String, Requestvariables : String) =>
+  Given("""^we have the following variables from project "([^"]*)"$""") { (projectId: String, Requestvariables: String) =>
     projectRepository.findById(projectId).map { project =>
       projectRepository.save(project.copy(variables = Some(Json.parse(Requestvariables).as[Seq[Variable]])))
     }
