@@ -68,7 +68,7 @@ Feature: Provide some tools to operate the application when something is not wor
     Then I get a response with status "200"
     And  I get the following response body
 """
-["master"]
+{"message":"Branches refreshed from the disk linked to project suggestionsWS are","elements":["master"]}
 """
     And the menu has been reloaded
     And we have now those branches in the database
@@ -89,7 +89,7 @@ Feature: Provide some tools to operate the application when something is not wor
     And the menu has been reloaded
     And  I get the following response body
 """
-["suggestionsWS"]
+{"message":"Projects refreshed from the disk are","elements":["suggestionsWS"]}
 """
 
 
@@ -99,7 +99,7 @@ Feature: Provide some tools to operate the application when something is not wor
     Then I get a response with status "200"
     And  I get the following response body
 """
-["master"]
+{"message":"Branches refreshed from the remote git repository linked to project suggestionsWS are","elements":["master"]}
 """
     And the menu has been reloaded
     And we have now those branches in the database
@@ -113,12 +113,3 @@ Feature: Provide some tools to operate the application when something is not wor
       | 2  | context | context | context     | 0     | /context     | suggestionsWS>master>/context | **Feature**: Provide book suggestions | 2           |
 
 
-  @level_1_specifications @nominal_case @valid @data_refresh
-  Scenario: force all projects refresh from the remote git repository
-    When I perform a "POST" on following URL "/api/admin/projects/refreshFromRemoteGitRepository"
-    Then I get a response with status "200"
-    And  I get the following response body
-"""
-["suggestionsWS"]
-"""
-    And the menu has been reloaded

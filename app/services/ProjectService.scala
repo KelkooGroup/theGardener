@@ -255,12 +255,21 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
   def finishGlobalSynchro(): Boolean = new File(lockFile).delete()
 
   def synchronizeAll(): Future[Unit] = {
-    logger.info("Start synchronizing projects")
 
-    val projects = projectRepository.findAll()
+    if (canStartGlobalSynchro) {
+      logger.info("Start synchronizing projects")
 
-    FutureExt.sequentially(projects)(synchronize).flatMap(_ => Future.fromTry(menuService.refreshCache())).map { _ =>
-      logger.info(s"Synchronization of ${projects.size} projects is finished")
+      val projects = projectRepository.findAll()
+
+      FutureExt.sequentially(projects)(synchronize).flatMap(_ => Future.fromTry(menuService.refreshCache())).map { _ =>
+        logger.info(s"Synchronization of ${projects.size} projects is finished")
+        finishGlobalSynchro
+        ()
+      }
+
+    } else {
+      logger.info("Synchronization already ongoing. Abort")
+      Future.successful(())
     }
   }
 

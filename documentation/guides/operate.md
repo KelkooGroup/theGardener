@@ -30,7 +30,7 @@ Here are some tools to refresh the data :
     {
       "scenarios" : 
          {
-            "feature": "/features/administration/operation.feature",
+            "feature": "/administration/operation.feature",
             "select": { "tags" : ["@data_refresh"]  }
          }
     }

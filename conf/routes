@@ -46,14 +46,7 @@ POST       /api/admin/menu/refresh                         controllers.AdminCont
 
 POST       /api/admin/projects/refreshFromDisk                      controllers.AdminController.refreshAllProjectsFromDisk()
 POST       /api/admin/projects/:id/refreshFromDisk                  controllers.AdminController.refreshProjectFromDisk(id:String)
-POST       /api/admin/projects/refreshFromRemoteGitRepository       controllers.AdminController.refreshAllProjectsFromRemote()
 POST       /api/admin/projects/:id/refreshFromRemoteGitRepository   controllers.AdminController.refreshProjectsFromRemote(id:String)
-
-
-
-
-
-
 
 
 GET        /api/assets                                     controllers.PageAssetController.getImageFromPath(path: String)

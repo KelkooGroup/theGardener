@@ -62,8 +62,12 @@ projects.synchronize.from.remote.enabled = <%= value("the_gardener_projects_sync
 
 documentation.meta.file = <%= value("the_gardener_documentation_meta_file") %>
 
-play.server.http.idleTimeout = 60s
-play.server.akka.requestTimeout = 40s
+play.server.http.idleTimeout = 1200s
+play.server.akka.requestTimeout = 1200s
+
+akka.http.server.idle-timeout = 1200s
+akka.http.server.request-timeout = 1200s
+
 
 <% if has_variable?("the_gardener_replica_url") %>
 replica.url= "<%= value("the_gardener_replica_url") %>"

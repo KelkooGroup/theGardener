@@ -68,7 +68,9 @@ class BranchRepository @Inject()(db: Database) {
 
   def deleteAll(branches: Seq[Branch]): Unit = {
     db.withConnection { implicit connection =>
-      SQL"DELETE FROM branch WHERE id IN (${branches.map(_.id)})".executeUpdate()
+      if (branches.nonEmpty){
+         SQL"DELETE FROM branch WHERE id IN (${branches.map(_.id)})".executeUpdate()
+      }
       ()
     }
   }
