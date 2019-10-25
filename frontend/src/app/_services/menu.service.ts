@@ -25,7 +25,7 @@ export class MenuService {
     const url = `api/menu/submenu/${nodeHierarchy}`;
     return this.http.get<HierarchyNodeApi>(url)
       .pipe(
-        map(submenu => this.buildMenuHierarchyForNode(submenu, 0))
+        map(submenu => this.buildMenuHierarchyForNode(submenu, 1))
       );
   }
 
