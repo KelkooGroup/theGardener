@@ -91,6 +91,29 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
     } else Future.successful(())
   }
 
+  def reloadFromDisk(projectId: String): Option[Seq[String]] = {
+    projectRepository.findById(projectId).map { project =>
+      val branches = branchRepository.findAllByProjectId(projectId)
+      deleteEntitiesRelatedToBranchesInDatabase(projectId, branches.map(_.name).toSet)
+      branches.map { branch =>
+        parseAndSaveFeatures(project, branch)
+        parseAndSaveDirectoriesAndPages(project, branch)
+      }
+      branchRepository.findAllByProjectId(projectId).map(_.name)
+    }
+  }
+
+  def reloadFromRemote(projectId: String): Option[Future[Seq[String]]] = {
+    projectRepository.findById(projectId).map { project =>
+      val branches = branchRepository.findAllByProjectId(projectId)
+      deleteEntitiesRelatedToBranchesInDatabase(projectId, branches.map(_.name).toSet)
+      branchRepository.deleteAll(branches)
+      deleteDirectory(new File(s"$projectsRootDirectory$projectId".fixPathSeparator))
+      synchronize(project).map(_ => branchRepository.findAllByProjectId(projectId).map(_.name))
+    }
+  }
+
+
   def filterFeatureFile(filePaths: Seq[String], featureRootPath: Option[String]): Seq[String] = filePaths.filter(path => featureRootPath.exists(path.startsWith) && path.endsWith(".feature"))
 
   def filterDocumentationFile(filePaths: Seq[String], documentationRootPath: Option[String]): Seq[String] = filePaths.filter(path => documentationRootPath.exists(path.startsWith) && path.endsWith(".md"))
@@ -194,14 +217,10 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
       logger.info(s"delete $projectId branches ${branches.mkString(", ")}")
 
       Future {
+        deleteEntitiesRelatedToBranchesInDatabase(projectId, branches)
         for (branch <- branches) {
           deleteDirectory(new File(getLocalRepository(projectId, branch)))
-          branchRepository.findByProjectIdAndName(projectId, branch).map(_.id).foreach { branchId =>
-            featureRepository.deleteAllByBranchId(branchId)
-            directoryRepository.deleteAllByBranchId(branchId)
-          }
         }
-
         branchRepository.deleteAll(branchRepository.findAllByProjectId(projectId).filter(b => branches.contains(b.name)))
 
       }.logError(s"Error while deleting project $projectId branches ${branches.mkString(", ")}")
@@ -209,13 +228,47 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
     } else Future.successful(())
   }
 
+  private def deleteEntitiesRelatedToBranchesInDatabase(projectId: String, branches: Set[String]) = {
+    for (branch <- branches) {
+      branchRepository.findByProjectIdAndName(projectId, branch).map(_.id).foreach { branchId =>
+        featureRepository.deleteAllByBranchId(branchId)
+        directoryRepository.deleteAllByBranchId(branchId)
+      }
+    }
+  }
+
+  val lockFile = s"${projectsRootDirectory}globalSynchroOnGoing".fixPathSeparator
+
+  def isGlobalSynchroOnGoing(): Boolean = {
+    new File(lockFile).exists()
+  }
+
+  def canStartGlobalSynchro(): Boolean = {
+    if (isGlobalSynchroOnGoing) {
+      false
+    } else {
+      new File(lockFile).createNewFile()
+    }
+  }
+
+  def finishGlobalSynchro(): Boolean = new File(lockFile).delete()
+
   def synchronizeAll(): Future[Unit] = {
-    logger.info("Start synchronizing projects")
 
-    val projects = projectRepository.findAll()
+    if (canStartGlobalSynchro) {
+      logger.info("Start synchronizing projects")
 
-    FutureExt.sequentially(projects)(synchronize).flatMap(_ => Future.fromTry(menuService.refreshCache())).map { _ =>
-      logger.info(s"Synchronization of ${projects.size} projects is finished")
+      val projects = projectRepository.findAll()
+
+      FutureExt.sequentially(projects)(synchronize).flatMap(_ => Future.fromTry(menuService.refreshCache())).map { _ =>
+        logger.info(s"Synchronization of ${projects.size} projects is finished")
+        finishGlobalSynchro
+        ()
+      }
+
+    } else {
+      logger.info("Synchronization already ongoing. Abort")
+      Future.successful(())
     }
   }
 
@@ -261,8 +314,9 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
     }
   }
 
-  @silent("Interpolated") @silent("missing interpolator")
-  def getVariables(page: Page): Option[Seq[Variable]] ={
+  @silent("Interpolated")
+  @silent("missing interpolator")
+  def getVariables(page: Page): Option[Seq[Variable]] = {
     for {
       directory <- directoryRepository.findById(page.directoryId)
       branch <- branchRepository.findById(directory.branchId)

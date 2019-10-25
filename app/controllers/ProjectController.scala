@@ -76,12 +76,12 @@ class ProjectController @Inject()(projectRepository: ProjectRepository, projectS
   }
 
   @ApiOperation(value = "Update variables of a project", response = classOf[Project])
-  @ApiImplicitParams(Array(new ApiImplicitParam(value = "The variables to update", required = true, dataType = "Seq[models.Variable]", paramType = "body")))
+  @ApiImplicitParams(Array(new ApiImplicitParam(value = "The variables to update", required = true, dataType = "models.Variable", paramType = "body")))
   @ApiResponses(Array(
     new ApiResponse(code = 400, message = "Incorrect json"),
     new ApiResponse(code = 404, message = "Project not found"))
   )
-  def updateVariables(@ApiParam("Project id") id: String): Action[Seq[Variable]] = Action(parse.json[Seq[Variable]]) { implicit request =>
+  def updateVariables(@ApiParam("Project id") id: String): Action[Seq[Variable]] = Action(parse.json[scala.Seq[models.Variable]]) { implicit request =>
     val variables = request.body
 
     projectRepository.findById(id) match {
@@ -187,7 +187,6 @@ class ProjectController @Inject()(projectRepository: ProjectRepository, projectS
     projectRepository.findById(id)
       .map(projectService.synchronize(_).map(_ => menuService.refreshCache()).map(_ => replicaService.triggerSychronizeOnReplica(id)).map(_ => Ok))
       .getOrElse(Future.successful(NotFound(s"No project $id")))
-
   }
 
   @ApiOperation(value = "get the hierarchy link to a project", response = classOf[HierarchyNode])
