@@ -315,8 +315,9 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
     }
   }
 
-  @silent("Interpolated") @silent("missing interpolator")
-  def getVariables(page: Page): Option[Seq[Variable]] ={
+  @silent("Interpolated")
+  @silent("missing interpolator")
+  def getVariables(page: Page): Option[Seq[Variable]] = {
     for {
       directory <- directoryRepository.findById(page.directoryId)
       branch <- branchRepository.findById(directory.branchId)

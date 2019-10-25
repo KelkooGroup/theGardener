@@ -187,6 +187,7 @@ class ProjectController @Inject()(projectRepository: ProjectRepository, projectS
     projectRepository.findById(id)
       .map(projectService.synchronize(_).map(_ => menuService.refreshCache()).map(_ => replicaService.triggerSychronizeOnReplica(id)).map(_ => Ok))
       .getOrElse(Future.successful(NotFound(s"No project $id")))
+
   }
 
   @ApiOperation(value = "get the hierarchy link to a project", response = classOf[HierarchyNode])
