@@ -91,6 +91,13 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
     } else Future.successful(())
   }
 
+  def reloadFromDatabase(projectId: String): Option[Seq[String]] = {
+    projectRepository.findById(projectId).map { project =>
+      refreshAllPages(project)
+      branchRepository.findAllByProjectId(projectId).map(_.name)
+    }
+  }
+
   def reloadFromDisk(projectId: String): Option[Seq[String]] = {
     projectRepository.findById(projectId).map { project =>
       val branches = branchRepository.findAllByProjectId(projectId)
@@ -278,6 +285,12 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
       pageService.computePageFromPathUsingDatabase(page.path)
     }
     ()
+  }
+
+  def synchronizeProjectId(projectId: String): Option[Future[Unit]] = {
+    projectRepository.findById(projectId).map { project =>
+         synchronize(project)
+    }
   }
 
   def synchronize(project: Project): Future[Unit] = {
