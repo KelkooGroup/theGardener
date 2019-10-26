@@ -51,12 +51,18 @@ Insert rows on the table **hierarchyNode**.
 For instance to have the previous hierarchy :
 
 ```
-mysql> INSERT INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel) VALUES ('.', 'root', 'root', 'Platforms', 'Platform');
-mysql> INSERT INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel) VALUES ('.01.', 'lib', 'Library', 'Systems', 'System');
-mysql> INSERT INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel) VALUES ('.02.', 'uni', 'University', 'Projects', 'Project');
-mysql> INSERT INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel) VALUES ('.03.', 'leg', 'Legal', 'Projects', 'Project');
-mysql> INSERT INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel) VALUES ('.01.01.', 'users', 'Users', 'Projects', 'Project');
-mysql> INSERT INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel) VALUES ('.01.02.', 'books', 'Books', 'Projects', 'Project');
+mysql> INSERT INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel) 
+                  VALUES ('.', 'root', 'root', 'Platforms', 'Platform');
+mysql> INSERT INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel) 
+                  VALUES ('.01.', 'lib', 'Library', 'Systems', 'System');
+mysql> INSERT INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel) 
+                  VALUES ('.02.', 'uni', 'University', 'Projects', 'Project');
+mysql> INSERT INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel) 
+                  VALUES ('.03.', 'leg', 'Legal', 'Projects', 'Project');
+mysql> INSERT INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel) 
+                  VALUES ('.01.01.', 'users', 'Users', 'Projects', 'Project');
+mysql> INSERT INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel) 
+                  VALUES ('.01.02.', 'books', 'Books', 'Projects', 'Project');
 ```
 
 ### Projects
