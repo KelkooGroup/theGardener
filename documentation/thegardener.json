@@ -12,9 +12,7 @@
       "thePlan"
     ],
     "children" :[
-      "guides",
-      "features",
-      "api"
+      "guides"
     ]
   }
 }
