@@ -16,6 +16,8 @@ import {GherkinStepComponent} from '../gherkin/gherkin-step/gherkin-step.compone
 import {GherkinLongTextComponent} from '../gherkin/gherkin-long-text/gherkin-long-text.component';
 import {GherkinTableComponent} from '../gherkin/gherkin-table/gherkin-table.component';
 import {NgxJsonViewerModule} from 'ngx-json-viewer';
+import { RemoveHtmlSanitizerPipe} from "../../removehtmlsanitizer.pipe";
+import {RouterTestingModule} from "@angular/router/testing";
 
 describe('PageContentComponent', () => {
   let component: PageContentComponent;
@@ -32,7 +34,8 @@ describe('PageContentComponent', () => {
         GherkinLongTextComponent,
         GherkinTableComponent,
         SafePipe,
-        InternalLinkPipe
+        InternalLinkPipe,
+        RemoveHtmlSanitizerPipe
       ],
       imports: [
         HttpClientTestingModule,
@@ -41,6 +44,7 @@ describe('PageContentComponent', () => {
         MatTableModule,
         MarkdownModule.forRoot(),
         NgxJsonViewerModule,
+        RouterTestingModule,
       ],
       providers: [
         {
@@ -75,7 +79,7 @@ describe('PageContentComponent', () => {
       .toBeTruthy();
   }));
 
-  fit('should get page content from backend and show markdown', async(() => {
+  it('should get page content from backend and show markdown', async(() => {
     const pageService: PageService = TestBed.get(PageService);
     spyOn(pageService, 'getPage').and.returnValue(of(PAGE_WITH_INTERNAL_LINK_SERVICE_RESPONSE));
 
