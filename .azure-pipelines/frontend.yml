@@ -34,8 +34,7 @@ steps:
 - script: |
     npm install -g @angular/cli
     npm install
-    cd ./node_modules/protractor && npm i webdriver-manager@latest && cd ../..
-    npm run pree2e
+    npm run protractor -- --chromeDriver %ChromeWebDriver:\=/%/chromedriver.exe
   workingDirectory: frontend
   displayName: 'npm install'
 
