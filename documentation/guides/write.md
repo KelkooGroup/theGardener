@@ -141,7 +141,7 @@ This feature is explained by this specific scenario:
     {
       "scenarios" : 
          {
-            "feature": "/page/show_a_page_with_variables.feature",
+            "feature": "/documentation/page/show_a_page_with_variables.feature",
             "select": { "tags" : ["@nominal_case"]  }
          }
     }
@@ -195,7 +195,7 @@ To include gherkin scenarios, use this module :
 {
   "scenarios" : 
      {
-        "feature": "/page/show_a_page_with_variables.feature",
+        "feature": "/documentation/page/show_a_page_with_variables.feature",
         "select": { "tags" : ["@nominal_case"]  }
      }
 }

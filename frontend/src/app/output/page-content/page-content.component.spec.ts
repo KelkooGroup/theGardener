@@ -10,7 +10,7 @@ import {MarkdownModule} from 'ngx-markdown';
 import {Page, PagePart} from '../../_models/page';
 import {MatProgressSpinnerModule, MatSnackBarModule, MatTableModule} from '@angular/material';
 import {SafePipe} from '../../safe.pipe';
-import {InternalLinkPipe} from "../../internal-link.pipe";
+import {InternalLinkPipe} from '../../internal-link.pipe';
 import {GherkinComponent} from '../gherkin/gherkin.component';
 import {GherkinStepComponent} from '../gherkin/gherkin-step/gherkin-step.component';
 import {GherkinLongTextComponent} from '../gherkin/gherkin-long-text/gherkin-long-text.component';

@@ -25,7 +25,7 @@ export class PageContentComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     // @ts-ignore
-    window.navigateTo = navigateTofun(this.router, this.ngZone);
+    window.navigateTo = navigateTo(this.router, this.ngZone);
     this.subscription = combineLatest([
       this.activatedRoute.parent.params,
       this.activatedRoute.params
@@ -70,6 +70,6 @@ export class PageContentComponent implements OnInit, OnDestroy {
 
 }
 
-let navigateTofun = (router: Router, ngZone: NgZone) => (path: string) => {
-  ngZone.run(() => router.navigateByUrl(path)).then();
-}
+const navigateTo = (router: Router, ngZone: NgZone) => (path: string) => {
+  ngZone.run(() => router.navigateByUrl(path)).catch(err => console.log(err));
+};

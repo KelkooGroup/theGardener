@@ -8,6 +8,7 @@ Feature: Synchronize resources from a project on a remote server
     Given No project is checkout
     And the database is empty
     And the cache is empty
+    And the menu reloaded count is reset
 
 
   @level_1_specification @nominal_case @valid @documentation
@@ -24,6 +25,7 @@ Feature: As a user, I want some book suggestions so that I can do some discovery
 """
 Feature: As a user, I want some book suggestions so that I can do some discovery
     """
+    And the menu has been reloaded
 
   @level_1_specification @nominal_case @valid @documentation
   Scenario: Synchronize the features of all the projects with a scheduler

@@ -15,7 +15,6 @@ import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.api.test._
 import resource._
-import services._
 import utils._
 
 import scala.collection.JavaConverters._
@@ -28,8 +27,7 @@ class GetFeaturesSteps extends ScalaDsl with EN with MockitoSugar {
 
   import CommonSteps._
 
-  val projectService = Injector.inject[ProjectService]
-  val gitService = Injector.inject[GitService]
+
 
   val featureContent = "Feature: As a user, I want some book suggestions so that I can do some discovery"
 
@@ -89,8 +87,11 @@ class GetFeaturesSteps extends ScalaDsl with EN with MockitoSugar {
   }
 
   Given("""^the project "([^"]*)" is synchronized$""") { project: String =>
-    response = route(app, FakeRequest("POST", s"/api/projects/$project/synchronize")).get
-    await(response)
+//    response = route(app, FakeRequest("POST", s"/api/projects/$project/synchronize")).get
+//    await(response)
+    projectRepository.findById(project).map { project =>
+      await(projectService.synchronize(project))
+    }
   }
 
   Given("""^we have no tag in the database$""") { () =>

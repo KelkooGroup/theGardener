@@ -25,7 +25,7 @@ At some point, a long time ago, it was the same with tests : developer didn't wa
 
 We can do the same with the documentation !
 
-![Dev workflow](assets/images/development_workflow.png)
+![Dev workflow](global/assets/images/development_workflow.png)
 
 
 If the documentation writing task is included in the development loop, this task won't be forgotten. This task will be accurate as it will be reviewed with another developer during the merge request.
