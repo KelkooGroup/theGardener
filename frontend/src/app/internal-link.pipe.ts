@@ -16,10 +16,10 @@ export class InternalLinkPipe implements PipeTransform {
     const hierarchy = this.activatedRoute.parent.snapshot.params.name;
 
     function replacer(p1: string, p2: string, p3: string, p4: string, p5: string, p6: string) {
-      return `onclick="navigateTo('app/documentation/navigate/${p4 != 'navigate' ? hierarchy : p5};path=${p6}')"`
+      return `onclick="navigateTo('app/documentation/navigate/${p4 !== 'navigate' ? hierarchy : p5};path=${p6}')"`;
     }
 
-    return value.replace(linkRegex, replacer)
+    return value.replace(linkRegex, replacer);
   }
 
 
