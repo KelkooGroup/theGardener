@@ -75,7 +75,9 @@ class DirectoryRepository @Inject()(db: Database, pageRepository: PageRepository
     db.withConnection { implicit connection =>
       val ids = directories.map(_.id)
       ids.foreach(pageRepository.deleteAllByDirectoryId)
-      SQL"DELETE FROM directory WHERE id IN ($ids)".executeUpdate()
+      if (ids.nonEmpty){
+         SQL"DELETE FROM directory WHERE id IN ($ids)".executeUpdate()
+      }
       ()
     }
   }

@@ -19,4 +19,14 @@ class SynchronizationSteps extends ScalaDsl with EN with MockitoSugar {
   }
 
 
+  Given("""^the menu reloaded count is reset$""") { () =>
+    reset(spyMenuService)
+  }
+
+  Then("""^the menu has been reloaded$""") { () =>
+    verify(spyMenuService, times(1)).refreshCache()
+  }
+
+
+
 }
