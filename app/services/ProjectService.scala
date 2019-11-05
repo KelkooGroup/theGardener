@@ -25,6 +25,7 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
   val documentationMetaFile = config.get[String]("documentation.meta.file")
   val synchronizeFromRemoteEnabled = config.get[Boolean]("projects.synchronize.from.remote.enabled")
 
+
   if (environment.mode != Mode.Test) {
     val synchronizeJob = actorSystem.scheduler.schedule(initialDelay = synchronizeInitialDelay.seconds, interval = synchronizeInterval.seconds) {
       synchronizeAll()
@@ -89,6 +90,13 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
       }.map(_ => ())
 
     } else Future.successful(())
+  }
+
+  def reloadFromDatabase(projectId: String): Option[Seq[String]] = {
+    projectRepository.findById(projectId).map { project =>
+      refreshAllPages(project)
+      branchRepository.findAllByProjectId(projectId).map(_.name)
+    }
   }
 
   def reloadFromDisk(projectId: String): Option[Seq[String]] = {
@@ -278,6 +286,12 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
       pageService.computePageFromPathUsingDatabase(page.path)
     }
     ()
+  }
+
+  def synchronizeProjectId(projectId: String): Option[Future[Unit]] = {
+    projectRepository.findById(projectId).map { project =>
+         synchronize(project)
+    }
   }
 
   def synchronize(project: Project): Future[Unit] = {
