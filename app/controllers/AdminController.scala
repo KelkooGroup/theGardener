@@ -38,7 +38,7 @@ class AdminController @Inject()(menuService: MenuService, projectService: Projec
   def refreshAllProjectsFromDatabase(): Action[AnyContent] = Action {
     logger.info("Starting refreshing all projects from the database")
     val projects = projectRepository.findAll().map { project =>
-      projectService.reloadFromDisk(project.id)
+      projectService.reloadFromDatabase(project.id)
       project.id
     }
     menuService.refreshCache()

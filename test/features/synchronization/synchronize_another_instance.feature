@@ -20,5 +20,5 @@ Feature: As a user, I want some book suggestions so that I can do some discovery
   Scenario: Once resources are synchronized, trigger the synchronization of another instance
 
     When the synchronization action is triggered by the webhook for project "suggestionsWS"
-    Then the webhook "http://localhost:9009/api/projects/suggestionsWS/synchronize" is triggered
+    Then the webhook "http://localhost:9009/api/admin/projects/suggestionsWS/refreshFromDatabase" is triggered
 
