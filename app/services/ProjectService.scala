@@ -107,6 +107,7 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
         parseAndSaveFeatures(project, branch)
         parseAndSaveDirectoriesAndPages(project, branch)
       }
+      refreshAllPages(project)
       branchRepository.findAllByProjectId(projectId).map(_.name)
     }
   }

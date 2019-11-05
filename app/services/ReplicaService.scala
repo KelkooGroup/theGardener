@@ -14,8 +14,8 @@ class ReplicaService @Inject()(config: Configuration, wsClient: WSClient) extend
   def triggerSychronizeOnReplica(projectId: String): Future[Unit] = {
     replicaUrlOpt match {
       case Some(replicaUrl) =>
-        val url = s"$replicaUrl/api/projects/$projectId/synchronize"
-        logger.info(s"Trigger the synchronize on $projectId with url $url")
+        val url = s"${replicaUrl}/api/admin/projects/${projectId}/refreshFromDatabase"
+        logger.info(s"Trigger the synchronize on $projectId with url ${url}")
         postOnUrl(url)
       case _ => Future.successful(())
     }
