@@ -5,6 +5,7 @@ Feature: Provide some tools to operate the application when something is not wor
     And the database is empty
     And the cache is empty
     And the menu reloaded count is reset
+    And the pages computation from the database count is reset
     And the server "target/remote/data/Operation" host under the project "library/suggestionsWS" on the branch "master" the file "doc/thegardener.json"
     """
 {
@@ -58,9 +59,32 @@ Feature: Provide some tools to operate the application when something is not wor
 
   @level_2_technical_details @nominal_case @valid @data_refresh
   Scenario: force refresh the menu
-    When I perform a "POST" on following URL "/api/admin/menu/refresh"
+    When I perform a "POST" on following URL "/api/admin/menu/refreshFromDatabase"
     Then I get a response with status "200"
     And the menu has been reloaded
+
+  @level_2_technical_details @nominal_case @valid @data_refresh
+  Scenario: force a project refresh from the database
+    When I perform a "POST" on following URL "/api/admin/projects/suggestionsWS/refreshFromDatabase"
+    Then I get a response with status "200"
+    And  I get the following response body
+"""
+{"message":"Branches refreshed from the database linked to project suggestionsWS are","elements":["master"]}
+"""
+    And the menu has been reloaded
+    And the pages has been recomputed from the database for the project "suggestionsWS"
+
+  @level_2_technical_details @nominal_case @valid @data_refresh
+  Scenario: force all projects refresh from the database
+    When I perform a "POST" on following URL "/api/admin/projects/refreshFromDatabase"
+    Then I get a response with status "200"
+    And  I get the following response body
+"""
+{"message":"Projects refreshed from the database are","elements":["suggestionsWS"]}
+"""
+    And the menu has been reloaded
+    And the pages has been recomputed from the database for the project "suggestionsWS"
+
 
   @level_2_technical_details @nominal_case @valid @data_refresh
   Scenario: force a project refresh from the disk
@@ -90,6 +114,15 @@ Feature: Provide some tools to operate the application when something is not wor
     And  I get the following response body
 """
 {"message":"Projects refreshed from the disk are","elements":["suggestionsWS"]}
+"""
+
+  @level_2_technical_details @nominal_case @valid @data_refresh
+  Scenario: force a project refresh from the remote git repository
+    When I perform a "POST" on following URL "/api/admin/projects/suggestionsWS/synchronizeFromRemoteGitRepository"
+    Then I get a response with status "200"
+    And  I get the following response body
+"""
+{"message":"Branches synchronized from the remote git repository linked to project suggestionsWS are","elements":["master"]}
 """
 
 
