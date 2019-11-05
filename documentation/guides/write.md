@@ -147,6 +147,31 @@ This feature is explained by this specific scenario:
     }
 ```
 
+
+#### Define an internal link 
+
+**Under the same project :**
+
+To make the life easier to the writer, copy past the url from 'path=' to the end of the url and use it to make the link with the following syntax :
+
+Syntax of the link : thegardener://path={project.id with front encoding}>{branch.name with front encoding}>{directory.path with front encoding}/{page.name}#anchor
+
+For instance :
+[internal link to installation guide of the project theGardener](thegardener://path=theGardener>master>_guides_/install)
+
+
+**Under the another project :**
+
+Copy past the url from 'navigate/' to the end of the url and use it to make the link with the following syntax :
+
+Syntax of the link : thegardener://navigate/{hierarchy path with front encoding};path={project.id with front encoding}>{branch.name with front encoding}>{directory.path with front encoding}/{page.name}#anchor
+
+For instance :
+[internal link to adoption path from another node in the hierarchy ](thegardener://navigate/_adoption;path=theGardenerNodes>master>_adoption_/adoption)
+
+See [the current page](https://github.com/KelkooGroup/theGardener/blob/master/documentation/guides/write.md) in context.
+
+
 #### Include external web page
 
 This can be useful to include the Swagger documentation. At the top of the markdown file, use this module :
