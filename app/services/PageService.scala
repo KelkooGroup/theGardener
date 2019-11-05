@@ -109,17 +109,24 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
   }
 
   def computePageFromPath(path: String, refresh: Boolean = false): Option[PageWithContent] = {
-    val key = computePageCacheKey(path)
     if (refresh) {
-      val page = computePageFromPathUsingDatabase(path)
-      cache.set(key, page)
-      page
+      computePageFromPathUsingDatabase(path)
     } else {
-      cache.getOrElseUpdate(key) {
-        computePageFromPathUsingDatabase(path)
+      cache.get[PageWithContent](computePageCacheKey(path)) match {
+        case Some(page) => {
+          Some(page)
+        }
+        case None => {
+          computePageFromPathUsingDatabase(path)
+        }
       }
     }
   }
+
+  def replacePageInCache(path: String, page: PageWithContent): Unit = {
+    cache.set(computePageCacheKey(path), page)
+  }
+
 
   private def computePageCacheKey(path: String): String = s"page_$path"
 
@@ -133,7 +140,10 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
           processPageFragments(fragments, pageJoinProject)
         } match {
           case Some(fragments) => {
-            Some(PageWithContent(pageJoinProject.page, fragments))
+            logger.debug(s"Page computed : $path")
+            val page = PageWithContent(pageJoinProject.page, fragments)
+            replacePageInCache(path,page)
+            Some(page)
           }
           case _ => None
         }
