@@ -56,6 +56,7 @@ steps:
     [ ! -f /usr/local/bin/sbt ] && sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823
     [ ! -f /usr/local/bin/sbt ] && sudo apt-get update  -o Dir::Etc::sourcelist=/etc/apt/sources.list.d/sbt.list
     [ ! -f /usr/local/bin/sbt ] && sudo apt-get install sbt
+    which sbt
     sbt sbtVersion
   displayName: 'install sbt'
 
@@ -90,5 +91,3 @@ steps:
     sh -x -c "sonar-scanner -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=kelkoo -Dsonar.login=6c199a8887e5909a63eb3d6ffcd70c1ca33d6757 $SONAR_BRANCH"
   displayName: 'sonar-scanner'
 
-- publish: /usr/local/bin/sbt
-  artifact: sbt
