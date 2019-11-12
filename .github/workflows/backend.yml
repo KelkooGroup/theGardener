@@ -16,13 +16,13 @@ jobs:
         java-version: 1.8
 
     - name: Sbt build cache
-      uses: actions/cache@v1.0.0
+      uses: actions/cache@v1.0.1
       with:
         path: ~/.sbt
         key: ${{ runner.os }}-${{ hashFiles('project/build.properties')}}
         
     - name: Yvy build cache
-      uses: actions/cache@v1.0.0
+      uses: actions/cache@v1.0.1
       with:
         path: ~/.sbt
         key: ${{ runner.os }}-${{ hashFiles('build.sbt')}}-${{ hashFiles('project/plugins.sbt')}}
