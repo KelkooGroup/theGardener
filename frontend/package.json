@@ -9,23 +9,23 @@
     "test": "ng test",
     "test-no-watch": "ng test --watch=false --progress=false",
     "lint": "ng lint",
-    "pree2e": "webdriver-manager update --gecko=false",
+    "pree2e": "webdriver-manager update --gecko=false ",
     "e2e": "ng e2e --webdriver-update=false"
   },
   "private": true,
   "dependencies": {
     "@angular/animations": "8.2.13",
     "@angular/cdk": "8.2.3",
-    "@angular/common": "8.2.13",
-    "@angular/compiler": "8.2.13",
-    "@angular/core": "8.2.13",
-    "@angular/forms": "8.2.13",
+    "@angular/common": "8.2.11",
+    "@angular/compiler": "8.2.11",
+    "@angular/core": "8.2.11",
+    "@angular/forms": "8.2.11",
     "@angular/material": "8.2.3",
-    "@angular/platform-browser": "8.2.13",
-    "@angular/platform-browser-dynamic": "8.2.13",
-    "@angular/platform-server": "8.2.13",
-    "@angular/router": "8.2.13",
-    "@types/lodash": "4.14.145",
+    "@angular/platform-browser": "8.2.11",
+    "@angular/platform-browser-dynamic": "8.2.11",
+    "@angular/platform-server": "8.2.11",
+    "@angular/router": "8.2.11",
+    "@types/lodash": "4.14.144",
     "angular-super-validator": "2.0.0",
     "core-js": "3.3.3",
     "cucumber-pretty": "1.5.2",
@@ -45,10 +45,10 @@
     "zone.js": "0.10.2"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "0.803.18",
-    "@angular/cli": "8.3.18",
-    "@angular/compiler-cli": "8.2.13",
-    "@angular/language-service": "8.2.13",
+    "@angular-devkit/build-angular": "0.803.12",
+    "@angular/cli": "8.3.12",
+    "@angular/compiler-cli": "8.2.11",
+    "@angular/language-service": "8.2.11",
     "@types/chai": "4.2.3",
     "@types/chai-as-promised": "7.1.2",
     "@types/cucumber": "4.0.7",
@@ -76,7 +76,8 @@
     "ts-node": "8.4.1",
     "tslint": "5.20.0",
     "typescript": "3.5.3",
-    "webpack": "4.41.2"
+    "webpack": "4.41.2",
+    "webdriver": "5.15.4"
   },
   "optionalDependencies": {
     "fsevents": "*"

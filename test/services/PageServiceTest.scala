@@ -42,7 +42,7 @@ class PageServiceTest extends WordSpec with MustMatchers with BeforeAndAfter wit
       pageService.replaceVariablesInMarkdown(contentWithMarkdown, variables) must contain theSameElementsAs Seq(PageFragment("markdown", PageFragmentContent(Some(s"value"))))
     }
 
-    "Replace Variables in Markdown" in {
+    "Replace Variables in Markdown with external Link" in {
       pageService.replaceVariablesInMarkdown(contentWithTwoFragment, variables) must contain theSameElementsAs Seq(PageFragment("markdown", PageFragmentContent(Some(s"value"))),PageFragment("includeExternalPage", PageFragmentContent(None,None,Some(s"value"))))
     }
   }

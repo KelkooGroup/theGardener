@@ -1,5 +1,5 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {Component, NgZone, OnDestroy, OnInit} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
 import {catchError, map, switchMap} from 'rxjs/operators';
 import {combineLatest, of, Subscription} from 'rxjs';
 import {PageService} from '../../_services/page.service';
@@ -12,16 +12,20 @@ import {NotificationService} from '../../_services/notification.service';
   templateUrl: './page-content.component.html',
   styleUrls: ['./page-content.component.scss']
 })
-export class PageContentComponent implements OnInit, OnDestroy  {
+export class PageContentComponent implements OnInit, OnDestroy {
   page: Page;
   private subscription: Subscription;
 
   constructor(private activatedRoute: ActivatedRoute,
               private pageService: PageService,
-              private notificationService: NotificationService) {
+              private notificationService: NotificationService,
+              private router: Router,
+              private ngZone: NgZone) {
   }
 
   ngOnInit() {
+    // @ts-ignore
+    window.navigateTo = navigateTo(this.router, this.ngZone);
     this.subscription = combineLatest([
       this.activatedRoute.parent.params,
       this.activatedRoute.params
@@ -63,4 +67,9 @@ export class PageContentComponent implements OnInit, OnDestroy  {
   getScenario(part: PagePart) {
     return (part.data as ScenarioPart).scenarios;
   }
+
 }
+
+const navigateTo = (router: Router, ngZone: NgZone) => (path: string) => {
+  ngZone.run(() => router.navigateByUrl(path)).catch(err => console.log(err));
+};

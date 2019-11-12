@@ -171,7 +171,7 @@ class PageRepository @Inject()(db: Database) {
 
   def deleteAllByStartingPath(basePath: String): Unit = {
     db.withConnection { implicit connection =>
-      SQL(s"DELETE FROM page WHERE path like '${basePath}%' ") .executeUpdate()
+      SQL(s"DELETE FROM page WHERE path like '$basePath%' ") .executeUpdate()
       ()
     }
   }

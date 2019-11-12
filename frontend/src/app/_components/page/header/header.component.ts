@@ -48,7 +48,6 @@ export class HeaderComponent implements OnInit {
 
   isItemInActivatedRoute(item: HierarchyNodeApi) {
     const url = this.activatedRoute.firstChild.snapshot.url;
-    console.log(url);
     return url.filter(p => p.path === item.hierarchy).length > 0;
   }
 

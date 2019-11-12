@@ -13,7 +13,7 @@
 **Write your documentation in your project source code in Markdown.** As MarkDown preview is embedded in any modern IDE, you will have an immediate preview , moreover if you push your current branch you will have easily a view of the output in theGardener application before even merging your code.
 
 
-## Requirement
+# Requirement
 
 
 Your project need to be configured on theGardener instance : 
@@ -26,9 +26,7 @@ Your project need to be configured on theGardener instance :
  
 Once this configuration done, you can apply the following format.
 
-## Format 
-
-### Directories and pages
+# Directories and pages format 
 
 The hierarchy of directories and pages is defined by one unique _thegardener.json_ file at each directory. 
 The first _thegardener.json_ file expected by theGardener application is located in the directory referred by _documentationRootPath_ . 
@@ -78,7 +76,7 @@ This file should have the following format :
 See [the example](https://github.com/KelkooGroup/theGardener/blob/master/documentation/thegardener.json) in context.
 
 
-### A page 
+# Page format 
 
 The format of the page respect the [Markdown syntax](https://guides.github.com/features/mastering-markdown/).
 
@@ -87,7 +85,7 @@ Note: to be displayed in theGardener, the Markdown file need to have been listed
 To **enrich the Markdown syntax**, several additional command can be applied. Those commands use the fact that Markdown syntax accept syntax highlighting: we will had a new language called _thegardener_ with a json format. **We will call refer to those kind of command as module.** Make sure to use ``` before and after the command  (in the current documentation we are using ''' otherwise it would have been escapted at the rendering :) ). 
 
 
-#### Define meta data
+## Define meta data
 
 At the top of the page, add the following module :
   
@@ -112,7 +110,7 @@ At the top of the page, add the following module :
 See [the current page](https://github.com/KelkooGroup/theGardener/blob/master/documentation/guides/write.md) in context.
 
 
-#### Use variables
+## Use variables
 
 During the configuration of the project in theGardener, we can define variables at project level. This allow to externalise some values that we do not want to hard code in the documentation. For instance, server, urls... 
 It can be useful to define swagger documentation urls for example.
@@ -147,7 +145,46 @@ This feature is explained by this specific scenario:
     }
 ```
 
-#### Include external web page
+
+## Define an internal link 
+
+Be able to make link to pages in theGardener application.
+
+See [the current page section](https://github.com/KelkooGroup/theGardener/blob/master/documentation/guides/write.md) in context.
+
+
+**To a page under the same hierarchy node:**
+
+![](../assets/images/theGardener_role_writer_make_internal_link_01.png)
+
+Copy past the url from 'path=' to the end of the url and use it to make the link with the following syntax :
+
+Syntax of the link : thegardener://path={project.id with front encoding}>{branch.name with front encoding}>{directory.path with front encoding}/{page.name}#anchor
+
+For instance :
+[internal link to installation guide of the project theGardener](thegardener://path=theGardener>master>_guides_/install)
+
+````
+[internal link to installation guide of the project theGardener](thegardener://path=theGardener>master>_guides_/install)
+````
+
+
+**To a page under another hierarchy node:**
+
+![](../assets/images/theGardener_role_writer_make_internal_link_02.png)
+
+Copy past the url from 'navigate/' to the end of the url and use it to make the link with the following syntax :
+
+Syntax of the link : thegardener://navigate/{hierarchy path with front encoding};path={project.id with front encoding}>{branch.name with front encoding}>{directory.path with front encoding}/{page.name}#anchor
+
+For instance :
+[internal link to adoption path from another node in the hierarchy ](thegardener://navigate/_adoption;path=theGardenerNodes>master>_adoption_/adoption)
+
+````
+[internal link to adoption path from another node in the hierarchy ](thegardener://navigate/_adoption;path=theGardenerNodes>master>_adoption_/adoption)
+````
+
+## Include external web page
 
 This can be useful to include the Swagger documentation. At the top of the markdown file, use this module :
 
@@ -180,7 +217,7 @@ Note that we can use the variables here :
 See [an example](https://github.com/KelkooGroup/theGardener/blob/master/documentation/api/tryit.md) in context.
   
   
-#### Include gherkin scenarios
+## Include gherkin scenarios
 
 **Some context**: The gherkin scenarios are really good to specify with the product owner what need to be implemented. 
 The gherkin scenarios are living documentation and regression tests. 
