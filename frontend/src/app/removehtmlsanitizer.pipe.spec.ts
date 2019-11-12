@@ -16,8 +16,8 @@ describe('RemovehtmlsanitizerPipe', () => {
   });
 
   it('Remove sanitizer', () => {
-    expect(sanitizer.sanitize(1,removeSanitizerPipe.transform(htmlTest))).toBe(htmlTest)
+    expect(sanitizer.sanitize(1, removeSanitizerPipe.transform(htmlTest))).toBe(htmlTest);
   });
 
-  const htmlTest = '<p>For instance :\n<a onclick="navigateTo(\'app/documentation/navigate/_tools;path=theGardener%3Emaster%3E_guides_/install\')">internal link to installation guide of the project theGardener</a></p>'
+  const htmlTest = '<p>For instance :\n<a onclick="navigateTo(\'app/documentation/navigate/_tools;path=theGardener%3Emaster%3E_guides_/install\')">internal link to installation guide of the project theGardener</a></p>';
 });
