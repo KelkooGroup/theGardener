@@ -15,8 +15,8 @@ export class InternalLinkPipe implements PipeTransform {
     const linkRegex = new RegExp(linkRegexString, 'g');
     const hierarchy = this.activatedRoute.parent.snapshot.params.name;
 
-    function replacer(p1: string, p2: string, p3: string, p4: string, p5: string, p6: string) {
-      return `onclick="navigateTo('app/documentation/navigate/${p4 !== 'navigate' ? hierarchy : p5};path=${p6}')"`;
+    function replacer(p1: string, p2: string, p3: string, firstString: string, hierarchyIdGiven: string, path: string) {
+      return `onclick="navigateTo('app/documentation/navigate/${firstString !== 'navigate' ? hierarchy : hierarchyIdGiven};path=${path}')"`;
     }
 
     return value.replace(linkRegex, replacer);
