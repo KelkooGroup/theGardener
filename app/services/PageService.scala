@@ -192,7 +192,7 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
   }
 
   def parseModule(moduleString: String, path: String): Option[Module] = {
-    Try(Json.parse(moduleString.trim).as[Module]).logError(s"Error while parsing module '${moduleString}' of page ${path}").toOption
+    Try(Json.parse(moduleString.trim).as[Module]).logError(s"Error while parsing module '$moduleString' of page $path").toOption
   }
 
   def appendCurrentLine(fragment: PageFragmentUnderProcessing, line: String): PageFragmentUnderProcessing = {
@@ -204,7 +204,7 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
 
 
   def splitMarkdown(markdown: String, path: String = ""): Seq[PageFragmentUnderProcessing] = {
-    markdown.split('\n').foldLeft((Seq[PageFragmentUnderProcessing](), new PageFragmentUnderProcessing())) { (fragmentsAndCurrent, line) =>
+    markdown.split('\n').foldLeft((Seq[PageFragmentUnderProcessing](), PageFragmentUnderProcessing())) { (fragmentsAndCurrent, line) =>
       fragmentsAndCurrent match {
         case (fragments, currentFragment) =>
           processPageFragmentLine(line, path, fragments, currentFragment)
@@ -214,7 +214,7 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
 
   private def processPageFragmentLine(line: String, path: String, fragments: Seq[PageFragmentUnderProcessing], currentFragment: PageFragmentUnderProcessing): (Seq[PageFragmentUnderProcessing], PageFragmentUnderProcessing) = {
     val currentFragmentWithNewLine = appendCurrentLine(currentFragment, line)
-    val newFragmentWithNewLine = appendCurrentLine(new PageFragmentUnderProcessing(), line)
+    val newFragmentWithNewLine = appendCurrentLine(PageFragmentUnderProcessing(), line)
 
     currentFragment.status match {
 
@@ -234,7 +234,7 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
       case _ =>
 
         if (line.trim.startsWith(MarkdownEnd)) {
-          (fragments :+ currentFragment.copy(markdown = currentFragment.data), new PageFragmentUnderProcessing())
+          (fragments :+ currentFragment.copy(markdown = currentFragment.data), PageFragmentUnderProcessing())
 
         } else if (line.trim.startsWith(MarkdownEscape)) {
           (fragments, currentFragmentWithNewLine.copy(status = PageFragmentStatusMakdownEscape))
@@ -251,35 +251,29 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
   private def processPageFragmentModule(line: String, path: String, fragments: Seq[PageFragmentUnderProcessing], currentFragment: PageFragmentUnderProcessing, currentFragmentWithNewLine: PageFragmentUnderProcessing) = {
     if (line.trim.startsWith(MarkdownCodeStart)) {
 
-      val module = currentFragment.data match {
-        case Some(data) =>
-          parseModule(data.replace(ModuleStart, ""), path)
-        case _ => None
-      }
-
-      module match {
+      currentFragment.data.flatMap(data => parseModule(data.replace(ModuleStart, ""), path)) match {
         case Some(module) =>
 
           module.page match {
-            case Some(page) => (fragments :+ currentFragment.copy(page = Some(page)), new PageFragmentUnderProcessing())
+            case Some(page) => (fragments :+ currentFragment.copy(page = Some(page)), PageFragmentUnderProcessing())
             case _ =>
 
               module.scenarios match {
 
-                case Some(scenarios) => (fragments :+ currentFragment.copy(scenariosModule = Some(scenarios)), new PageFragmentUnderProcessing())
+                case Some(scenarios) => (fragments :+ currentFragment.copy(scenariosModule = Some(scenarios)), PageFragmentUnderProcessing())
                 case _ =>
 
                   module.includeExternalPage match {
 
-                    case Some(include) => (fragments :+ currentFragment.copy(includeExternalPage = Some(include)), new PageFragmentUnderProcessing())
+                    case Some(include) => (fragments :+ currentFragment.copy(includeExternalPage = Some(include)), PageFragmentUnderProcessing())
                     case _ =>
-                      (fragments, new PageFragmentUnderProcessing())
+                      (fragments, PageFragmentUnderProcessing())
 
                   }
               }
           }
         case _ =>
-          (fragments, new PageFragmentUnderProcessing())
+          (fragments, PageFragmentUnderProcessing())
       }
     } else {
       (fragments, currentFragmentWithNewLine)
@@ -296,7 +290,7 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
             fragmentUnderProcessing.scenariosModule match {
               case Some(scenariosModule) =>
                 val feature = buildFeature(scenariosModule, pageJoinProject)
-                new PageFragmentUnderProcessing(scenarios = feature)
+                PageFragmentUnderProcessing(scenarios = feature)
               case _ =>
                 fragmentUnderProcessing
             }
@@ -307,7 +301,7 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
                 val images = findPageImagesWithRelativePath(rawMarkdown)
                 val references = findPageReferencesWithRelativePath(rawMarkdown)
                 val markdown = (images ++ references).fold(rawMarkdown)((acc, relativePath) => acc.replace(relativePath, s"$baseUrl/api/assets?path=${pageJoinProject.directory.path}$relativePath"))
-                new PageFragmentUnderProcessing(markdown = Some(markdown))
+                PageFragmentUnderProcessing(markdown = Some(markdown))
               case _ =>
                 fragmentUnderProcessing
             }
@@ -339,13 +333,12 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
         Some(select.tags)
       case _ => None
     }
-    val filter = new ProjectMenuItem(project.id, project.name, branchName, featureFilter, tagsFilter)
+    val filter = ProjectMenuItem(project.id, project.name, branchName, featureFilter, tagsFilter)
     val documentation = gherkinRepository.buildProjectGherkin(filter)
 
-    documentation.branches.filter(_.name.equals(branchName)).headOption.map {
-      branch =>
-        branch.features.filter(_.path.equals(featureFilter.getOrElse(""))).headOption
-    }.flatten
+    documentation.branches.find(_.name.equals(branchName)).flatMap { branch =>
+      branch.features.find(_.path.equals(featureFilter.getOrElse("")))
+    }
   }
 
   def findPageModule(pageContent: String): Option[PageMeta] = {

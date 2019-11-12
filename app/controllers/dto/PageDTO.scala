@@ -2,7 +2,7 @@ package controllers.dto
 
 import models.{Feature, Page}
 import play.api.libs.json.Json
-import services.{PageFragmentUnderProcessing}
+import services.PageFragmentUnderProcessing
 
 
 case class PageFragmentContent(markdown: Option[String] = None, scenarios: Option[Feature] = None, includeExternalPage: Option[String] = None)

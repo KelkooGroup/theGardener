@@ -6,18 +6,18 @@ import play.api.{Configuration, Logging}
 
 import scala.concurrent._
 
-class ReplicaService @Inject()(config: Configuration,wsClient: WSClient)extends Logging {
+class ReplicaService @Inject()(config: Configuration, wsClient: WSClient) extends Logging {
 
-  val replicaUrl = config.getOptional[String]("replica.url")
+  val replicaUrlOpt = config.getOptional[String]("replica.url")
 
 
   def triggerSychronizeOnReplica(projectId: String): Future[Unit] = {
-    replicaUrl match {
+    replicaUrlOpt match {
       case Some(replicaUrl) =>
         val url = s"${replicaUrl}/api/admin/projects/${projectId}/refreshFromDatabase"
         logger.info(s"Trigger the synchronize on $projectId with url ${url}")
         postOnUrl(url)
-      case _=> Future.successful(())
+      case _ => Future.successful(())
     }
   }
 

@@ -43,6 +43,8 @@ import {NavigateMenuItemComponent} from './output/navigate/navigate-menu/navigat
 import {PageContentComponent} from './output/page-content/page-content.component';
 import {MarkdownModule} from 'ngx-markdown';
 import {SafePipe} from './safe.pipe';
+import { InternalLinkPipe } from './internal-link.pipe';
+import { RemoveHtmlSanitizerPipe } from './removehtmlsanitizer.pipe';
 
 const nonProductionProviders = [{
   provide: HTTP_INTERCEPTORS,
@@ -66,6 +68,8 @@ const nonProductionProviders = [{
     NavigateMenuItemComponent,
     PageContentComponent,
     SafePipe,
+    InternalLinkPipe,
+    RemoveHtmlSanitizerPipe,
   ],
   imports: [
     HttpClientModule,

@@ -58,6 +58,6 @@ class DefineHierarchySteps extends ScalaDsl with EN with MockitoSugar {
   Then("""^the hierarchy nodes are now$""") { table: DataTable =>
     val exceptedHierarchies = buildHierarchyNodes(table)
     val actualHierarchies = hierarchyRepository.findAll()
-    actualHierarchies must contain theSameElementsAs (exceptedHierarchies)
+    actualHierarchies must contain theSameElementsAs exceptedHierarchies
   }
 }

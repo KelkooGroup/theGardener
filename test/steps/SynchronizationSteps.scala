@@ -15,7 +15,7 @@ class SynchronizationSteps  extends ScalaDsl with EN with MockitoSugar {
     reset(spyReplicaService)
   }
 
-  Then("""^the webhook "([^"]*)" is triggered$""") { (url: String) =>
+  Then("""^the webhook "([^"]*)" is triggered$""") { url: String =>
     verify(spyReplicaService, times(1)).postOnUrl(url)
   }
 

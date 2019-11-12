@@ -9,12 +9,12 @@
     "test": "ng test",
     "test-no-watch": "ng test --watch=false --progress=false",
     "lint": "ng lint",
-    "pree2e": "webdriver-manager update --gecko=false",
+    "pree2e": "webdriver-manager update --gecko=false ",
     "e2e": "ng e2e --webdriver-update=false"
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "8.2.11",
+    "@angular/animations": "8.2.13",
     "@angular/cdk": "8.2.3",
     "@angular/common": "8.2.11",
     "@angular/compiler": "8.2.11",
@@ -76,7 +76,8 @@
     "ts-node": "8.4.1",
     "tslint": "5.20.0",
     "typescript": "3.5.3",
-    "webpack": "4.41.2"
+    "webpack": "4.41.2",
+    "webdriver": "5.15.4"
   },
   "optionalDependencies": {
     "fsevents": "*"

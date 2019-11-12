@@ -10,11 +10,14 @@ import {MarkdownModule} from 'ngx-markdown';
 import {Page, PagePart} from '../../_models/page';
 import {MatProgressSpinnerModule, MatSnackBarModule, MatTableModule} from '@angular/material';
 import {SafePipe} from '../../safe.pipe';
+import {InternalLinkPipe} from '../../internal-link.pipe';
 import {GherkinComponent} from '../gherkin/gherkin.component';
 import {GherkinStepComponent} from '../gherkin/gherkin-step/gherkin-step.component';
 import {GherkinLongTextComponent} from '../gherkin/gherkin-long-text/gherkin-long-text.component';
 import {GherkinTableComponent} from '../gherkin/gherkin-table/gherkin-table.component';
 import {NgxJsonViewerModule} from 'ngx-json-viewer';
+import {RemoveHtmlSanitizerPipe} from '../../removehtmlsanitizer.pipe';
+import {RouterTestingModule} from '@angular/router/testing';
 
 describe('PageContentComponent', () => {
   let component: PageContentComponent;
@@ -31,6 +34,8 @@ describe('PageContentComponent', () => {
         GherkinLongTextComponent,
         GherkinTableComponent,
         SafePipe,
+        InternalLinkPipe,
+        RemoveHtmlSanitizerPipe
       ],
       imports: [
         HttpClientTestingModule,
@@ -39,6 +44,7 @@ describe('PageContentComponent', () => {
         MatTableModule,
         MarkdownModule.forRoot(),
         NgxJsonViewerModule,
+        RouterTestingModule,
       ],
       providers: [
         {
@@ -71,6 +77,15 @@ describe('PageContentComponent', () => {
     expect(page.pageContent.startsWith('For various reasons'))
       .withContext(`Page content should start with "For various reasons" but was ${fixture.nativeElement.textContent}`)
       .toBeTruthy();
+  }));
+
+  it('should get page content from backend and show markdown', async(() => {
+    const pageService: PageService = TestBed.get(PageService);
+    spyOn(pageService, 'getPage').and.returnValue(of(PAGE_WITH_INTERNAL_LINK_SERVICE_RESPONSE));
+
+    fixture.detectChanges();
+    expect(component).toBeTruthy();
+
   }));
 
   it('should show an iframe if page is an external link', async(() => {
@@ -129,12 +144,29 @@ const PAGE_MARKDOWN: PagePart = {
   }
 };
 
+const PAGE_MARKDOWN_WITH_INTERNAL_LINK: PagePart = {
+  type: 'markdown',
+  data: {
+    // tslint:disable-next-line:max-line-length
+    markdown: 'Internal link <a href="thegardener://path=theGardener>master>_features_/administration">sdfg</a>'
+  }
+};
+
 const PAGE_SERVICE_RESPONSE: Page = {
   title: 'overview',
   order: 0,
   path: '',
   parts: [
     PAGE_MARKDOWN,
+  ],
+};
+
+const PAGE_WITH_INTERNAL_LINK_SERVICE_RESPONSE: Page = {
+  title: 'overview',
+  order: 0,
+  path: '',
+  parts: [
+    PAGE_MARKDOWN_WITH_INTERNAL_LINK,
   ],
 };
 
