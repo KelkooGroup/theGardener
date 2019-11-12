@@ -39,6 +39,10 @@ pr:
 
 steps:
 
+  - script: |
+      sudo chmod -R 777 /usr/share/
+    displayName: 'install sbt'
+
   - task: CacheBeta@0
     inputs:
       key: sbt | $(Agent.OS) | /usr/share/sbt/bin/sbt-launch.jar
