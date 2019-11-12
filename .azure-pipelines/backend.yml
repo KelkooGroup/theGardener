@@ -42,7 +42,7 @@ steps:
   - task: CacheBeta@0
     inputs:
       key: sbt | $(Agent.OS) | /usr/local/bin/sbt/sbt-launch.jar
-      path: /usr/local/bin/sbt
+      path: /usr/local/bin/sbt/
     displayName: Sbt bin cache
 
   - task: CacheBeta@0
