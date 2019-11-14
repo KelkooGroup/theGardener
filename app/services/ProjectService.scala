@@ -291,7 +291,7 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
 
   def synchronizeProjectId(projectId: String): Option[Future[Unit]] = {
     projectRepository.findById(projectId).map { project =>
-         synchronize(project)
+      synchronize(project)
     }
   }
 

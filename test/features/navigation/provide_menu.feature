@@ -318,8 +318,8 @@ Feature: Provide menu
       | id   | name | repositoryUrl                                | stableBranch | featuresRootPath |
       | meta | meta | target/remote/data/GetFeatures/library/meta/ | master       |                  |
     And we have those branches in the database
-      | id | name   | isStable | projectId  |
-      | 1  | master | true     | meta |
+      | id | name   | isStable | projectId |
+      | 1  | master | true     | meta      |
     And we have those directories in the database
       | id | name | label | description | order | relativePath | path              | branchId |
       | 1  | root | root  | root        | 0     | /            | meta>master>/     | 1        |
@@ -609,3 +609,149 @@ Feature: Provide menu
   }
 ]
     """
+
+  @level_2_technical_details @nominal_case @valid
+  Scenario: provide pages of a directory
+    Given the hierarchy nodes are
+      | id         | slugName   | name                 | childrenLabel | childLabel   |
+      | .          | root       | Hierarchy root       | Views         | View         |
+      | .01.       | eng        | Engineering view     | System groups | System group |
+      | .02.       | biz        | Business view        | Units         | Unit         |
+      | .01.01.    | library    | Library system group | Systems       | System       |
+      | .01.01.01. | suggestion | Suggestion system    | Projects      | Project      |
+    And we have the following projects
+      | id            | name                    | repositoryUrl                                         | stableBranch | displayedBranches | featuresRootPath |
+      | suggestionsWS | Suggestions WebServices | target/remote/data/GetFeatures/library/suggestionsWS/ | master       | master            | test/features    |
+    And the links between hierarchy nodes are
+      | projectId     | hierarchyId |
+      | suggestionsWS | .01.01.01.  |
+    And we have those branches in the database
+      | id | name       | isStable | projectId     |
+      | 1  | master     | true     | suggestionsWS |
+    And we have those directories in the database
+      | id | name        | label         | description             | order | relativePath  | path                               | branchId |
+      | 1  | root        | SuggestionsWS | Suggestions WebServices | 0     | /             | suggestionsWS>master>/             | 1        |
+      | 2  | suggestions | Suggestions   | Suggestions...          | 0     | /suggestions/ | suggestionsWS>master>/suggestions/ | 1        |
+      | 3  | admin       | Admin         | Administration...       | 1     | /admin/       | suggestionsWS>master>/admin/       | 1        |
+    And we have those pages in the database
+      | id | name       | label      | description | order | relativePath            | path                                         | markdown                              | directoryId |
+      | 1  | context    | context    | context     | 0     | /context                | suggestionsWS>master>/context                | **Feature**: Provide book suggestions | 1           |
+      | 2  | suggestion | suggestion | suggestion  | 0     | /suggestions/suggestion | suggestionsWS>master>/suggestions/suggestion | **What's a suggestion ?**             | 2           |
+      | 3  | examples   | examples   | examples    | 1     | /suggestions/examples   | suggestionsWS>master>/suggestions/examples   | **Some suggestion examples**          | 2           |
+      | 4  | admin      | admin      | admin       | 0     | /admin/admin            | suggestionsWS>master>/admin/admin            | **Page for the admin users**          | 3           |
+    When I perform a "GET" on following URL "/api/directories?path=suggestionsWS>master>/suggestions/"
+    Then I get a response with status "200"
+    And  I get the following json response body
+    """
+[
+  {
+    "id": 2,
+    "path": "suggestionsWS>>/suggestions/",
+    "name": "suggestions",
+    "label": "Suggestions",
+    "description": "Suggestions...",
+    "order": 0,
+    "pages": [
+      {
+        "path": "suggestionsWS>>/suggestions/suggestion",
+        "relativePath": "/suggestions/suggestion",
+        "name": "suggestion",
+        "label": "suggestion",
+        "description": "suggestion",
+        "order": 0,
+        "content":[]
+      },
+      {
+        "path": "suggestionsWS>>/suggestions/examples",
+        "relativePath": "/suggestions/examples",
+        "name": "examples",
+        "label": "examples",
+        "description": "examples",
+        "order": 1,
+        "content":[]
+      }
+    ]
+  }
+]
+    """+
+
+  @level_2_technical_details @nominal_case @valid
+  Scenario: provide menu without branch name in directory path
+    Given the hierarchy nodes are
+      | id   | slugName | name             | childrenLabel | childLabel   | directoryPath |
+      | .    | root     | Hierarchy root   | Views         | View         |               |
+      | .01. | eng      | Engineering view | System groups | System group |               |
+
+    And we have the following projects
+      | id            | name                    | repositoryUrl                                         | stableBranch | displayedBranches | featuresRootPath |
+      | suggestionsWS | Suggestions WebServices | target/remote/data/GetFeatures/library/suggestionsWS/ | master       | master            | test/features    |
+    And the links between hierarchy nodes are
+      | projectId     | hierarchyId |
+      | suggestionsWS | .01.        |
+    And we have those branches in the database
+      | id | name   | isStable | projectId     |
+      | 1  | master | true     | suggestionsWS |
+    And we have those directories in the database
+      | id | name        | label         | description             | order | relativePath  | path                               | branchId |
+      | 1  | root        | SuggestionsWS | Suggestions WebServices | 0     | /             | suggestionsWS>master>/             | 1        |
+      | 2  | suggestions | Suggestions   | Suggestions...          | 0     | /suggestions/ | suggestionsWS>master>/suggestions/ | 1        |
+      | 3  | admin       | Admin         | Administration...       | 1     | /admin/       | suggestionsWS>master>/admin/       | 1        |
+    When I perform a "GET" on following URL "/api/menu"
+    Then I get a response with status "200"
+    And  I get the following json response body
+"""
+ {"id":".",
+ "hierarchy":"_",
+ "slugName":"root",
+ "name":"Hierarchy root",
+ "childrenLabel":"Views",
+ "childLabel":"View",
+ "projects":[],
+ "children":[{
+                "id":".01.",
+                "hierarchy":"_eng",
+                "slugName":"eng",
+                "name":"Engineering view",
+                "childrenLabel":"System groups",
+                "childLabel":"System group",
+                "projects":[{
+                              "id":"suggestionsWS",
+                              "path":"suggestionsWS",
+                              "label":"Suggestions WebServices",
+                              "stableBranch":"master",
+                              "branches":[{
+                                            "name":"master",
+                                            "path":"suggestionsWS>master",
+                                            "rootDirectory":{
+                                                              "id":1,
+                                                              "path":"suggestionsWS>>/",
+                                                              "name":"root",
+                                                              "label":"SuggestionsWS",
+                                                              "description":"Suggestions WebServices",
+                                                              "order":0,
+                                                              "children":[{
+                                                                            "id":2,
+                                                                            "path":"suggestionsWS>>/suggestions/",
+                                                                            "name":"suggestions",
+                                                                            "label":"Suggestions",
+                                                                            "description":"Suggestions...",
+                                                                            "order":0,
+                                                                            "children":[]
+                                                                          },
+                                                                          {
+                                                                           "id":3,
+                                                                           "path":"suggestionsWS>>/admin/",
+                                                                           "name":"admin",
+                                                                           "label":"Admin",
+                                                                           "description":"Administration...",
+                                                                           "order":1,
+                                                                           "children":[]
+                                                                          }]
+                                                             }
+                                           }]
+                             }],
+                "children":[]
+               }]
+ }
+"""
+

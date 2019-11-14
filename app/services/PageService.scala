@@ -11,6 +11,7 @@ import play.api.cache.SyncCacheApi
 import play.api.libs.json.Json
 import repositories._
 import utils._
+import services.MenuService.getCorrectedPath
 
 import scala.util.Try
 
@@ -77,7 +78,16 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
 
   def getLocalRepository(projectId: String, branch: String): String = s"$projectsRootDirectory$projectId/$branch/".fixPathSeparator
 
-  def getPagePath(projectId: String, branch: String, path: String, documentationRootPath: String): String = s"$projectId>$branch>${path.substring(path.indexOf(documentationRootPath) + documentationRootPath.length, path.length)}".replace(".md", "")
+  def getPagePath(projectId: String, branch: String, path: String, documentationRootPath: String): String = {
+    val branchName = if (branch == "") {
+      projectRepository.findById(projectId).map(_.stableBranch)
+    } else {
+      branch
+    }
+
+    s"$projectId>$branchName>${path.substring(path.indexOf(documentationRootPath) + documentationRootPath.length, path.length)}".replace(".md", "")
+  }
+
 
   def processDirectory(branch: Branch, path: String, localDirectoryPath: String, relativePath: String = "/", order: Int = 0, isRoot: Boolean = true): Option[Directory] = {
     val metaFile = new File(localDirectoryPath + "/" + documentationMetaFile)
@@ -109,15 +119,18 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
   }
 
   def computePageFromPath(path: String, refresh: Boolean = false): Option[PageWithContent] = {
+    val pathWithBranch = projectRepository.findById(path.split(">")(0)).map { project =>
+      if (path.contains(">>")) path.replace(">>", s">${project.stableBranch}>") else path
+    }.getOrElse(s" Error while computing Page for the path $path")
     if (refresh) {
-      computePageFromPathUsingDatabase(path)
+      computePageFromPathUsingDatabase(pathWithBranch)
     } else {
-      cache.get[PageWithContent](computePageCacheKey(path)) match {
+      cache.get[PageWithContent](computePageCacheKey(pathWithBranch)) match {
         case Some(page) => {
           Some(page)
         }
         case None => {
-          computePageFromPathUsingDatabase(path)
+          computePageFromPathUsingDatabase(pathWithBranch)
         }
       }
     }
@@ -141,8 +154,8 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
         } match {
           case Some(fragments) => {
             logger.debug(s"Page computed : $path")
-            val page = PageWithContent(pageJoinProject.page, fragments)
-            replacePageInCache(path,page)
+            val page = PageWithContent(pageJoinProject.page.copy(path = getCorrectedPath(path, pageJoinProject.project)), fragments)
+            replacePageInCache(path, page)
             Some(page)
           }
           case _ => None
@@ -355,7 +368,7 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
         PageFragment(pageFragment.`type`, PageFragmentContent(replaceVariableInString(pageFragment.data.markdown.getOrElse("there is no markdown"), variables.toIndexedSeq, 0)))
       } else {
         if (pageFragment.`type` == "includeExternalPage") {
-          PageFragment(pageFragment.`type`, PageFragmentContent( includeExternalPage = replaceVariableInString(pageFragment.data.includeExternalPage.getOrElse("there is no markdown"), variables.toIndexedSeq, 0)))
+          PageFragment(pageFragment.`type`, PageFragmentContent(includeExternalPage = replaceVariableInString(pageFragment.data.includeExternalPage.getOrElse("there is no markdown"), variables.toIndexedSeq, 0)))
         } else {
           pageFragment
         }
@@ -369,6 +382,10 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
     } else {
       Option(texte)
     }
+  }
+
+  def getAllPagePaths(project: Project, directoryId: Long): Seq[Page] = {
+    pageRepository.findAllByDirectoryId(directoryId).map(page => page.copy(path = getCorrectedPath(page.path, project)))
   }
 
 }
