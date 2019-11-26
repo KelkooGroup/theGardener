@@ -41,7 +41,11 @@ class MenuService @Inject()(hierarchyRepository: HierarchyRepository, projectRep
 
       val directoryTree = directories.groupBy(_.branchId).flatMap { case (branchId, branchDirectories) =>
         val (rootDirectories, children) = branchDirectories.partition(_.relativePath == "/")
-        rootDirectories.headOption.map(rootDirectory => branchId -> buildDirectoryTree(rootDirectory, children))
+        val project = (for {
+          branch <- branchRepository.findById(branchId)
+          projectFound <- projectRepository.findById(branch.projectId)
+        } yield projectFound).getOrElse(Project("", "", "", "", None, None))
+        rootDirectories.headOption.map(rootDirectory => branchId -> buildDirectoryTree(rootDirectory, children, project))
       }
 
       hierarchyRepository.findAll().map { hierarchyNode =>
@@ -52,10 +56,18 @@ class MenuService @Inject()(hierarchyRepository: HierarchyRepository, projectRep
             }
           ))
         }
-        val directory : Option[Directory] = hierarchyNode.directoryPath.flatMap{ directoryPath =>
-          directoryRepository.findByPath(directoryPath)
+        val directory: Option[Directory] = hierarchyNode.directoryPath.flatMap { directoryPath =>
+          directoryRepository.findByPath(directoryPath).map { d =>
+            (for {
+              branch <- branchRepository.findById(d.branchId)
+              project <- projectRepository.findById(branch.projectId)
+            } yield d.copy(path = getCorrectedPath(d.path, project))).getOrElse(d)
+          }
+
         }
-        Menu(hierarchyNode.id, Seq(hierarchyNode), projects.sortBy(_.id), Seq(),directory)
+
+
+        Menu(hierarchyNode.id, Seq(hierarchyNode), projects.sortBy(_.id), Seq(), directory)
       }.sortBy(_.id)
     }
   }
@@ -111,10 +123,19 @@ object MenuService {
     (menu.hierarchy ++ menu.children.flatMap(c => c.hierarchy ++ mergeChildrenHierarchy(c))).distinct
   }
 
-  def buildDirectoryTree(currentDirectory: Directory, directories: Seq[Directory]): Directory = {
+  def buildDirectoryTree(currentDirectory: Directory, directories: Seq[Directory], project: Project): Directory = {
     val (children, left) = directories.partition(d => isChild("/", currentDirectory.relativePath, d.relativePath))
 
-    currentDirectory.copy(children = children.map(d => buildDirectoryTree(d, left)))
+    currentDirectory.copy(children = children.map(d => buildDirectoryTree(d, left, project)), path = getCorrectedPath(currentDirectory.path, project))
+
+  }
+
+  def getCorrectedPath(path: String, project: Project): String = {
+    if (project.stableBranch == project.displayedBranches.getOrElse("")) {
+      path.replace(project.stableBranch, "")
+    } else {
+      path
+    }
 
   }
 }

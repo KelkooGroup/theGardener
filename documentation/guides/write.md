@@ -183,6 +183,7 @@ For instance :
 ````
 [internal link to adoption path from another node in the hierarchy ](thegardener://navigate/_adoption;path=theGardenerNodes>master>_adoption_/adoption)
 ````
+Note: if branch.name isn't specified, it is considered to be the stable branch
 
 ## Include external web page
 
