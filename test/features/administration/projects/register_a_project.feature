@@ -133,3 +133,4 @@ Feature: Register a project
     And  the projects settings are now
       | id | name | repositoryUrl | stableBranch | featuresRootPath |
 
+
