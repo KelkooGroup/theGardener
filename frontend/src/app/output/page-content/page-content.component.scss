@@ -18,6 +18,14 @@
   }
 }
 
+::ng-deep table {
+  border-collapse: collapse;
+}
+
+::ng-deep table, ::ng-deep th, ::ng-deep td {
+  border: 1px solid $color-border;
+  padding: 5px;
+}
 
 h1 {
   padding-left: $margin-left;
