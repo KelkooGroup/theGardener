@@ -1,7 +1,7 @@
-$color-main: #f56026;
+$color-main: #1F7079;
 $color-background: white;
 $color-header-background: #fcfeff;
-$color-text: #252621;
+$color-text: #0e425b;
 $color-text-light: #b3cedb;
 $color-text-lighter: #e0e4e5;
 $color-text-opposite: #eff1f2;
@@ -17,4 +17,5 @@ $color-border-lighter: #eef1f5;
 $color-disabled: #b7babe;
 $color-link-active: #9fcdff;
 $color-selected-item: $color-text-invert;
-$color-grey: #252621;
+$color-grey: rgba(0, 0, 0, 0.87);
+$color-border: rgba(0, 0, 0, 0.12);

@@ -5,11 +5,13 @@ import io.swagger.annotations._
 import javax.inject.Inject
 import play.api.libs.json.Json
 import play.api.mvc._
+import services.MenuService.getCorrectedPath
 import repositories._
+import services.PageService
 
 
 @Api(value = "DirectoryController", produces = "application/json")
-class DirectoryController @Inject()(branchRepository: BranchRepository, directoryRepository: DirectoryRepository, pageRepository: PageRepository) extends InjectedController {
+class DirectoryController @Inject()(branchRepository: BranchRepository, directoryRepository: DirectoryRepository, projectRepository: ProjectRepository, pageService: PageService) extends InjectedController {
 
   @ApiOperation(value = "Get directory from path", response = classOf[DirectoryDTO], responseContainer = "list")
   @ApiResponses(Array(new ApiResponse(code = 404, message = "Directory not found")))
@@ -18,14 +20,16 @@ class DirectoryController @Inject()(branchRepository: BranchRepository, director
 
     (for {
       projectId <- params.lift(0)
-      branchName <- params.lift(1)
+      paramsBranchName <- params.lift(1)
       relativePath <- params.lift(2)
+
+      project <- projectRepository.findById(projectId)
+      branchName = if (paramsBranchName.equals("")) project.stableBranch else paramsBranchName
 
       branchId <- branchRepository.findByProjectIdAndName(projectId, branchName).map(_.id)
       directory <- directoryRepository.findByBranchIdAndRelativePath(branchId, relativePath)
-      pagesPaths = pageRepository.findAllByDirectoryId(directory.id)
-
-    } yield directory.copy(pages = pagesPaths)) match {
+      pagesPaths = pageService.getAllPagePaths(project, directory.id)
+    } yield directory.copy(pages = pagesPaths, path = getCorrectedPath(directory.path, project))) match {
 
       case Some(directory) => Ok(Json.toJson(Seq(DirectoryDTO(directory))))
       case _ => NotFound(s"No Directory $path")

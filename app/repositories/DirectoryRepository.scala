@@ -89,7 +89,7 @@ class DirectoryRepository @Inject()(db: Database, pageRepository: PageRepository
 
   def deleteAllByStartingPath(basePath: String): Unit = {
     db.withConnection { implicit connection =>
-      SQL(s"DELETE FROM directory WHERE path like '${basePath}%' ") .executeUpdate()
+      SQL(s"DELETE FROM directory WHERE path like '$basePath%' ") .executeUpdate()
       ()
     }
   }

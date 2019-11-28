@@ -4,7 +4,7 @@
   <div *ngFor="let part of page.parts">
     <div [ngSwitch]="part.type">
       <div *ngSwitchCase="'markdown'">
-        <div class="markdown" markdown [data]="getMarkdown(part)"></div>
+        <div class="markdown" [innerHTML]="getMarkdown(part) | markdown | internalLink | removehtmlsanitizer "></div>
       </div>
       <div *ngSwitchCase="'includeExternalPage'">
         <iframe [src]="getExternalLink(part) | safe" scrolling="yes"

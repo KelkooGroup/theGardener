@@ -28,6 +28,7 @@ class ProjectServiceTest extends WordSpec with MustMatchers with BeforeAndAfter 
   val featureBranch = "feature/add-suggestions"
   val bugfixBranch = "bugfix/fix-suggestions-engine"
 
+
   val gitService = mock[GitService]
   val projectRepository = mock[ProjectRepository]
   val featureRepository = mock[FeatureRepository]
@@ -47,7 +48,7 @@ class ProjectServiceTest extends WordSpec with MustMatchers with BeforeAndAfter 
   val featureBranchDirectory = projectService.getLocalRepository(project.id, featureBranch)
   val bugfixBranchDirectory = projectService.getLocalRepository(project.id, bugfixBranch)
   val masterBranch = Branch(1, project.stableBranch, isStable = true, project.id)
-
+  val projectsRootDirectory = projectService.projectsRootDirectory
 
   before {
     Mockito.reset(gitService, projectRepository)
@@ -90,8 +91,14 @@ class ProjectServiceTest extends WordSpec with MustMatchers with BeforeAndAfter 
     }
 
     "synchronize all existing projects" in {
+      if (new File(projectsRootDirectory).exists()) {
+        forceDelete(new File(projectsRootDirectory))
+        forceMkdir(new File(projectsRootDirectory))
+      }
+
       forceMkdir(new File(masterDirectory))
       forceMkdir(new File(bugfixBranchDirectory))
+
 
       Mockito.reset(gitService, projectRepository)
 

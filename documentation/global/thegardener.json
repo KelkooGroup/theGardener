@@ -4,9 +4,10 @@
     "label": "theGardener",
     "description": "In our documentation we trust.",
     "pages": [
-      "description"
     ],
     "children" :[
+      "documentation",
+      "adoption"
     ]
   }
 }

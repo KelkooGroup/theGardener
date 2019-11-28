@@ -4,91 +4,89 @@ pool:
 trigger:
   branches:
     include:
-    - '*'
+      - '*'
   paths:
     include:
-    - .azure-pipelines/backend.yml
-    - app/*
-    - conf/*
-    - local-conf/*
-    - project/*
-    - public/*
-    - test/*
-    - build.sbt
-    - scalastyle-config.xml
-    - sonar-project.properties
-    - version.sbt
-    
+      - .azure-pipelines/backend.yml
+      - app/*
+      - conf/*
+      - local-conf/*
+      - project/*
+      - public/*
+      - test/*
+      - build.sbt
+      - scalastyle-config.xml
+      - sonar-project.properties
+      - version.sbt
+
 pr:
   branches:
     include:
-    - '*'
+      - '*'
   paths:
     include:
-    - .azure-pipelines/backend.yml
-    - app/*
-    - conf/*
-    - local-conf/*
-    - project/*
-    - public/*
-    - test/*
-    - build.sbt
-    - scalastyle-config.xml
-    - sonar-project.properties
-    - version.sbt
+      - .azure-pipelines/backend.yml
+      - app/*
+      - conf/*
+      - local-conf/*
+      - project/*
+      - public/*
+      - test/*
+      - build.sbt
+      - scalastyle-config.xml
+      - sonar-project.properties
+      - version.sbt
 
 steps:
 
-- task: CacheBeta@0
-  inputs:
-    key: sbt | $(Agent.OS) | project/build.properties
-    path: /home/vsts/.sbt
-  displayName: Sbt build cache
+  - task: CacheBeta@1
+    inputs:
+      key: sbt | $(Agent.OS) | project/build.properties
+      path: /home/vsts/.sbt
+    displayName: Sbt build cache
 
-- task: CacheBeta@0
-  inputs:
-    key: ivy2 | $(Agent.OS) | build.sbt | project/plugins.sbt
-    path: /home/vsts/.ivy2
-  displayName: Yvy build cache
+  - task: CacheBeta@1
+    inputs:
+      key: ivy2 | $(Agent.OS) | build.sbt | project/plugins.sbt
+      path: /home/vsts/.ivy2
+    displayName: Yvy build cache
 
-- script: |
-    [ ! -f /usr/local/bin/sbt ] && echo "deb https://dl.bintray.com/sbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list
-    [ ! -f /usr/local/bin/sbt ] && sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823
-    [ ! -f /usr/local/bin/sbt ] && sudo apt-get update  -o Dir::Etc::sourcelist=/etc/apt/sources.list.d/sbt.list
-    [ ! -f /usr/local/bin/sbt ] && sudo apt-get install sbt
-    sbt sbtVersion
-  displayName: 'install sbt'
+  - script: |
+      echo "deb https://dl.bintray.com/sbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list
+      sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823
+      sudo apt-get update  -o Dir::Etc::sourcelist=/etc/apt/sources.list.d/sbt.list
+      sudo apt-get install sbt
+      sbt sbtVersion
+    displayName: 'install sbt'
 
-- script: sbt clean coverage test coverageReport scalastyle scapegoat
-  displayName: 'sbt test'
+  - script: sbt clean coverage test coverageReport scalastyle scapegoat
+    displayName: 'sbt test'
 
-- task: PublishTestResults@2
-  inputs:
-    testResultsFormat: 'JUnit'
-    testResultsFiles: '**/TEST-*.xml'
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFormat: 'JUnit'
+      testResultsFiles: '**/TEST-*.xml'
 
-- task: PublishCodeCoverageResults@1
-  inputs:
-    codeCoverageTool: 'cobertura'
-    summaryFileLocation: target/scala-2.12/coverage-report/cobertura.xml
+  - task: PublishCodeCoverageResults@1
+    inputs:
+      codeCoverageTool: 'cobertura'
+      summaryFileLocation: target/scala-2.12/coverage-report/cobertura.xml
 
-- script: sbt dist
-  displayName: 'sbt dist'
+  - script: sbt dist
+    displayName: 'sbt dist'
 
-- script: |
-    sudo mkdir /opt/sonarscanner
-    cd /opt/sonarscanner
-    sudo wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.0.0.1744-linux.zip
-    sudo unzip sonar-scanner-cli-4.0.0.1744-linux.zip
-    sudo nano sonar-scanner-cli-4.0.0.1744-linux/conf/sonar-scanner.properties
-    sudo chmod +x sonar-scanner-4.0.0.1744-linux/bin/sonar-scanner
-    sudo ln -s /opt/sonarscanner/sonar-scanner-4.0.0.1744-linux/bin/sonar-scanner /usr/local/bin/sonar-scanner
-  displayName: 'install sonar-scanner'
+  - script: |
+      sudo mkdir /opt/sonarscanner
+      cd /opt/sonarscanner
+      sudo wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.0.0.1744-linux.zip
+      sudo unzip sonar-scanner-cli-4.0.0.1744-linux.zip
+      sudo nano sonar-scanner-cli-4.0.0.1744-linux/conf/sonar-scanner.properties
+      sudo chmod +x sonar-scanner-4.0.0.1744-linux/bin/sonar-scanner
+      sudo ln -s /opt/sonarscanner/sonar-scanner-4.0.0.1744-linux/bin/sonar-scanner /usr/local/bin/sonar-scanner
+    displayName: 'install sonar-scanner'
 
-- script: |
-    if [ $(Build.Reason) = "PullRequest" ]; then SONAR_BRANCH="-Dsonar.pullrequest.key=$(System.PullRequest.PullRequestNumber) -Dsonar.pullrequest.branch=$(System.PullRequest.SourceBranch) -Dsonar.pullrequest.base=$(System.PullRequest.TargetBranch)"; else SONAR_BRANCH="-Dsonar.branch.name=$(Build.SourceBranchName)"; fi
-    sh -x -c "sonar-scanner -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=kelkoo -Dsonar.login=6c199a8887e5909a63eb3d6ffcd70c1ca33d6757 $SONAR_BRANCH"
-  displayName: 'sonar-scanner'
+  - script: |
+      if [ $(Build.Reason) = "PullRequest" ]; then SONAR_BRANCH="-Dsonar.pullrequest.key=$(System.PullRequest.PullRequestNumber) -Dsonar.pullrequest.branch=$(System.PullRequest.SourceBranch) -Dsonar.pullrequest.base=$(System.PullRequest.TargetBranch)"; else SONAR_BRANCH="-Dsonar.branch.name=$(Build.SourceBranchName)"; fi
+      sh -x -c "sonar-scanner -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=kelkoo -Dsonar.login=6c199a8887e5909a63eb3d6ffcd70c1ca33d6757 $SONAR_BRANCH"
+    displayName: 'sonar-scanner'
 
-- publish: /usr/local/bin/sbt
-  artifact: sbt

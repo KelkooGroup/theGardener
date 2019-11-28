@@ -1,0 +1,12 @@
+{
+  "directory" :
+  {
+    "label": "theGardener adoption",
+    "description": "Who is using theGardener ?",
+    "pages": [
+      "adoption"
+    ],
+    "children" :[
+    ]
+  }
+}
