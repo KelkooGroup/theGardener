@@ -85,7 +85,8 @@ displayedBranches | regexpr |  regular expression to filter the branches that ar
 featuresRootPath | string |  relative path to the directory that host gherkin scenarios. Can be empty.
 documentationRootPath | string |  relative path to the directory that host the documentation. This directory should store the first _thegardener.json_ file.
 
-
+When displayedBranch == stableBranch, the branch Name is removed from the url  
+Note : displayBranch need to be the stableBranch Name to remove it from the url, it will not work with a regexpr matching only the stableBranch
 ### Link between projects and hierarchy
 
 Insert rows on the table **project_hierarchyNode**.
@@ -113,4 +114,3 @@ application.faviconSrc  | Source of the favicon displayed in the user browser wi
 application.logoSrc     | Source of the main logo displayed at the top left in the header. Should be transparent with only white color. 
 application.title       | Title displayed under the main logo on the header.
 
- 

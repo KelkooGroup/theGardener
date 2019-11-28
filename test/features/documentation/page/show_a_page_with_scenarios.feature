@@ -24,6 +24,10 @@ Feature: Generate a documentation page with scenarios included
     And the server "target/remote/data/GetFeatures" host under the project "library/suggestionsWS" on the branch "master" the file "test/features/provide_book_suggestions.feature"
     """
 Feature: As a user Tim, I want some book suggestions so that I can do some discovery
+  Background:
+     Given the database is empty
+     And the cache is empty
+     And No project is checkout
 
   @level_0_high_level @nominal_case @draft
   Scenario: providing several book suggestions
@@ -668,6 +672,134 @@ Feature: As a user Tim, I want some book suggestions so that I can do some disco
         "type": "markdown",
         "data": {
           "markdown": "\n\n**Footer**\n"
+        }
+      }
+    ]
+  }
+]
+"""
+
+  @level_2_technical_details @nominal_case @valid
+  Scenario: generate a documentation page with scenarios filtered on tags with background
+    Given we have the following markdown for the page "suggestionsWS>master>/context"
+"""
+**Feature**: Provide book suggestions
+
+
+```thegardener
+    {
+      "scenarios" :
+         {
+            "feature": "/provide_book_suggestions.feature",
+            "select": { "tags" : ["@level_0_high_level", "@nominal_case"]  },
+            "includeBackground": true
+         }
+    }
+```
+
+**Footer**
+
+"""
+    When I perform a "GET" on following URL "/api/pages?path=suggestionsWS>master>/context"
+    Then I get the following json response body
+"""
+[
+  {
+    "path": "suggestionsWS>master>/context",
+    "relativePath": "/context",
+    "name": "context",
+    "label": "The context",
+    "description": "Why providing suggestions",
+    "order": 0,
+    "content": [
+      {
+        "type": "markdown",
+        "data": {
+          "markdown": "**Feature**: Provide book suggestions\n\n"
+        }
+      },
+      {
+        "type": "scenarios",
+        "data": {
+          "scenarios": {
+            "id": 1,
+            "branchId": 1,
+            "path": "test/features/provide_book_suggestions.feature",
+            "background":{
+              "id":0,
+              "keyword":"Background",
+              "name":"",
+              "description":"",
+              "steps":[
+                  {
+                    "id":0,
+                    "keyword":"Given",
+                    "text":"the database is empty",
+                    "argument":[]
+                  },
+                  {
+                    "id":1,
+                    "keyword":"And",
+                    "text":"the cache is empty",
+                    "argument":[]
+                  },
+                  {
+                    "id":2,
+                    "keyword":"And",
+                    "text":"No project is checkout",
+                    "argument":[]
+                  }
+              ]
+            },
+            "tags": [],
+            "language": "en",
+            "keyword": "Feature",
+            "name": "As a user Tim, I want some book suggestions so that I can do some discovery",
+            "description": "",
+            "scenarios": [
+              {
+                "name": "providing several book suggestions",
+                "workflowStep": "draft",
+                "description": "",
+                "id": 1,
+                "keyword": "Scenario",
+                "abstractionLevel": "level_0_high_level",
+                "steps": [
+                  {
+                    "id": 0,
+                    "keyword": "Given",
+                    "text": "a user",
+                    "argument": []
+                  },
+                  {
+                    "id": 1,
+                    "keyword": "When",
+                    "text": "we ask for suggestions",
+                    "argument": []
+                  },
+                  {
+                    "id": 2,
+                    "keyword": "Then",
+                    "text": "the suggestions are popular and available books adapted to the age of the user",
+                    "argument": []
+                  }
+                ],
+                "tags": [
+                  "draft",
+                  "level_0_high_level",
+                  "nominal_case"
+                ],
+                "caseType": "nominal_case"
+              }
+            ],
+            "comments": []
+          }
+        }
+      },
+      {
+        "type": "markdown",
+        "data": {
+          "markdown": "\n**Footer**\n"
         }
       }
     ]
