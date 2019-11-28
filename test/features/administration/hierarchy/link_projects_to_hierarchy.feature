@@ -24,7 +24,7 @@ Feature: Link a project to the hierarchy
     And there is no links from projects to hierarchy nodes
 
 
-  @level_2_technical_details @nominal_case @valid
+  @level_2_technical_details @nominal_case @valid @put_project_in_hierarchy
   Scenario: Link a project to a hierarchy node
     When I perform a "POST" on following URL "/api/projects/suggestionsWS/hierarchy/.01.01.01."
     Then I get a response with status "201"

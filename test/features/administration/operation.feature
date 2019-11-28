@@ -57,13 +57,13 @@ Feature: Provide some tools to operate the application when something is not wor
       | 1  | context | context | context     | 0     | /context     | suggestionsWS>master>/context | **Feature**: Provide book suggestions DB DIFF | 1           |
 
 
-  @level_2_technical_details @nominal_case @valid @data_refresh
+  @level_2_technical_details @nominal_case @valid @data_refresh @refresh_menu
   Scenario: force refresh the menu
     When I perform a "POST" on following URL "/api/admin/menu/refreshFromDatabase"
     Then I get a response with status "200"
     And the menu has been reloaded
 
-  @level_2_technical_details @nominal_case @valid @data_refresh
+  @level_2_technical_details @nominal_case @valid @data_refresh @refresh_project_from_db
   Scenario: force a project refresh from the database
     Given the pages computation from the database count is reset
     When I perform a "POST" on following URL "/api/admin/projects/suggestionsWS/refreshFromDatabase"
@@ -75,7 +75,7 @@ Feature: Provide some tools to operate the application when something is not wor
     And the menu has been reloaded
     And the pages has been recomputed from the database for the project "suggestionsWS"
 
-  @level_2_technical_details @nominal_case @valid @data_refresh
+  @level_2_technical_details @nominal_case @valid @data_refresh @refresh_project_from_disk
   Scenario: force a project refresh from the disk
     When I perform a "POST" on following URL "/api/admin/projects/suggestionsWS/refreshFromDisk"
     Then I get a response with status "200"
@@ -105,8 +105,8 @@ Feature: Provide some tools to operate the application when something is not wor
 {"message":"Projects refreshed from the disk are","elements":["suggestionsWS"]}
 """
 
-  @level_2_technical_details @nominal_case @valid @data_refresh
-  Scenario: force a project refresh from the remote git repository
+  @level_2_technical_details @nominal_case @valid @data_refresh @synchronize_project_from_git
+  Scenario: force a project to synchronize from the remote git repository
     When I perform a "POST" on following URL "/api/admin/projects/suggestionsWS/synchronizeFromRemoteGitRepository"
     Then I get a response with status "200"
     And  I get the following response body
@@ -114,8 +114,7 @@ Feature: Provide some tools to operate the application when something is not wor
 {"message":"Branches synchronized from the remote git repository linked to project suggestionsWS are","elements":["master"]}
 """
 
-
-  @level_2_technical_details @nominal_case @valid @data_refresh
+  @level_2_technical_details @nominal_case @valid @data_refresh @refresh_project_from_git
   Scenario: force a project refresh from the remote git repository
     When I perform a "POST" on following URL "/api/admin/projects/suggestionsWS/refreshFromRemoteGitRepository"
     Then I get a response with status "200"
