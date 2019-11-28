@@ -27,7 +27,7 @@
     "@angular/router": "8.2.14",
     "@types/lodash": "4.14.149",
     "angular-super-validator": "2.0.0",
-    "core-js": "3.4.3",
+    "core-js": "3.4.5",
     "cucumber-pretty": "1.5.2",
     "font-awesome": "4.7.0",
     "jasmine": "3.5.0",
@@ -45,8 +45,8 @@
     "zone.js": "0.10.2"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "0.803.19",
-    "@angular/cli": "8.3.19",
+    "@angular-devkit/build-angular": "0.803.20",
+    "@angular/cli": "8.3.20",
     "@angular/compiler-cli": "8.2.14",
     "@angular/language-service": "8.2.14",
     "@types/chai": "4.2.5",
@@ -73,11 +73,11 @@
     "protractor-cucumber-framework": "6.2.0",
     "puppeteer": "2.0.0",
     "rxjs-tslint": "0.1.7",
-    "ts-node": "8.5.2",
+    "ts-node": "8.5.3",
     "tslint": "5.20.1",
     "typescript": "3.5.3",
     "webpack": "4.41.2",
-    "webdriver": "5.16.7"
+    "webdriver": "5.16.10"
   },
   "optionalDependencies": {
     "fsevents": "*"
