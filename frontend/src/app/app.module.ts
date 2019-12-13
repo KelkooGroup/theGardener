@@ -45,6 +45,7 @@ import {MarkdownModule} from 'ngx-markdown';
 import {SafePipe} from './safe.pipe';
 import { InternalLinkPipe } from './internal-link.pipe';
 import { RemoveHtmlSanitizerPipe } from './removehtmlsanitizer.pipe';
+import { AnchorPipe } from './anchor.pipe';
 
 const nonProductionProviders = [{
   provide: HTTP_INTERCEPTORS,
@@ -70,6 +71,7 @@ const nonProductionProviders = [{
     SafePipe,
     InternalLinkPipe,
     RemoveHtmlSanitizerPipe,
+    AnchorPipe,
   ],
   imports: [
     HttpClientModule,

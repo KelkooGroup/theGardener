@@ -168,7 +168,6 @@ For instance :
 [internal link to installation guide of the project theGardener](thegardener://path=theGardener>master>_guides_/install)
 ````
 
-
 **To a page under another hierarchy node:**
 
 ![](../assets/images/theGardener_role_writer_make_internal_link_02.png)
@@ -184,6 +183,15 @@ For instance :
 [internal link to adoption path from another node in the hierarchy ](thegardener://navigate/_adoption;path=theGardenerNodes>master>_adoption_/adoption)
 ````
 Note: if branch.name isn't specified, it is considered to be the stable branch
+
+### Anchors 
+
+Be able to use anchors on titles and sub-titles
+
+Click on the anchor sign next to titles to get the anchor in the url then make your internal link the same way as before
+
+For instance : 
+[internal link to the title Start of the installation guide of the project theGardener](thegardener://path=theGardener>master>_guides_/install#start)
 
 ## Include external web page
 
