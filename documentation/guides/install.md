@@ -8,166 +8,140 @@
 }
 ```
 
-theGardener is an application that gather documentation from projects hosted on git repositories. 
-This application need to be installed and configured. 
+## With Docker
 
-![Roles](../assets/images/theGardener_role_ops.png)
+You can easily run an instance of theGardener using public Docker images published
+on the [Docker Hub](https://hub.docker.com/r/kelkoogroup/thegardener).
 
+### Basic usage
 
-**DISCLAIMER**: this procedure help to install on a local workstation the application theGardener to be able test this project. This procedure will be replaced by proper process to use it in production : the goal of the milestone [M4 Packaging](https://github.com/KelkooGroup/theGardener/milestone/3) is to provide an easy way to deploy a packaged version of this application.
+Run a theGardener instance with an embedded database (H2):
 
-## Requirements 
-
-| Requirement       |     Version     |      Purpose     | 
-| :------------     | :-------------: | :------------ |
-| git               |     >= 2.20.0   | get the sources |
-| java              |     >= 1.8.0    | run sbt and scala as theGardener run over Play/Scala  |
-| sbt               |     > 1.3       | get Scala dependencies and run the Play server  |
-| npm               |      >= 6.5.0   | get Angular dependencies  |
-| ng                |      >= 7.3.8   | angular command line to serve the front end  |
-| mysql             |     ~ 8.0.?     | store and serve data |
-
-## Prepare 
-
-We assume we are in the directory ~.
-
-### Get sources and dependencies
-
-get sources :
 ```
-git clone git@github.com:KelkooGroup/theGardener.git  theGardener
+docker run --name thegardener -p 9000:9000 kelkoogroup/thegardener:latest
 ```
 
-get Scala dependencies and compile Scala sources :
+Then go to http://localhost:9000 in your browser.
+
+#### New to Docker?
+
+If you are new to Docker, here is some commands that you might need:
+- stop the container: `docker container stop thegardener`
+- remove the container: `docker container rm thegardener`
+- view logs: `docker container logs -f thegardener`
+
+### Load sample data
+
+You can load sample data by using following commands.
+
+This will configure theGardener itself as a sample project in your running instance.
+
+```sh
+curl -X POST "http://localhost:9000/api/hierarchy" \
+    -H "accept: application/json" -H "Content-Type: application/json" \
+    -d "{  \"id\": \".\",  \"slugName\": \"root\",  \"name\": \"root\",  \"childrenLabel\": \"Views\",  \"childLabel\": \"View\"}"
+
+curl -X POST "http://localhost:9000/api/hierarchy" \
+    -H  "accept: application/json" -H  "Content-Type: application/json" \
+    -d "{  \"id\": \".01.\",  \"slugName\": \"tools\",  \"name\": \"Tools\",  \"childrenLabel\": \"Projects\",  \"childLabel\": \"Project\"}"
+
+curl -X POST "http://localhost:9000/api/projects" \
+    -H  "accept: application/json" -H  "Content-Type: application/json" \
+    -d "{  \"id\": \"theGardener\",  \"name\": \"theGardener\",  \"repositoryUrl\": \"https://github.com/KelkooGroup/theGardener-template.git\",  \"stableBranch\": \"master\",  \"displayedBranches\": \"master\",  \"featuresRootPath\": \"test/features\",  \"documentationRootPath\": \"documentation\"}"
+
+curl -X POST "http://localhost:9000/api/projects/theGardener/hierarchy/.01." \
+    -H  "accept: application/json"
+
+curl -X POST "http://localhost:9000/api/projects/theGardener/synchronize" \
+    -H  "accept: application/json"
 ```
-cd ~/theGardener
-sbt compile 
+
+### Customize the configuration
+
+If needed, you can override the application configuration by creating a custom
+configuration file, let's say `/tmp/application-custom.conf` which can look like this:
+```
+include "application.conf"
+
+projects.synchronize.interval = 3600
 ```
 
-get Angular dependencies 
+This will override default configuration defined in `application.conf` with your custom
+values.
+
+Then, you need to mount this file in the `/app-conf` volume in the container and add it as
+an arg when running the container. For example:
 ```
-cd ~/theGardener/frontend
-npm install
+docker run --name thegardener \
+    -p 9000:9000 \
+    -v /tmp/application-custom.conf:/app-conf/application-custom.conf:ro \
+    kelkoogroup/thegardener:latest \
+    -Dconfig.file=/app-conf/application-custom.conf
 ```
 
-### Data
+Puting your file in the `/app-conf` directory allows you to include the default configuration
+file but you can also put it in any place you want.
 
-Create an empty directory to store project source _~/theGardener_git_data_
+### Persist Git data
 
-### Application.conf
+If you want to persist Git data outside of the container, just mount the volume `/git-data`
+in a host directory. For example:
+```
+docker run --name thegardener \
+    -p 9000:9000 \
+    -v /tmp/git-data:/git-data:rw \
+    kelkoogroup/thegardener:latest
+```
 
-Add _~/theGardener/local-config/application.local.conf_ to be able to store data in the local directory and in the local database:
+### Persist embedded database data
+
+If you want to persist the embedded database data outside of the container, just mount
+the volume `/data`. For example:
+```
+docker run --name thegardener \
+    -p 9000:9000 \
+    -v /tmp/db:/data:rw \
+    kelkoogroup/thegardener:latest
+```
+
+You would probably want to use a real database instead of the embedded database though.
+To do that, see the section above.
+
+### Usage with a MySQL database
+
+You can run theGardener with a MySQL database. Here is how to do with a MySQL instance
+running as a container.
+
+You will need to customize the configuration of the app (see above) with a custom
+`application-mysql.conf` file configuring the database credentials.
+For instance:
 ```
 include "application.conf"
 
 db.default.driver=com.mysql.cj.jdbc.Driver
-db.default.url="jdbc:mysql://localhost:3306/thegardener?autoReconnect=true&useSSL=false&characterEncoding=utf8&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC"
+db.default.url="jdbc:mysql://mysql:3306/thegardener?autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=false&characterEncoding=utf8&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC"
 db.default.username=root
-db.default.password="5xdKVmt7guHMAcrd*"
-
-projects.root.directory = "~/theGardener_git_data/"
-projects.synchronize.interval = 86400
-projects.synchronize.initial.delay = 10
+db.default.password="root"
 ```
 
-### Init dababase
-
-Create a database on mysql called _thegardener_.
-
-#### Start the backend to apply database changes
-
-Run the backend
+Then, you can use the following `docker-compose.yml` file:
 ```
-cd ~/theGardener
-sbt "~run -Dconfig.file=local-conf/application.local.conf"
+version: '3'
+services:
+  thegardener:
+    image: kelkoogroup/thegardener:latest
+    ports:
+    - "9000:9000"
+    volumes:
+    - /tmp/application-mysql.conf:/app-conf/application-mysql.conf:ro
+    links:
+    - mysql
+    entrypoint:
+    - /app/bin/the_gardener
+    - -Dconfig.file=/app-conf/application-mysql.conf
+  mysql:
+    image: mysql:8
+    environment:
+    - MYSQL_DATABASE=thegardener
+    - MYSQL_ROOT_PASSWORD=root
 ```
-
-Access to the Swagger doc : 
-```
-http://localhost:9000/api/docs
-```
-
-This will create the tables in the database
-```
-mysql> use thegardener ;
-Database changed
-mysql> show tables ;
-+-----------------------+
-| Tables_in_thegardener |
-+-----------------------+
-| branch                |
-| feature               |
-| feature_tag           |
-| hierarchyNode         |
-| play_evolutions       |
-| project               |
-| project_hierarchyNode |
-| scenario              |
-| scenario_tag          |
-| tag                   |
-+-----------------------+
-10 rows in set (0.00 sec)
-```
-
-Stop the backend by kill the _sbt_ process
-
-## Configure theGardener
-
-**DISCLAIMER**: this procedure help to configure the application theGardener to be able test this project. This procedure will be replaced by a proper UI : the goal of the milestone [M3 Administration](https://github.com/KelkooGroup/theGardener/milestone/2) is to provide an easy way to configure the application.
-
-The application store sources of projects hosted on git repository, we will use theGardener itself as an example :
-```
-mysql> INSERT INTO project (id, name, repositoryUrl, stableBranch, featuresRootPath) VALUES ('theGardener', 'theGardener', 'https://github.com/KelkooGroup/theGardener.git', 'master', 'test/features');
-```
-you can add any project you want here.
-
-To access to those projects, you need to define a tree 
-```
-mysql> INSERT INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel) VALUES ('.', 'root', 'root', 'Views', 'View');
-mysql> INSERT INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel) VALUES ('.01.', 'tools', 'Tools', 'Projects', 'Project');
-```
-The tree can be very large and deep, it depends on your needs. Every thing is based on the id, for instance you can have : 
-* .
-  * .01.
-     * .01.01.
-     * .01.02.
-  * .02.
-     * .02.01.
-
-Then you associate the project to a node :
-
-```
-mysql> INSERT INTO project_hierarchyNode (projectId, hierarchyId) VALUES ('theGardener', '.01.');
-```
-
-## Start 
-
-start the backend
-```
-cd ~/theGardener
-sbt "~run -Dconfig.file=local-conf/application.local.conf"
-```
-
-start the frontend
-```
-cd ~/theGardener/frontend
-ng serve
-```
-
-## Use 
-
-### Use the application 
-
-Open [http://localhost:4200](http://localhost:4200)
-
-![image](https://user-images.githubusercontent.com/5529106/59674697-1f85f100-91c4-11e9-82dd-d52b8acd7a74.png)
-
-### Use the backend
-
-Open [http://localhost:9000/api/docs](http://localhost:9000/api/docs)
-
-![image](https://user-images.githubusercontent.com/5529106/59674484-a71f3000-91c3-11e9-9d94-2d57400bf45f.png)
-
-
-
-
