@@ -191,7 +191,7 @@ Be able to use anchors on titles and sub-titles
 Click on the anchor sign next to titles to get the anchor in the url then make your internal link the same way as before
 
 For instance : 
-[internal link to the title Start of the installation guide of the project theGardener](thegardener://path=theGardener>master>_guides_/install#start)
+[internal link to the title Data of the installation guide of the project theGardener](thegardener://path=theGardener>master>_guides_/install#data)
 
 ## Include external web page
 
