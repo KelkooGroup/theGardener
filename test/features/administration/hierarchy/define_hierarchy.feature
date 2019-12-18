@@ -8,7 +8,7 @@ Feature: Define hierarchy
     And the cache is empty
 
 
-  @level_2_technical_details @nominal_case @valid
+  @level_2_technical_details @nominal_case @valid @define_hierarchy
   Scenario: Add a hierarchy node
     Given no hierarchy nodes is setup in theGardener
     When I perform a "POST" on following URL "/api/hierarchy" with json body
@@ -36,7 +36,7 @@ Feature: Define hierarchy
       | id | slugName | name           | childrenLabel | childLabel |
       | .  | root     | Hierarchy root | Projects      | Project    |
 
-  @level_2_technical_details @nominal_case @valid
+  @level_2_technical_details @nominal_case @valid @define_hierarchy
   Scenario: Get all hierarchy
     Given the hierarchy nodes are
       | id         | slugName   | name                 | childrenLabel | childLabel   |

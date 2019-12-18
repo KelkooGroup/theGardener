@@ -18,7 +18,7 @@ Feature: Register a project
       | id            | name                    | repositoryUrl                                        | stableBranch | featuresRootPath |
       | suggestionsWS | Suggestions WebServices | git@gitlab.corp.kelkoo.net:library/suggestionsWS.git | master       | test/features    |
 
-  @level_2_technical_details @nominal_case @valid
+  @level_2_technical_details @nominal_case @valid @register_project
   Scenario: setup a project
     Given no project settings are setup in theGardener
     When I perform a "POST" on following URL "/api/projects" with json body
@@ -28,7 +28,9 @@ Feature: Register a project
 	"name": "Suggestions WebServices",
 	"repositoryUrl": "git@gitlab.corp.kelkoo.net:library/suggestionsWS.git",
 	"stableBranch": "master",
-	"featuresRootPath": "test/features"
+	"displayedBranches": "master",
+    "featuresRootPath": "test/features",
+    "documentationRootPath": "documentation"
 }
         """
     Then I get a response with status "201"
@@ -39,12 +41,14 @@ Feature: Register a project
 	"name": "Suggestions WebServices",
 	"repositoryUrl": "git@gitlab.corp.kelkoo.net:library/suggestionsWS.git",
 	"stableBranch": "master",
-	"featuresRootPath": "test/features"
+	"displayedBranches": "master",
+    "featuresRootPath": "test/features",
+    "documentationRootPath": "documentation"
 }
      """
     Then the projects settings are now
-      | id            | name                    | repositoryUrl                                        | stableBranch | featuresRootPath |
-      | suggestionsWS | Suggestions WebServices | git@gitlab.corp.kelkoo.net:library/suggestionsWS.git | master       | test/features    |
+      | id            | name                    | repositoryUrl                                        | stableBranch | displayedBranches | featuresRootPath | documentationRootPath |
+      | suggestionsWS | Suggestions WebServices | git@gitlab.corp.kelkoo.net:library/suggestionsWS.git | master       | master            | test/features    | documentation         |
 
 
   @level_2_technical_details @nominal_case @valid

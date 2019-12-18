@@ -92,7 +92,7 @@ describe('NavigateMenuItemComponent', () => {
     expect(component.expanded).toBeFalsy();
   });
 
-  it('should activate node if path is current route', () => {
+  it('should navigate to item on click', () => {
     activatedRoute.testParams = {name: 'library'};
     component.menuItem = {
       name: 'suggestion',
@@ -118,6 +118,54 @@ describe('NavigateMenuItemComponent', () => {
 
     page.clickOnItem();
     expect(router.navigate).toHaveBeenCalledWith(['app/documentation/navigate/library', {path: 'suggestion'}]);
+  });
+
+  it('should activate node if path is current route with no branch name from internal link',() => {
+    activatedRoute.testParams = {name: 'library'};
+    component.menuItem = {
+      name: 'theGardener',
+      label: 'Suggestion system',
+      type: 'Node',
+      depth: 1,
+      route: 'theGardener>>_/theTeaser',
+      children: [
+        {
+          name: 'master',
+          label: 'Child 1',
+          type: 'Node',
+          depth: 2,
+          children: []
+        },
+      ]
+    };
+    fixture.detectChanges();
+    component.pathInUrl = 'theGardener>master>_/theTeaser';
+    fixture.detectChanges();
+    expect(component.isNodeActive(component.menuItem)).toBeTruthy();
+  });
+
+  it('should activate node if path is current route with no branch name',() => {
+    activatedRoute.testParams = {name: 'library'};
+    component.menuItem = {
+      name: 'theGardener',
+      label: 'Suggestion system',
+      type: 'Node',
+      depth: 1,
+      route: 'theGardener>>_/theTeaser',
+      children: [
+        {
+          name: 'master',
+          label: 'Child 1',
+          type: 'Node',
+          depth: 2,
+          children: []
+        },
+      ]
+    };
+    fixture.detectChanges();
+    component.pathInUrl = 'theGardener>>_/theTeaser';
+    fixture.detectChanges();
+    expect(component.isNodeActive(component.menuItem)).toBeTruthy();
   });
 
   it('should show branches in a select if node is a project', async(() => {

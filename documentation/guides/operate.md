@@ -12,8 +12,6 @@ Once the instance is running, the OPS could need some tools to operate the appli
 
 ![Roles](../assets/images/theGardener_role_ops_operate.png)
 
-
-
 ## Refresh data  
 
 As there are several layers of data :
@@ -26,48 +24,88 @@ It might be useful to reset some data layer from its source.
 
 ### API tools
 
-- refresh menu from the database :
+#### Refresh menu from the database:
 
-   - compute the menu from the database and put it in the cache
-   
-- refresh one or all projects from the database :
-
-   - compute all pages of all branches of the project from the database and put them in the cache 
-   - compute the menu from the database and put it in the cache   
-
-- refresh one or all projects from the local files :
-
-   - remove all branches, directories and pages of the project from the database
-   - transform local files of the project into branches, directories and pages entities and store them in the database  
-   - compute all pages of all branches of the project from the database and put them in the cache  
-   - compute the menu from the database and put it in the cache   
-
-- synchronize one project from the remote git repository :
-
-   - update all local files from the remote git repository
-   - transform local files of the project into branches, directories and pages entities and update the related entities in the database  
-   - compute all pages of all branches of the project from the database and put them in the cache  
-   - compute the menu from the database and put it in the cache   
-
-- refresh one project from the remote git repository :
-
-   - remove all branches, directories and pages of the project from the database
-   - remove local files related to the project
-   - checkout from scratch all branches of the project into the local file system
-   - transform local files of the project into branches, directories and pages entities and store them in the database  
-   - compute all pages of all branches of the project from the database and put them in the cache  
-   - compute the menu from the database and put it in the cache   
- 
-
-### Specifications  
-Here are some tools to refresh the data :
+Compute the menu from the database and put it in the cache
 
 ```thegardener
-    {
-      "scenarios" : 
-         {
-            "feature": "/administration/operation.feature",
-            "select": { "tags" : ["@data_refresh"]  }
-         }
-    }
+{
+  "scenarios" : 
+     {
+        "feature": "/administration/operation.feature",
+        "select": { "tags" : ["@refresh_menu"]  }
+     }
+}
+```      
+   
+#### Refresh one or all projects from the database:
+
+- Compute all pages of all branches of the project from the database and put them in the cache 
+- Compute the menu from the database and put it in the cache   
+
+
+```thegardener
+{
+  "scenarios" : 
+     {
+        "feature": "/administration/operation.feature",
+        "select": { "tags" : ["@refresh_project_from_db"]  }
+     }
+}
+```   
+
+#### Refresh one or all projects from the local files:
+
+- Remove all branches, directories and pages of the project from the database
+- Transform local files of the project into branches, directories and pages entities and store them in the database  
+- Compute all pages of all branches of the project from the database and put them in the cache  
+- Compute the menu from the database and put it in the cache   
+
+```thegardener
+{
+  "scenarios" : 
+     {
+        "feature": "/administration/operation.feature",
+        "select": { "tags" : ["@refresh_project_from_disk"]  }
+     }
+}
 ```
+
+
+#### Synchronize one project from the remote git repository:
+
+- Update all local files from the remote git repository
+- Transform local files of the project into branches, directories and pages entities and update the related entities in the database  
+- Compute all pages of all branches of the project from the database and put them in the cache  
+- Compute the menu from the database and put it in the cache   
+
+```thegardener
+{
+  "scenarios" : 
+     {
+        "feature": "/administration/operation.feature",
+        "select": { "tags" : ["@synchronize_project_from_git"]  }
+     }
+}
+```
+
+#### Refresh one project from the remote git repository:
+
+- Remove all branches, directories and pages of the project from the database
+- Remove local files related to the project
+- Checkout from scratch all branches of the project into the local file system
+- Transform local files of the project into branches, directories and pages entities and store them in the database  
+- Compute all pages of all branches of the project from the database and put them in the cache  
+- Compute the menu from the database and put it in the cache   
+ 
+```thegardener
+{
+  "scenarios" : 
+     {
+        "feature": "/administration/operation.feature",
+        "select": { "tags" : ["@refresh_project_from_git"]  }
+     }
+}
+``` 
+ 
+ 

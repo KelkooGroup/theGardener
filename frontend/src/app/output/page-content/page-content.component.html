@@ -1,10 +1,10 @@
 <mat-progress-spinner *ngIf="!page"></mat-progress-spinner>
 <div *ngIf="page" class="markdown-container">
-  <h1 *ngIf=page.title class="page-title">{{ page.title }}</h1>
+  <h1 *ngIf=page.title id="page-title">{{ page.title }}</h1>
   <div *ngFor="let part of page.parts">
     <div [ngSwitch]="part.type">
       <div *ngSwitchCase="'markdown'">
-        <div class="markdown" [innerHTML]="getMarkdown(part) | markdown | internalLink | removehtmlsanitizer "></div>
+        <div class="markdown" [innerHTML]="getMarkdown(part) | markdown | internalLink | anchor | removehtmlsanitizer "></div>
       </div>
       <div *ngSwitchCase="'includeExternalPage'">
         <iframe [src]="getExternalLink(part) | safe" scrolling="yes"

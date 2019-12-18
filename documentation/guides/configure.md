@@ -46,33 +46,31 @@ Once a first level node is selected, the sub tree will be displayed on the left 
 
 ### Hierarchy
 
-Insert rows on the table **hierarchyNode**.
+Define hierarchy:
 
-For instance to have the previous hierarchy :
+```thegardener
+{
+  "scenarios" : 
+     {
+        "feature": "/administration/hierarchy/define_hierarchy.feature",
+        "select": { "tags" : ["@define_hierarchy"]  }
+     }
+}
+```
 
-```
-mysql> INSERT INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel) 
-                  VALUES ('.', 'root', 'root', 'Platforms', 'Platform');
-mysql> INSERT INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel) 
-                  VALUES ('.01.', 'lib', 'Library', 'Systems', 'System');
-mysql> INSERT INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel) 
-                  VALUES ('.02.', 'uni', 'University', 'Projects', 'Project');
-mysql> INSERT INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel) 
-                  VALUES ('.03.', 'leg', 'Legal', 'Projects', 'Project');
-mysql> INSERT INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel) 
-                  VALUES ('.01.01.', 'users', 'Users', 'Projects', 'Project');
-mysql> INSERT INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel) 
-                  VALUES ('.01.02.', 'books', 'Books', 'Projects', 'Project');
-```
 
 ### Projects
 
-Insert rows on the table **project**.
+Register a project:
 
-For instance insert theGardener itself :
-
-```
-mysql> INSERT INTO project (id, name, repositoryUrl, stableBranch, displayedBranches, featuresRootPath, documentationRootPath) VALUES ('theGardener', 'theGardener', 'https://github.com/KelkooGroup/theGardener.git', 'master', 'master|feature.*/', 'test/features', 'documentation');
+```thegardener
+{
+  "scenarios" : 
+     {
+        "feature": "/administration/projects/register_a_project.feature",
+        "select": { "tags" : ["@register_project"]  }
+     }
+}
 ```
 
 Field | Type  | Description
@@ -85,21 +83,28 @@ displayedBranches | regexpr |  regular expression to filter the branches that ar
 featuresRootPath | string |  relative path to the directory that host gherkin scenarios. Can be empty.
 documentationRootPath | string |  relative path to the directory that host the documentation. This directory should store the first _thegardener.json_ file.
 
-When displayedBranch == stableBranch, the branch Name is removed from the url  
-Note : displayBranch need to be the stableBranch Name to remove it from the url, it will not work with a regexpr matching only the stableBranch
+When displayedBranch == stableBranch, the branch name is removed from the url. The field displayBranch need to be exactly the stableBranch name to remove it from the url, it will not work with a regexpr matching on the stableBranch
+
 ### Link between projects and hierarchy
 
-Insert rows on the table **project_hierarchyNode**.
+A given project can be put on any node. It can be put on several nodes if it make sense.
 
-This is an association table between **project** and **hierarchyNode**. 
+```thegardener
+{
+  "scenarios" : 
+     {
+        "feature": "/administration/hierarchy/link_projects_to_hierarchy.feature",
+        "select": { "tags" : ["@put_project_in_hierarchy"]  }
+     }
+}
+```
 
 
 ## Hooks on the git servers
 
 To be able to have fast feedback on theGardener when a change is pushed on a project registered on theGardener, we need to put in place a web hook.
-The web hook configuration depends on tha web application that serve the git repositories. For instance it can be GitLab.
+The web hook configuration depends on the web application that serve the git repositories. For instance it can be GitLab.
 The web hook should do a **POST** on **/api/projects/:id/synchronize** : this will trigger the synchronisation of this project on theGardener.
- 
 
 
 ## UI settings
