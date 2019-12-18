@@ -92,7 +92,7 @@ describe('NavigateMenuItemComponent', () => {
     expect(component.expanded).toBeFalsy();
   });
 
-  it('should activate node if path is current route', () => {
+  it('should navigate to item on click', () => {
     activatedRoute.testParams = {name: 'library'};
     component.menuItem = {
       name: 'suggestion',
