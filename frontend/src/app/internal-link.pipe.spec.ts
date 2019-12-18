@@ -24,10 +24,6 @@ describe('InternalLinkPipe', () => {
     expect(pipe.transform(HTML_INPUT_WITH_OTHER_LINK)).toBe(HTML_OUTPUT_WITH_OTHER_LINK);
 
   });
-  fit('Decode', () => {
-    expect(decodeURIComponent(test)).toBe(testout);
-    console.log(decodeURIComponent(test));
-  });
 });
 
 
@@ -46,6 +42,3 @@ const COMPLEX_HTML_OUTPUT = '<p>Note 2: <code>merchantUrl <a onclick=\"navigateT
 const HTML_INPUT_WITH_OTHER_LINK = '<p>Note 2: <code>merchantUrl <a href="/app/documentation/navigate/_publisher;path=shoppingAPI%3Eqa%3E_Tools_/requestBuilder">link</a></code> parameter must be encoded using <a href="thegardener://path=theGardener>master>_features_/administration">URL encoding</a>.</p>';
 
 const HTML_OUTPUT_WITH_OTHER_LINK = '<p>Note 2: <code>merchantUrl <a href=\"/app/documentation/navigate/_publisher;path=shoppingAPI%3Eqa%3E_Tools_/requestBuilder\">link</a></code> parameter must be encoded using <a onclick=\"navigateTo(\'app/documentation/navigate/HierarchyNode;path=theGardener>master>_features_/administration\')\">URL encoding</a>.</p>';
-
-const test = 'theGardener>master>_guides_%2Finstall';
-const testout = 'theGardener>master>_guides_/install'

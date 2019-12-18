@@ -15,7 +15,8 @@ import {NotificationService} from '../../_services/notification.service';
 export class PageContentComponent implements OnInit, OnDestroy, AfterViewChecked {
   page: Page;
   private subscription: Subscription;
-  private fragment: string
+  private fragmentSubscription: Subscription;
+  private fragment: string;
 
   constructor(private activatedRoute: ActivatedRoute,
               private pageService: PageService,
@@ -25,9 +26,9 @@ export class PageContentComponent implements OnInit, OnDestroy, AfterViewChecked
   }
 
   ngOnInit() {
-    // @ts-ignore
+    //@ts-ignore
     window.navigateTo = navigateTo(this.router, this.ngZone);
-    this.activatedRoute.fragment.subscribe(fragment => { this.fragment = fragment; });
+    this.fragmentSubscription = this.activatedRoute.fragment.subscribe(fragment => { this.fragment = fragment; });
     this.subscription = combineLatest([
       this.activatedRoute.parent.params,
       this.activatedRoute.params
@@ -40,7 +41,7 @@ export class PageContentComponent implements OnInit, OnDestroy, AfterViewChecked
       }),
       switchMap(pageRoute => {
         if (pageRoute.path && pageRoute.path.endsWith('_')) {
-          return this.pageService.getPage(`${pageRoute.path}${pageRoute.page}`);
+          return this.pageService.getPage(`${pageRoute.path}${pageRoute.page}`)
         } else {
           return of<Page>();
         }
@@ -64,6 +65,7 @@ export class PageContentComponent implements OnInit, OnDestroy, AfterViewChecked
   }
 
   ngOnDestroy(): void {
+    this.fragmentSubscription.unsubscribe();
     this.subscription.unsubscribe();
   }
 
@@ -84,8 +86,7 @@ const navigateTo = (router: Router, ngZone: NgZone) => (path: string) => {
   ngZone.run(() => {
     const pathParams = path.split(';');
     const slashes = pathParams[1].split('/');
-    const fragment = slashes[1].split('#');
-    router.navigate([pathParams[0],{path : decodeURIComponent(slashes[0].replace('path=',''))},fragment[0]],{fragment : fragment[1]}).catch(err => console.log(err));
-
+    const fragment = slashes[slashes.length - 1].split('#');
+    router.navigate([pathParams[0], {path: decodeURIComponent(slashes[0].replace('path=', ''))}, fragment[0]], {fragment: fragment[1]}).catch(err => console.log(err));
   });
 };

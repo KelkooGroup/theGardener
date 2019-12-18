@@ -18,6 +18,7 @@ import {GherkinTableComponent} from '../gherkin/gherkin-table/gherkin-table.comp
 import {NgxJsonViewerModule} from 'ngx-json-viewer';
 import {RemoveHtmlSanitizerPipe} from '../../removehtmlsanitizer.pipe';
 import {RouterTestingModule} from '@angular/router/testing';
+import {AnchorPipe} from "../../anchor.pipe";
 
 describe('PageContentComponent', () => {
   let component: PageContentComponent;
@@ -35,6 +36,7 @@ describe('PageContentComponent', () => {
         GherkinTableComponent,
         SafePipe,
         InternalLinkPipe,
+        AnchorPipe,
         RemoveHtmlSanitizerPipe
       ],
       imports: [
@@ -63,6 +65,7 @@ describe('PageContentComponent', () => {
 
     activatedRoute.testParentParams = {name: '_eng', path: 'suggestionsWS>qa>_pmws_'};
     activatedRoute.testParams = {page: 'overview'};
+    activatedRoute.fragment = of('');
   });
 
   it('should get page content from backend and show markdown', async(() => {

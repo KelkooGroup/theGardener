@@ -186,11 +186,9 @@ Note: if branch.name isn't specified, it is considered to be the stable branch
 
 ### Anchors 
 
-Be able to use anchors on titles and sub-titles
+Click on the link sign next to titles to add the anchor to the url then make your internal link the same way as before
 
-Click on the anchor sign next to titles to get the anchor in the url then make your internal link the same way as before
-
-For instance : 
+Example of a Link With Anchor : 
 [internal link to the title Data of the installation guide of the project theGardener](thegardener://path=theGardener>master>_guides_/install#data)
 
 ## Include external web page

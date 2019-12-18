@@ -28,4 +28,9 @@ $theme: mat-light-theme($primary, $accent, $warn);
   img {
     max-width: 100%;
   }
+  .linkToAnchorForTitleAndSubTitle {
+    display: inline-block;
+    font-size: 80%;
+  }
+
 }
