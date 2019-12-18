@@ -57,7 +57,7 @@
     "@types/node": "12.12.21",
     "chai": "4.2.0",
     "chai-as-promised": "7.1.1",
-    "codelyzer": "5.2.0",
+    "codelyzer": "5.2.1",
     "cucumber": "6.0.5",
     "jasmine-core": "3.5.0",
     "jasmine-spec-reporter": "4.2.1",
