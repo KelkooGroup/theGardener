@@ -27,7 +27,7 @@
     "@angular/router": "8.2.14",
     "@types/lodash": "4.14.149",
     "angular-super-validator": "2.0.0",
-    "core-js": "3.4.8",
+    "core-js": "3.5.0",
     "cucumber-pretty": "1.5.2",
     "font-awesome": "4.7.0",
     "jasmine": "3.5.0",
@@ -54,7 +54,7 @@
     "@types/cucumber": "6.0.0",
     "@types/jasmine": "3.5.0",
     "@types/jasminewd2": "2.0.8",
-    "@types/node": "12.12.17",
+    "@types/node": "12.12.20",
     "chai": "4.2.0",
     "chai-as-promised": "7.1.1",
     "codelyzer": "5.2.0",
@@ -76,7 +76,7 @@
     "ts-node": "8.5.4",
     "tslint": "5.20.1",
     "typescript": "3.5.3",
-    "webpack": "4.41.2",
+    "webpack": "4.41.3",
     "webdriver": "5.16.15"
   },
   "optionalDependencies": {

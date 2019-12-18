@@ -1,5 +1,5 @@
 import {Pipe, PipeTransform} from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute} from '@angular/router';
 
 @Pipe({
   name: 'anchor'
@@ -17,8 +17,8 @@ export class AnchorPipe implements PipeTransform {
     const page = this.activatedRoute.snapshot.params.page;
     const currentUrl = `app/documentation/navigate/${hierarchy};path=${path}/${page}`;
 
-    function replacer(fullMatch: string, number: string, titleId: string) {
-      return `${fullMatch.replace(`</h${number}>`, '')} <a class="linkToAnchorForTitleAndSubTitle" onclick="navigateTo('${currentUrl}#${titleId}')"> <i class="fas fa-link"></i> </a> </h${number}>`;
+    function replacer(fullMatch: string, hNumber: string, titleId: string) {
+      return `${fullMatch.replace(`</h${hNumber}>`, '')} <a class="linkToAnchorForTitleAndSubTitle" onclick="navigateTo('${currentUrl}#${titleId}')"> <i class="fas fa-link"></i> </a> </h${hNumber}>`;
     }
 
     return value.replace(linkRegex, replacer);

@@ -26,9 +26,11 @@ export class PageContentComponent implements OnInit, OnDestroy, AfterViewChecked
   }
 
   ngOnInit() {
-    //@ts-ignore
+    // @ts-ignore
     window.navigateTo = navigateTo(this.router, this.ngZone);
-    this.fragmentSubscription = this.activatedRoute.fragment.subscribe(fragment => { this.fragment = fragment; });
+    this.fragmentSubscription = this.activatedRoute.fragment.subscribe(fragment => {
+      this.fragment = fragment;
+    });
     this.subscription = combineLatest([
       this.activatedRoute.parent.params,
       this.activatedRoute.params
@@ -84,9 +86,23 @@ export class PageContentComponent implements OnInit, OnDestroy, AfterViewChecked
 
 const navigateTo = (router: Router, ngZone: NgZone) => (path: string) => {
   ngZone.run(() => {
-    const pathParams = path.split(';');
-    const slashes = pathParams[1].split('/');
-    const fragment = slashes[slashes.length - 1].split('#');
-    router.navigate([pathParams[0], {path: decodeURIComponent(slashes[0].replace('path=', ''))}, fragment[0]], {fragment: fragment[1]}).catch(err => console.log(err));
+    PageContentComponentTools.navigate(router, path);
   });
 };
+
+export class PageContentComponentTools {
+
+  static navigate(router: Router, path: string) {
+    if (path) {
+      const pathParams = path.split(';');
+      if (pathParams.length > 1) {
+        const slashes = pathParams[1].split('/');
+        if (slashes.length > 1) {
+          const fragment = slashes[slashes.length - 1].split('#');
+          router.navigate([pathParams[0], {path: decodeURIComponent(slashes[0].replace('path=', ''))}, fragment[0]], {fragment: fragment[1]}).catch(err => console.log(err));
+        }
+      }
+    }
+  }
+
+}

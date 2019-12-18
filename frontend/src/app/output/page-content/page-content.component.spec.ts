@@ -1,7 +1,7 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {PageContentComponent} from './page-content.component';
-import {ActivatedRoute} from '@angular/router';
+import {PageContentComponent, PageContentComponentTools} from './page-content.component';
+import {ActivatedRoute, Router} from '@angular/router';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {ActivatedRouteStub} from '../../_testUtils/activated-route-stub.spec';
 import {PageService} from '../../_services/page.service';
@@ -18,7 +18,7 @@ import {GherkinTableComponent} from '../gherkin/gherkin-table/gherkin-table.comp
 import {NgxJsonViewerModule} from 'ngx-json-viewer';
 import {RemoveHtmlSanitizerPipe} from '../../removehtmlsanitizer.pipe';
 import {RouterTestingModule} from '@angular/router/testing';
-import {AnchorPipe} from "../../anchor.pipe";
+import {AnchorPipe} from '../../anchor.pipe';
 
 describe('PageContentComponent', () => {
   let component: PageContentComponent;
@@ -111,6 +111,37 @@ describe('PageContentComponent', () => {
     expect(component).toBeTruthy();
     expect(page.iframe).toBeFalsy();
     expect(page.scenario).toBeTruthy();
+  }));
+
+  it('should navigate to the right url when click on internal link', async(() => {
+    const path = 'app/documentation/navigate/HierarchyNode;path=theGardener>master>_features_/administration';
+
+    const router: Router = TestBed.get(Router);
+    spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+    PageContentComponentTools.navigate(router, path);
+
+    expect(router.navigate).toHaveBeenCalledWith(['app/documentation/navigate/HierarchyNode', {path: 'theGardener>master>_features_'}, 'administration'], {fragment: undefined})
+  }));
+
+  it('should not crash when bad path in internal link', async(() => {
+    const path: string = null;
+    const path2 = '';
+    const path3 = ' ';
+    const path4 = ';';
+    const router: Router = TestBed.get(Router);
+    spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+
+    PageContentComponentTools.navigate(router, path);
+    expect(router.navigate).not.toHaveBeenCalled();
+
+    PageContentComponentTools.navigate(router, path2);
+    expect(router.navigate).not.toHaveBeenCalled();
+
+    PageContentComponentTools.navigate(router, path3);
+    expect(router.navigate).not.toHaveBeenCalled();
+
+    PageContentComponentTools.navigate(router, path4);
+    expect(router.navigate).not.toHaveBeenCalled();
   }));
 });
 
