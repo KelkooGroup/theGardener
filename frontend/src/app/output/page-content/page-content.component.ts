@@ -1,4 +1,4 @@
-import {Component, NgZone, OnDestroy, OnInit} from '@angular/core';
+import {Component, NgZone, OnDestroy, OnInit, AfterViewChecked} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {catchError, map, switchMap} from 'rxjs/operators';
 import {combineLatest, of, Subscription} from 'rxjs';
@@ -12,9 +12,11 @@ import {NotificationService} from '../../_services/notification.service';
   templateUrl: './page-content.component.html',
   styleUrls: ['./page-content.component.scss']
 })
-export class PageContentComponent implements OnInit, OnDestroy {
+export class PageContentComponent implements OnInit, OnDestroy, AfterViewChecked {
   page: Page;
   private subscription: Subscription;
+  private fragmentSubscription: Subscription;
+  private fragment: string;
 
   constructor(private activatedRoute: ActivatedRoute,
               private pageService: PageService,
@@ -26,6 +28,9 @@ export class PageContentComponent implements OnInit, OnDestroy {
   ngOnInit() {
     // @ts-ignore
     window.navigateTo = navigateTo(this.router, this.ngZone);
+    this.fragmentSubscription = this.activatedRoute.fragment.subscribe(fragment => {
+      this.fragment = fragment;
+    });
     this.subscription = combineLatest([
       this.activatedRoute.parent.params,
       this.activatedRoute.params
@@ -38,7 +43,7 @@ export class PageContentComponent implements OnInit, OnDestroy {
       }),
       switchMap(pageRoute => {
         if (pageRoute.path && pageRoute.path.endsWith('_')) {
-          return this.pageService.getPage(`${pageRoute.path}${pageRoute.page}`);
+          return this.pageService.getPage(`${pageRoute.path}${pageRoute.page}`)
         } else {
           return of<Page>();
         }
@@ -52,7 +57,17 @@ export class PageContentComponent implements OnInit, OnDestroy {
     });
   }
 
+  ngAfterViewChecked(): void {
+    if (this.fragment) {
+      const cmp = document.getElementById(this.fragment);
+      if (cmp) {
+        cmp.scrollIntoView();
+      }
+    }
+  }
+
   ngOnDestroy(): void {
+    this.fragmentSubscription.unsubscribe();
     this.subscription.unsubscribe();
   }
 
@@ -67,9 +82,27 @@ export class PageContentComponent implements OnInit, OnDestroy {
   getScenario(part: PagePart) {
     return (part.data as ScenarioPart).scenarios;
   }
-
 }
 
 const navigateTo = (router: Router, ngZone: NgZone) => (path: string) => {
-  ngZone.run(() => router.navigateByUrl(path)).catch(err => console.log(err));
+  ngZone.run(() => {
+    PageContentComponentTools.navigate(router, path);
+  });
 };
+
+export class PageContentComponentTools {
+
+  static navigate(router: Router, path: string) {
+    if (path) {
+      const pathParams = path.split(';');
+      if (pathParams.length > 1) {
+        const slashes = pathParams[1].split('/');
+        if (slashes.length > 1) {
+          const fragment = slashes[slashes.length - 1].split('#');
+          router.navigate([pathParams[0], {path: decodeURIComponent(slashes[0].replace('path=', ''))}, fragment[0]], {fragment: fragment[1]}).catch(err => console.log(err));
+        }
+      }
+    }
+  }
+
+}

@@ -67,9 +67,9 @@ export class NavigateMenuItemComponent implements OnInit, OnDestroy {
   isRouteInActivatedUrl(node: MenuHierarchy) {
     const isRouteInActivatedUrl = node.route &&
       this.pathInUrl &&
-      (this.pathInUrl === node.route ||
+      (this.pathInUrl === this.getRouteWithBranch(node.route) ||
         // Angular router automatically removes trailing slash from URL so we need to append it to check path
-        this.pathInUrl.concat('/') === node.route);
+        this.pathInUrl.concat('/') === this.getRouteWithBranch(node.route));
     return isRouteInActivatedUrl;
   }
 
@@ -97,6 +97,10 @@ export class NavigateMenuItemComponent implements OnInit, OnDestroy {
 
   calculatePadding(): number {
     return (this.menuItem.depth + 1) * 16 + (+(this.menuItem.children.length === 0) * 12);
+  }
+
+  getRouteWithBranch(nodeRoute: string){
+    return nodeRoute.replace('>>',`>${this.getBranchFromUrl()}>`)
   }
 
   private getBranchFromUrl(): string | undefined {

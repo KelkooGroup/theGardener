@@ -153,4 +153,13 @@ export class ActivatedRouteStub {
     };
   }
 
+  private _fragment: object = {};
+  get fragment() {
+    return this._fragment
+  }
+
+  set fragment(params) {
+    this._fragment = params;
+  }
+
 }
