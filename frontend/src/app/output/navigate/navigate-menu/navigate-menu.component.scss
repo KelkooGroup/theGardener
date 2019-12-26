@@ -30,57 +30,6 @@ $app-theme: mat-light-theme($app-primary, $app-accent, $app-warn);
   }
 }
 
-.item {
-  min-width: 300px;
-  cursor: pointer;
-  padding-top: 3px;
-  padding-left: 10px;
-  padding-right: 10px;
-  padding-bottom: 3px;
-  display: flex;
-  width: auto;
-  background-color: $color-text-lighter;
-  font-size: $font-size-text-small;
-}
-
-.item-text {
-  padding-right: 3px;
-}
-
-
-.node-text {
-  color: $color-text-darker;
-}
-
-.project-text {
-  color: $color-text;
-}
-
-.feature-text {
-  color: $color-text-invert;
-}
-
-.options {
-  padding-top: 5px;
-  padding-bottom: 5px;
-  padding-right: 13px;
-  font-family: "courier", serif;
-  font-size: $font-size-text-small;
-
-}
-
-.expanded, .options {
-  background-color: $color-border-lighter;
-}
-
-.selected {
-  background-color: $color-text-light;
-}
-
-.selected.expanded {
-  background-color: $color-text-light;
-}
-
 a {
   cursor: pointer;
 }

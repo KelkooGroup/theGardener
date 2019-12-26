@@ -64,7 +64,7 @@ export class PageContentComponent implements OnInit, OnDestroy, AfterViewChecked
         cmp.scrollIntoView();
       }
     } else {
-      const cmp = document.getElementById('page-title');
+      const cmp = document.getElementById('top-page');
       if (cmp) {
         cmp.scrollIntoView();
       }

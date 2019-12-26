@@ -31,7 +31,7 @@ export interface GherkinScenario {
   abstractionLevel: string;
   caseType: string;
   steps: Array<GherkinStep>;
-  examples?: GherkinTable;
+  examples?: Array<GherkinExamples>;
   workflowStep: string; // FIXME: any meaning on frontend side ?
 }
 
@@ -40,6 +40,15 @@ export interface GherkinStep {
   keyword: string; // FIXME (is it an enum ?)
   text: string;
   argument: Array<Array<string>>;
+}
+
+export interface GherkinExamples {
+  id: string;
+  tags: Array<string>;
+  keyword: string;
+  description: string;
+  tableHeader: Array<string>;
+  tableBody: Array<Array<string>>;
 }
 
 export interface GherkinTable {

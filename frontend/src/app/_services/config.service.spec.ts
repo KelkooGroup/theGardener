@@ -46,5 +46,6 @@ const SERVER_RESPONSE: Config = {
   windowTitle: 'theGardener',
   title: 'In our documentation we trust.',
   logoSrc: 'assets/images/logo-white.png',
-  faviconSrc: 'assets/images/favicon.png'
+  faviconSrc: 'assets/images/favicon.png',
+  colorMain:"#1F7079"
 };

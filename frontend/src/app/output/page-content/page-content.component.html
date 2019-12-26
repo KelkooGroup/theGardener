@@ -1,5 +1,6 @@
 <mat-progress-spinner *ngIf="!page"></mat-progress-spinner>
-<div *ngIf="page" class="markdown-container">
+<div id="top-page" class="top">&nbsp;</div>
+<div *ngIf="page" class="markdown-container"  >
   <h1 *ngIf=page.title id="page-title">{{ page.title }}</h1>
   <div *ngFor="let part of page.parts">
     <div [ngSwitch]="part.type">
