@@ -307,7 +307,7 @@ describe('NavigateMenuItemComponent', () => {
     page.selectBranch('branch1');
 
     // then
-    expect(router.navigate).toHaveBeenCalledWith(['app/documentation/navigate/_eng', {path: 'suggestionWS>branch1>/'}]);
+    expect(router.navigate).toHaveBeenCalledWith(['app/documentation/navigate/_eng', {path: 'suggestionWS>branch1>/>_'}]);
   });
 
   it('should navigate to the right URL when selecting a branch with / or _ in the name', () => {
@@ -348,7 +348,7 @@ describe('NavigateMenuItemComponent', () => {
     page.selectBranch('foo/bar_foo_bar');
 
     // then
-    expect(router.navigate).toHaveBeenCalledWith(['app/documentation/navigate/_eng', {path: 'suggestionWS>foo_bar~foo~bar>/'}]);
+    expect(router.navigate).toHaveBeenCalledWith(['app/documentation/navigate/_eng', {path: 'suggestionWS>foo_bar~foo~bar>/>_'}]);
   });
 
   it('should not show branches select if only one branch', () => {

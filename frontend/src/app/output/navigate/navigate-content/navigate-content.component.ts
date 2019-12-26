@@ -69,7 +69,7 @@ export class NavigateContentComponent implements OnInit, OnDestroy {
 
   calculateHeight(): number {
     const headerHeight = this.hasTabs ? 50 : 0;
-    const pageHeight = 150 + headerHeight;
+    const pageHeight = 100 + headerHeight;
     return pageHeight;
   }
 

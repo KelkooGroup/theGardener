@@ -1,8 +1,8 @@
 <div class="page">
-  <div class="side-nav">
+  <div class="side-nav"  [ngStyle]="{'max-height': 'calc(100vh - 110px)'}" >
     <app-navigate-menu></app-navigate-menu>
   </div>
-  <div class="content">
+  <div class="content"   [ngStyle]="{'max-height': 'calc(100vh - 150px)'}" >
     <app-navigate-content></app-navigate-content>
   </div>
 </div>

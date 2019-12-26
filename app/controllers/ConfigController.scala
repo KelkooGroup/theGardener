@@ -13,7 +13,8 @@ class ConfigController @Inject()(config: Configuration) extends InjectedControll
     "windowTitle" -> JsString(config.get[String]("application.windowTitle")),
     "title" -> JsString(config.get[String]("application.title")),
     "logoSrc" -> JsString(config.get[String]("application.logoSrc")),
-    "faviconSrc" -> JsString(config.get[String]("application.faviconSrc"))
+    "faviconSrc" -> JsString(config.get[String]("application.faviconSrc")),
+    "colorMain" -> JsString(config.get[String]("color.main"))
   ))
 
   @ApiOperation(value = "Get configuration", response = classOf[Map[String, String]])
