@@ -19,7 +19,7 @@ class PageServiceTest extends WordSpec with MustMatchers with BeforeAndAfter wit
   val directoryRepository = mock[DirectoryRepository]
   val pageRepository = mock[PageRepository]
   val featureService = mock[FeatureService]
-  val cache = mock[SyncCacheApi]
+  val cache =  new PageServiceCache( mock[SyncCacheApi])
   val gherkinRepository = mock[GherkinRepository]
   val config = mock[Configuration]
 

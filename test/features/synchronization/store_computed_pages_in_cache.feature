@@ -38,10 +38,7 @@ Feature: On synchronize, compute pages and store them in the cache
       | doc/context.md | **Feature**: Provide book suggestions |
     And page computation count is reset
 
-  # FIXME Put back at @valid, there is a regression on the test that I cannot spot.
-  #  Several instances of PageService are created and the spy on computePageFromPathUsingDatabase  method do not work anymore
-  #  without any change in this area
-  @level_2_technical_details @nominal_case  @documentation
+  @level_2_technical_details @nominal_case  @documentation @valid
   Scenario: compute a page only once when the page is served several times
     And the project "suggestionsWS" is synchronized
     And page computation count is reset
@@ -72,7 +69,7 @@ Feature: On synchronize, compute pages and store them in the cache
     Then page "suggestionsWS>master>/context" has been computed only one time
 
 
-  @level_2_technical_details @nominal_case  @documentation
+  @level_2_technical_details @nominal_case  @documentation  @valid @ongoing
   Scenario: compute page only when the page has changed on the remote server
     And the project "suggestionsWS" is synchronized
     And page computation count is reset
@@ -102,7 +99,6 @@ Feature: On synchronize, compute pages and store them in the cache
     And the server "target/data/GetPages/" host under the project "library/suggestionsWS" on the branch "master" the files
       | file           | content                                  |
       | doc/context.md | **Feature**: Provide book suggestions V2 |
-    And the project "suggestionsWS" is synchronized
     And the project "suggestionsWS" is synchronized
     When I perform a "GET" on following URL "/api/pages?path=suggestionsWS>master>/context"
     When I perform a "GET" on following URL "/api/pages?path=suggestionsWS>master>/context"

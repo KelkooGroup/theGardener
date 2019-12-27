@@ -3,7 +3,7 @@ package services
 import java.io.{File, FileInputStream}
 
 import controllers.dto.{PageFragment, PageFragmentContent}
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import models.{PageJoinProject, _}
 import org.apache.commons.io.FileUtils
 import play.api.{Configuration, Logging}
@@ -52,7 +52,17 @@ case class PageFragmentUnderProcessing(status: PageFragmentUnderProcessingStatus
 
 case class PageWithContent(page: Page, content: Seq[PageFragment])
 
-class PageService @Inject()(config: Configuration, projectRepository: ProjectRepository, directoryRepository: DirectoryRepository, pageRepository: PageRepository, gherkinRepository: GherkinRepository, cache: SyncCacheApi) extends Logging {
+class PageServiceCache @Inject()( cache: SyncCacheApi ){
+  PageServiceCache.setInstance(cache)
+  def instance() :SyncCacheApi = PageServiceCache.cacheInstance.getOrElse(cache)
+}
+object PageServiceCache{
+  var cacheInstance: Option[SyncCacheApi] = None
+  def setInstance(cache: SyncCacheApi):Unit=cacheInstance= Some(cache)
+}
+
+@Singleton
+class PageService @Inject()(config: Configuration, projectRepository: ProjectRepository, directoryRepository: DirectoryRepository, pageRepository: PageRepository, gherkinRepository: GherkinRepository, cache: PageServiceCache) extends Logging {
 
 
   implicit val pageMetaFormat = Json.format[PageMeta]
@@ -125,7 +135,7 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
     if (refresh) {
       computePageFromPathUsingDatabase(pathWithBranch)
     } else {
-      cache.get[PageWithContent](computePageCacheKey(pathWithBranch)) match {
+      cache.instance.get[PageWithContent](computePageCacheKey(pathWithBranch)) match {
         case Some(page) =>
           Some(page)
         case None =>
@@ -135,7 +145,7 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
   }
 
   def replacePageInCache(path: String, page: PageWithContent): Unit = {
-    cache.set(computePageCacheKey(path), page)
+    cache.instance.set(computePageCacheKey(path), page)
   }
 
 
@@ -186,7 +196,7 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
 
   private def cachePage(pageOption: Option[Page]): Option[Page] = {
     pageOption match {
-      case Some(page) => cache.set(computePageCacheKey(page.path), computePageFromPathUsingDatabase(page.path))
+      case Some(page) => cache.instance.set(computePageCacheKey(page.path), computePageFromPathUsingDatabase(page.path))
       case _ =>
     }
     pageOption
