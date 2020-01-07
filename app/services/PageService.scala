@@ -60,7 +60,7 @@ class PageServiceCache @Inject()(cache: SyncCacheApi) extends Logging {
   }
 
   def put(key: String): Unit = {
-    logger.debug(s"Page put in cache the key $key")
+    logger.trace(s"Page put in cache the key $key")
   }
 
   def get(key: String): Option[PageWithContent] = {
@@ -147,7 +147,6 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
       val key = computePageCacheKey(pathWithBranch)
       cache.get(key) match {
         case Some(page) =>
-          logger.debug(s"Page found in cache: $key")
           Some(page)
         case None =>
           logger.debug(s"Page not found in cache: $key")

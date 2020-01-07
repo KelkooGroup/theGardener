@@ -283,7 +283,9 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
   }
 
   def refreshAllPagesFromAllProjects(): Unit = {
+    logger.info("Start refreshing pages not in cache")
     projectRepository.findAll().map(p => refreshAllPages(p,false))
+    logger.info("Pages are now all in cache")
     ()
   }
 
