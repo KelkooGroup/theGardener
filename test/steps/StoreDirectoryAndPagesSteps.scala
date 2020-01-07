@@ -6,10 +6,7 @@ import cucumber.api.scala._
 import models._
 import org.scalatestplus.mockito._
 import org.mockito.Mockito.{times, _}
-import services.PageWithContent
-
 import scala.collection.JavaConverters._
-
 
 class StoreDirectoryAndPagesSteps extends ScalaDsl with EN with MockitoSugar {
 
@@ -31,6 +28,10 @@ class StoreDirectoryAndPagesSteps extends ScalaDsl with EN with MockitoSugar {
     reset(spyPageService)
   }
 
+  Then("""^page "([^"]*)" hasn't been computed$"""){ path:String =>
+    verifyComputationTimes(path, 0)
+  }
+
   Then("""^page "([^"]*)" has been computed only one time$"""){ path:String =>
     verifyComputationTimes(path, 1)
   }
@@ -39,8 +40,8 @@ class StoreDirectoryAndPagesSteps extends ScalaDsl with EN with MockitoSugar {
     verifyComputationTimes(path, times)
   }
 
-  def verifyComputationTimes(path:String, nb:Int): Option[PageWithContent]  ={
-    verify(spyPageService,times(nb)).computePageFromPathUsingDatabase(path)
+  def verifyComputationTimes(path:String, nb:Int)  ={
+    verify(spyPageServiceCache,times(nb)).put(path)
   }
 
 

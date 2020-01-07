@@ -41,7 +41,6 @@ Feature: On synchronize, compute pages and store them in the cache
   @level_2_technical_details @nominal_case  @documentation @valid
   Scenario: compute a page only once when the page is served several times
     And the project "suggestionsWS" is synchronized
-    And page computation count is reset
     When I perform a "GET" on following URL "/api/pages?path=suggestionsWS>master>/context"
     Then I get the following json response body
 """
@@ -64,17 +63,19 @@ Feature: On synchronize, compute pages and store them in the cache
   }
 ]
 """
+    And page computation count is reset
     When I perform a "GET" on following URL "/api/pages?path=suggestionsWS>master>/context"
     When I perform a "GET" on following URL "/api/pages?path=suggestionsWS>master>/context"
-    Then page "suggestionsWS>master>/context" has been computed only one time
+    Then page "suggestionsWS>master>/context" hasn't been computed
 
 
-  @level_2_technical_details @nominal_case  @documentation  @valid @ongoing
+  @level_2_technical_details @nominal_case  @documentation  @valid
   Scenario: compute page only when the page has changed on the remote server
     And the project "suggestionsWS" is synchronized
     And page computation count is reset
     When I perform a "GET" on following URL "/api/pages?path=suggestionsWS>master>/context"
     When I perform a "GET" on following URL "/api/pages?path=suggestionsWS>master>/context"
+    Then page "suggestionsWS>master>/context" hasn't been computed
     Then I get the following json response body
 """
 [
@@ -123,4 +124,39 @@ Feature: On synchronize, compute pages and store them in the cache
   }
 ]
 """
-    Then page "suggestionsWS>master>/context" has been computed 2 times
+    Then the cache store "page_suggestionsWS>master>/context" with the value
+"""
+PageWithContent(Page(1,context,context,context,0,Some(**Feature**: Provide book suggestions V2),/context,suggestionsWS>master>/context,1),List(PageFragment(markdown,PageFragmentContent(Some(**Feature**: Provide book suggestions V2),None,None))))
+"""
+
+
+  @level_2_technical_details @nominal_case  @documentation  @valid
+  Scenario: synchronize the pages of all the projects with a scheduler - synchronize with remote repositories and compute all pages
+    And the synchronization action is triggered for all projects
+    Then the cache store "page_suggestionsWS>master>/context" with the value
+"""
+PageWithContent(Page(1,context,context,context,0,Some(**Feature**: Provide book suggestions),/context,suggestionsWS>master>/context,1),List(PageFragment(markdown,PageFragmentContent(Some(**Feature**: Provide book suggestions),None,None))))
+"""
+    When I perform a "GET" on following URL "/api/pages?path=suggestionsWS>master>/context"
+    When I perform a "GET" on following URL "/api/pages?path=suggestionsWS>master>/context"
+    Then I get the following json response body
+"""
+[
+  {
+    "path": "suggestionsWS>master>/context",
+    "relativePath": "/context",
+    "name": "context",
+    "label": "context",
+    "description": "context",
+    "order": 0,
+    "content": [
+      {
+        "type": "markdown",
+        "data": {
+          "markdown": "**Feature**: Provide book suggestions"
+        }
+      }
+    ]
+  }
+]
+"""

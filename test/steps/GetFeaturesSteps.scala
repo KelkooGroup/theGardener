@@ -116,7 +116,7 @@ class GetFeaturesSteps extends ScalaDsl with EN with MockitoSugar {
     tagRepository.saveAllByScenarioId(scenarioId, tags.asScala)
   }
 
-  When("""^BDD features synchronization action is triggered$""") { () =>
+  When("""^the synchronization action is triggered for all projects$""") { () =>
     val future = projectService.synchronizeAll()
     Await.result(future, 30.seconds)
   }
