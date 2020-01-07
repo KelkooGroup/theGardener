@@ -28,8 +28,9 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
 
   if (environment.mode != Mode.Test) {
     val synchronizeJob = actorSystem.scheduler.schedule(initialDelay = synchronizeInitialDelay.seconds, interval = synchronizeInterval.seconds) {
-      synchronizeAll()
-      refreshAllPagesFromAllProjects()
+      synchronizeAll().onComplete { _ =>
+        refreshAllPagesFromAllProjects()
+      }
       ()
     }(actorSystem.dispatcher)
     CoordinatedShutdown(actorSystem).addTask(
