@@ -29,7 +29,7 @@ Scenario: providing several book suggestions
     And we have no feature in the database
     And we have no scenario in the database
     And we have no tag in the database
-    When BDD features synchronization action is triggered
+    When the synchronization action is triggered for all projects
     Then we have now those branches in the database
       | id | name   | isStable | projectId     |
       | 1  | master | true     | suggestionsWS |
@@ -80,7 +80,7 @@ Scenario: providing several book suggestions
     And we have no feature in the database
     And we have no scenario in the database
     And we have no tag in the database
-    When BDD features synchronization action is triggered
+    When the synchronization action is triggered for all projects
     Then we have now those branches in the database
       | id | name   | isStable | projectId     |
       | 1  | master | true     | suggestionsWS |
@@ -136,7 +136,7 @@ Feature: As a user Tim, I want some book suggestions so that I can do some disco
     And we have no feature in the database
     And we have no scenario in the database
     And we have no tag in the database
-    When BDD features synchronization action is triggered
+    When the synchronization action is triggered for all projects
     Then we have now those branches in the database
       | id | name   | isStable | projectId     |
       | 1  | master | true     | suggestionsWS |
@@ -190,7 +190,7 @@ Feature: As a user Tim, I want some book suggestions so that I can do some disco
     And we have no feature in the database
     And we have no scenario in the database
     And we have no tag in the database
-    When BDD features synchronization action is triggered
+    When the synchronization action is triggered for all projects
     Then we have now those branches in the database
       | id | name   | isStable | projectId     |
       | 1  | master | true     | suggestionsWS |
@@ -256,7 +256,7 @@ Feature: As a user Tim, I want some book suggestions so that I can do some disco
     And we have no feature in the database
     And we have no scenario in the database
     And we have no tag in the database
-    When BDD features synchronization action is triggered
+    When the synchronization action is triggered for all projects
     Then we have now those branches in the database
       | id | name   | isStable | projectId     |
       | 1  | master | true     | suggestionsWS |
@@ -347,7 +347,7 @@ Feature: As a user Tim, I want some book suggestions so that I can do some disco
     And we have no feature in the database
     And we have no scenario in the database
     And we have no tag in the database
-    When BDD features synchronization action is triggered
+    When the synchronization action is triggered for all projects
     Then we have now those branches in the database
       | id | name   | isStable | projectId     |
       | 1  | master | true     | suggestionsWS |
@@ -434,7 +434,7 @@ Scenario: providing several book suggestions
   When we ask for some suggestions
   Then the suggestions are popular and available books adapted to the age of the user
     """
-    When BDD features synchronization action is triggered
+    When the synchronization action is triggered for all projects
     Then the file system store now the file "target/data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature"
     """
 Feature: As a user Tim, I want some book suggestions so that I can do some discovery
@@ -492,7 +492,7 @@ Scenario: providing several book suggestions
       | file                                                       | content                           |
       | test/features/suggestions/provide_book_suggestions.feature | Feature: Provide book suggestions |
       | test/features/setup/setup_suggestions.feature              | Feature: Setup book suggestions   |
-    When BDD features synchronization action is triggered
+    When the synchronization action is triggered for all projects
     Then the file system store now the files
       | file                                                                                            | content                           |
       | target/data/git/suggestionsWS/master/test/features/suggestions/provide_book_suggestions.feature | Feature: Provide book suggestions |
@@ -564,7 +564,7 @@ Scenario: providing several book suggestions
   When we ask for some suggestions
   Then the suggestions are popular and available books adapted to the age of the user
     """
-    When BDD features synchronization action is triggered
+    When the synchronization action is triggered for all projects
     Then the file system store now the file "target/data/git/suggestionsWS/master/test/features/provide_book_suggestions.feature"
     """
 Feature: As a user Tim, I want some book suggestions so that I can do some discovery

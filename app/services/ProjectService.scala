@@ -29,6 +29,7 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
   if (environment.mode != Mode.Test) {
     val synchronizeJob = actorSystem.scheduler.schedule(initialDelay = synchronizeInitialDelay.seconds, interval = synchronizeInterval.seconds) {
       synchronizeAll()
+      refreshAllPagesFromAllProjects()
       ()
     }(actorSystem.dispatcher)
     CoordinatedShutdown(actorSystem).addTask(
@@ -281,10 +282,15 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
     }
   }
 
-  def refreshAllPages(project: Project): Unit = {
+  def refreshAllPagesFromAllProjects(): Unit = {
+    projectRepository.findAll().map(p => refreshAllPages(p,false))
+    ()
+  }
+
+  def refreshAllPages(project: Project, forceRefresh: Boolean = true): Unit = {
     logger.info(s"The pages from ${project.name} will be computed again from the database only")
     pageRepository.findAllByProjectId(project.id).map { page =>
-      pageService.computePageFromPathUsingDatabase(page.path)
+      pageService.computePageFromPathUsingDatabase(page.path,forceRefresh)
     }
     ()
   }

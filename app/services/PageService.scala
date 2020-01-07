@@ -52,14 +52,23 @@ case class PageFragmentUnderProcessing(status: PageFragmentUnderProcessingStatus
 
 case class PageWithContent(page: Page, content: Seq[PageFragment])
 
-class PageServiceCache @Inject()( cache: SyncCacheApi ){
-  PageServiceCache.setInstance(cache)
-  def instance() :SyncCacheApi = PageServiceCache.cacheInstance.getOrElse(cache)
+class PageServiceCache @Inject()(cache: SyncCacheApi) extends Logging {
+
+  def store(key: String, page: PageWithContent): Unit = {
+    put(key)
+    cache.set(key, page)
+  }
+
+  def put(key: String): Unit = {
+    logger.debug(s"Page put in cache the key $key")
+  }
+
+  def get(key: String): Option[PageWithContent] = {
+    cache.get[PageWithContent](key)
+  }
+
 }
-object PageServiceCache{
-  var cacheInstance: Option[SyncCacheApi] = None
-  def setInstance(cache: SyncCacheApi):Unit=cacheInstance= Some(cache)
-}
+
 
 @Singleton
 class PageService @Inject()(config: Configuration, projectRepository: ProjectRepository, directoryRepository: DirectoryRepository, pageRepository: PageRepository, gherkinRepository: GherkinRepository, cache: PageServiceCache) extends Logging {
@@ -135,37 +144,40 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
     if (refresh) {
       computePageFromPathUsingDatabase(pathWithBranch)
     } else {
-      cache.instance.get[PageWithContent](computePageCacheKey(pathWithBranch)) match {
+      val key = computePageCacheKey(pathWithBranch)
+      cache.get(key) match {
         case Some(page) =>
+          logger.debug(s"Page found in cache: $key")
           Some(page)
         case None =>
+          logger.debug(s"Page not found in cache: $key")
           computePageFromPathUsingDatabase(pathWithBranch)
       }
     }
   }
 
-  def replacePageInCache(path: String, page: PageWithContent): Unit = {
-    cache.instance.set(computePageCacheKey(path), page)
-  }
-
-
   private def computePageCacheKey(path: String): String = s"page_$path"
 
-  def computePageFromPathUsingDatabase(path: String): Option[PageWithContent] = {
+  def computePageFromPathUsingDatabase(path: String, forceRefresh: Boolean = true): Option[PageWithContent] = {
+
     pageRepository.findByPathJoinProject(path) match {
       case Some(pageJoinProject) =>
-
-        pageJoinProject.page.markdown.map { markdown =>
-          splitMarkdown(s"$markdown\n$MarkdownEnd", path)
-        }.map { fragments =>
-          processPageFragments(fragments, pageJoinProject)
-        } match {
-          case Some(fragments) =>
-            logger.debug(s"Page computed : $path")
-            val page = PageWithContent(pageJoinProject.page.copy(path = getCorrectedPath(path, pageJoinProject.project)), fragments)
-            replacePageInCache(path, page)
-            Some(page)
-          case _ => None
+        val key = computePageCacheKey(path)
+        if (  cache.get(key).isEmpty || forceRefresh  ) {
+          logger.debug(s"Page computed: $path")
+          pageJoinProject.page.markdown.map { markdown =>
+            splitMarkdown(s"$markdown\n$MarkdownEnd", path)
+          }.map { fragments =>
+            processPageFragments(fragments, pageJoinProject)
+          } match {
+            case Some(fragments) =>
+              val page = PageWithContent(pageJoinProject.page.copy(path = getCorrectedPath(path, pageJoinProject.project)), fragments)
+              cache.store(key, page)
+              Some(page)
+            case _ => None
+          }
+        } else {
+          None
         }
       case _ => None
     }
@@ -196,7 +208,7 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
 
   private def cachePage(pageOption: Option[Page]): Option[Page] = {
     pageOption match {
-      case Some(page) => cache.instance.set(computePageCacheKey(page.path), computePageFromPathUsingDatabase(page.path))
+      case Some(page) => computePageFromPathUsingDatabase(page.path)
       case _ =>
     }
     pageOption
