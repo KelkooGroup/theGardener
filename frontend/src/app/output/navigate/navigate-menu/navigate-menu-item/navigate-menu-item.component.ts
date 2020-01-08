@@ -32,7 +32,7 @@ export class NavigateMenuItemComponent implements OnInit, OnDestroy {
         this.pathInUrl = params.path;
         this.active = this.isNodeActive(this.menuItem);
         this.leafSelection = this.isLeafSelection(this.menuItem);
-        this.expanded = this.menuItem.type === 'Node' || this.active;
+        this.expanded = this.menuItem.depth <= 1 || this.active;
         if (this.menuItem.type === 'Project') {
           const project = this.menuItem as MenuProjectHierarchy;
           const branchInUrl = this.getBranchFromUrl();
@@ -42,6 +42,8 @@ export class NavigateMenuItemComponent implements OnInit, OnDestroy {
           if (this.active) {
             this.selectedBranch = project.children.find(b => b.name === branchToSelect);
             this.expanded = true;
+          }else{
+            this.selectedBranch = project.children.find(b => b.name === project.stableBranch);
           }
         }
       }, error => {
