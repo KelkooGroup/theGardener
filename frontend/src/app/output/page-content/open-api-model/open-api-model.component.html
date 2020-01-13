@@ -1,0 +1,13 @@
+<table>
+  <tr>
+    <th *ngFor="let col of displayedColumns">
+      {{col}}
+    </th>
+  </tr>
+  <tr *ngFor="let char of dataSource.model">
+    <td *ngFor="let col of displayedColumns">
+      {{char[col]}}
+    </td>
+  </tr>
+</table>
+
