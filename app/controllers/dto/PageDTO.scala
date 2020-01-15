@@ -1,11 +1,11 @@
 package controllers.dto
 
-import models.{Feature, Page}
+import models.{Feature, OpenApi, Page}
 import play.api.libs.json.Json
 import services.PageFragmentUnderProcessing
 
 
-case class PageFragmentContent(markdown: Option[String] = None, scenarios: Option[Feature] = None, includeExternalPage: Option[String] = None)
+case class PageFragmentContent(markdown: Option[String] = None, scenarios: Option[Feature] = None, includeExternalPage: Option[String] = None, openApi: Option[OpenApi] = None)
 
 object PageFragmentContent {
   implicit val pageFormat = Json.format[PageFragmentContent]
@@ -19,6 +19,7 @@ object PageFragment {
   val TypeMarkdown = "markdown"
   val TypeScenarios = "scenarios"
   val TypeIncludeExternalPage = "includeExternalPage"
+  val typeOpenApi = "openApi"
   val TypeUnknown = "unknown"
 
   def apply(pageFragmentUnderProcessing: PageFragmentUnderProcessing): PageFragment = {
@@ -29,7 +30,12 @@ object PageFragment {
         case _ => pageFragmentUnderProcessing.includeExternalPage match {
           case Some(includeExternalPage) =>
             new PageFragment(TypeIncludeExternalPage, new PageFragmentContent(includeExternalPage = Some(includeExternalPage.url)))
-          case _ => new PageFragment(TypeUnknown, new PageFragmentContent())
+          case _ => pageFragmentUnderProcessing.openApi match {
+            case Some(openApi) =>
+              new PageFragment(typeOpenApi, new PageFragmentContent(openApi = Some(openApi)))
+            case _ =>
+              new PageFragment (TypeUnknown, new PageFragmentContent ())
+          }
         }
       }
     }

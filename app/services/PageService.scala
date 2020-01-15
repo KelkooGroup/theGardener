@@ -25,6 +25,8 @@ case class ScenariosModule(project: Option[String] = None, branchName: Option[St
 
 case class IncludeExternalPageModule(url: String)
 
+case class OpenApiModule(openApiUrl: Option[String] = None, typeOpenApi: Option[String] = None, ref: Option[String] = None, deep: Option[String] = None) //todo
+
 object IncludeExternalPageModule {
   implicit val pageFormat = Json.format[IncludeExternalPageModule]
 }
@@ -32,7 +34,8 @@ object IncludeExternalPageModule {
 case class Module(directory: Option[DirectoryMeta] = None,
                   page: Option[PageMeta] = None,
                   scenarios: Option[ScenariosModule] = None,
-                  includeExternalPage: Option[IncludeExternalPageModule] = None)
+                  includeExternalPage: Option[IncludeExternalPageModule] = None,
+                  openApi: Option[OpenApiModule] = None)
 
 sealed trait PageFragmentUnderProcessingStatus
 
@@ -48,17 +51,22 @@ case class PageFragmentUnderProcessing(status: PageFragmentUnderProcessingStatus
                                        page: Option[PageMeta] = None,
                                        scenariosModule: Option[ScenariosModule] = None,
                                        scenarios: Option[Feature] = None,
-                                       includeExternalPage: Option[IncludeExternalPageModule] = None)
+                                       includeExternalPage: Option[IncludeExternalPageModule] = None,
+                                       openApi: Option[OpenApi] = None,
+                                       openApiModule: Option[OpenApiModule] = None)
 
 case class PageWithContent(page: Page, content: Seq[PageFragment])
 
-class PageServiceCache @Inject()( cache: SyncCacheApi ){
+class PageServiceCache @Inject()(cache: SyncCacheApi) {
   PageServiceCache.setInstance(cache)
-  def instance() :SyncCacheApi = PageServiceCache.cacheInstance.getOrElse(cache)
+
+  def instance(): SyncCacheApi = PageServiceCache.cacheInstance.getOrElse(cache)
 }
-object PageServiceCache{
+
+object PageServiceCache {
   var cacheInstance: Option[SyncCacheApi] = None
-  def setInstance(cache: SyncCacheApi):Unit=cacheInstance= Some(cache)
+
+  def setInstance(cache: SyncCacheApi): Unit = cacheInstance = Some(cache)
 }
 
 @Singleton
@@ -258,14 +266,17 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
     if (line.trim.startsWith(MarkdownCodeStart)) {
 
       currentFragment.data.flatMap(data => parseModule(data.replace(ModuleStart, ""), path)) match {
-        case Some(Module(_, Some(page), _, _)) =>
+        case Some(Module(_, Some(page), _, _, _)) =>
           (fragments :+ currentFragment.copy(page = Some(page)), PageFragmentUnderProcessing())
 
-        case Some(Module(_, _, Some(scenarios), _)) =>
+        case Some(Module(_, _, Some(scenarios), _, _)) =>
           (fragments :+ currentFragment.copy(scenariosModule = Some(scenarios)), PageFragmentUnderProcessing())
 
-        case Some(Module(_, _, _, Some(include))) =>
+        case Some(Module(_, _, _, Some(include), _)) =>
           (fragments :+ currentFragment.copy(includeExternalPage = Some(include)), PageFragmentUnderProcessing())
+
+        case Some(Module(_, _, _, _, Some(openApi))) =>
+          (fragments :+ currentFragment.copy(openApiModule = Some(openApi)), PageFragmentUnderProcessing())
 
         case _ =>
           (fragments, PageFragmentUnderProcessing())
@@ -278,7 +289,7 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
   def processPageFragments(fragments: Seq[PageFragmentUnderProcessing], pageJoinProject: PageJoinProject): Seq[PageFragment] = {
     fragments.map {
 
-      case PageFragmentUnderProcessing(PageFragmentStatusModule, _, _, _, Some(scenariosModule), _, _) =>
+      case PageFragmentUnderProcessing(PageFragmentStatusModule, _, _, _, Some(scenariosModule), _, _, _, _) =>
         val feature = buildFeature(scenariosModule, pageJoinProject)
 
         if (scenariosModule.includeBackground.getOrElse(false)) {
@@ -288,7 +299,7 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
           PageFragmentUnderProcessing(scenarios = feature.map(_.copy(background = None)))
         }
 
-      case PageFragmentUnderProcessing(PageFragmentStatusMarkdown, _, Some(rawMarkdown), _, _, _, _) =>
+      case PageFragmentUnderProcessing(PageFragmentStatusMarkdown, _, Some(rawMarkdown), _, _, _, _, _, _) =>
 
         val images = findPageImagesWithRelativePath(rawMarkdown)
         val references = findPageReferencesWithRelativePath(rawMarkdown)
@@ -298,7 +309,9 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
 
         PageFragmentUnderProcessing(markdown = Some(markdown))
 
-
+      case PageFragmentUnderProcessing(PageFragmentStatusModule, _, _, _, _, _, _, _, Some(openApiModule)) =>
+        val openApiModel = buildOpenApiModel(openApiModule)
+        PageFragmentUnderProcessing(openApi = Some(openApiModel))
       case fragmentUnderProcessing => fragmentUnderProcessing
 
     }.map(PageFragment(_)).filter(fragment => fragment.`type` != PageFragment.TypeUnknown)
@@ -337,6 +350,21 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
   def findPageImagesWithRelativePath(pageContent: String): Seq[String] = (for (m <- ImageRegex.findAllMatchIn(pageContent)) yield m.group(1)).toSeq.filterNot(_.startsWith("http"))
 
   def findPageReferencesWithRelativePath(pageContent: String): Seq[String] = (for (m <- ReferenceRegex.findAllMatchIn(pageContent)) yield m.group(1)).toSeq.filterNot(_.startsWith("http"))
+
+  def buildOpenApiModel(openApiModule: OpenApiModule): OpenApi = {
+    val getSwaggerJson = scala.io.Source.fromURL(openApiModule.openApiUrl.getOrElse("swagger.json url is not given"))
+    val swaggerJson = getSwaggerJson.mkString
+    val openApiModelNeeded = parseSwaggerJson(swaggerJson, openApiModule.ref.getOrElse("ref of the model is not given"))
+
+    getSwaggerJson.close
+    OpenApi(Seq())
+
+  }
+
+  def parseSwaggerJson(str: String, maybeString: String): String = {
+    ""
+  }
+
 
   def replaceVariablesInMarkdown(content: Seq[PageFragment], variables: Seq[Variable]): Seq[PageFragment] = {
     content.map(pageFragment =>
