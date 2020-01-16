@@ -2,7 +2,7 @@
 {
   "page" :
      {
-        "label": "theProject",
+        "label": "Project",
         "description": "What is this project ?"
      }
 }

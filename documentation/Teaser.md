@@ -2,7 +2,7 @@
 {
   "page" :
      {
-        "label": "theTheaser",
+        "label": "Theaser",
         "description": "Why should I use theGardener?"
      }
 }
