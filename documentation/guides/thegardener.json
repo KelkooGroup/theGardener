@@ -1,6 +1,5 @@
 {
-  "directory" :
-  {
+  "directory": {
     "label": "theGuides",
     "description": "How do we interact with theGardener ?",
     "pages": [
@@ -12,8 +11,7 @@
       "read",
       "contribute"
     ],
-    "children" :[
-
+    "children": [
     ]
   }
 }
