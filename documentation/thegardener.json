@@ -11,8 +11,12 @@
       "theChangelog",
       "thePlan"
     ],
-    "children" :[
-      "guides"
+    "children": [
+      "Install",
+      "Configure",
+      "Write",
+      "Operate",
+      "Contribute"
     ]
   }
 }

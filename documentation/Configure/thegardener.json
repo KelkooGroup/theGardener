@@ -1,0 +1,11 @@
+{
+  "directory": {
+    "label": "Configure",
+    "description": "Configure",
+    "pages": [
+      "Configure"
+    ],
+    "children": [
+    ]
+  }
+}

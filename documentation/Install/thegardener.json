@@ -1,0 +1,11 @@
+{
+  "directory": {
+    "label": "Install",
+    "description": "Install",
+    "pages": [
+      "Install"
+    ],
+    "children": [
+    ]
+  }
+}
