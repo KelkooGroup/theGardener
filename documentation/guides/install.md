@@ -54,6 +54,9 @@ curl -X POST "http://localhost:9000/api/projects/theGardener/hierarchy/.01." \
 
 curl -X POST "http://localhost:9000/api/projects/theGardener/synchronize" \
     -H  "accept: application/json"
+    
+curl -X POST "http://localhost:9000/api/admin/menu/refreshFromDatabase" -H  "accept: application/json"
+    
 ```
 
 ### Customize the configuration
@@ -63,7 +66,12 @@ configuration file, let's say `/tmp/application-custom.conf` which can look like
 ```
 include "application.conf"
 
-projects.synchronize.interval = 3600
+application.windowTitle = "Title in the browser tab"
+application.title = "Title in the page under the logo"
+application.logoSrc = "assets/images/logo-white.png"
+application.faviconSrc = "assets/images/favicon.png"
+color.main="#2b709a"
+
 ```
 
 This will override default configuration defined in `application.conf` with your custom
@@ -79,7 +87,7 @@ docker run --name thegardener \
     -Dconfig.file=/app-conf/application-custom.conf
 ```
 
-Puting your file in the `/app-conf` directory allows you to include the default configuration
+Putting your file in the `/app-conf` directory allows you to include the default configuration
 file but you can also put it in any place you want.
 
 ### Persist Git data
