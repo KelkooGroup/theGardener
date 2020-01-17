@@ -1,14 +1,16 @@
 package services
 
 import java.io.{File, FileInputStream}
+import java.util.{Timer, TimerTask}
 
+import com.github.ghik.silencer.silent
 import controllers.dto.{PageFragment, PageFragmentContent}
 import javax.inject.{Inject, Singleton}
 import models.{PageJoinProject, _}
 import org.apache.commons.io.FileUtils
 import play.api.{Configuration, Logging}
 import play.api.cache.SyncCacheApi
-import play.api.libs.json.Json
+import play.api.libs.json._
 import repositories._
 import utils._
 import services.MenuService.getCorrectedPath
@@ -25,7 +27,10 @@ case class ScenariosModule(project: Option[String] = None, branchName: Option[St
 
 case class IncludeExternalPageModule(url: String)
 
-case class OpenApiModule(openApiUrl: Option[String] = None, typeOpenApi: Option[String] = None, ref: Option[String] = None, deep: Option[String] = None) //todo
+case class OpenApiModule(openApiUrl: Option[String] = None, openApiType: Option[String] = None, ref: Option[String] = None, deep: Option[Int] = None)
+
+
+case class Items(openApiType: String, ref: String)
 
 object IncludeExternalPageModule {
   implicit val pageFormat = Json.format[IncludeExternalPageModule]
@@ -84,7 +89,9 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
 
   implicit val tagsModuleFormat = Json.format[TagsModule]
   implicit val scenariosModuleMetaFormat = Json.format[ScenariosModule]
+  implicit val openApiModuleFormat = Json.format[OpenApiModule]
   implicit val metaFormat = Json.format[Module]
+  implicit val itemsFormat = Json.format[Items]
 
 
   val projectsRootDirectory = config.get[String]("projects.root.directory")
@@ -158,6 +165,35 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
           computePageFromPathUsingDatabase(pathWithBranch)
       }
     }
+  }
+
+  def replacePageInCache(path: String, page: PageWithContent): Unit = {
+    cache.instance.set(computePageCacheKey(path), page)
+  }
+
+  object RefreshCachePeriodicallyForPages {
+
+    def start() : Unit = {
+      val timer = new Timer()
+      val timerTask = new TimerTask {
+        override def run(): Unit = {
+          refreshCache()
+        }
+      }
+      val twoHours: Long = 60 * 60 * 1000 * 2
+      timer.schedule(timerTask,twoHours)
+    }
+
+    def refreshCache() : Unit = {
+
+
+    }
+
+    def findAllPagesWithExternalRessources(): Seq[Page] = {
+
+      Seq()
+    }
+
   }
 
   private def computePageCacheKey(path: String): String = s"page_$path"
@@ -360,17 +396,57 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
   def findPageReferencesWithRelativePath(pageContent: String): Seq[String] = (for (m <- ReferenceRegex.findAllMatchIn(pageContent)) yield m.group(1)).toSeq.filterNot(_.startsWith("http"))
 
   def buildOpenApiModel(openApiModule: OpenApiModule): OpenApi = {
-    val getSwaggerJson = scala.io.Source.fromURL(openApiModule.openApiUrl.getOrElse("swagger.json url is not given"))
-    val swaggerJson = getSwaggerJson.mkString
-    val openApiModelNeeded = parseSwaggerJson(swaggerJson, openApiModule.ref.getOrElse("ref of the model is not given"))
-
-    getSwaggerJson.close
-    OpenApi(Seq())
+    val swaggerJson = getSwaggerJson(openApiModule.openApiUrl.getOrElse("swagger.json url is not given"))
+    parseSwaggerJsonDefinitions(swaggerJson, openApiModule.ref.getOrElse("ref of the model is not given"))
 
   }
 
-  def parseSwaggerJson(str: String, maybeString: String): String = {
-    ""
+  def getSwaggerJson(url: String): String = {
+    val swaggerJsonBufferedSource = scala.io.Source.fromURL(url)
+    try {
+      swaggerJsonBufferedSource.mkString
+    } finally {
+      swaggerJsonBufferedSource.close()
+    }
+  }
+
+  @silent("Interpolated")
+  @silent("missing interpolator")
+  def parseSwaggerJsonDefinitions(swaggerJson: String, reference: String): OpenApi = {
+
+    val modelName = referenceSplit(reference)
+    val jsonTree: JsValue = Json.parse(swaggerJson)
+    val wantedModelJson = (jsonTree \ "definitions" \ modelName \ "properties").asOpt[JsObject]
+    wantedModelJson match {
+      case Some(j) => {
+        OpenApi(j.fields.map {
+          case (name, properties: JsObject) =>
+            val valueMap = properties.value
+            val openApiType = valueMap.get("type").flatMap(_.asOpt[String])
+            val example = valueMap.get("example").flatMap(_.asOpt[String])
+            val description = valueMap.get("description").flatMap(_.asOpt[String])
+            if (openApiType.getOrElse("") != "array") {
+              OpenApiRow(name, openApiType.getOrElse(""), "", description.getOrElse(""), example.getOrElse(""))
+            } else {
+              val arrayDefinitionReference: String = (jsonTree \ "definitions" \ modelName \ "properties" \ name \ "items" \ "$ref").asOpt[String].getOrElse("")
+              val modelRefName = if (arrayDefinitionReference != "") {
+                referenceSplit(arrayDefinitionReference)
+              } else {
+                (jsonTree \ "definitions" \ modelName \ "properties" \ name \ "items" \ "type").asOpt[String].getOrElse("")
+              }
+              OpenApiRow(name, s"array of $modelRefName", "", description.getOrElse(""), example.getOrElse(""))
+            }
+          case _ =>
+            OpenApiRow("not name / properties", "", "", "", "")
+        })
+      }
+      case _ => OpenApi(Seq())
+    }
+  }
+
+  private def referenceSplit(ref: String): String = {
+    val splitReference = ref.split("/")
+    splitReference(splitReference.length - 1)
   }
 
 

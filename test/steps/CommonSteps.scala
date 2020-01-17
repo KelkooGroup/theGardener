@@ -293,6 +293,10 @@ Scenario: providing several book suggestions
     await(asyncCache.removeAll())
   }
 
+  Given("""we have the following swagger.json hosted on "([^"]*)"$""") { (swaggerJsonUrl: String, expected: String) =>
+    doReturn(expected).when(spyPageService).getSwaggerJson(swaggerJsonUrl)
+  }
+
   When("^we go in a browser to url \"([^\"]*)\"$") { url: String =>
     page = browser.get(url).toHtml
   }
