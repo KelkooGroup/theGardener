@@ -173,25 +173,19 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
 
   object RefreshCachePeriodicallyForPages {
 
-    def start() : Unit = {
+    def start(): Unit = {
       val timer = new Timer()
       val timerTask = new TimerTask {
         override def run(): Unit = {
-          refreshCache()
+          refreshPageInCacheDependingOnOpenApi()
         }
       }
       val twoHours: Long = 60 * 60 * 1000 * 2
-      timer.schedule(timerTask,twoHours)
+      timer.schedule(timerTask, twoHours)
     }
 
-    def refreshCache() : Unit = {
-
-
-    }
-
-    def findAllPagesWithExternalRessources(): Seq[Page] = {
-
-      Seq()
+    def refreshPageInCacheDependingOnOpenApi(): Unit = {
+      pageRepository.findAllDependOnApi().foreach(page => computePageFromPathUsingDatabase(page.path))
     }
 
   }
@@ -211,7 +205,11 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
             processPageFragments(fragments, pageJoinProject)
           } match {
             case Some(fragments) =>
-              val page = PageWithContent(pageJoinProject.page.copy(path = getCorrectedPath(path, pageJoinProject.project)), fragments)
+              val dependOnOpenApi = fragments.exists(_.`type` == "openApi")
+            val page = PageWithContent(pageJoinProject.page.copy(path = getCorrectedPath(path, pageJoinProject.project), dependOnOpenApi = dependOnOpenApi), fragments)
+            if (dependOnOpenApi) {
+              pageRepository.save(page.page)
+            }
               cache.store(key, page)
               Some(page)
             case _ => None
@@ -398,7 +396,6 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
   def buildOpenApiModel(openApiModule: OpenApiModule): OpenApi = {
     val swaggerJson = getSwaggerJson(openApiModule.openApiUrl.getOrElse("swagger.json url is not given"))
     parseSwaggerJsonDefinitions(swaggerJson, openApiModule.ref.getOrElse("ref of the model is not given"))
-
   }
 
   def getSwaggerJson(url: String): String = {
