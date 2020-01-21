@@ -90,7 +90,7 @@ libraryDependencies ++= Seq(
   "io.cucumber" % "gherkin" % "5.2.0",
   "com.typesafe.play" %% "anorm" % "2.5.3",
   "mysql" % "mysql-connector-java" % "5.1.48",
-  "org.eclipse.jgit" % "org.eclipse.jgit" % "5.1.2.201810061102-r",
+  "org.eclipse.jgit" % "org.eclipse.jgit" % "5.6.0.201912101111-r",
   "io.swagger" %% "swagger-play2" % "1.7.1",
   "com.h2database" % "h2" % "1.4.199",
   "com.jsuereth" %% "scala-arm" % "2.0",
@@ -101,7 +101,7 @@ libraryDependencies ++= Seq(
   "io.cucumber" % "cucumber-picocontainer" % "2.4.0" % Test,
   "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.3" % Test,
   "org.mockito" % "mockito-all" % "1.10.19" % Test,
-  
+
    compilerPlugin("com.github.ghik" % "silencer-plugin" % silencerVersion cross CrossVersion.full),
   "com.github.ghik" % "silencer-lib" % silencerVersion % Provided cross CrossVersion.full
 )
@@ -115,3 +115,34 @@ scalacOptions in Scapegoat += "-P:scapegoat:overrideLevels:TraversableHead=Warni
 evictionWarningOptions in update := EvictionWarningOptions.empty
 
 routesGenerator := InjectedRoutesGenerator
+
+// Enabling Docker plugin
+enablePlugins(sbtdocker.DockerPlugin, JavaAppPackaging)
+
+// Dockerfile definition
+dockerfile in docker := {
+  val appDir: File = stage.value
+  val defaultConfFile: File = new File("./docker/application.conf")
+  val targetDir = "/app"
+  val confDir = "/app-conf"
+  val gitDataDir = "/git-data"
+  val embeddedDbDir = "/data"
+
+  new Dockerfile {
+    from("openjdk:8-jre")
+    runRaw(s"mkdir $confDir && mkdir $gitDataDir && mkdir $embeddedDbDir")
+    expose(9000)
+    entryPoint(s"$targetDir/bin/${executableScriptName.value}")
+    cmd(s"-Dconfig.file=$confDir/application.conf")
+    copy(defaultConfFile, s"$confDir/", chown = "daemon:daemon")
+    copy(appDir, targetDir, chown = "daemon:daemon")
+  }
+}
+
+// Images definitions to build and push
+val dockerOrganization = "kelkoogroup"
+val dockerImage = "thegardener"
+imageNames in docker := Seq(
+  ImageName(s"$dockerOrganization/$dockerImage:latest"),
+  ImageName(s"$dockerOrganization/$dockerImage:${version.value}")
+)

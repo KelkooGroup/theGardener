@@ -94,10 +94,14 @@ object CommonSteps extends MockitoSugar with MustMatchers {
   val spyReplicaService = spy(replicaService)
   val gitService = Injector.inject[GitService]
   val config = inject[Config]
-  val cache = inject[AsyncCacheApi]
+  val asyncCache = inject[AsyncCacheApi]
+  val cache = new DefaultSyncCacheApi(asyncCache)
+  val pageServiceCache =  new PageServiceCache(cache)
+  val spyPageServiceCache =  spy(pageServiceCache)
   implicit val materializer = inject[Materializer]
 
-  val applicationBuilder = builder.overrides(bind[SyncCacheApi].toInstance(new DefaultSyncCacheApi(cache)),
+  val applicationBuilder = builder.overrides(bind[SyncCacheApi].toInstance(cache),
+    bind[PageServiceCache].toInstance(spyPageServiceCache),
     bind[PageService].toInstance(spyPageService),
     bind[MenuService].toInstance(spyMenuService),
     bind[ProjectService].toInstance(spyProjectService),
@@ -286,7 +290,7 @@ Scenario: providing several book suggestions
   }
 
   Given("""^the cache is empty$""") { () =>
-    await(cache.removeAll())
+    await(asyncCache.removeAll())
   }
 
   When("^we go in a browser to url \"([^\"]*)\"$") { url: String =>

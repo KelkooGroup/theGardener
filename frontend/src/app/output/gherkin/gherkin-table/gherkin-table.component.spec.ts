@@ -23,13 +23,17 @@ describe('GherkinTableComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(GherkinTableComponent);
     component = fixture.componentInstance;
+
+
+  });
+
+  it('should show scenario', () => {
+
     component.table = TABLE;
     page = new Page(fixture);
     fixture.detectChanges();
 
-  });
 
-  it('should init', () => {
     expect(component).toBeTruthy();
     expect(page.table).toBeTruthy();
     expect(page.tableHeader).toEqual(['categoryId', 'categoryName']);
@@ -38,6 +42,24 @@ describe('GherkinTableComponent', () => {
     expect(page.getTableRow(1)).toEqual(['cat2', 'Picture books']);
     expect(page.getTableRow(2)).toEqual(['cat3', 'Bedtime stories']);
   });
+
+
+  it('should show examples', () => {
+
+    component.examples = EXAMPLES;
+    page = new Page(fixture);
+    fixture.detectChanges();
+
+
+    expect(component).toBeTruthy();
+    expect(page.table).toBeTruthy();
+    expect(page.tableHeader).toEqual(['categoryId', 'categoryName']);
+    expect(page.tableRows.length).toBe(3);
+    expect(page.getTableRow(0)).toEqual(['cat1', 'Walt Disney']);
+    expect(page.getTableRow(1)).toEqual(['cat2', 'Picture books']);
+    expect(page.getTableRow(2)).toEqual(['cat3', 'Bedtime stories']);
+  });
+
 });
 
 class Page {
@@ -77,3 +99,16 @@ const TABLE: Array<Array<string>> = [
   ['cat2', 'Picture books'],
   ['cat3', 'Bedtime stories']
 ];
+
+const EXAMPLES = [{
+  id: "",
+  tags: [""],
+  keyword: "",
+  description: "",
+  tableHeader: ["categoryId", "categoryName"],
+  tableBody: [
+    ["cat1", "Walt Disney"],
+    ["cat2", "Picture books"],
+    ["cat3", "Bedtime stories"]
+  ]
+}];

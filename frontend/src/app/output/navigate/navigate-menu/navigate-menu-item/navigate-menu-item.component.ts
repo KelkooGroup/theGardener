@@ -32,12 +32,19 @@ export class NavigateMenuItemComponent implements OnInit, OnDestroy {
         this.pathInUrl = params.path;
         this.active = this.isNodeActive(this.menuItem);
         this.leafSelection = this.isLeafSelection(this.menuItem);
-        this.expanded = this.menuItem.type === 'Node' || this.active;
+        this.expanded = this.menuItem.depth <= 1 || this.active;
         if (this.menuItem.type === 'Project') {
           const project = this.menuItem as MenuProjectHierarchy;
           const branchInUrl = this.getBranchFromUrl();
+          const projectInUrl = this.getProjectFromUrl();
           const branchToSelect = branchInUrl ? branchInUrl : project.stableBranch;
-          this.selectedBranch = project.children.find(b => b.name === branchToSelect);
+          this.active = projectInUrl == project.name;
+          if (this.active) {
+            this.selectedBranch = project.children.find(b => b.name === branchToSelect);
+            this.expanded = true;
+          }else{
+            this.selectedBranch = project.children.find(b => b.name === project.stableBranch);
+          }
         }
       }, error => {
         this.notificationService.showError(`Error while showing menu item ${this.menuItem.name}`, error);
@@ -57,7 +64,7 @@ export class NavigateMenuItemComponent implements OnInit, OnDestroy {
   }
 
   navigateToSelectedBranch() {
-    this.router.navigate([this.targetUrl, {path: this.selectedBranch.route}]);
+    this.router.navigate([this.targetUrl, {path: `${this.selectedBranch.route}>_`}]);
   }
 
   private get targetUrl(): string {
@@ -99,8 +106,22 @@ export class NavigateMenuItemComponent implements OnInit, OnDestroy {
     return (this.menuItem.depth + 1) * 16 + (+(this.menuItem.children.length === 0) * 12);
   }
 
-  getRouteWithBranch(nodeRoute: string){
-    return nodeRoute.replace('>>',`>${this.getBranchFromUrl()}>`)
+  getRouteWithBranch(nodeRoute: string) {
+    return nodeRoute.replace('>>', `>${this.getBranchFromUrl()}>`)
+  }
+
+  private getProjectFromUrl(): string | undefined {
+    let project = undefined;
+    if (this.pathInUrl) {
+      const pathParts = this.pathInUrl.split('>');
+      if (pathParts.length == 1) {
+        project = this.pathInUrl;
+      }
+      if (pathParts.length > 1) {
+        project = pathParts[0];
+      }
+    }
+    return project;
   }
 
   private getBranchFromUrl(): string | undefined {

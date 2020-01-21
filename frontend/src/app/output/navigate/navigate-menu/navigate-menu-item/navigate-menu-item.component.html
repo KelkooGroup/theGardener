@@ -45,9 +45,7 @@
          class="options"
          [ngStyle]="{'padding-left': calculatePadding() + 'px'}">
       <mat-form-field class="branch-select">
-        <mat-label>Branch</mat-label>
-        <mat-select placeholder="Stable branch by default"
-                    [(ngModel)]="selectedBranch"
+        <mat-select class="branch-mat-select" [(ngModel)]="selectedBranch"
                     [compareWith]="branchComparator"
                     id="branchSelect"
                     (selectionChange)="navigateToSelectedBranch()"

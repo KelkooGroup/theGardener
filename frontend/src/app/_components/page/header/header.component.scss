@@ -2,19 +2,17 @@
 
 .header {
   width: 100%;
-  height: 115px;
+  height: $header-height;
   flex-direction: row;
   border-bottom-style: solid;
   border-bottom-width: 3px;
-  border-bottom-color: $color-main;
-  background-color: $color-main;
 }
 
 .header-bar {
   display: flex;
   align-items: center;
   margin: 0;
-  padding: 10px 20px 0;
+  padding: 3px 5px 0;
   list-style-type: none;
   flex-wrap: wrap;
 }
@@ -23,7 +21,14 @@
   flex: 1;
   margin-top: 0;
   margin-bottom: 0;
-  font-size: 18px;
+
+}
+
+.header-logo-text{
+  color: white;
+  font-size: $font-size-text-small;
+  margin-bottom: 3px;
+  height: 40px;
 }
 
 .header-logo {
@@ -34,11 +39,6 @@
   height: 40px;
 }
 
-.header-logo div {
-  color: white;
-  font-size: $font-size-text-big;
-  margin-bottom: 3px;
-}
 
 .header-logo-the-gardener {
   color: white;

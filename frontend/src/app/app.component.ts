@@ -18,6 +18,8 @@ export class AppComponent {
       this.logoSrc = result.logoSrc;
       this.favIcon = result.faviconSrc;
 
+      (document.querySelector('.custom-backgroundColor-colorMain') as HTMLElement).style.backgroundColor = result.colorMain;
+      (document.querySelector('.custom-borderBottomColor-colorMain') as HTMLElement).style.borderBottomColor = result.colorMain;
 
     });
   }

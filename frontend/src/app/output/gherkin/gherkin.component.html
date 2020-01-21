@@ -20,7 +20,7 @@
     <i *ngIf="scenario.caseType.startsWith('limit')" class="tag fas fa-exclamation-triangle fa-sm"
        title="Limit case"></i>
   </div>
-  <ul class="flex-container flex-direction-row flex-align-items-start">
+  <ul class="flex-container flex-direction-column flex-align-items-start">
     <li class="steps">
       <div *ngFor="let step of scenario.steps">
         <ul class="flex-container flex-direction-column flex-align-items-start">
@@ -35,7 +35,7 @@
         <span class="stepKeyword">Examples</span>&nbsp;
       </div>
       <div class="table pull-right">
-        <app-gherkin-table [table]="scenario.examples"></app-gherkin-table>
+        <app-gherkin-table [examples]="scenario.examples" ></app-gherkin-table>
       </div>
     </li>
   </ul>
