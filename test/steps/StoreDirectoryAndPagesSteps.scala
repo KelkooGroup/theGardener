@@ -19,29 +19,29 @@ class StoreDirectoryAndPagesSteps extends ScalaDsl with EN with MockitoSugar {
   }
 
   Then("""^we have now those pages in the database$""") { pages: util.List[PageRow] =>
-    val expectedPages = pages.asScala.map(p => Page(p.id, p.name, p.label, p.description, p.order, Option(p.markdown), p.relativePath, p.path, p.directoryId))
+    val expectedPages = pages.asScala.map(p => Page(p.id, p.name, p.label, p.description, p.order, Option(p.markdown), p.relativePath, p.path, p.directoryId, p.dependOnOpenApi))
     val actualPages = pageRepository.findAllWithContent()
     actualPages must contain theSameElementsAs expectedPages
   }
 
-  Given("""^page computation count is reset$"""){ () =>
+  Given("""^page computation count is reset$""") { () =>
     reset(spyPageService)
   }
 
-  Then("""^page "([^"]*)" hasn't been computed$"""){ path:String =>
+  Then("""^page "([^"]*)" hasn't been computed$""") { path: String =>
     verifyComputationTimes(path, 0)
   }
 
-  Then("""^page "([^"]*)" has been computed only one time$"""){ path:String =>
+  Then("""^page "([^"]*)" has been computed only one time$""") { path: String =>
     verifyComputationTimes(path, 1)
   }
 
-  Then("""^page "([^"]*)" has been computed (\d+) times$"""){ (path:String, times:Int) =>
+  Then("""^page "([^"]*)" has been computed (\d+) times$""") { (path: String, times: Int) =>
     verifyComputationTimes(path, times)
   }
 
-  def verifyComputationTimes(path:String, nb:Int)  ={
-    verify(spyPageServiceCache,times(nb)).put(path)
+  def verifyComputationTimes(path: String, nb: Int): Unit = {
+    verify(spyPageServiceCache, times(nb)).put(path)
   }
 
 

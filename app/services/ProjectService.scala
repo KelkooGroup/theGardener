@@ -15,6 +15,7 @@ import utils._
 import scala.concurrent._
 import scala.concurrent.duration._
 
+@Singleton
 class ProjectService @Inject()(projectRepository: ProjectRepository, gitService: GitService, featureService: FeatureService,
                                featureRepository: FeatureRepository, branchRepository: BranchRepository, directoryRepository: DirectoryRepository,
                                pageRepository: PageRepository, menuService: MenuService, pageService: PageService,

@@ -8,12 +8,13 @@ import play.api.libs.json._
 import play.api.mvc._
 import repositories._
 import services._
+import services.clients.ReplicaClient
 
 import scala.concurrent._
 
 @Api(value = "ProjectController", produces = "application/json")
 class ProjectController @Inject()(projectRepository: ProjectRepository, projectService: ProjectService, hierarchyRepository: HierarchyRepository,
-                                  branchRepository: BranchRepository, menuService: MenuService, replicaService: ReplicaService)
+                                  branchRepository: BranchRepository, menuService: MenuService, replicaService: ReplicaClient)
                                  (implicit ec: ExecutionContext) extends InjectedController {
 
   implicit val pageFormat = Json.format[Page]

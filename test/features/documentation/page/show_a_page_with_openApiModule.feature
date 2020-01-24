@@ -498,11 +498,10 @@ Feature: Generate a documentation page with OpenApi Module
     }
   }
 }
-
       """
 
-  @level_2_technical_details @nominal_case @valid
-  Scenario: generate a documentation page with the inclusion of the an external page
+  @level_2_technical_details @nominal_case @ongoing
+  Scenario: generate a documentation page with the inclusion of an openApi model
     Given we have the following markdown for the page "suggestionsWS>master>/context"
 """
 ```thegardener
@@ -542,6 +541,7 @@ Feature: Generate a documentation page with OpenApi Module
         "type": "openApi",
         "data": {
           "openApi": {
+            "modelName": "Project",
             "openApiRows": [
                             {"title" : "id", "openApiType": "string", "default": "", "description": "id of the project", "example": "theGardener"},
                             {"title" : "name", "openApiType": "string", "default": "", "description": "name of the project", "example": "theGardener"},
@@ -553,7 +553,379 @@ Feature: Generate a documentation page with OpenApi Module
                             {"title" : "variables", "openApiType": "array of Variable", "default": "", "description": "variables defined for this project", "example": "[{\"name\":\"${swagger.url}\",\"value\":\"http://dc1-pmbo-corp-srv-pp.corp.dc1.kelkoo.net:9001/docs\"}]"},
                             {"title" : "hierarchy", "openApiType": "array of HierarchyNode", "default": "", "description": "Hierarchy matching the project", "example": ""},
                             {"title" : "branches", "openApiType": "array of Branch", "default": "", "description": "branches of the project", "example": ""}
+            ],
+            "childrenModels": []
+          }
+        }
+      }
+    ]
+  }
+]
+"""
+    And we have now those pages in the database
+      | id | name    | label       | description               | order | relativePath | path                          | markdown                                                                                                                                                                                                                                                                                                                                                                                              | directoryId | dependOnOpenApi |
+      | 1  | context | The context | Why providing suggestions | 0     | /context     | suggestionsWS>master>/context | ```thegardener\n{\n  "page" :\n     {\n        "label": "Read documentation",\n        "description": "How to read documentation provided by theGardener ?"\n     }\n}\n```\n```thegardener\n{\n  "openApi" :\n     {\n        "openApiUrl": "http://theGardener/api/docs/swagger.json",\n        "openApiType": "model",\n        "ref": "#/definitions/Project",\n        "deep": 1\n     }\n}\n``` | 1           | true            |
+
+
+  @level_2_technical_details @nominal_case @ongoing
+  Scenario: generate a documentation page with the inclusion of an openApi model with deep > 1
+    Given we have the following markdown for the page "suggestionsWS>master>/context"
+"""
+```thegardener
+{
+  "page" :
+     {
+        "label": "Read documentation",
+        "description": "How to read documentation provided by theGardener ?"
+     }
+}
+```
+```thegardener
+{
+  "openApi" :
+     {
+        "openApiUrl": "http://theGardener/api/docs/swagger.json",
+        "openApiType": "model",
+        "ref": "#/definitions/Project",
+        "deep": 2
+     }
+}
+```
+"""
+    When I perform a "GET" on following URL "/api/pages?path=suggestionsWS>master>/context"
+    Then I get the following json response body
+"""
+[
+  {
+    "path": "suggestionsWS>master>/context",
+    "relativePath": "/context",
+    "name": "context",
+    "label": "The context",
+    "description": "Why providing suggestions",
+    "order": 0,
+    "content": [
+      {
+        "type": "openApi",
+        "data": {
+          "openApi": {
+            "modelName": "Project",
+            "openApiRows": [
+                            {"title" : "id", "openApiType": "string", "default": "", "description": "id of the project", "example": "theGardener"},
+                            {"title" : "name", "openApiType": "string", "default": "", "description": "name of the project", "example": "theGardener"},
+                            {"title" : "repositoryUrl", "openApiType": "string", "default": "", "description": "location of the project", "example": "https://github.com/KelkooGroup/theGardener"},
+                            {"title" : "stableBranch", "openApiType": "string", "default": "", "description": "stableBranch of the project", "example": "master"},
+                            {"title" : "displayedBranches", "openApiType": "string", "default": "", "description": "branches that will be displayed", "example": "qa|master|feature.*|bugfix.*"},
+                            {"title" : "featuresRootPath", "openApiType": "string", "default": "", "description": "path that lead to the feature files", "example": "test/features"},
+                            {"title" : "documentationRootPath", "openApiType": "string", "default": "", "description": "path that lead to the documentation files", "example": "documentation"},
+                            {"title" : "variables", "openApiType": "array of Variable", "default": "", "description": "variables defined for this project", "example": "[{\"name\":\"${swagger.url}\",\"value\":\"http://dc1-pmbo-corp-srv-pp.corp.dc1.kelkoo.net:9001/docs\"}]"},
+                            {"title" : "hierarchy", "openApiType": "array of HierarchyNode", "default": "", "description": "Hierarchy matching the project", "example": ""},
+                            {"title" : "branches", "openApiType": "array of Branch", "default": "", "description": "branches of the project", "example": ""}
+            ],
+            "childrenModels": [
+                                {
+                                    "modelName": "Variable",
+                                    "openApiRows": [
+                                                    {"title" : "name", "openApiType": "string", "default": "", "description": "", "example": ""},
+                                                    {"title" : "value", "openApiType": "string", "default": "", "description": "", "example": ""}
+                                    ],
+                                    "childrenModels": []
+
+                                },
+                                {
+                                    "modelName": "HierarchyNode",
+                                    "openApiRows": [
+                                                    {"title" : "id", "openApiType": "string", "default": "", "description": "", "example": ""},
+                                                    {"title" : "slugName", "openApiType": "string", "default": "", "description": "", "example": ""},
+                                                    {"title" : "name", "openApiType": "string", "default": "", "description": "", "example": ""},
+                                                    {"title" : "childrenLabel", "openApiType": "string", "default": "", "description": "", "example": ""},
+                                                    {"title" : "childLabel", "openApiType": "string", "default": "", "description": "", "example": ""},
+                                                    {"title" : "directoryPath", "openApiType": "string", "default": "", "description": "", "example": ""}
+                                    ],
+                                    "childrenModels": []
+
+                                },
+                                {
+                                    "modelName": "Branch",
+                                    "openApiRows": [
+                                                    {"title" : "id", "openApiType": "integer", "default": "", "description": "", "example": ""},
+                                                    {"title" : "name", "openApiType": "string", "default": "", "description": "", "example": ""},
+                                                    {"title" : "isStable", "openApiType": "boolean", "default": "", "description": "", "example": ""},
+                                                    {"title" : "projectId", "openApiType": "string", "default": "", "description": "", "example": ""},
+                                                    {"title" : "features", "openApiType": "array of string", "default": "", "description": "", "example": ""},
+                                                    {"title" : "rootDirectory", "openApiType": "Directory", "default": "", "description": "", "example": ""}
+                                    ],
+                                    "childrenModels": []
+
+                                }
             ]
+          }
+        }
+      }
+    ]
+  }
+]
+"""
+    And we have now those pages in the database
+      | id | name    | label       | description               | order | relativePath | path                          | markdown                                                                                                                                                                                                                                                                                                                                                                                              | directoryId | dependOnOpenApi |
+      | 1  | context | The context | Why providing suggestions | 0     | /context     | suggestionsWS>master>/context | ```thegardener\n{\n  "page" :\n     {\n        "label": "Read documentation",\n        "description": "How to read documentation provided by theGardener ?"\n     }\n}\n```\n```thegardener\n{\n  "openApi" :\n     {\n        "openApiUrl": "http://theGardener/api/docs/swagger.json",\n        "openApiType": "model",\n        "ref": "#/definitions/Project",\n        "deep": 2\n     }\n}\n``` | 1           | true            |
+
+
+  @level_2_technical_details @nominal_case @ongoing
+  Scenario: recompute a page depending on openApi everytime when the project synchronization is triggered
+    Given we have the following markdown for the page "suggestionsWS>master>/context"
+"""
+```thegardener
+{
+  "page" :
+     {
+        "label": "Read documentation",
+        "description": "How to read documentation provided by theGardener ?"
+     }
+}
+```
+```thegardener
+{
+  "openApi" :
+     {
+        "openApiUrl": "http://theGardener/api/docs/swagger.json",
+        "openApiType": "model",
+        "ref": "#/definitions/Project",
+        "deep": 1
+     }
+}
+```
+"""
+    When I perform a "GET" on following URL "/api/pages?path=suggestionsWS>master>/context"
+    Then I get the following json response body
+"""
+[
+  {
+    "path": "suggestionsWS>master>/context",
+    "relativePath": "/context",
+    "name": "context",
+    "label": "The context",
+    "description": "Why providing suggestions",
+    "order": 0,
+    "content": [
+      {
+        "type": "openApi",
+        "data": {
+          "openApi": {
+            "modelName": "Project",
+            "openApiRows": [
+                            {"title" : "id", "openApiType": "string", "default": "", "description": "id of the project", "example": "theGardener"},
+                            {"title" : "name", "openApiType": "string", "default": "", "description": "name of the project", "example": "theGardener"},
+                            {"title" : "repositoryUrl", "openApiType": "string", "default": "", "description": "location of the project", "example": "https://github.com/KelkooGroup/theGardener"},
+                            {"title" : "stableBranch", "openApiType": "string", "default": "", "description": "stableBranch of the project", "example": "master"},
+                            {"title" : "displayedBranches", "openApiType": "string", "default": "", "description": "branches that will be displayed", "example": "qa|master|feature.*|bugfix.*"},
+                            {"title" : "featuresRootPath", "openApiType": "string", "default": "", "description": "path that lead to the feature files", "example": "test/features"},
+                            {"title" : "documentationRootPath", "openApiType": "string", "default": "", "description": "path that lead to the documentation files", "example": "documentation"},
+                            {"title" : "variables", "openApiType": "array of Variable", "default": "", "description": "variables defined for this project", "example": "[{\"name\":\"${swagger.url}\",\"value\":\"http://dc1-pmbo-corp-srv-pp.corp.dc1.kelkoo.net:9001/docs\"}]"},
+                            {"title" : "hierarchy", "openApiType": "array of HierarchyNode", "default": "", "description": "Hierarchy matching the project", "example": ""},
+                            {"title" : "branches", "openApiType": "array of Branch", "default": "", "description": "branches of the project", "example": ""}
+            ],
+            "childrenModels": []
+          }
+        }
+      }
+    ]
+  }
+]
+"""
+    And we have now those pages in the database
+      | id | name    | label       | description               | order | relativePath | path                          | markdown                                                                                                                                                                                                                                                                                                                                                                                              | directoryId | dependOnOpenApi |
+      | 1  | context | The context | Why providing suggestions | 0     | /context     | suggestionsWS>master>/context | ```thegardener\n{\n  "page" :\n     {\n        "label": "Read documentation",\n        "description": "How to read documentation provided by theGardener ?"\n     }\n}\n```\n```thegardener\n{\n  "openApi" :\n     {\n        "openApiUrl": "http://theGardener/api/docs/swagger.json",\n        "openApiType": "model",\n        "ref": "#/definitions/Project",\n        "deep": 1\n     }\n}\n``` | 1           | true            |
+
+    When the swagger.json hosted on "http://theGardener/api/docs/swagger.json" is now
+"""
+{
+  "swagger" : "2.0",
+  "info" : {
+    "version" : "1.0",
+    "title" : "",
+    "contact" : {
+      "name" : ""
+    },
+    "license" : {
+      "name" : "",
+      "url" : "http://licenseUrl"
+    }
+  },
+  "host" : "localhost:9000",
+  "basePath" : "/",
+  "tags" : [ {
+    "name" : "MenuController"
+  }, {
+    "name" : "GherkinController"
+  }, {
+    "name" : "HierarchyController"
+  }, {
+    "name" : "DirectoryController"
+  }, {
+    "name" : "Angular Configuration"
+  }, {
+    "name" : "AdminController"
+  }, {
+    "name" : "PageController"
+  }, {
+    "name" : "ProjectController"
+  } ],
+  "paths" : {
+  },
+  "definitions" : {
+    "HierarchyNode" : {
+      "type" : "object",
+      "required" : [ "childLabel", "childrenLabel", "id", "name", "slugName" ],
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "slugName" : {
+          "type" : "string"
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "childrenLabel" : {
+          "type" : "string"
+        },
+        "childLabel" : {
+          "type" : "string"
+        },
+        "directoryPath" : {
+          "type" : "string"
+        }
+      }
+    },
+    "Branch" : {
+      "type" : "object",
+      "required" : [ "features", "id", "isStable", "name", "projectId" ],
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "isStable" : {
+          "type" : "boolean"
+        },
+        "projectId" : {
+          "type" : "string"
+        },
+        "features" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "rootDirectory" : {
+          "$ref" : "#/definitions/Directory"
+        }
+      }
+    },
+    "Project" : {
+      "type" : "object",
+      "required" : [ "id", "name", "repositoryUrl", "stableBranch" ],
+      "properties" : {
+        "id" : {
+          "type" : "string",
+          "example" : "theGardener",
+          "description" : "id of the project"
+        },
+        "name" : {
+          "type" : "string",
+          "example" : "theGardener",
+          "description" : "name of the project"
+        },
+        "repositoryUrl" : {
+          "type" : "string",
+          "example" : "https://github.com/KelkooGroup/theGardener",
+          "description" : "location of the project"
+        },
+        "stableBranch" : {
+          "type" : "string",
+          "example" : "master",
+          "description" : "stableBranch of the project"
+        },
+        "displayedBranches" : {
+          "type" : "string",
+          "example" : "qa|master|feature.*|bugfix.*",
+          "description" : "branches that will be displayed"
+        },
+        "featuresRootPath" : {
+          "type" : "string",
+          "example" : "test/features",
+          "description" : "path that lead to the feature files"
+        },
+        "documentationRootPath" : {
+          "type" : "string",
+          "example" : "documentation",
+          "description" : "path that lead to the documentation files"
+        },
+        "variables" : {
+          "type" : "array",
+          "example" : "[{\"name\":\"${swagger.url}\",\"value\":\"http://dc1-pmbo-corp-srv-pp.corp.dc1.kelkoo.net:9001/docs\"}]",
+          "description" : "variables defined for this project",
+          "items" : {
+            "$ref" : "#/definitions/Variable"
+          }
+        },
+        "hierarchy" : {
+          "type" : "array",
+          "description" : "Hierarchy matching the project",
+          "items" : {
+            "$ref" : "#/definitions/HierarchyNode"
+          }
+        }
+      }
+    },
+    "Variable" : {
+      "type" : "object",
+      "required" : [ "name", "value" ],
+      "properties" : {
+        "name" : {
+          "type" : "string"
+        },
+        "value" : {
+          "type" : "string"
+        }
+      }
+    }
+  }
+}
+"""
+    When I perform a "POST" on following URL "/api/admin/projects/suggestionsWS/refreshFromDatabase"
+    When I perform a "GET" on following URL "/api/pages?path=suggestionsWS>master>/context"
+    Then I get the following json response body
+"""
+[
+  {
+    "path": "suggestionsWS>master>/context",
+    "relativePath": "/context",
+    "name": "context",
+    "label": "The context",
+    "description": "Why providing suggestions",
+    "order": 0,
+    "content": [
+      {
+        "type": "openApi",
+        "data": {
+          "openApi": {
+            "modelName": "Project",
+            "openApiRows": [
+                            {"title" : "id", "openApiType": "string", "default": "", "description": "id of the project", "example": "theGardener"},
+                            {"title" : "name", "openApiType": "string", "default": "", "description": "name of the project", "example": "theGardener"},
+                            {"title" : "repositoryUrl", "openApiType": "string", "default": "", "description": "location of the project", "example": "https://github.com/KelkooGroup/theGardener"},
+                            {"title" : "stableBranch", "openApiType": "string", "default": "", "description": "stableBranch of the project", "example": "master"},
+                            {"title" : "displayedBranches", "openApiType": "string", "default": "", "description": "branches that will be displayed", "example": "qa|master|feature.*|bugfix.*"},
+                            {"title" : "featuresRootPath", "openApiType": "string", "default": "", "description": "path that lead to the feature files", "example": "test/features"},
+                            {"title" : "documentationRootPath", "openApiType": "string", "default": "", "description": "path that lead to the documentation files", "example": "documentation"},
+                            {"title" : "variables", "openApiType": "array of Variable", "default": "", "description": "variables defined for this project", "example": "[{\"name\":\"${swagger.url}\",\"value\":\"http://dc1-pmbo-corp-srv-pp.corp.dc1.kelkoo.net:9001/docs\"}]"},
+                            {"title" : "hierarchy", "openApiType": "array of HierarchyNode", "default": "", "description": "Hierarchy matching the project", "example": ""}
+            ],
+            "childrenModels": []
           }
         }
       }

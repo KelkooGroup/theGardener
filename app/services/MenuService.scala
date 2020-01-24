@@ -1,6 +1,6 @@
 package services
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import models.HierarchyNode._
 import models._
 import play.api.cache._
@@ -10,6 +10,7 @@ import utils._
 
 import scala.util.Try
 
+@Singleton
 class MenuService @Inject()(hierarchyRepository: HierarchyRepository, projectRepository: ProjectRepository, branchRepository: BranchRepository, featureRepository: FeatureRepository, directoryRepository: DirectoryRepository, pageRepository: PageRepository, cache: SyncCacheApi) {
 
   def refreshCache(): Try[Menu] = Try(getMenuTree(true))

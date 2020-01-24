@@ -21,8 +21,8 @@ class PageRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with Injec
   override def beforeEach(): Unit = {
     db.withConnection { implicit connection =>
       pages.foreach { page =>
-        SQL"""INSERT INTO page (id, name, label, description, `order`,markdown, relativePath, path, directoryId)
-           VALUES (${page.id},${page.name},${page.label},${page.description},${page.order},${page.markdown},${page.relativePath},${page.path},${page.directoryId})"""
+        SQL"""INSERT INTO page (id, name, label, description, `order`,markdown, relativePath, path, directoryId, dependOnOpenApi)
+           VALUES (${page.id},${page.name},${page.label},${page.description},${page.order},${page.markdown},${page.relativePath},${page.path},${page.directoryId},${page.dependOnOpenApi})"""
           .executeInsert()
       }
     }
