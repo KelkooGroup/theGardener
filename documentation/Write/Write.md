@@ -261,3 +261,49 @@ Details on the settings :
  
 
 See [the current page](https://github.com/KelkooGroup/theGardener/blob/master/documentation/guides/write.md) in context, there is an inclusion in the "Use variables" section.
+
+
+## Include OpenAPI models    
+
+To include OpenApi models, use this module :
+
+````
+```thegardener
+{
+  "openApi" : 
+     {
+        "openApiUrl": "https://thegardener.kelkoogroup.com/api/docs/swagger.json",
+        "openApiType": "model",
+        "ref": "#/definitions/Project",
+        "deep": 1
+     }
+}
+```
+````
+
+Details on the settings :
+
+- "openApiUrl" refers to the url of the API that match the Open API specification (https://swagger.io/specification).
+   - example : https://thegardener.kelkoogroup.com/api/docs/swagger.json
+   - default value : use the variable ${openApi.json.url}.  The writer could set this variable at project level. In this case he would need to add it at every model inclusion. [See "Use variables" section](thegardener://path=theGardener>>_Write_/Write#use-variables). 
+- "openApiType" : "model". Only one possible value for now. We will be able to include "path" in the future
+- "ref" : path to get the model. 
+   - example "#/definitions/Project". Use the Open API Reference syntax : https://swagger.io/specification/#referenceObject.
+- "deep" : int. By default 1. Identify at which level on the model tree we should go.
+   - Example, for Project, 
+      - With "deep" == 1 => show only Project
+      - With "deep" == 2 => show Project and Variable, HierarchyNode, Branch
+
+Example of Display :
+
+```thegardener
+{
+  "openApi" : 
+     {
+        "openApiUrl": "https://thegardener.kelkoogroup.com/api/docs/swagger.json",
+        "openApiType": "model",
+        "ref": "#/definitions/Project",
+        "deep": 1
+     }
+}
+```
