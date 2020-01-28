@@ -69,7 +69,7 @@
     "karma-phantomjs-launcher": "1.0.4",
     "node-sass": "4.13.1",
     "phantomjs-prebuilt": "2.1.16",
-    "protractor": "5.4.2",
+    "protractor": "5.4.3",
     "protractor-cucumber-framework": "6.2.0",
     "puppeteer": "2.0.0",
     "rxjs-tslint": "0.1.7",
