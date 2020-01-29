@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {OpenApiModel} from "../../../_models/openApi";
+import {OpenApiModel, OpenApiModelRow} from "../../../_models/openApi";
 
 @Component({
   selector: 'app-open-api-model',
@@ -10,11 +10,12 @@ export class OpenApiModelComponent implements OnInit {
 
   @Input() openApiModule: OpenApiModel;
   displayedColumns: string[] = ['title', 'type', 'default', 'description', 'example'];
-  dataSource = this.openApiModule;
+  openApiRows: Array<OpenApiModelRow>;
 
   constructor() { }
 
   ngOnInit() {
+    this.openApiRows = this.openApiModule.openApiRows;
   }
 
 }

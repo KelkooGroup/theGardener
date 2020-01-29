@@ -294,7 +294,7 @@ Details on the settings :
       - With "deep" == 1 => show only Project
       - With "deep" == 2 => show Project and Variable, HierarchyNode, Branch
 
-Example of Display :
+this module will be displayed as follows:
 
 ```thegardener
 {
@@ -304,6 +304,20 @@ Example of Display :
         "openApiType": "model",
         "ref": "#/definitions/Project",
         "deep": 1
+     }
+}
+```
+
+The same module with a deep = 2
+
+```thegardener
+{
+  "openApi" : 
+     {
+        "openApiUrl": "https://thegardener.kelkoogroup.com/api/docs/swagger.json",
+        "openApiType": "model",
+        "ref": "#/definitions/Project",
+        "deep": 2
      }
 }
 ```

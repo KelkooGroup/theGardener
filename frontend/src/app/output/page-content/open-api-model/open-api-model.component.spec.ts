@@ -16,7 +16,7 @@ describe('OpenApiModelComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(OpenApiModelComponent);
     component = fixture.componentInstance;
-    component.dataSource = OPENAPI_MODULE;
+    component.openApiRows = OPENAPI_MODULE.openApiRow;
     fixture.detectChanges();
   });
 
@@ -26,16 +26,15 @@ describe('OpenApiModelComponent', () => {
 
 });
 
-const OPENAPI_MODULE = {model:[{  title: "id",
-    type: "integer",
+const OPENAPI_MODULE = {openApiRow:[{  title: "id",
+    openApiType: "integer",
     default: "NONE",
     description: "Id of the model",
     example: "10",
   }, {
     title: "name",
-    type: "string",
+    openApiType: "string",
     default: "NONE",
     description: "Name of the model way too long ",
     example: "project",
   }]};
-

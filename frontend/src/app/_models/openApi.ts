@@ -1,13 +1,15 @@
 
 export interface OpenApiModelRow {
   title: string;
-  type: string;
+  openApiType: string;
   default: string;
   description: string;
   example: string;
 }
 
 export interface OpenApiModel{
-  model: Array<OpenApiModelRow>;
+  modelName: string;
+  openApiRows: Array<OpenApiModelRow>;
+  childrenModels: Array<OpenApiModel>
 }
 
