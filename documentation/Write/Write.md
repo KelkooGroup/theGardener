@@ -264,6 +264,11 @@ See [the current page](https://github.com/KelkooGroup/theGardener/blob/master/do
 
 
 ## Include OpenAPI models    
+**Some context**: The OpenAPI Specification (OAS) defines a standard, language-agnostic interface to RESTful APIs which allows both humans and computers to discover and understand the capabilities of the service without access to source code, documentation, or through network traffic inspection.
+With OpenApi it is possible to produce a Json file (named swagger.json) that list all the paths that we can use and all the definitions of models that the API uses.
+Sometimes, it is meaningful to add some Models from the source code to the documentation to be more clear. This is what we will do here  
+By default in swagger.json models definitions there is only the names and types of the parameters.   
+This module allows to display a default value, a description and examples if they are described in the swagger.json 
 
 To include OpenApi models, use this module :
 
@@ -285,7 +290,7 @@ Details on the settings :
 
 - "openApiUrl" refers to the url of the API that match the Open API specification (https://swagger.io/specification).
    - example : https://thegardener.kelkoogroup.com/api/docs/swagger.json
-   - default value : use the variable ${openApi.json.url}.  The writer could set this variable at project level. In this case he would need to add it at every model inclusion. [See "Use variables" section](thegardener://path=theGardener>>_Write_/Write#use-variables). 
+   - default value : use the variable ${openApi.json.url}. The writer could set this variable at project level. [See "Use variables" section](thegardener://path=theGardener>>_Write_/Write#use-variables). 
 - "openApiType" : "model". Only one possible value for now. We will be able to include "path" in the future
 - "ref" : path to get the model. 
    - example "#/definitions/Project". Use the Open API Reference syntax : https://swagger.io/specification/#referenceObject.
@@ -293,6 +298,7 @@ Details on the settings :
    - Example, for Project, 
       - With "deep" == 1 => show only Project
       - With "deep" == 2 => show Project and Variable, HierarchyNode, Branch
+- "label" : define which label we want to display. By default : name of the model, in this example "Project"
 
 this module will be displayed as follows:
 
@@ -304,20 +310,6 @@ this module will be displayed as follows:
         "openApiType": "model",
         "ref": "#/definitions/Project",
         "deep": 1
-     }
-}
-```
-
-The same module with a deep = 2
-
-```thegardener
-{
-  "openApi" : 
-     {
-        "openApiUrl": "https://thegardener.kelkoogroup.com/api/docs/swagger.json",
-        "openApiType": "model",
-        "ref": "#/definitions/Project",
-        "deep": 2
      }
 }
 ```

@@ -3,11 +3,12 @@ package repositories
 import anorm.SqlParser._
 import anorm._
 import javax.inject.Inject
-import models.{Branch, Directory, Page, PageJoinProject, Project}
+import models.{Branch, Directory, Page, PageJoinProject, Project, Variable}
 import play.api.db.Database
+import play.api.libs.json.Json
 
 class PageRepository @Inject()(db: Database) {
-
+  implicit val variableFormat = Json.format[Variable]
 
   private val fullJoinProjectParser = for {
 
@@ -43,13 +44,13 @@ class PageRepository @Inject()(db: Database) {
     p_displayedBranches <- str("p_displayedBranches").?
     p_featuresRootPath <- str("p_featuresRootPath").?
     p_documentationRootPath <- str("p_documentationRootPath").?
-
+    p_variables <- str("p_variables").?
   } yield
     PageJoinProject(
       Page(id, name, label, description, order, Some(markdown), relativePath, path, directoryId, dependOnOpenApi),
       Directory(d_id, d_name, d_label, d_description, d_order, d_relativePath, d_path, d_branchId),
       Branch(b_id, b_name, b_isStable, b_projectId),
-      Project(p_id, p_name, p_repositoryUrl, p_stableBranch, p_displayedBranches, p_featuresRootPath, p_documentationRootPath)
+      Project(p_id, p_name, p_repositoryUrl, p_stableBranch, p_displayedBranches, p_featuresRootPath, p_documentationRootPath, p_variables.map(Json.parse(_).as[Seq[Variable]]))
     )
 
 
@@ -117,7 +118,8 @@ class PageRepository @Inject()(db: Database) {
                    p.stableBranch as p_stableBranch,
                    p.displayedBranches as p_displayedBranches,
                    p.featuresRootPath as p_featuresRootPath,
-                   p.documentationRootPath as p_documentationRootPath
+                   p.documentationRootPath as p_documentationRootPath,
+                   p.variables as p_variables
                   from page pg
                       join directory d on d.id = pg.directoryId
                       join branch b on b.id = d.branchId
@@ -256,7 +258,8 @@ class PageRepository @Inject()(db: Database) {
                    p.stableBranch as p_stableBranch,
                    p.displayedBranches as p_displayedBranches,
                    p.featuresRootPath as p_featuresRootPath,
-                   p.documentationRootPath as p_documentationRootPath
+                   p.documentationRootPath as p_documentationRootPath,
+                   p.variables as p_variables
                   from page pg
                       join directory d on d.id = pg.directoryId
                       join branch b on b.id = d.branchId

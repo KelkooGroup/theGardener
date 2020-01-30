@@ -19,7 +19,7 @@ object PageFragment {
   val TypeMarkdown = "markdown"
   val TypeScenarios = "scenarios"
   val TypeIncludeExternalPage = "includeExternalPage"
-  val typeOpenApi = "openApi"
+  val TypeOpenApi = "openApi"
   val TypeUnknown = "unknown"
 
   def apply(pageFragmentUnderProcessing: PageFragmentUnderProcessing): PageFragment = {
@@ -32,9 +32,9 @@ object PageFragment {
             new PageFragment(TypeIncludeExternalPage, new PageFragmentContent(includeExternalPage = Some(includeExternalPage.url)))
           case _ => pageFragmentUnderProcessing.openApi match {
             case Some(openApi) =>
-              new PageFragment(typeOpenApi, new PageFragmentContent(openApi = Some(openApi)))
+              new PageFragment(TypeOpenApi, new PageFragmentContent(openApi = Some(openApi)))
             case _ =>
-              new PageFragment (TypeUnknown, new PageFragmentContent ())
+              new PageFragment(TypeUnknown, new PageFragmentContent())
           }
         }
       }

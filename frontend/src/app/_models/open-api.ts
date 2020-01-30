@@ -7,9 +7,9 @@ export interface OpenApiModelRow {
   example: string;
 }
 
-export interface OpenApiModel{
+export interface OpenApiModel {
   modelName: string;
+  required: Array<string>;
   openApiRows: Array<OpenApiModelRow>;
-  childrenModels: Array<OpenApiModel>
+  childrenModels: Array<OpenApiModel>;
 }
-

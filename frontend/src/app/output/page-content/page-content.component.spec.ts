@@ -15,7 +15,7 @@ import {GherkinComponent} from '../gherkin/gherkin.component';
 import {GherkinStepComponent} from '../gherkin/gherkin-step/gherkin-step.component';
 import {GherkinLongTextComponent} from '../gherkin/gherkin-long-text/gherkin-long-text.component';
 import {GherkinTableComponent} from '../gherkin/gherkin-table/gherkin-table.component';
-import {OpenApiModelComponent} from './open-api-model/open-api-model.component'
+import {OpenApiModelComponent} from './open-api-model/open-api-model.component';
 import {NgxJsonViewerModule} from 'ngx-json-viewer';
 import {RemoveHtmlSanitizerPipe} from '../../removehtmlsanitizer.pipe';
 import {RouterTestingModule} from '@angular/router/testing';

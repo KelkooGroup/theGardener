@@ -16,15 +16,15 @@ import scala.concurrent.{ExecutionContext, Future}
 
 
 @Api(value = "PageController", produces = "application/json")
-class PageController @Inject()(projectService: ProjectService, pageService : PageService)(implicit ec: ExecutionContext) extends InjectedController {
+class PageController @Inject()(projectService: ProjectService, pageService: PageService)(implicit ec: ExecutionContext) extends InjectedController {
 
   @ApiOperation(value = "Get pages from path", response = classOf[PageDTO], responseContainer = "list")
   @ApiResponses(Array(new ApiResponse(code = 404, message = "Page not found")))
   def getPageFromPath(path: String): Action[AnyContent] = Action.async {
-    pageService.computePageFromPath(path).flatMap{
+    pageService.computePageFromPath(path).flatMap {
       case Some(pageWithContent) =>
         val variables = projectService.getVariables(pageWithContent.page)
-        Future.successful(Ok(Json.toJson( Seq(PageDTO(pageWithContent.page,pageService.replaceVariablesInMarkdown(pageWithContent.content,variables.getOrElse(Seq())))))))
+        Future.successful(Ok(Json.toJson(Seq(PageDTO(pageWithContent.page, pageService.replaceVariablesInMarkdown(pageWithContent.content, variables.getOrElse(Seq())))))))
       case None => Future.successful(NotFound(s"No Page $path"))
     }
   }

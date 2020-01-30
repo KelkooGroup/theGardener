@@ -24,19 +24,19 @@ class StoreDirectoryAndPagesSteps extends ScalaDsl with EN with MockitoSugar {
     actualPages must contain theSameElementsAs expectedPages
   }
 
-  Given("""^page computation count is reset$""") { () =>
+  Given("""^page computation count is reset$"""){ () =>
     reset(spyPageService)
   }
 
-  Then("""^page "([^"]*)" hasn't been computed$""") { path: String =>
+  Then("""^page "([^"]*)" hasn't been computed$"""){ path:String =>
     verifyComputationTimes(path, 0)
   }
 
-  Then("""^page "([^"]*)" has been computed only one time$""") { path: String =>
+  Then("""^page "([^"]*)" has been computed only one time$"""){ path:String =>
     verifyComputationTimes(path, 1)
   }
 
-  Then("""^page "([^"]*)" has been computed (\d+) times$""") { (path: String, times: Int) =>
+  Then("""^page "([^"]*)" has been computed (\d+) times$"""){ (path:String, times:Int) =>
     verifyComputationTimes(path, times)
   }
 

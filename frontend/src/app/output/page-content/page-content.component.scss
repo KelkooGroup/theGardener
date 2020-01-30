@@ -3,7 +3,7 @@
 .markdown-container {
   color: $color-text-darker;
 
-  .markdown, .scenario {
+  .markdown, .scenario, .openApi {
     padding-left: $margin-left;
     padding-right: 40px;
     line-height: 22px;
@@ -34,3 +34,4 @@ h1 {
 .top{
   height: 1px;
 }
+

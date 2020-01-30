@@ -1,5 +1,5 @@
 import {Scenario} from './gherkin';
-import {OpenApiModel} from "./openApi";
+import {OpenApiModel} from './open-api';
 
 export interface Page {
   title: string;

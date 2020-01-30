@@ -1,11 +1,10 @@
 @import "_colors.scss";
-@import "_backoffice.scss";
 
 .mat-table {
   display: table;
   width: 100%;
   margin: 20px 30px;
-  box-shadow: 2px 0px 8px 1px rgba(0, 0, 0, .12);
+  box-shadow: 2px 0 8px 1px rgba(0, 0, 0, .12);
 }
 
 .mat-header-cell {
@@ -18,7 +17,11 @@
   color: $color-text-darker;
 }
 
-.model-label{
+#model-label{
   margin-left: 25px;
   font-weight: bold;
+}
+
+.required{
+  color: red;
 }

@@ -2,7 +2,6 @@ package services
 
 import java.io.{File, FileInputStream}
 
-import com.github.ghik.silencer.silent
 import controllers.dto.{PageFragment, PageFragmentContent}
 import javax.inject.{Inject, Singleton}
 import models.{PageJoinProject, _}
@@ -28,7 +27,7 @@ case class ScenariosModule(project: Option[String] = None, branchName: Option[St
 
 case class IncludeExternalPageModule(url: String)
 
-case class OpenApiModule(openApiUrl: Option[String] = None, openApiType: Option[String] = None, ref: Option[String] = None, deep: Option[Int] = None)
+case class OpenApiModule(openApiUrl: Option[String] = None, openApiType: Option[String] = None, ref: Option[String] = None, deep: Option[Int] = None, label: Option[String] = None)
 
 
 case class Items(openApiType: String, ref: String)
@@ -80,7 +79,6 @@ class PageServiceCache @Inject()(cache: SyncCacheApi) extends Logging {
   }
 
 }
-
 
 @Singleton
 class PageService @Inject()(config: Configuration, projectRepository: ProjectRepository, directoryRepository: DirectoryRepository, pageRepository: PageRepository,
@@ -334,7 +332,7 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
         Future.successful(PageFragmentUnderProcessing(markdown = Some(markdown)))
 
       case PageFragmentUnderProcessing(PageFragmentStatusModule, _, _, _, _, _, _, _, Some(openApiModule)) =>
-        getOpenApiDescriptor(openApiModule).flatMap(openApiModel => Future.successful(PageFragmentUnderProcessing(openApi = Some(openApiModel))))
+        openApiClient.getOpenApiDescriptor(openApiModule, pageJoinProject).flatMap(openApiModel => Future.successful(PageFragmentUnderProcessing(openApi = Some(openApiModel))))
       case fragmentUnderProcessing => Future.successful(fragmentUnderProcessing)
 
     }.map(fragments => fragments.map(PageFragment(_)))).map(_.filter(fragment => fragment.`type` != PageFragment.TypeUnknown))
@@ -388,64 +386,6 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
     )
   }
 
-  def getOpenApiDescriptor(openApiModule: OpenApiModule): Future[OpenApi] = {
-    openApiModule.openApiUrl.map { url =>
-      openApiClient.getOpenApiJsonString(url).map { response =>
-        parseSwaggerJsonDefinitions(response, openApiModule.ref.getOrElse(""), openApiModule.deep)
-      }
-    }.getOrElse(Future.failed(new Exception("swagger.json url is not given")))
-  }
-
-
-  @silent("Interpolated")
-  @silent("missing interpolator")
-  def parseSwaggerJsonDefinitions(swaggerJson: String, reference: String, deep: Option[Int]): OpenApi = {
-    var openApiChildren: Seq[OpenApi] = Seq()
-    val modelName = referenceSplit(reference)
-    val jsonTree: JsValue = Json.parse(swaggerJson)
-    val wantedModelJson = (jsonTree \ "definitions" \ modelName \ "properties").asOpt[JsObject]
-    wantedModelJson match {
-      case Some(j) =>
-        OpenApi(modelName, j.fields.map {
-          case (name, properties: JsObject) =>
-            val valueMap = properties.value
-            val openApiType = if (valueMap.get("type").isDefined) {
-              valueMap.get("type").flatMap(_.asOpt[String])
-            } else {
-              Option(referenceSplit(valueMap.get("$ref").flatMap(_.asOpt[String]).getOrElse("")))
-            }
-            val example = valueMap.get("example").flatMap(_.asOpt[String])
-            val description = valueMap.get("description").flatMap(_.asOpt[String])
-            if (openApiType.getOrElse("") != "array") {
-              OpenApiRow(name, openApiType.getOrElse(""), "", description.getOrElse(""), example.getOrElse(""))
-            } else {
-              val arrayDefinitionReference: String = (jsonTree \ "definitions" \ modelName \ "properties" \ name \ "items" \ "$ref").asOpt[String].getOrElse("")
-              val modelRefName = if (arrayDefinitionReference != "") {
-                referenceSplit(arrayDefinitionReference)
-
-              } else {
-                (jsonTree \ "definitions" \ modelName \ "properties" \ name \ "items" \ "type").asOpt[String].getOrElse("")
-              }
-              if (deep.getOrElse(1) > 1) {
-                openApiChildren = openApiChildren :+ parseSwaggerJsonDefinitions(swaggerJson, arrayDefinitionReference, deep.map(_ - 1))
-              }
-              OpenApiRow(name, s"array of $modelRefName", "", description.getOrElse(""), example.getOrElse(""))
-            }
-          case _ =>
-            OpenApiRow("no name / properties", "", "", "", "")
-        }, openApiChildren)
-
-      case _ => OpenApi("Model not found", Seq())
-    }
-  }
-
-  private def referenceSplit(ref: String): String = {
-    if(ref != null && !ref.isEmpty) {
-      val splitReference = ref.split("/")
-      splitReference(splitReference.length - 1)
-    }else{""}
-  }
-
 
   def replaceVariableInString(texte: String, variables: IndexedSeq[Variable], index: Int): Option[String] = {
     if (index != variables.length) {
@@ -458,5 +398,4 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
   def getAllPagePaths(project: Project, directoryId: Long): Seq[Page] = {
     pageRepository.findAllByDirectoryId(directoryId).map(page => page.copy(path = getCorrectedPath(page.path, project)))
   }
-
 }
