@@ -19,6 +19,9 @@ import models.Feature._
 import net.ruippeixotog.scalascraper.browser._
 import org.apache.commons.io._
 import org.eclipse.jgit.api._
+import org.mockito.Matchers.any
+import org.mockito.Mockito._
+import org.mockito.invocation.InvocationOnMock
 import org.scalatest._
 import org.scalatestplus.mockito._
 import play.api.{Application, Logging, Mode}
@@ -28,6 +31,7 @@ import play.api.db._
 import play.api.inject._
 import play.api.inject.guice._
 import play.api.libs.json._
+import play.api.libs.ws.WSClient
 import play.api.mvc._
 import play.api.test.Helpers._
 import play.api.test._
@@ -35,8 +39,10 @@ import play.api.{Application, Logging, Mode}
 import repositories._
 import resource._
 import services._
+import services.clients.{OpenApiClient, ReplicaClient}
 import steps.CommonSteps.include
 import steps.Injector._
+import utils.CustomConfigSystemReader.overrideSystemGitConfig
 import utils._
 
 import scala.collection.JavaConverters._
@@ -68,6 +74,11 @@ object CommonSteps extends MockitoSugar with MustMatchers {
   implicit val hierarchyFormat = Json.format[HierarchyNode]
   implicit val variableFormat = Json.format[Variable]
   implicit val projectFormat = Json.format[Project]
+  implicit val ec: ExecutionContext = ExecutionContext.global
+
+  overrideSystemGitConfig()
+
+  val fakeOpenApiClient: OpenApiClient = mock[OpenApiClient]
 
   var response: Future[Result] = _
   var page: String = _
@@ -84,28 +95,36 @@ object CommonSteps extends MockitoSugar with MustMatchers {
   val tagRepository = inject[TagRepository]
   val directoryRepository = inject[DirectoryRepository]
   val pageRepository = inject[PageRepository]
-  val pageService = inject[PageService]
-  val spyPageService = spy(pageService)
-  val menuService = inject[MenuService]
-  val spyMenuService = spy(menuService)
-  val projectService = inject[ProjectService]
-  val spyProjectService = spy(projectService)
-  val replicaService = inject[ReplicaService]
-  val spyReplicaService = spy(replicaService)
+  val gherkinRepository = inject[GherkinRepository]
+  val wsClient = inject[WSClient]
   val gitService = Injector.inject[GitService]
   val config = inject[Config]
+  val conf = inject[play.api.Configuration]
+  val environment = inject[play.api.Environment]
+  val actorSystem = inject[akka.actor.ActorSystem]
   val asyncCache = inject[AsyncCacheApi]
   val cache = new DefaultSyncCacheApi(asyncCache)
-  val pageServiceCache =  new PageServiceCache(cache)
-  val spyPageServiceCache =  spy(pageServiceCache)
+  val pageServiceCache = new PageServiceCache(cache)
+  val spyPageServiceCache = spy(pageServiceCache)
+  val pageService = new PageService(conf, projectRepository, directoryRepository, pageRepository, gherkinRepository, fakeOpenApiClient, pageServiceCache)
+  val spyPageService = spy(pageService)
+  val menuService = new MenuService(hierarchyRepository, projectRepository, branchRepository, featureRepository, directoryRepository, pageRepository, cache)
+  val spyMenuService = spy(menuService)
+  val replicaService = new ReplicaClient(conf, wsClient)
+  val spyReplicaService = spy(replicaService)
+  val projectService = new ProjectService(projectRepository, gitService, featureService, featureRepository, branchRepository, directoryRepository, pageRepository, menuService, pageService, conf, environment, actorSystem)
+  val spyProjectService = spy(projectService)
+
+
   implicit val materializer = inject[Materializer]
 
   val applicationBuilder = builder.overrides(bind[SyncCacheApi].toInstance(cache),
     bind[PageServiceCache].toInstance(spyPageServiceCache),
+    bind[OpenApiClient].toInstance(fakeOpenApiClient),
     bind[PageService].toInstance(spyPageService),
     bind[MenuService].toInstance(spyMenuService),
     bind[ProjectService].toInstance(spyProjectService),
-    bind[ReplicaService].toInstance(spyReplicaService)).in(Mode.Test)
+    bind[ReplicaClient].toInstance(spyReplicaService)).in(Mode.Test)
 
   var app: Application = _
 
@@ -152,7 +171,7 @@ object CommonSteps extends MockitoSugar with MustMatchers {
 
 case class Configuration(path: String, value: String)
 
-case class PageRow(id: Long, name: String, label: String, description: String, order: Int, markdown: String, relativePath: String, path: String, directoryId: Long)
+case class PageRow(id: Long, name: String, label: String, description: String, order: Int, markdown: String, relativePath: String, path: String, directoryId: Long, dependOnOpenApi: Boolean)
 
 class CommonSteps extends ScalaDsl with EN with MockitoSugar with Logging {
 
@@ -291,6 +310,24 @@ Scenario: providing several book suggestions
 
   Given("""^the cache is empty$""") { () =>
     await(asyncCache.removeAll())
+  }
+
+  Given("""^we have the following swagger.json hosted on "([^"]*)"$""") { (_: String, swaggerJson: String) =>
+    mockOpenApiClient(swaggerJson)
+  }
+
+  When("""^the swagger.json hosted on "([^"]*)" is now$"""){ (_: String, swaggerJson: String) =>
+    mockOpenApiClient(swaggerJson)
+  }
+
+  private def mockOpenApiClient(swaggerJson: String) = {
+    reset(fakeOpenApiClient)
+    when(fakeOpenApiClient.getOpenApiDescriptor(any[OpenApiModule](), any[PageJoinProject]())).thenAnswer((invocation: InvocationOnMock) => {
+      val args = invocation.getArguments
+      val openApiModule = args(0).asInstanceOf[OpenApiModule]
+
+      Future.successful(OpenApiClient.parseSwaggerJsonDefinitions(swaggerJson, openApiModule.ref.getOrElse(""), openApiModule.deep, openApiModule.label))
+    })
   }
 
   When("^we go in a browser to url \"([^\"]*)\"$") { url: String =>

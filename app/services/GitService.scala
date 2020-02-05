@@ -2,7 +2,7 @@ package services
 
 import java.io.File
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import org.eclipse.jgit.api.CreateBranchCommand.SetupUpstreamMode._
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.diff.DiffEntry.ChangeType
@@ -16,7 +16,7 @@ import scala.collection.mutable.ListBuffer
 import scala.concurrent._
 import scala.util.Try
 
-
+@Singleton
 class GitService @Inject()(implicit ec: ExecutionContext) extends Logging {
 
   def clone(url: String, localDirectory: String): Future[Unit] = {

@@ -11,6 +11,9 @@ import org.scalatestplus.mockito._
 import repositories._
 import play.api.Configuration
 import play.api.cache.SyncCacheApi
+import services.clients.OpenApiClient
+
+import scala.concurrent.ExecutionContext
 
 class PageServiceTest extends WordSpec with MustMatchers with BeforeAndAfter with MockitoSugar with ScalaFutures {
 
@@ -22,11 +25,13 @@ class PageServiceTest extends WordSpec with MustMatchers with BeforeAndAfter wit
   val cache =  new PageServiceCache( mock[SyncCacheApi])
   val gherkinRepository = mock[GherkinRepository]
   val config = mock[Configuration]
+  val openApiClient = mock[OpenApiClient]
+  implicit val ec = mock[ExecutionContext]
 
 
   when(config.getOptional[String]("application.baseUrl")).thenReturn(None)
 
-  val pageService = new PageService(config, projectRepository, directoryRepository, pageRepository, gherkinRepository, cache)
+  val pageService = new PageService(config, projectRepository, directoryRepository, pageRepository, gherkinRepository, openApiClient, cache)
 
   val variables = Seq(Variable(s"$${name1}", "value"),Variable(s"$${name2}", "value2"))
   val contentWithMarkdown = Seq(PageFragment("markdown", PageFragmentContent(Some(s"$${name1}"))))
