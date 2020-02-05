@@ -4,6 +4,7 @@ import java.io.File
 import java.io.File.separator
 
 
+import utils.CustomConfigSystemReader._
 import org.apache.commons.io.FileUtils._
 import org.eclipse.jgit.api._
 import org.scalatest._
@@ -25,6 +26,8 @@ class GitServiceTest extends WordSpec with MustMatchers with BeforeAndAfter with
   val localFile = new File(localRepositoryDirectory, "test.txt")
 
   var remoteGit: Git = _
+
+  overrideSystemGitConfig()
 
   before {
     deleteDirectory(new File(localRepositoryDirectory))

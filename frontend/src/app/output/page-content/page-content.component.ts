@@ -3,7 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {catchError, map, switchMap} from 'rxjs/operators';
 import {combineLatest, of, Subscription} from 'rxjs';
 import {PageService} from '../../_services/page.service';
-import {IncludeExternalPagePart, MarkdownPart, Page, PagePart, ScenarioPart} from '../../_models/page';
+import {IncludeExternalPagePart, MarkdownPart, OpenApiPart, Page, PagePart, ScenarioPart} from '../../_models/page';
 import {NotificationService} from '../../_services/notification.service';
 
 
@@ -86,6 +86,10 @@ export class PageContentComponent implements OnInit, OnDestroy, AfterViewChecked
 
   getScenario(part: PagePart) {
     return (part.data as ScenarioPart).scenarios;
+  }
+
+  getOpenApiModel(part: PagePart) {
+    return (part.data as OpenApiPart).openApi;
   }
 }
 

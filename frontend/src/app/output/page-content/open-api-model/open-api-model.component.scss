@@ -1,0 +1,27 @@
+@import "_colors.scss";
+
+.mat-table {
+  display: table;
+  width: 100%;
+  margin: 20px 30px;
+  box-shadow: 2px 0 8px 1px rgba(0, 0, 0, .12);
+}
+
+.mat-header-cell {
+  color: $color-text-darker;
+  font-weight: 600;
+  text-align: center;
+}
+
+.mat-cell {
+  color: $color-text-darker;
+}
+
+#model-label{
+  margin-left: 25px;
+  font-weight: bold;
+}
+
+.required{
+  color: red;
+}

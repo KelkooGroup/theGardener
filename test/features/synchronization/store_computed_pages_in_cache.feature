@@ -126,7 +126,7 @@ Feature: On synchronize, compute pages and store them in the cache
 """
     Then the cache store "page_suggestionsWS>master>/context" with the value
 """
-PageWithContent(Page(1,context,context,context,0,Some(**Feature**: Provide book suggestions V2),/context,suggestionsWS>master>/context,1),List(PageFragment(markdown,PageFragmentContent(Some(**Feature**: Provide book suggestions V2),None,None))))
+PageWithContent(Page(1,context,context,context,0,Some(**Feature**: Provide book suggestions V2),/context,suggestionsWS>master>/context,1,false),List(PageFragment(markdown,PageFragmentContent(Some(**Feature**: Provide book suggestions V2),None,None,None))))
 """
 
 
@@ -135,7 +135,7 @@ PageWithContent(Page(1,context,context,context,0,Some(**Feature**: Provide book 
     And the synchronization action is triggered for all projects
     Then the cache store "page_suggestionsWS>master>/context" with the value
 """
-PageWithContent(Page(1,context,context,context,0,Some(**Feature**: Provide book suggestions),/context,suggestionsWS>master>/context,1),List(PageFragment(markdown,PageFragmentContent(Some(**Feature**: Provide book suggestions),None,None))))
+PageWithContent(Page(1,context,context,context,0,Some(**Feature**: Provide book suggestions),/context,suggestionsWS>master>/context,1,false),List(PageFragment(markdown,PageFragmentContent(Some(**Feature**: Provide book suggestions),None,None,None))))
 """
     When I perform a "GET" on following URL "/api/pages?path=suggestionsWS>master>/context"
     When I perform a "GET" on following URL "/api/pages?path=suggestionsWS>master>/context"

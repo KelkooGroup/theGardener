@@ -16,6 +16,11 @@
           <app-gherkin [scenarios]="getScenario(part)"></app-gherkin>
         </div>
       </div>
+      <div *ngSwitchCase="'openApi'">
+        <div class="openApi">
+          <app-open-api-model [openApiModule]="getOpenApiModel(part)"></app-open-api-model>
+        </div>
+      </div>
     </div>
   </div>
 </div>
