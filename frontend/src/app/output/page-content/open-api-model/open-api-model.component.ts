@@ -9,7 +9,7 @@ import {OpenApiModel, OpenApiModelRow} from '../../../_models/open-api';
 export class OpenApiModelComponent implements OnInit {
 
   @Input() openApiModule: OpenApiModel;
-  displayedColumns: Array<string> = ['title', 'type', 'default', 'description', 'example'];
+  displayedColumns: Array<string> = ['title', 'type', 'description', 'example'];
   openApiRows: Array<OpenApiModelRow>;
 
   constructor() {
@@ -22,4 +22,5 @@ export class OpenApiModelComponent implements OnInit {
   isRequired(element: OpenApiModelRow) {
     return this.openApiModule.required.includes(element.title);
   }
+
 }
