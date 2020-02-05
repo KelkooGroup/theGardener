@@ -6,11 +6,10 @@ import models.{OpenApi, OpenApiRow, PageJoinProject, Variable}
 import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.libs.ws.WSClient
 import services.OpenApiModule
+import services.clients.OpenApiClient._
 
 import scala.concurrent.{ExecutionContext, Future}
 
-@silent("Interpolated")
-@silent("missing interpolator")
 @Singleton
 class OpenApiClient @Inject()(wsClient: WSClient)(implicit ec: ExecutionContext) {
 
@@ -30,7 +29,11 @@ class OpenApiClient @Inject()(wsClient: WSClient)(implicit ec: ExecutionContext)
   def getOpenApiJsonString(openApiUrl: String): Future[String] = {
     wsClient.url(openApiUrl).get().map(_.body)
   }
+}
 
+@silent("Interpolated")
+@silent("missing interpolator")
+object OpenApiClient {
   def parseSwaggerJsonDefinitions(swaggerJson: String, reference: String, deep: Option[Int], label: Option[String]): OpenApi = {
     var openApiChildren: Seq[OpenApi] = Seq()
     val modelName = referenceSplit(reference)
@@ -84,5 +87,4 @@ class OpenApiClient @Inject()(wsClient: WSClient)(implicit ec: ExecutionContext)
       variable.find(_.name == "${openApi.json.url}").map(_.value)
     }
   }
-
 }

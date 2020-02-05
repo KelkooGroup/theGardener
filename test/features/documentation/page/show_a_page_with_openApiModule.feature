@@ -11,7 +11,7 @@ Feature: Generate a documentation page with OpenApi Module
       | .01. | suggestion | Suggestion system | Projects      | Project    |
     And we have the following projects
       | id            | name                    | repositoryUrl                                         | stableBranch | featuresRootPath | documentationRootPath | variables                                                                           |
-      | suggestionsWS | Suggestions WebServices | target/remote/data/GetFeatures/library/suggestionsWS/ | master       | test/features    | doc                   | [{"name":"${openApi.json.url}","value":"http://theGardener/api/docs/swagger.json"}] |
+      | suggestionsWS | Suggestions WebServices | target/remote/data/GetFeatures/library/suggestionsWS/ | master       | test/features    | doc                   | [{"name":"${openApi.json.url}","value":"http://theGardener.com/api/docs/swagger.json"}] |
     And the links between hierarchy nodes are
       | projectId     | hierarchyId |
       | suggestionsWS | .01.        |
@@ -24,7 +24,7 @@ Feature: Generate a documentation page with OpenApi Module
     And we have those pages in the database
       | id | name    | label       | description               | order | relativePath | path                          | markdown | directoryId |
       | 1  | context | The context | Why providing suggestions | 0     | /context     | suggestionsWS>master>/context |          | 1           |
-    And we have the following swagger.json hosted on "http://theGardener/api/docs/swagger.json"
+    And we have the following swagger.json hosted on "http://theGardener.com/api/docs/swagger.json"
       """
 {
   "swagger" : "2.0",
@@ -500,7 +500,7 @@ Feature: Generate a documentation page with OpenApi Module
 }
       """
 
-  @level_2_technical_details @nominal_case @ongoing
+  @level_2_technical_details @nominal_case @valid
   Scenario: generate a documentation page with the inclusion of an openApi model
     Given we have the following markdown for the page "suggestionsWS>master>/context"
 """
@@ -517,7 +517,7 @@ Feature: Generate a documentation page with OpenApi Module
 {
   "openApi" :
      {
-        "openApiUrl": "http://theGardener/api/docs/swagger.json",
+        "openApiUrl": "http://theGardener.com/api/docs/swagger.json",
         "openApiType": "model",
         "ref": "#/definitions/Project",
         "deep": 1
@@ -565,10 +565,10 @@ Feature: Generate a documentation page with OpenApi Module
 """
     And we have now those pages in the database
       | id | name    | label       | description               | order | relativePath | path                          | markdown                                                                                                                                                                                                                                                                                                                                                                                              | directoryId | dependOnOpenApi |
-      | 1  | context | The context | Why providing suggestions | 0     | /context     | suggestionsWS>master>/context | ```thegardener\n{\n  "page" :\n     {\n        "label": "Read documentation",\n        "description": "How to read documentation provided by theGardener ?"\n     }\n}\n```\n```thegardener\n{\n  "openApi" :\n     {\n        "openApiUrl": "http://theGardener/api/docs/swagger.json",\n        "openApiType": "model",\n        "ref": "#/definitions/Project",\n        "deep": 1\n     }\n}\n``` | 1           | true            |
+      | 1  | context | The context | Why providing suggestions | 0     | /context     | suggestionsWS>master>/context | ```thegardener\n{\n  "page" :\n     {\n        "label": "Read documentation",\n        "description": "How to read documentation provided by theGardener ?"\n     }\n}\n```\n```thegardener\n{\n  "openApi" :\n     {\n        "openApiUrl": "http://theGardener.com/api/docs/swagger.json",\n        "openApiType": "model",\n        "ref": "#/definitions/Project",\n        "deep": 1\n     }\n}\n``` | 1           | true            |
 
 
-  @level_2_technical_details @nominal_case @ongoing
+  @level_2_technical_details @nominal_case @valid
   Scenario: generate a documentation page with the inclusion of an openApi model without openApiUrl and with a label
     Given we have the following markdown for the page "suggestionsWS>master>/context"
 """
@@ -635,7 +635,7 @@ Feature: Generate a documentation page with OpenApi Module
       | id | name    | label       | description               | order | relativePath | path                          | markdown                                                                                                                                                                                                                                                                                                                                                                                              | directoryId | dependOnOpenApi |
       | 1  | context | The context | Why providing suggestions | 0     | /context     | suggestionsWS>master>/context | ```thegardener\n{\n  "page" :\n     {\n        "label": "Read documentation",\n        "description": "How to read documentation provided by theGardener ?"\n     }\n}\n```\n```thegardener\n{\n  "openApi" :\n     {\n        "openApiType": "model",\n        "ref": "#/definitions/Project",\n        "deep": 1,\n        "label": "ProjectLabel"\n     }\n}\n``` | 1           | true            |
 
-  @level_2_technical_details @nominal_case @ongoing
+  @level_2_technical_details @nominal_case @valid
   Scenario: generate a documentation page with the inclusion of an openApi model with deep > 1
     Given we have the following markdown for the page "suggestionsWS>master>/context"
 """
@@ -652,7 +652,7 @@ Feature: Generate a documentation page with OpenApi Module
 {
   "openApi" :
      {
-        "openApiUrl": "http://theGardener/api/docs/swagger.json",
+        "openApiUrl": "http://theGardener.com/api/docs/swagger.json",
         "openApiType": "model",
         "ref": "#/definitions/Project",
         "deep": 2
@@ -739,10 +739,10 @@ Feature: Generate a documentation page with OpenApi Module
 """
     And we have now those pages in the database
       | id | name    | label       | description               | order | relativePath | path                          | markdown                                                                                                                                                                                                                                                                                                                                                                                              | directoryId | dependOnOpenApi |
-      | 1  | context | The context | Why providing suggestions | 0     | /context     | suggestionsWS>master>/context | ```thegardener\n{\n  "page" :\n     {\n        "label": "Read documentation",\n        "description": "How to read documentation provided by theGardener ?"\n     }\n}\n```\n```thegardener\n{\n  "openApi" :\n     {\n        "openApiUrl": "http://theGardener/api/docs/swagger.json",\n        "openApiType": "model",\n        "ref": "#/definitions/Project",\n        "deep": 2\n     }\n}\n``` | 1           | true            |
+      | 1  | context | The context | Why providing suggestions | 0     | /context     | suggestionsWS>master>/context | ```thegardener\n{\n  "page" :\n     {\n        "label": "Read documentation",\n        "description": "How to read documentation provided by theGardener ?"\n     }\n}\n```\n```thegardener\n{\n  "openApi" :\n     {\n        "openApiUrl": "http://theGardener.com/api/docs/swagger.json",\n        "openApiType": "model",\n        "ref": "#/definitions/Project",\n        "deep": 2\n     }\n}\n``` | 1           | true            |
 
 
-  @level_2_technical_details @nominal_case @ongoing
+  @level_2_technical_details @nominal_case @valid
   Scenario: recompute a page depending on openApi everytime when the project synchronization is triggered
     Given we have the following markdown for the page "suggestionsWS>master>/context"
 """
@@ -759,7 +759,7 @@ Feature: Generate a documentation page with OpenApi Module
 {
   "openApi" :
      {
-        "openApiUrl": "http://theGardener/api/docs/swagger.json",
+        "openApiUrl": "http://theGardener.com/api/docs/swagger.json",
         "openApiType": "model",
         "ref": "#/definitions/Project",
         "deep": 1
@@ -807,9 +807,9 @@ Feature: Generate a documentation page with OpenApi Module
 """
     And we have now those pages in the database
       | id | name    | label       | description               | order | relativePath | path                          | markdown                                                                                                                                                                                                                                                                                                                                                                                              | directoryId | dependOnOpenApi |
-      | 1  | context | The context | Why providing suggestions | 0     | /context     | suggestionsWS>master>/context | ```thegardener\n{\n  "page" :\n     {\n        "label": "Read documentation",\n        "description": "How to read documentation provided by theGardener ?"\n     }\n}\n```\n```thegardener\n{\n  "openApi" :\n     {\n        "openApiUrl": "http://theGardener/api/docs/swagger.json",\n        "openApiType": "model",\n        "ref": "#/definitions/Project",\n        "deep": 1\n     }\n}\n``` | 1           | true            |
+      | 1  | context | The context | Why providing suggestions | 0     | /context     | suggestionsWS>master>/context | ```thegardener\n{\n  "page" :\n     {\n        "label": "Read documentation",\n        "description": "How to read documentation provided by theGardener ?"\n     }\n}\n```\n```thegardener\n{\n  "openApi" :\n     {\n        "openApiUrl": "http://theGardener.com/api/docs/swagger.json",\n        "openApiType": "model",\n        "ref": "#/definitions/Project",\n        "deep": 1\n     }\n}\n``` | 1           | true            |
 
-    When the swagger.json hosted on "http://theGardener/api/docs/swagger.json" is now
+    When the swagger.json hosted on "http://theGardener.com/api/docs/swagger.json" is now
 """
 {
   "swagger" : "2.0",

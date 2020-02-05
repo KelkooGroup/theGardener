@@ -19,6 +19,9 @@ import models.Feature._
 import net.ruippeixotog.scalascraper.browser._
 import org.apache.commons.io._
 import org.eclipse.jgit.api._
+import org.mockito.Matchers.any
+import org.mockito.Mockito._
+import org.mockito.invocation.InvocationOnMock
 import org.scalatest._
 import org.scalatestplus.mockito._
 import play.api.{Application, Logging, Mode}
@@ -39,6 +42,7 @@ import services._
 import services.clients.{OpenApiClient, ReplicaClient}
 import steps.CommonSteps.include
 import steps.Injector._
+import utils.CustomConfigSystemReader.overrideSystemGitConfig
 import utils._
 
 import scala.collection.JavaConverters._
@@ -72,6 +76,8 @@ object CommonSteps extends MockitoSugar with MustMatchers {
   implicit val projectFormat = Json.format[Project]
   implicit val ec: ExecutionContext = ExecutionContext.global
 
+  overrideSystemGitConfig()
+
   val fakeOpenApiClient: OpenApiClient = mock[OpenApiClient]
 
   var response: Future[Result] = _
@@ -98,15 +104,15 @@ object CommonSteps extends MockitoSugar with MustMatchers {
   val actorSystem = inject[akka.actor.ActorSystem]
   val asyncCache = inject[AsyncCacheApi]
   val cache = new DefaultSyncCacheApi(asyncCache)
-  val pageServiceCache =  new PageServiceCache(cache)
-  val spyPageServiceCache =  spy(pageServiceCache)
-  val pageService = new PageService(conf,projectRepository,directoryRepository,pageRepository,gherkinRepository,fakeOpenApiClient,pageServiceCache)
+  val pageServiceCache = new PageServiceCache(cache)
+  val spyPageServiceCache = spy(pageServiceCache)
+  val pageService = new PageService(conf, projectRepository, directoryRepository, pageRepository, gherkinRepository, fakeOpenApiClient, pageServiceCache)
   val spyPageService = spy(pageService)
-  val menuService = new MenuService(hierarchyRepository,projectRepository,branchRepository,featureRepository,directoryRepository,pageRepository,cache)
+  val menuService = new MenuService(hierarchyRepository, projectRepository, branchRepository, featureRepository, directoryRepository, pageRepository, cache)
   val spyMenuService = spy(menuService)
-  val replicaService = new ReplicaClient(conf,wsClient)
+  val replicaService = new ReplicaClient(conf, wsClient)
   val spyReplicaService = spy(replicaService)
-  val projectService = new ProjectService(projectRepository,gitService,featureService,featureRepository,branchRepository,directoryRepository,pageRepository,menuService,pageService,conf,environment,actorSystem)
+  val projectService = new ProjectService(projectRepository, gitService, featureService, featureRepository, branchRepository, directoryRepository, pageRepository, menuService, pageService, conf, environment, actorSystem)
   val spyProjectService = spy(projectService)
 
 
@@ -306,13 +312,22 @@ Scenario: providing several book suggestions
     await(asyncCache.removeAll())
   }
 
-  Given("""^we have the following swagger.json hosted on "([^"]*)"$""") { (swaggerJsonUrl: String, expected: String) =>
-    doReturn(Future.successful(expected)).when(fakeOpenApiClient).getOpenApiJsonString(swaggerJsonUrl)
+  Given("""^we have the following swagger.json hosted on "([^"]*)"$""") { (_: String, swaggerJson: String) =>
+    mockOpenApiClient(swaggerJson)
   }
 
-  When("""^the swagger.json hosted on "([^"]*)" is now$"""){ (swaggerJsonUrl: String, expected: String) =>
+  When("""^the swagger.json hosted on "([^"]*)" is now$"""){ (_: String, swaggerJson: String) =>
+    mockOpenApiClient(swaggerJson)
+  }
+
+  private def mockOpenApiClient(swaggerJson: String) = {
     reset(fakeOpenApiClient)
-    doReturn(Future.successful(expected)).when(fakeOpenApiClient).getOpenApiJsonString(swaggerJsonUrl)
+    when(fakeOpenApiClient.getOpenApiDescriptor(any[OpenApiModule](), any[PageJoinProject]())).thenAnswer((invocation: InvocationOnMock) => {
+      val args = invocation.getArguments
+      val openApiModule = args(0).asInstanceOf[OpenApiModule]
+
+      Future.successful(OpenApiClient.parseSwaggerJsonDefinitions(swaggerJson, openApiModule.ref.getOrElse(""), openApiModule.deep, openApiModule.label))
+    })
   }
 
   When("^we go in a browser to url \"([^\"]*)\"$") { url: String =>

@@ -2,36 +2,35 @@ package services.clients
 
 import com.github.ghik.silencer.silent
 import models.{Branch, Directory, OpenApi, OpenApiRow, Page, PageJoinProject, Project, Variable}
-import org.scalatest.{MustMatchers, WordSpec}
 import org.scalatest.concurrent.ScalaFutures
-import services.OpenApiModule
+import org.scalatest.{MustMatchers, WordSpec}
 import org.scalatestplus.mockito.MockitoSugar
+import play.api.mvc.Results.Ok
 import play.api.routing.sird._
 import play.api.test.WsTestClient
 import play.core.server.Server
-import play.api.mvc.Results.Ok
+import services.OpenApiModule
 
+import scala.concurrent.Await
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
-import scala.concurrent.{Await, ExecutionContext}
 
 @silent("Interpolated")
 @silent("missing interpolator")
 class OpenApiClientTest extends WordSpec with MustMatchers with MockitoSugar with ScalaFutures {
 
-  implicit val ec = mock[ExecutionContext]
-
-  val openApiModuleBasic = OpenApiModule(Option("http://theGardener/api/docs/swagger.json"), Option("model"), Option("#/definitions/Project"), Option(1))
+  val openApiModuleBasic = OpenApiModule(Option("/api/docs/swagger.json"), Option("model"), Option("#/definitions/Project"), Option(1))
 
   val openApiModuleWithoutUrl = OpenApiModule(None, Option("model"), Option("#/definitions/Project"), Option(1))
-  val openApiModuleWithoutDeep = OpenApiModule(Option("http://theGardener/api/docs/swagger.json"), Option("model"), Option("#/definitions/Project"))
-  val openApiModuleWithLabel = OpenApiModule(Option("http://theGardener/api/docs/swagger.json"), Option("model"), Option("#/definitions/Project"), Option(1), Option("ProjectLabel"))
-  val openApiModuleWithDeep2 = OpenApiModule(Option("http://theGardener/api/docs/swagger.json"), Option("model"), Option("#/definitions/Project"), Option(2))
+  val openApiModuleWithoutDeep = OpenApiModule(Option("/api/docs/swagger.json"), Option("model"), Option("#/definitions/Project"))
+  val openApiModuleWithLabel = OpenApiModule(Option("/api/docs/swagger.json"), Option("model"), Option("#/definitions/Project"), Option(1), Option("ProjectLabel"))
+  val openApiModuleWithDeep2 = OpenApiModule(Option("/api/docs/swagger.json"), Option("model"), Option("#/definitions/Project"), Option(2))
 
 
   val page = Page(1, "page", "label", "description", 0, Option("markdown"), "relativePath", "path", 1)
   val directory = Directory(1, "directory", "label", "description", 0, "relativePath", "path", 1)
-  val branch = Branch(1, "master", true, "suggestionsWS")
-  val variable = Variable("${openApi.json.url}", "http://theGardener/api/docs/swagger.json")
+  val branch = Branch(1, "master", isStable = true, "suggestionsWS")
+  val variable = Variable("${openApi.json.url}", "/api/docs/swagger.json")
   val project = Project("suggestionsWS", "Suggestions WebServices", "git@github.com:library/suggestionsWS.git", "master", Some("^(^master$)|(^feature\\/.*$)"), Some("test/features"), variables = Option(Seq(variable)))
   val pageJoinProject = PageJoinProject(page, directory, branch, project)
 
@@ -245,38 +244,75 @@ class OpenApiClientTest extends WordSpec with MustMatchers with MockitoSugar wit
 }
       """
 
-  Server.withRouterFromComponents()(cs => {
-    case GET(p"/api/docs/swagger.json") =>
-      cs.defaultActionBuilder(Ok(response1))
-  }) { implicit port =>
-    WsTestClient.withClient { client =>
 
-      val openApiClient = new OpenApiClient(client)
+  "OpenApiClient" should {
+    "parse swagger.json file with base module" in {
 
+      Server.withRouterFromComponents()(cs => {
+        case GET(p"/api/docs/swagger.json") =>
+          cs.defaultActionBuilder(Ok(response1))
+      }) { implicit port =>
+        WsTestClient.withClient { client =>
 
-      "OpenApiClient" should {
-        "parse swagger.json file with base module" in {
+          val openApiClient = new OpenApiClient(client)
 
           val result = Await.result(openApiClient.getOpenApiDescriptor(openApiModuleBasic, pageJoinProject), 10.seconds)
           result.mustBe(expectedResult)
         }
+      }
+    }
 
-        "parse swagger.json file with module without openApiUrl using ${openApi.json.url} variable." in {
+    "parse swagger.json file with module without openApiUrl using ${openApi.json.url} variable." in {
+      Server.withRouterFromComponents()(cs => {
+        case GET(p"/api/docs/swagger.json") =>
+          cs.defaultActionBuilder(Ok(response1))
+      }) { implicit port =>
+        WsTestClient.withClient { client =>
+
+          val openApiClient = new OpenApiClient(client)
+
           val result = Await.result(openApiClient.getOpenApiDescriptor(openApiModuleWithoutUrl, pageJoinProject), 10.seconds)
           result.mustBe(expectedResult)
         }
+      }
+    }
 
-        "parse swagger.json file with module with deep = 2" in {
+    "parse swagger.json file with module with deep = 2" in {
+      Server.withRouterFromComponents()(cs => {
+        case GET(p"/api/docs/swagger.json") =>
+          cs.defaultActionBuilder(Ok(response1))
+      }) { implicit port =>
+        WsTestClient.withClient { client =>
+
+          val openApiClient = new OpenApiClient(client)
           val result = Await.result(openApiClient.getOpenApiDescriptor(openApiModuleWithDeep2, pageJoinProject), 10.seconds)
           result.mustBe(expectedResult.copy(childrenModels = childrenModelDeep2))
         }
+      }
+    }
 
-        "parse swagger.json file with module without deep" in {
+    "parse swagger.json file with module without deep" in {
+      Server.withRouterFromComponents()(cs => {
+        case GET(p"/api/docs/swagger.json") =>
+          cs.defaultActionBuilder(Ok(response1))
+      }) { implicit port =>
+        WsTestClient.withClient { client =>
+
+          val openApiClient = new OpenApiClient(client)
           val result = Await.result(openApiClient.getOpenApiDescriptor(openApiModuleWithoutDeep, pageJoinProject), 10.seconds)
           result.mustBe(expectedResult)
         }
+      }
+    }
 
-        "parse swagger.json file with module with a label" in {
+    "parse swagger.json file with module with a label" in {
+      Server.withRouterFromComponents()(cs => {
+        case GET(p"/api/docs/swagger.json") =>
+          cs.defaultActionBuilder(Ok(response1))
+      }) { implicit port =>
+        WsTestClient.withClient { client =>
+
+          val openApiClient = new OpenApiClient(client)
           val result = Await.result(openApiClient.getOpenApiDescriptor(openApiModuleWithLabel, pageJoinProject), 10.seconds)
           result.mustBe(expectedResult.copy(modelName = "ProjectLabel"))
         }
