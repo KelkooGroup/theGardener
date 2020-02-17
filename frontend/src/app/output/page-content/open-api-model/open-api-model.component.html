@@ -12,11 +12,6 @@
       <td mat-cell *matCellDef="let element"> {{ element.openApiType }} </td>
     </ng-container>
 
-    <ng-container matColumnDef="default">
-      <th mat-header-cell scope="col" *matHeaderCellDef> Default</th>
-      <td mat-cell *matCellDef="let element"> {{ element.default }} </td>
-    </ng-container>
-
     <ng-container matColumnDef="description">
       <th mat-header-cell scope="col" *matHeaderCellDef> Description</th>
       <td mat-cell *matCellDef="let element"> {{ element.description }} </td>
@@ -31,7 +26,7 @@
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
 
-    <div *ngFor="let children of openApiModule.childrenModels">
+  <div *ngFor="let children of openApiModule.childrenModels">
     <app-open-api-model [openApiModule]="children"></app-open-api-model>
-    </div>
+  </div>
 </div>
