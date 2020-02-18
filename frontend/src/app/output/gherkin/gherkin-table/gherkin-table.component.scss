@@ -9,9 +9,12 @@
 
 .book-header-cell {
   color: $color-text-darker;
-  font-weight: 600;
+  word-break: break-all;
+  justify-content: center;
 }
 
 .book-cell {
   color: $color-text-darker;
+  word-break: break-all;
+  justify-content: center;
 }

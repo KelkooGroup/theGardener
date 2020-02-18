@@ -3,11 +3,12 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {GherkinStepComponent} from './gherkin-step.component';
 import {GherkinTableComponent} from '../gherkin-table/gherkin-table.component';
 import {GherkinLongTextComponent} from '../gherkin-long-text/gherkin-long-text.component';
-import {MatExpansionModule, MatTableModule} from '@angular/material';
+import {MatExpansionModule, MatTableModule, MatTabsModule} from '@angular/material';
 import {NgxJsonViewerModule} from 'ngx-json-viewer';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {GherkinStep} from '../../../_models/gherkin';
 import {By} from '@angular/platform-browser';
+
 
 describe('GherkinStepComponent', () => {
   let component: GherkinStepComponent;
@@ -23,6 +24,7 @@ describe('GherkinStepComponent', () => {
       ], imports: [
         MatExpansionModule,
         MatTableModule,
+        MatTabsModule,
         NgxJsonViewerModule,
         NoopAnimationsModule,
       ]
