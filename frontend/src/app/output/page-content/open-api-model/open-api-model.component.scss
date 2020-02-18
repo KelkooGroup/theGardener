@@ -11,11 +11,13 @@
   color: $color-text-darker;
   font-weight: 600;
   text-align: center;
+  word-break: break-all;
 }
 
 .mat-cell {
   padding-left: 24px;
   color: $color-text-darker;
+  word-break: break-all;
 }
 
 #model-label{

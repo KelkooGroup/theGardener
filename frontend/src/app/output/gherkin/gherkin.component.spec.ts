@@ -7,6 +7,8 @@ import {GherkinTableComponent} from './gherkin-table/gherkin-table.component';
 import {GherkinLongTextComponent} from './gherkin-long-text/gherkin-long-text.component';
 import {NgxJsonViewerModule} from 'ngx-json-viewer';
 import {GherkinScenario, Scenario} from '../../_models/gherkin';
+import {MatTabsModule} from '@angular/material';
+
 
 describe('GherkinComponent', () => {
   let component: GherkinComponent;
@@ -24,6 +26,7 @@ describe('GherkinComponent', () => {
         MatTableModule,
         NoopAnimationsModule,
         NgxJsonViewerModule,
+        MatTabsModule,
       ]
     })
       .compileComponents();

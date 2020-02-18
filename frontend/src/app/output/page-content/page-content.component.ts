@@ -17,6 +17,7 @@ export class PageContentComponent implements OnInit, OnDestroy, AfterViewChecked
   private subscription: Subscription;
   private fragmentSubscription: Subscription;
   private fragment: string;
+  private alreadyScrolled: boolean;
 
   constructor(private activatedRoute: ActivatedRoute,
               private pageService: PageService,
@@ -30,6 +31,7 @@ export class PageContentComponent implements OnInit, OnDestroy, AfterViewChecked
     window.navigateTo = navigateTo(this.router, this.ngZone);
     this.fragmentSubscription = this.activatedRoute.fragment.subscribe(fragment => {
       this.fragment = fragment;
+      this.alreadyScrolled = false;
     });
     this.subscription = combineLatest([
       this.activatedRoute.parent.params,
@@ -58,15 +60,19 @@ export class PageContentComponent implements OnInit, OnDestroy, AfterViewChecked
   }
 
   ngAfterViewChecked(): void {
-    if (this.fragment) {
-      const cmp = document.getElementById(this.fragment);
-      if (cmp) {
-        cmp.scrollIntoView();
-      }
-    } else {
-      const cmp = document.getElementById('top-page');
-      if (cmp) {
-        cmp.scrollIntoView();
+    if(!this.alreadyScrolled) {
+      if (this.fragment) {
+        const cmp = document.getElementById(this.fragment);
+        if (cmp) {
+          cmp.scrollIntoView();
+          this.alreadyScrolled = true;
+        }
+      } else {
+        const cmp = document.getElementById('top-page');
+        if (cmp) {
+          cmp.scrollIntoView();
+          this.alreadyScrolled = true;
+        }
       }
     }
   }
