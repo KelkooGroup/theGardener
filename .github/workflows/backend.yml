@@ -1,0 +1,46 @@
+name: Backend CI
+
+on:
+  push:
+    paths:
+    - '.github/workflows/backend.yml'
+    - 'app/*'
+    - 'conf/*'
+    - 'local-conf/*'
+    - 'project/*'
+    - 'public/*'
+    - 'test/*'
+    - 'build.sbt'
+    - 'scalastyle-config.xml'
+    - 'sonar-project.properties'
+    - 'version.sbt'
+
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Sbt build cache
+      uses: actions/cache@v1
+      with:
+        path: /home/runner/.sbt
+        key: ${{ runner.os }}-sbt-${{ hashFiles('**/project/build.properties')}}
+
+    - name: Yvy build cache
+      uses: actions/cache@v1
+      with:
+        path: /home/runner/.ivy2
+        key: ${{ runner.os }}-sbt-ivy-cache-${{ hashFiles('**/build.sbt')}}-${{ hashFiles('**/project/plugins.sbt')}}
+
+    - name: Run tests
+      run: sbt clean coverage test coverageReport scalastyle scapegoat
+
+    - name: SonarCloud Scan
+      uses: sonarsource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

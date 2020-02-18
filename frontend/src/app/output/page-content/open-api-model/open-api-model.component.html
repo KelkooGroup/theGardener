@@ -26,7 +26,7 @@
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
 
-    <div *ngFor="let children of openApiModule.childrenModels">
+  <div *ngFor="let children of openApiModule.childrenModels">
     <app-open-api-model [openApiModule]="children"></app-open-api-model>
-    </div>
+  </div>
 </div>

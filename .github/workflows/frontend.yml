@@ -1,0 +1,60 @@
+name: Frontend CI
+
+on:
+  push:
+    paths:
+      - '.github/workflows/frontend.yml'
+      - 'frontend/*'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - uses: actions/setup-node@v1
+      with:
+        node-version: '10.x'
+
+    - name: node modules cache
+      uses: actions/cache@v1
+      with:
+        path: frontend/node_modules
+        key: ${{ runner.os }}-node-modules-${{ hashFiles('**/frontend/package-lock.json')}}
+
+    - name: npm cache
+      uses: actions/cache@v1
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('**/frontend/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+
+    - name: npm install
+      run: |
+        npm install -g @angular/cli
+        npm install
+        cd ./node_modules/protractor && npm i webdriver-manager@latest && cd ../..
+        npm run pree2e
+      working-directory: frontend
+
+    - name: npm test
+      run:  |
+        export CI=true
+        ./node_modules/tslint/bin/tslint -t json -o report.json --project . --force
+        ng test --watch=false --progress=false --code-coverage
+      working-directory: frontend
+
+    - name: ng build --prod
+      run: ng build --no-progress --prod --outputPath ../public/dist
+      working-directory: frontend
+
+    - name: SonarCloud Scan
+      uses: sonarsource/sonarcloud-github-action@master
+      with:
+        projectBaseDir: /github/workspace/frontend
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
