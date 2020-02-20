@@ -8,17 +8,20 @@ import {PageService} from '../../_services/page.service';
 import {of} from 'rxjs';
 import {MarkdownModule} from 'ngx-markdown';
 import {Page, PagePart} from '../../_models/page';
-import {MatProgressSpinnerModule, MatSnackBarModule, MatTableModule} from '@angular/material';
+import {MatProgressSpinnerModule, MatSnackBarModule, MatTableModule, MatTabsModule} from '@angular/material';
 import {SafePipe} from '../../safe.pipe';
 import {InternalLinkPipe} from '../../internal-link.pipe';
 import {GherkinComponent} from '../gherkin/gherkin.component';
 import {GherkinStepComponent} from '../gherkin/gherkin-step/gherkin-step.component';
 import {GherkinLongTextComponent} from '../gherkin/gherkin-long-text/gherkin-long-text.component';
 import {GherkinTableComponent} from '../gherkin/gherkin-table/gherkin-table.component';
+import {OpenApiModelComponent} from './open-api-model/open-api-model.component';
 import {NgxJsonViewerModule} from 'ngx-json-viewer';
 import {RemoveHtmlSanitizerPipe} from '../../removehtmlsanitizer.pipe';
 import {RouterTestingModule} from '@angular/router/testing';
 import {AnchorPipe} from '../../anchor.pipe';
+import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+
 
 describe('PageContentComponent', () => {
   let component: PageContentComponent;
@@ -34,6 +37,7 @@ describe('PageContentComponent', () => {
         GherkinStepComponent,
         GherkinLongTextComponent,
         GherkinTableComponent,
+        OpenApiModelComponent,
         SafePipe,
         InternalLinkPipe,
         AnchorPipe,
@@ -44,6 +48,8 @@ describe('PageContentComponent', () => {
         MatProgressSpinnerModule,
         MatSnackBarModule,
         MatTableModule,
+        MatTabsModule,
+        NoopAnimationsModule,
         MarkdownModule.forRoot(),
         NgxJsonViewerModule,
         RouterTestingModule,

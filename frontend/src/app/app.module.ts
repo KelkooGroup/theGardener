@@ -43,9 +43,10 @@ import {NavigateMenuItemComponent} from './output/navigate/navigate-menu/navigat
 import {PageContentComponent} from './output/page-content/page-content.component';
 import {MarkdownModule} from 'ngx-markdown';
 import {SafePipe} from './safe.pipe';
-import { InternalLinkPipe } from './internal-link.pipe';
-import { RemoveHtmlSanitizerPipe } from './removehtmlsanitizer.pipe';
-import { AnchorPipe } from './anchor.pipe';
+import {InternalLinkPipe} from './internal-link.pipe';
+import {RemoveHtmlSanitizerPipe} from './removehtmlsanitizer.pipe';
+import {AnchorPipe} from './anchor.pipe';
+import {OpenApiModelComponent} from './output/page-content/open-api-model/open-api-model.component';
 
 const nonProductionProviders = [{
   provide: HTTP_INTERCEPTORS,
@@ -72,6 +73,7 @@ const nonProductionProviders = [{
     InternalLinkPipe,
     RemoveHtmlSanitizerPipe,
     AnchorPipe,
+    OpenApiModelComponent,
   ],
   imports: [
     HttpClientModule,

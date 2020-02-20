@@ -3,11 +3,12 @@ package repositories
 import anorm.SqlParser._
 import anorm._
 import javax.inject.Inject
-import models.{Branch, Directory, Page, PageJoinProject, Project}
+import models.{Branch, Directory, Page, PageJoinProject, Project, Variable}
 import play.api.db.Database
+import play.api.libs.json.Json
 
 class PageRepository @Inject()(db: Database) {
-
+  implicit val variableFormat = Json.format[Variable]
 
   private val fullJoinProjectParser = for {
 
@@ -20,6 +21,7 @@ class PageRepository @Inject()(db: Database) {
     relativePath <- str("relativePath")
     path <- str("path")
     directoryId <- long("directoryId")
+    dependOnOpenApi <- bool("dependOnOpenApi")
 
     d_id <- long("d_id")
     d_name <- str("d_name")
@@ -42,14 +44,14 @@ class PageRepository @Inject()(db: Database) {
     p_displayedBranches <- str("p_displayedBranches").?
     p_featuresRootPath <- str("p_featuresRootPath").?
     p_documentationRootPath <- str("p_documentationRootPath").?
-
+    p_variables <- str("p_variables").?
   } yield
-       PageJoinProject(
-             Page(id, name, label, description, order, Some(markdown), relativePath, path, directoryId),
-             Directory(d_id, d_name, d_label, d_description, d_order, d_relativePath, d_path, d_branchId),
-             Branch(b_id, b_name, b_isStable, b_projectId),
-             Project(p_id, p_name, p_repositoryUrl, p_stableBranch, p_displayedBranches, p_featuresRootPath, p_documentationRootPath)
-       )
+    PageJoinProject(
+      Page(id, name, label, description, order, Some(markdown), relativePath, path, directoryId, dependOnOpenApi),
+      Directory(d_id, d_name, d_label, d_description, d_order, d_relativePath, d_path, d_branchId),
+      Branch(b_id, b_name, b_isStable, b_projectId),
+      Project(p_id, p_name, p_repositoryUrl, p_stableBranch, p_displayedBranches, p_featuresRootPath, p_documentationRootPath, p_variables.map(Json.parse(_).as[Seq[Variable]]))
+    )
 
 
   private val fullParser = for {
@@ -62,7 +64,8 @@ class PageRepository @Inject()(db: Database) {
     relativePath <- str("relativePath")
     path <- str("path")
     directoryId <- long("directoryId")
-  } yield Page(id, name, label, description, order, Some(markdown), relativePath, path, directoryId)
+    dependOnOpenApi <- bool("dependOnOpenApi")
+  } yield Page(id, name, label, description, order, Some(markdown), relativePath, path, directoryId, dependOnOpenApi)
 
   private val parser = for {
     id <- long("id")
@@ -73,7 +76,8 @@ class PageRepository @Inject()(db: Database) {
     relativePath <- str("relativePath")
     path <- str("path")
     directoryId <- long("directoryId")
-  } yield Page(id, name, label, description, order, None, relativePath, path, directoryId)
+    dependOnOpenApi <- bool("dependOnOpenApi")
+  } yield Page(id, name, label, description, order, None, relativePath, path, directoryId, dependOnOpenApi)
 
   def findAllWithContent(): Seq[Page] = {
     db.withConnection { implicit connection =>
@@ -83,7 +87,13 @@ class PageRepository @Inject()(db: Database) {
 
   def findAll(): Seq[Page] = {
     db.withConnection { implicit connection =>
-      SQL"SELECT id, name, label, description, `order`, relativePath, path, directoryId FROM page".as(parser.*)
+      SQL"SELECT id, name, label, description, `order`, relativePath, path, directoryId, dependOnOpenApi FROM page".as(parser.*)
+    }
+  }
+
+  def findAllDependOnApi(): Seq[Page] = {
+    db.withConnection { implicit connection =>
+      SQL"SELECT id, name, label, description, `order`, relativePath, path, directoryId, dependOnOpenApi FROM page WHERE dependOnOpenApi=true".as(parser.*)
     }
   }
 
@@ -108,7 +118,8 @@ class PageRepository @Inject()(db: Database) {
                    p.stableBranch as p_stableBranch,
                    p.displayedBranches as p_displayedBranches,
                    p.featuresRootPath as p_featuresRootPath,
-                   p.documentationRootPath as p_documentationRootPath
+                   p.documentationRootPath as p_documentationRootPath,
+                   p.variables as p_variables
                   from page pg
                       join directory d on d.id = pg.directoryId
                       join branch b on b.id = d.branchId
@@ -120,7 +131,7 @@ class PageRepository @Inject()(db: Database) {
 
   def findAllByDirectoryId(directoryId: Long): Seq[Page] = {
     db.withConnection { implicit connection =>
-      SQL"SELECT id, name, label, description, `order`, relativePath, path, directoryId FROM page WHERE directoryId = $directoryId".as(parser.*)
+      SQL"SELECT id, name, label, description, `order`, relativePath, path, directoryId, dependOnOpenApi FROM page WHERE directoryId = $directoryId".as(parser.*)
     }
   }
 
@@ -129,15 +140,15 @@ class PageRepository @Inject()(db: Database) {
 
       val id: Option[Long] = findById(page.id).orElse(findByDirectoryIdAndName(page.directoryId, page.name)) match {
         case Some(existingPage) =>
-          SQL"""REPLACE INTO page (id, name, label, description, `order`, markdown, relativePath, path, directoryId)
-               VALUES (${existingPage.id},${page.name},${page.label},${page.description},${page.order},${page.markdown},${page.relativePath},${page.path},${page.directoryId})"""
+          SQL"""REPLACE INTO page (id, name, label, description, `order`, markdown, relativePath, path, directoryId, dependOnOpenApi)
+               VALUES (${existingPage.id},${page.name},${page.label},${page.description},${page.order},${page.markdown},${page.relativePath},${page.path},${page.directoryId},${page.dependOnOpenApi})"""
             .executeUpdate()
 
           Some(existingPage.id)
 
         case _ =>
-          SQL"""INSERT INTO page (name, label, description, `order`, markdown, relativePath, path, directoryId)
-               VALUES (${page.name},${page.label},${page.description},${page.order},${page.markdown},${page.relativePath},${page.path},${page.directoryId})"""
+          SQL"""INSERT INTO page (name, label, description, `order`, markdown, relativePath, path, directoryId, dependOnOpenApi)
+               VALUES (${page.name},${page.label},${page.description},${page.order},${page.markdown},${page.relativePath},${page.path},${page.directoryId},${page.dependOnOpenApi})"""
             .executeInsert()
       }
 
@@ -171,7 +182,7 @@ class PageRepository @Inject()(db: Database) {
 
   def deleteAllByStartingPath(basePath: String): Unit = {
     db.withConnection { implicit connection =>
-      SQL(s"DELETE FROM page WHERE path like '$basePath%' ") .executeUpdate()
+      SQL(s"DELETE FROM page WHERE path like '$basePath%' ").executeUpdate()
       ()
     }
   }
@@ -247,7 +258,8 @@ class PageRepository @Inject()(db: Database) {
                    p.stableBranch as p_stableBranch,
                    p.displayedBranches as p_displayedBranches,
                    p.featuresRootPath as p_featuresRootPath,
-                   p.documentationRootPath as p_documentationRootPath
+                   p.documentationRootPath as p_documentationRootPath,
+                   p.variables as p_variables
                   from page pg
                       join directory d on d.id = pg.directoryId
                       join branch b on b.id = d.branchId
@@ -256,7 +268,6 @@ class PageRepository @Inject()(db: Database) {
                """.as(fullJoinProjectParser.*).headOption
     }
   }
-
 
 
   def existsByDirectoryIdAndName(directoryId: Long, name: String): Boolean = {

@@ -11,6 +11,7 @@ export class GherkinLongTextComponent implements OnInit {
 
   isJson: boolean;
   json: object;
+  rawJson: string;
 
   constructor() {
   }
@@ -19,9 +20,10 @@ export class GherkinLongTextComponent implements OnInit {
     try {
       this.json = JSON.parse(this.longText);
       this.isJson = true;
+      this.rawJson = JSON.stringify(this.json, undefined, 2);
+
     } catch (e) {
       this.isJson = false;
     }
   }
-
 }

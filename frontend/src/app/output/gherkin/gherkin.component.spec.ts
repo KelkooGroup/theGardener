@@ -1,12 +1,13 @@
 import {GherkinComponent} from './gherkin.component';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {MatTableModule} from '@angular/material';
+import {MatTableModule, MatTabsModule} from '@angular/material';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {GherkinStepComponent} from './gherkin-step/gherkin-step.component';
 import {GherkinTableComponent} from './gherkin-table/gherkin-table.component';
 import {GherkinLongTextComponent} from './gherkin-long-text/gherkin-long-text.component';
 import {NgxJsonViewerModule} from 'ngx-json-viewer';
 import {GherkinScenario, Scenario} from '../../_models/gherkin';
+
 
 describe('GherkinComponent', () => {
   let component: GherkinComponent;
@@ -24,6 +25,7 @@ describe('GherkinComponent', () => {
         MatTableModule,
         NoopAnimationsModule,
         NgxJsonViewerModule,
+        MatTabsModule,
       ]
     })
       .compileComponents();

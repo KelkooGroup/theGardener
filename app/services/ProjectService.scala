@@ -15,6 +15,7 @@ import utils._
 import scala.concurrent._
 import scala.concurrent.duration._
 
+@Singleton
 class ProjectService @Inject()(projectRepository: ProjectRepository, gitService: GitService, featureService: FeatureService,
                                featureRepository: FeatureRepository, branchRepository: BranchRepository, directoryRepository: DirectoryRepository,
                                pageRepository: PageRepository, menuService: MenuService, pageService: PageService,
@@ -105,7 +106,7 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
     projectRepository.findById(projectId).map { project =>
       val branches = branchRepository.findAllByProjectId(projectId)
       deleteEntitiesRelatedToBranchesInDatabase(projectId, branches.map(_.name).toSet)
-      branches.map { branch =>
+      branches.foreach { branch =>
         parseAndSaveFeatures(project, branch)
         parseAndSaveDirectoriesAndPages(project, branch)
       }
@@ -255,7 +256,7 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
   }
 
   def canStartGlobalSynchro(): Boolean = {
-    if (isGlobalSynchroOnGoing) {
+    if (isGlobalSynchroOnGoing()) {
       false
     } else {
       new File(lockFile).createNewFile()
@@ -266,14 +267,14 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
 
   def synchronizeAll(): Future[Unit] = {
 
-    if (canStartGlobalSynchro) {
+    if (canStartGlobalSynchro()) {
       logger.info("Start synchronizing projects")
 
       val projects = projectRepository.findAll()
 
       FutureExt.sequentially(projects)(synchronize).flatMap(_ => Future.fromTry(menuService.refreshCache())).map { _ =>
         logger.info(s"Synchronization of ${projects.size} projects is finished")
-        finishGlobalSynchro
+        finishGlobalSynchro()
         ()
       }
 
@@ -285,7 +286,7 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
 
   def refreshAllPagesFromAllProjects(): Unit = {
     logger.info("Start refreshing pages not in cache")
-    projectRepository.findAll().map(p => refreshAllPages(p,false))
+    projectRepository.findAll().foreach(p => refreshAllPages(p, forceRefresh = false))
     logger.info("Pages are now all in cache")
     ()
   }

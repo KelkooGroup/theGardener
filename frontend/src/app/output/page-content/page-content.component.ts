@@ -3,7 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {catchError, map, switchMap} from 'rxjs/operators';
 import {combineLatest, of, Subscription} from 'rxjs';
 import {PageService} from '../../_services/page.service';
-import {IncludeExternalPagePart, MarkdownPart, Page, PagePart, ScenarioPart} from '../../_models/page';
+import {IncludeExternalPagePart, MarkdownPart, OpenApiPart, Page, PagePart, ScenarioPart} from '../../_models/page';
 import {NotificationService} from '../../_services/notification.service';
 
 
@@ -17,6 +17,7 @@ export class PageContentComponent implements OnInit, OnDestroy, AfterViewChecked
   private subscription: Subscription;
   private fragmentSubscription: Subscription;
   private fragment: string;
+  private canScroll: boolean;
 
   constructor(private activatedRoute: ActivatedRoute,
               private pageService: PageService,
@@ -28,8 +29,10 @@ export class PageContentComponent implements OnInit, OnDestroy, AfterViewChecked
   ngOnInit() {
     // @ts-ignore
     window.navigateTo = navigateTo(this.router, this.ngZone);
+    window.addEventListener('scroll', this.scroll,{capture:true});
     this.fragmentSubscription = this.activatedRoute.fragment.subscribe(fragment => {
       this.fragment = fragment;
+      this.canScroll = true;
     });
     this.subscription = combineLatest([
       this.activatedRoute.parent.params,
@@ -58,15 +61,17 @@ export class PageContentComponent implements OnInit, OnDestroy, AfterViewChecked
   }
 
   ngAfterViewChecked(): void {
-    if (this.fragment) {
-      const cmp = document.getElementById(this.fragment);
-      if (cmp) {
-        cmp.scrollIntoView();
-      }
-    } else {
-      const cmp = document.getElementById('top-page');
-      if (cmp) {
-        cmp.scrollIntoView();
+    if(this.canScroll) {
+      if (this.fragment) {
+        const cmp = document.getElementById(this.fragment);
+        if (cmp) {
+          cmp.scrollIntoView();
+        }
+      } else {
+        const cmp = document.getElementById('top-page');
+        if (cmp) {
+          cmp.scrollIntoView();
+        }
       }
     }
   }
@@ -74,7 +79,12 @@ export class PageContentComponent implements OnInit, OnDestroy, AfterViewChecked
   ngOnDestroy(): void {
     this.fragmentSubscription.unsubscribe();
     this.subscription.unsubscribe();
+    window.removeEventListener('scroll', this.scroll, true);
   }
+
+  scroll = (): void => {
+    this.canScroll = false;
+  };
 
   getExternalLink(part: PagePart) {
     return (part.data as IncludeExternalPagePart).includeExternalPage;
@@ -86,6 +96,10 @@ export class PageContentComponent implements OnInit, OnDestroy, AfterViewChecked
 
   getScenario(part: PagePart) {
     return (part.data as ScenarioPart).scenarios;
+  }
+
+  getOpenApiModel(part: PagePart) {
+    return (part.data as OpenApiPart).openApi;
   }
 }
 
