@@ -17,7 +17,7 @@ export class PageContentComponent implements OnInit, OnDestroy, AfterViewChecked
   private subscription: Subscription;
   private fragmentSubscription: Subscription;
   private fragment: string;
-  private alreadyScrolled: boolean;
+  private canScroll: boolean;
 
   constructor(private activatedRoute: ActivatedRoute,
               private pageService: PageService,
@@ -29,9 +29,10 @@ export class PageContentComponent implements OnInit, OnDestroy, AfterViewChecked
   ngOnInit() {
     // @ts-ignore
     window.navigateTo = navigateTo(this.router, this.ngZone);
+    window.addEventListener('scroll', this.scroll,{capture:true});
     this.fragmentSubscription = this.activatedRoute.fragment.subscribe(fragment => {
       this.fragment = fragment;
-      this.alreadyScrolled = false;
+      this.canScroll = true;
     });
     this.subscription = combineLatest([
       this.activatedRoute.parent.params,
@@ -60,18 +61,16 @@ export class PageContentComponent implements OnInit, OnDestroy, AfterViewChecked
   }
 
   ngAfterViewChecked(): void {
-    if(!this.alreadyScrolled) {
+    if(this.canScroll) {
       if (this.fragment) {
         const cmp = document.getElementById(this.fragment);
         if (cmp) {
           cmp.scrollIntoView();
-          this.alreadyScrolled = true;
         }
       } else {
         const cmp = document.getElementById('top-page');
         if (cmp) {
           cmp.scrollIntoView();
-          this.alreadyScrolled = true;
         }
       }
     }
@@ -80,7 +79,12 @@ export class PageContentComponent implements OnInit, OnDestroy, AfterViewChecked
   ngOnDestroy(): void {
     this.fragmentSubscription.unsubscribe();
     this.subscription.unsubscribe();
+    window.removeEventListener('scroll', this.scroll, true);
   }
+
+  scroll = (): void => {
+    this.canScroll = false;
+  };
 
   getExternalLink(part: PagePart) {
     return (part.data as IncludeExternalPagePart).includeExternalPage;

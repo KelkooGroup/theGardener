@@ -1,11 +1,11 @@
 <div class="params">
   <div *ngIf="isJson; else simpleTextBlock" class="json">
-    <mat-tab-group>
+    <mat-tab-group >
       <mat-tab label="Listed">
         <ngx-json-viewer [json]="json"></ngx-json-viewer>
       </mat-tab>
       <mat-tab label="Json">
-        <pre id="json"></pre>
+        <pre>{{rawJson}}</pre>
       </mat-tab>
     </mat-tab-group>
   </div>
