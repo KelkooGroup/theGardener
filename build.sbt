@@ -74,7 +74,7 @@ publishArtifact in(Compile, packageDoc) := false
 //Removing the top level directory
 topLevelDirectory := None
 
-val silencerVersion = "1.5.0"
+val silencerVersion = "1.6.0"
 libraryDependencies ++= Seq(
   ws,
   filters,
