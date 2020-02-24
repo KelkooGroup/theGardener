@@ -9,19 +9,17 @@
 ```
 ### [2020-02][1.1.0] 
 
-- [Use OpenAPI resources](https://github.com/KelkooGroup/theGardener/milestone/6)
-- [Improve user experience as a reader](https://github.com/KelkooGroup/theGardener/milestone/9)
-
 The main feature is :
-- include openApi model where you want
+- [Module OpenAPI model display](https://github.com/KelkooGroup/theGardener/issues/62)
 
 The UX improvements are :
-- better code display
-- better Json display
-- better step and markdown table display
+- [Better code display](https://github.com/KelkooGroup/theGardener/issues/250)
+- [Better Json display](https://github.com/KelkooGroup/theGardener/issues/547)
+- [Better step table display](https://github.com/KelkooGroup/theGardener/issues/471)
+- [Better markdown table display](https://github.com/KelkooGroup/theGardener/issues/537)
 
 Bug fixed :
-- automatically scroll to top when we click on something on the page
+- [Automatically scroll to top when we click on something on the page](https://github.com/KelkooGroup/theGardener/issues/514)
 
   
 ### [2020-01][1.0.0] 
