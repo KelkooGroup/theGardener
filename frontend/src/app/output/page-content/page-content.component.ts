@@ -17,7 +17,7 @@ export class PageContentComponent implements OnInit, OnDestroy, AfterViewChecked
   private subscription: Subscription;
   private fragmentSubscription: Subscription;
   private fragment: string;
-  private canScroll: boolean;
+  private canScroll: boolean = true;
 
   constructor(private activatedRoute: ActivatedRoute,
               private pageService: PageService,
@@ -30,6 +30,7 @@ export class PageContentComponent implements OnInit, OnDestroy, AfterViewChecked
     // @ts-ignore
     window.navigateTo = navigateTo(this.router, this.ngZone);
     window.addEventListener('scroll', this.scroll,{capture:true});
+    window.addEventListener('focus', this.focus, {capture:true});
     this.fragmentSubscription = this.activatedRoute.fragment.subscribe(fragment => {
       this.fragment = fragment;
       this.canScroll = true;
@@ -80,10 +81,15 @@ export class PageContentComponent implements OnInit, OnDestroy, AfterViewChecked
     this.fragmentSubscription.unsubscribe();
     this.subscription.unsubscribe();
     window.removeEventListener('scroll', this.scroll, true);
+    window.removeEventListener('focus', this.focus, {capture:true});
   }
 
   scroll = (): void => {
     this.canScroll = false;
+  };
+
+  focus = (): void => {
+    this.canScroll = true ;
   };
 
   getExternalLink(part: PagePart) {

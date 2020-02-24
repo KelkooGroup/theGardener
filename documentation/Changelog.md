@@ -7,7 +7,23 @@
      }
 }
 ```
+### [2020-02][1.1.0] 
 
+- [Use OpenAPI resources](https://github.com/KelkooGroup/theGardener/milestone/6)
+- [Improve user experience as a reader](https://github.com/KelkooGroup/theGardener/milestone/9)
+
+The main features are :
+- include openApi model where you want
+
+the UX improvement are :
+- better code display
+- better Json display
+- better step and markdown table display
+
+bug fixed :
+- automatically scroll to top when we click on something on the page
+
+  
 ### [2020-01][1.0.0] 
 
 - [Generate documentation driven by markdown](https://github.com/KelkooGroup/theGardener/milestone/5)
