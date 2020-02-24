@@ -12,15 +12,15 @@
 - [Use OpenAPI resources](https://github.com/KelkooGroup/theGardener/milestone/6)
 - [Improve user experience as a reader](https://github.com/KelkooGroup/theGardener/milestone/9)
 
-The main features are :
+The main feature is :
 - include openApi model where you want
 
-the UX improvement are :
+The UX improvements are :
 - better code display
 - better Json display
 - better step and markdown table display
 
-bug fixed :
+Bug fixed :
 - automatically scroll to top when we click on something on the page
 
   
