@@ -1,5 +1,5 @@
 import {BrowserModule} from '@angular/platform-browser';
-import {NgModule} from '@angular/core';
+import {NgModule, SecurityContext} from '@angular/core';
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {APIInterceptor} from './http-interceptor';
 import {AppComponent} from './app.component';
@@ -102,7 +102,9 @@ const nonProductionProviders = [{
     MatProgressBarModule,
     MatSnackBarModule,
     CdkAccordionModule,
-    MarkdownModule.forRoot(),
+    MarkdownModule.forRoot({
+      sanitize: SecurityContext.NONE
+    }),
   ],
   providers: [
     ...!environment.production ? nonProductionProviders : [],
