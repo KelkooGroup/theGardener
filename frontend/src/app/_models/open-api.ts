@@ -20,3 +20,8 @@ export interface OpenApiPath {
   openApiSpec: JSON;
   errors: Array<string>
 }
+
+
+export interface OpenApiPaths {
+  OpenApiSpec: Object;
+}
