@@ -47,6 +47,7 @@ import {InternalLinkPipe} from './internal-link.pipe';
 import {RemoveHtmlSanitizerPipe} from './removehtmlsanitizer.pipe';
 import {AnchorPipe} from './anchor.pipe';
 import {OpenApiModelComponent} from './output/page-content/open-api-model/open-api-model.component';
+import { OpenApiEndPointsComponent } from './output/page-content/open-api-end-points/open-api-end-points.component';
 
 const nonProductionProviders = [{
   provide: HTTP_INTERCEPTORS,
@@ -74,6 +75,7 @@ const nonProductionProviders = [{
     RemoveHtmlSanitizerPipe,
     AnchorPipe,
     OpenApiModelComponent,
+    OpenApiEndPointsComponent,
   ],
   imports: [
     HttpClientModule,

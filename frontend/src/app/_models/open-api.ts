@@ -13,3 +13,8 @@ export interface OpenApiModel {
   openApiRows: Array<OpenApiModelRow>;
   childrenModels: Array<OpenApiModel>;
 }
+
+
+export interface OpenApiPaths {
+  OpenApiSpec: Object;
+}
