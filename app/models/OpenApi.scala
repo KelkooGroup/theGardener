@@ -18,3 +18,6 @@ case class OpenApiPath(openApiSpec: JsValue, errors: Seq[String] = Seq())
 object OpenApiPath {
   implicit val openApiPathFormat = Json.format[OpenApiPath]
 }
+
+
+case class OpenApiPath(openApiSpec: JsValue)
