@@ -1,3 +1,4 @@
+import {JsonObject} from "@angular/compiler-cli/ngcc/src/packages/entry_point";
 
 export interface OpenApiModelRow {
   title: string;
@@ -15,6 +16,6 @@ export interface OpenApiModel {
 }
 
 
-export interface OpenApiPaths {
-  OpenApiSpec: Object;
+export interface OpenApiPath {
+  OpenApiSpec: JsonObject;
 }

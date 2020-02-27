@@ -21,7 +21,11 @@
           <app-open-api-model [openApiModule]="getOpenApiModel(part)"></app-open-api-model>
         </div>
       </div>
+      <div *ngSwitchCase="'openApiPath'">
+        <div class="openApi">
+          <app-open-api-end-points [openApiPathJson]="getOpenApiPaths(part)"></app-open-api-end-points>
+        </div>
+      </div>
     </div>
   </div>
 </div>
-<app-open-api-end-points></app-open-api-end-points>
