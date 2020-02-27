@@ -10,3 +10,11 @@ object OpenApi {
   implicit val openApiRowFormat = Json.format[OpenApiRow]
   implicit val openApiFormat = Json.format[OpenApi]
 }
+
+
+case class OpenApiPath(openApiSpec: JsValue)
+
+
+object OpenApiPath {
+  implicit val openApiPathFormat = Json.format[OpenApiPath]
+}

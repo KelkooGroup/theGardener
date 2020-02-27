@@ -1,11 +1,11 @@
 package controllers.dto
 
-import models.{Feature, OpenApi, Page}
+import models.{Feature, OpenApi, OpenApiPath, Page}
 import play.api.libs.json.Json
 import services.PageFragmentUnderProcessing
 
 
-case class PageFragmentContent(markdown: Option[String] = None, scenarios: Option[Feature] = None, includeExternalPage: Option[String] = None, openApi: Option[OpenApi] = None)
+case class PageFragmentContent(markdown: Option[String] = None, scenarios: Option[Feature] = None, includeExternalPage: Option[String] = None, openApi: Option[OpenApi] = None, openApiPath: Option[OpenApiPath] = None)
 
 object PageFragmentContent {
   implicit val pageFormat = Json.format[PageFragmentContent]
@@ -20,8 +20,10 @@ object PageFragment {
   val TypeScenarios = "scenarios"
   val TypeIncludeExternalPage = "includeExternalPage"
   val TypeOpenApi = "openApi"
+  val TypeOpenApiPath = "openApiPath"
   val TypeUnknown = "unknown"
 
+  // scalastyle:off cyclomatic.complexity
   def apply(pageFragmentUnderProcessing: PageFragmentUnderProcessing): PageFragment = {
     pageFragmentUnderProcessing.markdown match {
       case Some(markdown) => new PageFragment(TypeMarkdown, new PageFragmentContent(markdown = Some(markdown)))
@@ -33,8 +35,12 @@ object PageFragment {
           case _ => pageFragmentUnderProcessing.openApi match {
             case Some(openApi) =>
               new PageFragment(TypeOpenApi, new PageFragmentContent(openApi = Some(openApi)))
-            case _ =>
-              new PageFragment(TypeUnknown, new PageFragmentContent())
+            case _ => pageFragmentUnderProcessing.openApiPath match {
+              case Some(openApiPath) =>
+                new PageFragment(TypeOpenApiPath, new PageFragmentContent(openApiPath = Some(openApiPath)))
+              case _ =>
+                new PageFragment(TypeUnknown, new PageFragmentContent())
+            }
           }
         }
       }

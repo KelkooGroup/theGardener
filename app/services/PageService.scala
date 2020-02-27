@@ -29,6 +29,7 @@ case class IncludeExternalPageModule(url: String)
 
 case class OpenApiModule(openApiUrl: Option[String] = None, openApiType: Option[String] = None, ref: Option[String] = None, deep: Option[Int] = None, label: Option[String] = None)
 
+case class OpenApiPathModule(openApiUrl: Option[String] = None, ref: Option[Seq[String]] = None, methods: Option[Seq[String]] = None)
 
 case class Items(openApiType: String, ref: String)
 
@@ -40,7 +41,8 @@ case class Module(directory: Option[DirectoryMeta] = None,
                   page: Option[PageMeta] = None,
                   scenarios: Option[ScenariosModule] = None,
                   includeExternalPage: Option[IncludeExternalPageModule] = None,
-                  openApi: Option[OpenApiModule] = None)
+                  openApi: Option[OpenApiModule] = None,
+                  openApiPath: Option[OpenApiPathModule] = None)
 
 sealed trait PageFragmentUnderProcessingStatus
 
@@ -58,7 +60,9 @@ case class PageFragmentUnderProcessing(status: PageFragmentUnderProcessingStatus
                                        scenarios: Option[Feature] = None,
                                        includeExternalPage: Option[IncludeExternalPageModule] = None,
                                        openApi: Option[OpenApi] = None,
-                                       openApiModule: Option[OpenApiModule] = None)
+                                       openApiModule: Option[OpenApiModule] = None,
+                                       openApiPath: Option[OpenApiPath] = None,
+                                       openApiPathModule: Option[OpenApiPathModule] = None)
 
 case class PageWithContent(page: Page, content: Seq[PageFragment])
 
@@ -91,6 +95,7 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
   implicit val tagsModuleFormat = Json.format[TagsModule]
   implicit val scenariosModuleMetaFormat = Json.format[ScenariosModule]
   implicit val openApiModuleFormat = Json.format[OpenApiModule]
+  implicit val openApiPathModuleFormat = Json.format[OpenApiPathModule]
   implicit val metaFormat = Json.format[Module]
   implicit val itemsFormat = Json.format[Items]
 
@@ -288,17 +293,20 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
     if (line.trim.startsWith(MarkdownCodeStart)) {
 
       currentFragment.data.flatMap(data => parseModule(data.replace(ModuleStart, ""), path)) match {
-        case Some(Module(_, Some(page), _, _, _)) =>
+        case Some(Module(_, Some(page), _, _, _, _)) =>
           (fragments :+ currentFragment.copy(page = Some(page)), PageFragmentUnderProcessing())
 
-        case Some(Module(_, _, Some(scenarios), _, _)) =>
+        case Some(Module(_, _, Some(scenarios), _, _, _)) =>
           (fragments :+ currentFragment.copy(scenariosModule = Some(scenarios)), PageFragmentUnderProcessing())
 
-        case Some(Module(_, _, _, Some(include), _)) =>
+        case Some(Module(_, _, _, Some(include), _, _)) =>
           (fragments :+ currentFragment.copy(includeExternalPage = Some(include)), PageFragmentUnderProcessing())
 
-        case Some(Module(_, _, _, _, Some(openApi))) =>
+        case Some(Module(_, _, _, _, Some(openApi),_)) =>
           (fragments :+ currentFragment.copy(openApiModule = Some(openApi)), PageFragmentUnderProcessing())
+
+        case Some(Module(_, _, _, _, _, Some(openApiPath))) =>
+          (fragments :+ currentFragment.copy(openApiPathModule = Some(openApiPath)), PageFragmentUnderProcessing())
 
         case _ =>
           (fragments, PageFragmentUnderProcessing())
@@ -311,7 +319,7 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
   def processPageFragments(fragments: Seq[PageFragmentUnderProcessing], pageJoinProject: PageJoinProject): Future[Seq[PageFragment]] = {
     Future.sequence(fragments.map {
 
-      case PageFragmentUnderProcessing(PageFragmentStatusModule, _, _, _, Some(scenariosModule), _, _, _, _) =>
+      case PageFragmentUnderProcessing(PageFragmentStatusModule, _, _, _, Some(scenariosModule), _, _, _, _, _, _) =>
         val feature = buildFeature(scenariosModule, pageJoinProject)
 
         if (scenariosModule.includeBackground.getOrElse(false)) {
@@ -321,7 +329,7 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
           Future.successful(PageFragmentUnderProcessing(scenarios = feature.map(_.copy(background = None))))
         }
 
-      case PageFragmentUnderProcessing(PageFragmentStatusMarkdown, _, Some(rawMarkdown), _, _, _, _, _, _) =>
+      case PageFragmentUnderProcessing(PageFragmentStatusMarkdown, _, Some(rawMarkdown), _, _, _, _, _, _, _, _) =>
 
         val images = findPageImagesWithRelativePath(rawMarkdown)
         val references = findPageReferencesWithRelativePath(rawMarkdown)
@@ -331,8 +339,10 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
 
         Future.successful(PageFragmentUnderProcessing(markdown = Some(markdown)))
 
-      case PageFragmentUnderProcessing(PageFragmentStatusModule, _, _, _, _, _, _, _, Some(openApiModule)) =>
+      case PageFragmentUnderProcessing(PageFragmentStatusModule, _, _, _, _, _, _, _, Some(openApiModule), _, _) =>
         openApiClient.getOpenApiDescriptor(openApiModule, pageJoinProject).flatMap(openApiModel => Future.successful(PageFragmentUnderProcessing(openApi = Some(openApiModel))))
+      case PageFragmentUnderProcessing(PageFragmentStatusModule, _, _, _, _, _, _, _, _, _, Some(openApiPathModule)) =>
+        openApiClient.getOpenApiPathSpec(openApiPathModule, pageJoinProject).flatMap(openApiPath => Future.successful(PageFragmentUnderProcessing(openApiPath = Some(openApiPath))))
       case fragmentUnderProcessing => Future.successful(fragmentUnderProcessing)
 
     }.map(fragments => fragments.map(PageFragment(_)))).map(_.filter(fragment => fragment.`type` != PageFragment.TypeUnknown))

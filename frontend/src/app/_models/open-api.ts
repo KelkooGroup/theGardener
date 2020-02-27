@@ -15,6 +15,6 @@ export interface OpenApiModel {
 }
 
 
-export interface OpenApiPaths {
-  OpenApiSpec: Object;
+export interface OpenApiPath {
+  openApiSpec: string;
 }

@@ -313,3 +313,19 @@ this module will be displayed as follows:
      }
 }
 ```
+
+
+```thegardener
+{
+    "openApiPath" :
+      {
+        "openApiUrl": "https://thegardener.kelkoogroup.com/api/docs/swagger.json",
+        "ref": [
+                 "/api/projects/{id}",
+                 "/api/directories"
+                ],
+        "methods": ["GET"]
+      }
+}
+
+```
