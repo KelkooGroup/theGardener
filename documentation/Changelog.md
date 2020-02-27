@@ -7,7 +7,21 @@
      }
 }
 ```
+### [2020-02][1.1.0] 
 
+The main feature is :
+- [Module OpenAPI model display](https://github.com/KelkooGroup/theGardener/issues/62)
+
+The UX improvements are :
+- [Better code display](https://github.com/KelkooGroup/theGardener/issues/250)
+- [Better Json display](https://github.com/KelkooGroup/theGardener/issues/547)
+- [Better step table display](https://github.com/KelkooGroup/theGardener/issues/471)
+- [Better markdown table display](https://github.com/KelkooGroup/theGardener/issues/537)
+
+Bug fixed :
+- [Automatically scroll to top when we click on something on the page](https://github.com/KelkooGroup/theGardener/issues/514)
+
+  
 ### [2020-01][1.0.0] 
 
 - [Generate documentation driven by markdown](https://github.com/KelkooGroup/theGardener/milestone/5)

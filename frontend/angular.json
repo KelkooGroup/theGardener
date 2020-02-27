@@ -48,7 +48,10 @@
               "node_modules/prismjs/components/prism-scala.js",
               "node_modules/prismjs/components/prism-python.js",
               "node_modules/prismjs/components/prism-markup.js",
-              "node_modules/prismjs/components/prism-css.min.js"
+              "node_modules/prismjs/components/prism-css.js",
+              "node_modules/prismjs/components/prism-json.js",
+              "node_modules/prismjs/components/prism-bash.js",
+              "node_modules/prismjs/components/prism-git.js"
             ]
           },
           "configurations": {

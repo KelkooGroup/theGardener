@@ -1,5 +1,5 @@
 import {Component, NgZone, OnDestroy, OnInit, AfterViewChecked} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import {catchError, map, switchMap} from 'rxjs/operators';
 import {combineLatest, of, Subscription} from 'rxjs';
 import {PageService} from '../../_services/page.service';
@@ -16,8 +16,9 @@ export class PageContentComponent implements OnInit, OnDestroy, AfterViewChecked
   page: Page;
   private subscription: Subscription;
   private fragmentSubscription: Subscription;
+  private routerSubscription: Subscription;
   private fragment: string;
-  private canScroll: boolean;
+  private canScroll: boolean = true;
 
   constructor(private activatedRoute: ActivatedRoute,
               private pageService: PageService,
@@ -29,10 +30,20 @@ export class PageContentComponent implements OnInit, OnDestroy, AfterViewChecked
   ngOnInit() {
     // @ts-ignore
     window.navigateTo = navigateTo(this.router, this.ngZone);
-    window.addEventListener('scroll', this.scroll,{capture:true});
+    window.addEventListener('scroll', this.scroll, {capture: true});
     this.fragmentSubscription = this.activatedRoute.fragment.subscribe(fragment => {
       this.fragment = fragment;
       this.canScroll = true;
+    });
+    this.routerSubscription = this.router.events.subscribe((evt) => {
+      if (evt instanceof NavigationEnd) {
+        if (!this.fragment) {
+          const cmp = document.getElementById('top-page');
+          if (cmp) {
+            cmp.scrollIntoView();
+          }
+        }
+      }
     });
     this.subscription = combineLatest([
       this.activatedRoute.parent.params,
@@ -61,14 +72,9 @@ export class PageContentComponent implements OnInit, OnDestroy, AfterViewChecked
   }
 
   ngAfterViewChecked(): void {
-    if(this.canScroll) {
+    if (this.canScroll) {
       if (this.fragment) {
         const cmp = document.getElementById(this.fragment);
-        if (cmp) {
-          cmp.scrollIntoView();
-        }
-      } else {
-        const cmp = document.getElementById('top-page');
         if (cmp) {
           cmp.scrollIntoView();
         }
@@ -79,6 +85,7 @@ export class PageContentComponent implements OnInit, OnDestroy, AfterViewChecked
   ngOnDestroy(): void {
     this.fragmentSubscription.unsubscribe();
     this.subscription.unsubscribe();
+    this.routerSubscription.unsubscribe();
     window.removeEventListener('scroll', this.scroll, true);
   }
 
