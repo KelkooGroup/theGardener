@@ -1007,3 +1007,58 @@ Feature: Generate a documentation page with OpenApi Module
   }
 ]
 """
+
+
+  @level_2_technical_details @error_case @ongoing
+  Scenario: generate a documentation page with the inclusion of an openApi model with server not responding
+    Given we have the following markdown for the page "suggestionsWS>master>/context"
+"""
+```thegardener
+{
+  "page" :
+     {
+        "label": "Read documentation",
+        "description": "How to read documentation provided by theGardener ?"
+     }
+}
+```
+```thegardener
+{
+  "openApi" :
+     {
+        "openApiUrl": "http://theGardener.com/api/docs/swagger.json",
+        "openApiType": "model",
+        "ref": "#/definitions/Project",
+        "deep": 1
+     }
+}
+```
+"""
+    And swagger.json cannot be requested
+    When I perform a "GET" on following URL "/api/pages?path=suggestionsWS>master>/context"
+    Then I get the following json response body
+"""
+[
+  {
+    "path": "suggestionsWS>master>/context",
+    "relativePath": "/context",
+    "name": "context",
+    "label": "The context",
+    "description": "Why providing suggestions",
+    "order": 0,
+    "content": [
+      {
+        "type": "openApi",
+        "data": {
+          "openApi": {
+            "error": "Cannot load Open API"
+          }
+        }
+      }
+    ]
+  }
+]
+"""
+    And we have now those pages in the database
+      | id | name    | label       | description               | order | relativePath | path                          | markdown                                                                                                                                                                                                                                                                                                                                                                                              | directoryId | dependOnOpenApi |
+      | 1  | context | The context | Why providing suggestions | 0     | /context     | suggestionsWS>master>/context | ```thegardener\n{\n  "page" :\n     {\n        "label": "Read documentation",\n        "description": "How to read documentation provided by theGardener ?"\n     }\n}\n```\n```thegardener\n{\n  "openApi" :\n     {\n        "openApiUrl": "http://theGardener.com/api/docs/swagger.json",\n        "openApiType": "model",\n        "ref": "#/definitions/Project",\n        "deep": 1\n     }\n}\n``` | 1           | true            |

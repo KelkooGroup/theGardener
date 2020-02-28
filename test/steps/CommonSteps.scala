@@ -320,6 +320,11 @@ Scenario: providing several book suggestions
     mockOpenApiClient(swaggerJson)
   }
 
+  Given("""^swagger\.json cannot be requested$"""){ () =>
+    reset(fakeOpenApiClient)
+    when(fakeOpenApiClient.getOpenApiDescriptor(any[OpenApiModule](), any[PageJoinProject]())).thenReturn(Future.failed(new Throwable("ERROR HTTP")))
+  }
+
   private def mockOpenApiClient(swaggerJson: String) = {
     reset(fakeOpenApiClient)
     when(fakeOpenApiClient.getOpenApiDescriptor(any[OpenApiModule](), any[PageJoinProject]())).thenAnswer((invocation: InvocationOnMock) => {
