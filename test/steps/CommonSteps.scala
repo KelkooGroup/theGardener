@@ -322,7 +322,7 @@ Scenario: providing several book suggestions
 
   Given("""^swagger\.json cannot be requested$"""){ () =>
     reset(fakeOpenApiClient)
-    when(fakeOpenApiClient.getOpenApiDescriptor(any[OpenApiModule](), any[PageJoinProject]())).thenReturn(Future.failed(new Throwable("ERROR HTTP")))
+    when(fakeOpenApiClient.getOpenApiDescriptor(any[OpenApiModule](), any[PageJoinProject]())).thenReturn(Future.successful(OpenApi("",Option(Seq()),Seq(),Seq(),Seq("ERROR HTTP"))))
   }
 
   private def mockOpenApiClient(swaggerJson: String) = {

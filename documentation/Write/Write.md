@@ -313,15 +313,3 @@ this module will be displayed as follows:
      }
 }
 ```
-
-```thegardener
-{
-  "openApi" : 
-     {
-        "openApiUrl": "https://dc1-thegardener-dev-srv-01.dev.dc1.kelkoo.net:9000/api/docs/swagger.json",
-        "openApiType": "model",
-        "ref": "#/definitions/Project",
-        "deep": 1
-     }
-}
-```

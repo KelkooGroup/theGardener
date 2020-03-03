@@ -1,8 +1,9 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {OpenApiModelComponent} from './open-api-model.component';
-import {MatTableModule} from '@angular/material';
+import {MatTableModule, MatSnackBarModule} from '@angular/material';
 import {OpenApiModel} from '../../../_models/open-api';
+import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 
 describe('OpenApiModelComponent', () => {
   let component: OpenApiModelComponent;
@@ -11,7 +12,11 @@ describe('OpenApiModelComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [OpenApiModelComponent],
-      imports: [MatTableModule]
+      imports: [
+        MatTableModule,
+        MatSnackBarModule,
+        NoopAnimationsModule,
+      ]
     })
       .compileComponents();
   }));
@@ -42,5 +47,6 @@ const OPENAPI_MODULE: OpenApiModel = {
     default: 'NONE',
     description: 'Name of the model way too long ',
     example: 'project',
-  }], childrenModels: []
+  }], childrenModels: [],
+  errors: []
 };

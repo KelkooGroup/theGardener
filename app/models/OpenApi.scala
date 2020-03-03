@@ -2,7 +2,7 @@ package models
 
 import play.api.libs.json._
 
-case class OpenApi(modelName:String, required:Option[Seq[String]],openApiRows: Seq[OpenApiRow], childrenModels: Seq[OpenApi] = Seq())
+case class OpenApi(modelName:String, required:Option[Seq[String]],openApiRows: Seq[OpenApiRow], childrenModels: Seq[OpenApi] = Seq(), errors: Seq[String] = Seq())
 
 case class OpenApiRow(title: String, openApiType: String, default: String, description: String, example: String)
 
