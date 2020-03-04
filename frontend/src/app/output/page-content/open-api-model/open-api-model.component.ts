@@ -1,5 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {OpenApiModel, OpenApiModelRow} from '../../../_models/open-api';
+import {NotificationService} from '../../../_services/notification.service';
 
 @Component({
   selector: 'app-open-api-model',
@@ -12,11 +13,12 @@ export class OpenApiModelComponent implements OnInit {
   displayedColumns: Array<string> = ['title', 'type', 'description', 'example'];
   openApiRows: Array<OpenApiModelRow>;
 
-  constructor() {
+  constructor(private notificationService: NotificationService) {
   }
 
   ngOnInit() {
     this.openApiRows = this.openApiModule.openApiRows;
+    this.notificationService.showError(`Error while loading Model`, this.openApiModule.errors[0]);
   }
 
   isRequired(element: OpenApiModelRow) {
