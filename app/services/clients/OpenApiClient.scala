@@ -8,7 +8,9 @@ import play.api.libs.ws.WSClient
 import services.OpenApiModule
 import services.clients.OpenApiClient._
 
+import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.control.NonFatal
 
 @Singleton
 class OpenApiClient @Inject()(wsClient: WSClient)(implicit ec: ExecutionContext) {
@@ -22,12 +24,20 @@ class OpenApiClient @Inject()(wsClient: WSClient)(implicit ec: ExecutionContext)
     openApiModuleWithUrlFromVariable.openApiUrl.map { url =>
       getOpenApiJsonString(url).map { response =>
         parseSwaggerJsonDefinitions(response, openApiModule.ref.getOrElse(""), openApiModule.deep, openApiModule.label)
+      }.recoverWith {
+        case NonFatal(e) => Future.successful(OpenApi("", Option(Seq()), Seq(), Seq(), Seq(e.getMessage)))
       }
     }.getOrElse(Future.successful(OpenApi("", Option(Seq()), Seq())))
   }
 
   def getOpenApiJsonString(openApiUrl: String): Future[String] = {
-    wsClient.url(openApiUrl).get().map(_.body)
+    wsClient.url(openApiUrl).withRequestTimeout(500.millis).get().map { response =>
+      if (response.status == 200) {
+        response.body
+      } else {
+        throw new Exception(s"Request to $openApiUrl failed with code ${response.status}")
+      }
+    }
   }
 }
 

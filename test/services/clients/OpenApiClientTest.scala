@@ -5,7 +5,7 @@ import models.{Branch, Directory, OpenApi, OpenApiRow, Page, PageJoinProject, Pr
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{MustMatchers, WordSpec}
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.mvc.Results.Ok
+import play.api.mvc.Results._
 import play.api.routing.sird._
 import play.api.test.WsTestClient
 import play.core.server.Server
@@ -33,6 +33,8 @@ class OpenApiClientTest extends WordSpec with MustMatchers with MockitoSugar wit
   val variable = Variable("${openApi.json.url}", "/api/docs/swagger.json")
   val project = Project("suggestionsWS", "Suggestions WebServices", "git@github.com:library/suggestionsWS.git", "master", Some("^(^master$)|(^feature\\/.*$)"), Some("test/features"), variables = Option(Seq(variable)))
   val pageJoinProject = PageJoinProject(page, directory, branch, project)
+
+  val expectedResultError= OpenApi("",Option(Seq()),Seq(),Seq(),Seq("Request to /api/docs/swagger.json failed with code 503"))
 
   val required = Option(Seq("id", "name", "repositoryUrl", "stableBranch"))
   val openApiRows = Seq(
@@ -315,6 +317,20 @@ class OpenApiClientTest extends WordSpec with MustMatchers with MockitoSugar wit
           val openApiClient = new OpenApiClient(client)
           val result = Await.result(openApiClient.getOpenApiDescriptor(openApiModuleWithLabel, pageJoinProject), 10.seconds)
           result.mustBe(expectedResult.copy(modelName = "ProjectLabel"))
+        }
+      }
+    }
+
+    "return an OpenApi with an error if we get an exception" in {
+      Server.withRouterFromComponents()(cs => {
+        case GET(p"/api/docs/swagger.json") =>
+          cs.defaultActionBuilder(ServiceUnavailable)
+      }) { implicit port =>
+        WsTestClient.withClient { client =>
+
+          val openApiClient = new OpenApiClient(client)
+          val result = Await.result(openApiClient.getOpenApiDescriptor(openApiModuleWithLabel, pageJoinProject), 10.seconds)
+          result.mustBe(expectedResultError)
         }
       }
     }
