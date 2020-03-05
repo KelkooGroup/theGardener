@@ -12,4 +12,5 @@ export interface OpenApiModel {
   required: Array<string>;
   openApiRows: Array<OpenApiModelRow>;
   childrenModels: Array<OpenApiModel>;
+  errors: Array<string>
 }

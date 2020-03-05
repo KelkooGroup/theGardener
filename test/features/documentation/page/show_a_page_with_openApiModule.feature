@@ -555,7 +555,8 @@ Feature: Generate a documentation page with OpenApi Module
                             {"title" : "hierarchy", "openApiType": "array of HierarchyNode", "default": "", "description": "Hierarchy matching the project", "example": ""},
                             {"title" : "branches", "openApiType": "array of Branch", "default": "", "description": "branches of the project", "example": ""}
             ],
-            "childrenModels": []
+            "childrenModels": [],
+            "errors":[]
           }
         }
       }
@@ -623,7 +624,8 @@ Feature: Generate a documentation page with OpenApi Module
                             {"title" : "hierarchy", "openApiType": "array of HierarchyNode", "default": "", "description": "Hierarchy matching the project", "example": ""},
                             {"title" : "branches", "openApiType": "array of Branch", "default": "", "description": "branches of the project", "example": ""}
             ],
-            "childrenModels": []
+            "childrenModels": [],
+            "errors":[]
           }
         }
       }
@@ -698,7 +700,8 @@ Feature: Generate a documentation page with OpenApi Module
                                                     {"title" : "name", "openApiType": "string", "default": "", "description": "", "example": ""},
                                                     {"title" : "value", "openApiType": "string", "default": "", "description": "", "example": ""}
                                     ],
-                                    "childrenModels": []
+                                    "childrenModels": [],
+                                    "errors":[]
 
                                 },
                                 {
@@ -712,7 +715,8 @@ Feature: Generate a documentation page with OpenApi Module
                                                     {"title" : "childLabel", "openApiType": "string", "default": "", "description": "", "example": ""},
                                                     {"title" : "directoryPath", "openApiType": "string", "default": "", "description": "", "example": ""}
                                     ],
-                                    "childrenModels": []
+                                    "childrenModels": [],
+                                    "errors":[]
 
                                 },
                                 {
@@ -726,10 +730,12 @@ Feature: Generate a documentation page with OpenApi Module
                                                     {"title" : "features", "openApiType": "array of string", "default": "", "description": "", "example": ""},
                                                     {"title" : "rootDirectory", "openApiType": "Directory", "default": "", "description": "", "example": ""}
                                     ],
-                                    "childrenModels": []
+                                    "childrenModels": [],
+                                    "errors":[]
 
                                 }
-            ]
+            ],
+            "errors":[]
           }
         }
       }
@@ -797,7 +803,8 @@ Feature: Generate a documentation page with OpenApi Module
                             {"title" : "hierarchy", "openApiType": "array of HierarchyNode", "default": "", "description": "Hierarchy matching the project", "example": ""},
                             {"title" : "branches", "openApiType": "array of Branch", "default": "", "description": "branches of the project", "example": ""}
             ],
-            "childrenModels": []
+            "childrenModels": [],
+            "errors":[]
           }
         }
       }
@@ -999,7 +1006,8 @@ Feature: Generate a documentation page with OpenApi Module
                             {"title" : "variables", "openApiType": "array of Variable", "default": "", "description": "variables defined for this project", "example": "[{\"name\":\"${swagger.url}\",\"value\":\"http://dc1-pmbo-corp-srv-pp.corp.dc1.kelkoo.net:9001/docs\"}]"},
                             {"title" : "hierarchy", "openApiType": "array of HierarchyNode", "default": "", "description": "Hierarchy matching the project", "example": ""}
             ],
-            "childrenModels": []
+            "childrenModels": [],
+            "errors":[]
           }
         }
       }
@@ -1007,3 +1015,62 @@ Feature: Generate a documentation page with OpenApi Module
   }
 ]
 """
+
+
+  @level_2_technical_details @error_case @valid
+  Scenario: generate a documentation page with the inclusion of an openApi model with server not responding
+    Given we have the following markdown for the page "suggestionsWS>master>/context"
+"""
+```thegardener
+{
+  "page" :
+     {
+        "label": "Read documentation",
+        "description": "How to read documentation provided by theGardener ?"
+     }
+}
+```
+```thegardener
+{
+  "openApi" :
+     {
+        "openApiUrl": "http://theGardener.com/api/docs/swagger.json",
+        "openApiType": "model",
+        "ref": "#/definitions/Project",
+        "deep": 1
+     }
+}
+```
+"""
+    And swagger.json cannot be requested
+    When I perform a "GET" on following URL "/api/pages?path=suggestionsWS>master>/context"
+    Then I get the following json response body
+"""
+[
+  {
+    "path": "suggestionsWS>master>/context",
+    "relativePath": "/context",
+    "name": "context",
+    "label": "The context",
+    "description": "Why providing suggestions",
+    "order": 0,
+    "content": [
+      {
+        "type": "openApi",
+        "data": {
+          "openApi": {
+            "modelName": "",
+            "required" : [],
+            "openApiRows": [],
+            "childrenModels": [],
+            "errors":["ERROR HTTP"]
+          }
+        }
+      }
+    ]
+  }
+]
+"""
+    And we have now those pages in the database
+      | id | name    | label       | description               | order | relativePath | path                          | markdown                                                                                                                                                                                                                                                                                                                                                                                              | directoryId | dependOnOpenApi |
+      | 1  | context | The context | Why providing suggestions | 0     | /context     | suggestionsWS>master>/context | ```thegardener\n{\n  "page" :\n     {\n        "label": "Read documentation",\n        "description": "How to read documentation provided by theGardener ?"\n     }\n}\n```\n```thegardener\n{\n  "openApi" :\n     {\n        "openApiUrl": "http://theGardener.com/api/docs/swagger.json",\n        "openApiType": "model",\n        "ref": "#/definitions/Project",\n        "deep": 1\n     }\n}\n``` | 1           | true            |
