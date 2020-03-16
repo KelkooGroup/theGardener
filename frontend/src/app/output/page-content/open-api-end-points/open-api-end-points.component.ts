@@ -15,7 +15,7 @@ export class OpenApiEndPointsComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    const jsonSpec = JSON.parse(this.openApiPathJson.openApiSpec);
+    const jsonSpec = this.openApiPathJson.openApiSpec;
     SwaggerUIBundle({
       dom_id: '#swagger-ui',
       layout: 'BaseLayout',
