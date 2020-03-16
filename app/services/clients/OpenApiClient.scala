@@ -65,8 +65,6 @@ class OpenApiClient @Inject()(wsClient: WSClient)(implicit ec: ExecutionContext)
     }.reduce((path1,path2) => path1 + ",\n" + path2)
     val pathsJsonObject = Json.parse("{\"paths\": {" + pathsString + "}}").asOpt[JsObject]
     pathsJsonObject.get.deepMerge(jsonTree.as[JsObject])
-    logger.info(Json.toJson(getSwaggerJsonInfos(jsonTree).deepMerge(pathsJsonObject.get)).toString())
-    //logger.info(mergedPath.toString())
     methods.toIndexedSeq
     OpenApiPath(Json.toJson(getSwaggerJsonInfos(jsonTree).deepMerge(pathsJsonObject.get)))
   }

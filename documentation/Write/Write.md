@@ -315,6 +315,23 @@ this module will be displayed as follows:
 ```
 
 
+
+```thegardener
+{
+    "openApiPath" :
+      {
+        "openApiUrl": "https://thegardener.kelkoogroup.com/api/docs/swagger.json",
+        "ref": [
+                 "/api/projects",
+                 "/api/directories"
+                ],
+        "methods": ["GET"]
+      }
+}
+
+```
+
+other path
 ```thegardener
 {
     "openApiPath" :
@@ -323,6 +340,22 @@ this module will be displayed as follows:
         "ref": [
                  "/api/projects/{id}",
                  "/api/directories"
+                ],
+        "methods": ["GET"]
+      }
+}
+
+```
+
+other path 
+
+```thegardener
+{
+    "openApiPath" :
+      {
+        "openApiUrl": "https://thegardener.kelkoogroup.com/api/docs/swagger.json",
+        "ref": [
+                 "/api/config"
                 ],
         "methods": ["GET"]
       }
