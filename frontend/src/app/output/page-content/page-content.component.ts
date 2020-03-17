@@ -120,6 +120,10 @@ export class PageContentComponent implements OnInit, OnDestroy, AfterViewChecked
   getOpenApiPaths(part: PagePart) {
     return (part.data as OpenApiPathPart).openApiPath;
   }
+
+  getPosition(part: PagePart) {
+    return this.page.parts.indexOf(part)
+  }
 }
 
 const navigateTo = (router: Router, ngZone: NgZone) => (path: string) => {

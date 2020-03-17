@@ -23,7 +23,7 @@
       </div>
       <div *ngSwitchCase="'openApiPath'">
         <div class="openApiPath">
-          <app-open-api-end-points [openApiPathJson]="getOpenApiPaths(part)"></app-open-api-end-points>
+          <app-open-api-end-points [openApiPathJson]="getOpenApiPaths(part)" [position]="getPosition(part)"></app-open-api-end-points>
         </div>
       </div>
     </div>
