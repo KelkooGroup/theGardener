@@ -27,7 +27,7 @@ case class ScenariosModule(project: Option[String] = None, branchName: Option[St
 
 case class IncludeExternalPageModule(url: String)
 
-case class OpenApiModule(openApiUrl: Option[String] = None, openApiType: Option[String] = None, ref: Option[String] = None, deep: Option[Int] = None, label: Option[String] = None)
+case class OpenApiModule(openApiUrl: Option[String] = None, openApiType: Option[String] = None, ref: Option[String] = None, deep: Option[Int] = None, label: Option[String] = None, errorMessage: Option[String] = None)
 
 
 case class Items(openApiType: String, ref: String)
