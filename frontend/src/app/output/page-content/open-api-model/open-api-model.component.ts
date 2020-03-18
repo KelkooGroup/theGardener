@@ -18,7 +18,7 @@ export class OpenApiModelComponent implements OnInit {
 
   ngOnInit() {
     this.openApiRows = this.openApiModule.openApiRows;
-    if(this.openApiModule.errors[0] !== ' ' && this.openApiModule.errors.length !== 0) {
+    if(this.openApiModule.errors.length !== 0 && this.openApiModule.errors[0] !== ' ') {
       this.notificationService.showError(this.openApiModule.errors[0]);
     }
   }
