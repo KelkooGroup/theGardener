@@ -299,6 +299,7 @@ Details on the settings :
       - With "deep" == 1 => show only Project
       - With "deep" == 2 => show Project and Variable, HierarchyNode, Branch
 - "label" : define which label we want to display. By default : name of the model, in this example "Project"
+- "errorMessage" : displayed if the resource is not reachable, If not provided, no message will be displayed
 
 this module will be displayed as follows:
 
