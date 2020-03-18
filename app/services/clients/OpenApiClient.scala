@@ -25,7 +25,7 @@ class OpenApiClient @Inject()(wsClient: WSClient)(implicit ec: ExecutionContext)
       getOpenApiJsonString(url).map { response =>
         parseSwaggerJsonDefinitions(response, openApiModule.ref.getOrElse(""), openApiModule.deep, openApiModule.label)
       }.recoverWith {
-        case NonFatal(e) => Future.successful(OpenApi("", Option(Seq()), Seq(), Seq(), Seq(e.getMessage)))
+        case NonFatal(_) => Future.successful(OpenApi("", Option(Seq()), Seq(), Seq(), Seq(openApiModule.errorMessage.getOrElse(" "))))
       }
     }.getOrElse(Future.successful(OpenApi("", Option(Seq()), Seq())))
   }
