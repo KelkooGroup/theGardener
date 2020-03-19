@@ -34,7 +34,7 @@ class OpenApiClientTest extends WordSpec with MustMatchers with MockitoSugar wit
   val project = Project("suggestionsWS", "Suggestions WebServices", "git@github.com:library/suggestionsWS.git", "master", Some("^(^master$)|(^feature\\/.*$)"), Some("test/features"), variables = Option(Seq(variable)))
   val pageJoinProject = PageJoinProject(page, directory, branch, project)
 
-  val expectedResultError= OpenApi("",Option(Seq()),Seq(),Seq(),Seq("Request to /api/docs/swagger.json failed with code 503"))
+  val expectedResultError= OpenApi("",Option(Seq()),Seq(),Seq(),Seq(" "))
 
   val required = Option(Seq("id", "name", "repositoryUrl", "stableBranch"))
   val openApiRows = Seq(
