@@ -320,7 +320,7 @@ this module will be displayed as follows:
 {
     "openApiPath" :
       {
-        "openApiUrl": "https://thegardener.kelkoogroup.com/api/docs/swagger.json",
+        "openApiUrl": "https://fakeHost.com/api/docs/swagger.json",
         "ref": [
                  "/api/projects",
                  "/api/directories"

@@ -60,13 +60,37 @@ class OpenApiClient @Inject()(wsClient: WSClient)(implicit ec: ExecutionContext)
     val jsonTree: JsValue = Json.parse(swaggerJson)
     val quotes = "\""
     val pathTree = (jsonTree \ "paths").asOpt[JsObject].getOrElse(throw new Exception("the url doesn't lead to a swagger.json"))
+
     val pathsString = reference.map { ref =>
-      s"$quotes$ref$quotes: " + pathTree.value(ref)
-    }.reduce((path1,path2) => path1 + ",\n" + path2)
+      s"$quotes$ref$quotes: {${filterApiMethods(pathTree.value(ref).asOpt[JsObject], methods)}}"
+    }.reduce((path1, path2) => path1 + ",\n" + path2)
+    logger.info(pathsString)
     val pathsJsonObject = Json.parse("{\"paths\": {" + pathsString + "}}").asOpt[JsObject]
-    pathsJsonObject.get.deepMerge(jsonTree.as[JsObject])
-    methods.toIndexedSeq
-    OpenApiPath(Json.toJson(getSwaggerJsonInfos(jsonTree).deepMerge(pathsJsonObject.get)))
+    pathsJsonObject.map(_.deepMerge(jsonTree.as[JsObject]))
+    OpenApiPath(Json.toJson(pathsJsonObject.map(_.deepMerge(getSwaggerJsonInfos(jsonTree)))))
+  }
+
+  def filterApiMethods(jsonPathObject: Option[JsObject], methods: Seq[String]): String = {
+    val quotes = "\""
+    methods.map { method =>
+      jsonPathObject.map { jsonPathObject =>
+        if (jsonPathObject.keys.contains(method.toLowerCase)) {
+          s"$quotes${method.toLowerCase}$quotes: " + jsonPathObject.value(method.toLowerCase)
+        } else {
+          ""
+        }
+      }.getOrElse("")
+    }.reduce { (method1, method2) =>
+      if (method1 == "") {
+        s"$method2"
+      } else {
+        if (method2 == "") {
+          s"$method1"
+        } else {
+          s"$method1,\n$method2"
+        }
+      }
+    }
   }
 }
 
