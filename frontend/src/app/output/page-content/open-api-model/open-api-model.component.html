@@ -30,3 +30,4 @@
     <app-open-api-model [openApiModule]="children"></app-open-api-model>
   </div>
 </div>
+<div id="errorMessage" *ngIf="containError()">While loading this model, we got an issue : {{openApiModule.errors[0]}}</div>
