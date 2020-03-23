@@ -23,4 +23,8 @@ export class OpenApiModelComponent implements OnInit {
     return this.openApiModule.required.includes(element.title);
   }
 
+  containError(){
+    return this.openApiModule.errors.length !== 0 && this.openApiModule.errors[0] !== ' ';
+  }
+
 }
