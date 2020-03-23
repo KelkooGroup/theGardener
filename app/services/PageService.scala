@@ -187,7 +187,7 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
               val pageFuture = fragmentsFuture.flatMap(fragments => dependOnOpenApiFuture.map(dependOnOpenApi => PageWithContent(pageJoinProject.page.copy(path = getCorrectedPath(path, pageJoinProject.project), dependOnOpenApi = dependOnOpenApi), fragments)))
               pageFuture.map { page =>
                 dependOnOpenApiFuture.map(dependOnOpenApi => if (dependOnOpenApi) {
-                  pageRepository.save(page.page)
+                  pageRepository.save(page.page.copy(path = if (path.contains(">>")) path.replace(">>", s">${pageJoinProject.project.stableBranch}>") else path))
                 })
                 cache.store(key, page)
                 Some(page)
