@@ -1,11 +1,11 @@
 package controllers.dto
 
-import models.{Feature, OpenApi, OpenApiPath, Page}
+import models.{Feature, OpenApiModel, OpenApiPath, Page}
 import play.api.libs.json.Json
 import services.PageFragmentUnderProcessing
 
 
-case class PageFragmentContent(markdown: Option[String] = None, scenarios: Option[Feature] = None, includeExternalPage: Option[String] = None, openApi: Option[OpenApi] = None, openApiPath: Option[OpenApiPath] = None)
+case class PageFragmentContent(markdown: Option[String] = None, scenarios: Option[Feature] = None, includeExternalPage: Option[String] = None, openApi: Option[OpenApiModel] = None, openApiPath: Option[OpenApiPath] = None)
 
 object PageFragmentContent {
   implicit val pageFormat = Json.format[PageFragmentContent]

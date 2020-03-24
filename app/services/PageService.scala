@@ -27,9 +27,9 @@ case class ScenariosModule(project: Option[String] = None, branchName: Option[St
 
 case class IncludeExternalPageModule(url: String)
 
-case class OpenApiModule(openApiUrl: Option[String] = None, openApiType: Option[String] = None, ref: Option[String] = None, deep: Option[Int] = None, label: Option[String] = None)
+case class OpenApiModelModule(openApiUrl: Option[String] = None, openApiType: Option[String] = None, ref: Option[String] = None, deep: Option[Int] = None, label: Option[String] = None, errorMessage: Option[String] = None)
 
-case class OpenApiPathModule(openApiUrl: Option[String] = None, ref: Option[Seq[String]] = None, methods: Option[Seq[String]] = None)
+case class OpenApiPathModule(openApiUrl: Option[String] = None, ref: Option[Seq[String]] = None, methods: Option[Seq[String]] = None, errorMessage: Option[String] = None)
 
 case class Items(openApiType: String, ref: String)
 
@@ -41,7 +41,7 @@ case class Module(directory: Option[DirectoryMeta] = None,
                   page: Option[PageMeta] = None,
                   scenarios: Option[ScenariosModule] = None,
                   includeExternalPage: Option[IncludeExternalPageModule] = None,
-                  openApi: Option[OpenApiModule] = None,
+                  openApi: Option[OpenApiModelModule] = None,
                   openApiPath: Option[OpenApiPathModule] = None)
 
 sealed trait PageFragmentUnderProcessingStatus
@@ -59,8 +59,8 @@ case class PageFragmentUnderProcessing(status: PageFragmentUnderProcessingStatus
                                        scenariosModule: Option[ScenariosModule] = None,
                                        scenarios: Option[Feature] = None,
                                        includeExternalPage: Option[IncludeExternalPageModule] = None,
-                                       openApi: Option[OpenApi] = None,
-                                       openApiModule: Option[OpenApiModule] = None,
+                                       openApi: Option[OpenApiModel] = None,
+                                       openApiModule: Option[OpenApiModelModule] = None,
                                        openApiPath: Option[OpenApiPath] = None,
                                        openApiPathModule: Option[OpenApiPathModule] = None)
 
@@ -94,7 +94,7 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
 
   implicit val tagsModuleFormat = Json.format[TagsModule]
   implicit val scenariosModuleMetaFormat = Json.format[ScenariosModule]
-  implicit val openApiModuleFormat = Json.format[OpenApiModule]
+  implicit val openApiModuleFormat = Json.format[OpenApiModelModule]
   implicit val openApiPathModuleFormat = Json.format[OpenApiPathModule]
   implicit val metaFormat = Json.format[Module]
   implicit val itemsFormat = Json.format[Items]
@@ -192,7 +192,7 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
               val pageFuture = fragmentsFuture.flatMap(fragments => dependOnOpenApiFuture.map(dependOnOpenApi => PageWithContent(pageJoinProject.page.copy(path = getCorrectedPath(path, pageJoinProject.project), dependOnOpenApi = dependOnOpenApi), fragments)))
               pageFuture.map { page =>
                 dependOnOpenApiFuture.map(dependOnOpenApi => if (dependOnOpenApi) {
-                  pageRepository.save(page.page)
+                  pageRepository.save(page.page.copy(path = if (path.contains(">>")) path.replace(">>", s">${pageJoinProject.project.stableBranch}>") else path))
                 })
                 cache.store(key, page)
                 Some(page)

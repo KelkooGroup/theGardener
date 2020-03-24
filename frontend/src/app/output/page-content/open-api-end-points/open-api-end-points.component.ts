@@ -6,7 +6,7 @@ declare const SwaggerUIBundle: any;
 @Component({
   selector: 'app-open-api-end-points',
   templateUrl: './open-api-end-points.component.html',
-  styleUrls: ['./open-api-end-points.component.css']
+  styleUrls: ['./open-api-end-points.component.scss']
 })
 export class OpenApiEndPointsComponent implements OnInit,AfterViewInit {
 
@@ -24,9 +24,9 @@ export class OpenApiEndPointsComponent implements OnInit,AfterViewInit {
 
   ngAfterViewInit(): void {
     const jsonSpec = this.openApiPathJson.openApiSpec;
-    const dom_id = '#' + this.id;
+    const domId = '#' + this.id;
     SwaggerUIBundle({
-      dom_id: dom_id,
+      dom_id: domId,
       layout: 'BaseLayout',
       presets: [
         SwaggerUIBundle.presets.apis,
@@ -38,5 +38,9 @@ export class OpenApiEndPointsComponent implements OnInit,AfterViewInit {
       defaultModelsExpandDepth: -1,
       enableCORS: false
     });
+  }
+
+  containError(){
+    return this.openApiPathJson.errors.length !== 0 && this.openApiPathJson.errors[0] !== '';
   }
 }

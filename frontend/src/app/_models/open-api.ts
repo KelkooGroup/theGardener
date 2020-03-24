@@ -18,4 +18,5 @@ export interface OpenApiModel {
 
 export interface OpenApiPath {
   openApiSpec: JSON;
+  errors: Array<string>
 }
