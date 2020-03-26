@@ -29,7 +29,7 @@ case class IncludeExternalPageModule(url: String)
 
 case class OpenApiModelModule(openApiUrl: Option[String] = None, openApiType: Option[String] = None, ref: Option[String] = None, deep: Option[Int] = None, label: Option[String] = None, errorMessage: Option[String] = None)
 
-case class OpenApiPathModule(openApiUrl: Option[String] = None, ref: Option[Seq[String]] = None, methods: Option[Seq[String]] = None, errorMessage: Option[String] = None)
+case class OpenApiPathModule(openApiUrl: Option[String] = None, refStartsWith: Option[Seq[String]], ref: Option[Seq[String]] = None, methods: Option[Seq[String]] = None, errorMessage: Option[String] = None)
 
 case class Items(openApiType: String, ref: String)
 

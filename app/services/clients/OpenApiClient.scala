@@ -49,7 +49,7 @@ class OpenApiClient @Inject()(wsClient: WSClient)(implicit ec: ExecutionContext)
     }
     openApiModuleWithUrlFromVariable.openApiUrl.map { url =>
       getOpenApiJsonString(url).map { response =>
-        parseSwaggerJsonPaths(response, openApiPathModule.ref.getOrElse(Seq()), openApiPathModule.methods.getOrElse(Seq()))
+        parseSwaggerJsonPaths(response, openApiPathModule.ref.getOrElse(Seq()), openApiPathModule.methods.getOrElse(Seq()), openApiPathModule.refStartsWith.getOrElse(Seq()))
       }.recoverWith {
         case NonFatal(_) => Future.successful(OpenApiPath(Json.parse("{}"), Seq(openApiPathModule.errorMessage.getOrElse(""))))
       }
@@ -127,12 +127,12 @@ object OpenApiClient {
 
   @silent("Interpolated")
   @silent("missing interpolator")
-  def parseSwaggerJsonPaths(swaggerJson: String, reference: Seq[String], methods: Seq[String]): OpenApiPath = {
+  def parseSwaggerJsonPaths(swaggerJson: String, reference: Seq[String], methods: Seq[String], refStartsWith: Seq[String]): OpenApiPath = {
     val jsonTree: JsValue = Json.parse(swaggerJson)
     val quotes = "\""
     val pathTree = (jsonTree \ "paths").asOpt[JsObject].getOrElse(throw new Exception("the url doesn't lead to a swagger.json"))
-
-    val pathsString = reference.map { ref =>
+    val allRef = reference ++ getAllRefStartWith(refStartsWith, pathTree)
+    val pathsString = allRef.map { ref =>
       if (methods.nonEmpty) {
         s"$quotes$ref$quotes: {${filterApiMethods(pathTree.value(ref).asOpt[JsObject], methods)}}"
       } else {
@@ -142,6 +142,13 @@ object OpenApiClient {
     val pathsJsonObject = Json.parse("{\"paths\": {" + pathsString + "}}").asOpt[JsObject]
     pathsJsonObject.map(_.deepMerge(jsonTree.as[JsObject]))
     OpenApiPath(Json.toJson(pathsJsonObject.map(_.deepMerge(getSwaggerJsonInfos(jsonTree.asOpt[JsObject].getOrElse(throw new Exception("the url doesn't lead to a swagger.json")))))))
+  }
+
+  def getAllRefStartWith(refStartsWith: Seq[String], pathTree: JsObject): Seq[String] = {
+    val keys = pathTree.keys
+    refStartsWith.flatMap{ref =>
+      keys.filter(_.startsWith(ref))
+    }
   }
 
   def filterApiMethods(jsonPathObject: Option[JsObject], methods: Seq[String]): String = {
