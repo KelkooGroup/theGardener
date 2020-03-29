@@ -82,19 +82,19 @@ def parseFeatureFile (projectId: String, branch: Branch, filePath: String): Try[
 }.logError (s"Error while parsing file $filePath")
 }
 
-  private def mapGherkinSteps (gherkinSteps: JList[ast.Step] ): Seq[Step] = {
-  gherkinSteps.asScala.zipWithIndex.map {
-  case (step, id) =>
-  val argument = step.getArgument match {
-  case dataTable: ast.DataTable => dataTable.getRows.asScala.map (_.getCells.asScala.map (_.getValue) )
-  case tableRow: ast.TableRow => Seq (tableRow.getCells.asScala.map (_.getValue) )
-  case docString: ast.DocString => Seq (Seq (docString.getContent) )
-  case _ => Seq ()
-}
+  private def mapGherkinSteps(gherkinSteps: JList[ast.Step]): Seq[Step] = {
+    gherkinSteps.asScala.zipWithIndex.map {
+      case (step, id) =>
+        val (argument, argumentTextType) = step.getArgument match {
+          case dataTable: ast.DataTable => (dataTable.getRows.asScala.map(_.getCells.asScala.map(_.getValue)),None)
+          case tableRow: ast.TableRow => (Seq(tableRow.getCells.asScala.map(_.getValue)),None)
+          case docString: ast.DocString => (Seq(Seq(docString.getContent)),Some(docString.getContentType))
+          case _ => (Seq(), None)
+        }
 
-  Step (id.toLong, step.getKeyword.trim, step.getText, argument)
-}
-}
+        Step(id.toLong, step.getKeyword.trim, step.getText, argument, argumentTextType)
+    }
+  }
 
   private def mapGherkinTags (gherkinTags: JList[ast.Tag] ): (Seq[String], String, String, String) = {
   val tags = gherkinTags.asScala.map (_.getName.replace ("@", "") )

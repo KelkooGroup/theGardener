@@ -21,7 +21,7 @@ case class ScenarioOutline(id: Long, tags: Seq[String], abstractionLevel: String
 
 case class Examples(id: Long, tags: Seq[String], keyword: String, description: String, tableHeader: Seq[String], tableBody: Seq[Seq[String]])
 
-case class Step(id: Long, keyword: String, text: String, argument: Seq[Seq[String]])
+case class Step(id: Long, keyword: String, text: String, argument: Seq[Seq[String]], argumentTextType: Option[String])
 
 object Feature {
   implicit val stepFormat = Json.format[Step]

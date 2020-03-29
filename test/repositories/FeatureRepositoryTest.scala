@@ -16,8 +16,8 @@ class FeatureRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with In
   val db = inject[Database]
   val featureRepository = inject[FeatureRepository]
   val argument1 = Seq(Seq("key1", "val1"), Seq("key2", "val2"))
-  val step1 = Step(1, "keyword1", "text1", argument1)
-  val step2 = Step(2, "keyword2", "text2", argument1)
+  val step1 = Step(1, "keyword1", "text1", argument1, None)
+  val step2 = Step(2, "keyword2", "text2", argument1, None)
   val steps = Seq(step1, step2)
   val background1 = Background(1, "keyword1", "name1", "description1", Seq(step1, step2))
 
