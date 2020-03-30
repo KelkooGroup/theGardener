@@ -26,5 +26,4 @@ export class OpenApiModelComponent implements OnInit {
   containError(){
     return this.openApiModule.errors.length !== 0 && this.openApiModule.errors[0] !== ' ';
   }
-
 }

@@ -32,6 +32,7 @@
             ],
             "styles": [
               "src/styles.scss",
+              "node_modules/swagger-ui-dist/swagger-ui.css",
               "node_modules/prismjs/themes/prism.css"
             ],
             "stylePreprocessorOptions": {
@@ -51,7 +52,9 @@
               "node_modules/prismjs/components/prism-css.js",
               "node_modules/prismjs/components/prism-json.js",
               "node_modules/prismjs/components/prism-bash.js",
-              "node_modules/prismjs/components/prism-git.js"
+              "node_modules/prismjs/components/prism-git.js",
+              "node_modules/swagger-ui-dist/swagger-ui-bundle.js",
+              "node_modules/swagger-ui-dist/swagger-ui-standalone-preset.js"
             ]
           },
           "configurations": {

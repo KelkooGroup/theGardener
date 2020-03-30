@@ -2,6 +2,7 @@ package controllers
 
 import java.io.File
 
+import com.github.ghik.silencer.silent
 import controllers.AssetAccessError.{AssetNotAllowed, AssetNotFound}
 import controllers.dto._
 import io.swagger.annotations._
@@ -14,7 +15,8 @@ import services._
 
 import scala.concurrent.{ExecutionContext, Future}
 
-
+@silent("Interpolated")
+@silent("missing interpolator")
 @Api(value = "PageController", produces = "application/json")
 class PageController @Inject()(projectService: ProjectService, pageService: PageService)(implicit ec: ExecutionContext) extends InjectedController {
 
@@ -28,8 +30,8 @@ class PageController @Inject()(projectService: ProjectService, pageService: Page
       case None => Future.successful(NotFound(s"No Page $path"))
     }
   }
-}
 
+}
 
 sealed abstract class AssetAccessError(message: String) extends Throwable(message)
 
