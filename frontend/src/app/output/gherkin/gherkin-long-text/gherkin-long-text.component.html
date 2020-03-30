@@ -1,5 +1,5 @@
 <div class="params">
-  <div *ngIf="isJson; else simpleTextBlock" class="json">
+  <div *ngIf="isJson" class="json">
     <mat-tab-group>
       <mat-tab label="Listed">
         <ng-template matTabContent>
@@ -14,9 +14,11 @@
     </mat-tab-group>
   </div>
 
-  <ng-template #simpleTextBlock>
-    <div class="long-text">
-      {{ longText }}
-    </div>
-  </ng-template>
+  <div *ngIf="!isJson && longTextType" class="long-text">
+    <pre><code [ngClass]="'language-' + longTextType">{{longText}}</code></pre>
+  </div>
+
+  <div *ngIf="!isJson && !longTextType" class="long-text">
+    {{ longText }}
+  </div>
 </div>

@@ -8,6 +8,7 @@ import {Component, Input, OnInit} from '@angular/core';
 export class GherkinLongTextComponent implements OnInit {
 
   @Input() longText: string;
+  @Input() longTextType: string | undefined;
 
   isJson: boolean;
   json: object;

@@ -14,7 +14,7 @@ class ScenarioRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with I
   val db = inject[Database]
   val scenarioRepository = inject[ScenarioRepository]
 
-  val steps = Seq(Step(1, "keyword1", "text1", Seq(Seq("argument1"))))
+  val steps = Seq(Step(1, "keyword1", "text1", Seq(Seq("argument1")), None))
 
   val scenario1 = Scenario(1, Seq("tag1", "tag2", "tag3"), "abstractionLevel1", "caseType1", "workflowStep1", "keyword1", "name1", "description1", steps)
   val examples = Seq(Examples(1, Seq(), "keyword1", "description1", Seq("header1"), Seq(Seq("body1, body2"))),

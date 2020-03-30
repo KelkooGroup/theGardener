@@ -40,6 +40,7 @@ export interface GherkinStep {
   keyword: string; // FIXME (is it an enum ?)
   text: string;
   argument: Array<Array<string>>;
+  argumentTextType: string | undefined;
 }
 
 export interface GherkinExamples {
