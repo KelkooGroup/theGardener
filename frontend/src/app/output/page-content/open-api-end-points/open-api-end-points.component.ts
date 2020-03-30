@@ -19,7 +19,6 @@ export class OpenApiEndPointsComponent implements OnInit,AfterViewInit {
 
   ngOnInit(): void {
     this.id  = 'swagger-ui-' + this.position;
-
   }
 
   ngAfterViewInit(): void {

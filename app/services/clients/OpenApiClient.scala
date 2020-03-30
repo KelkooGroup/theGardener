@@ -116,12 +116,11 @@ object OpenApiClient {
 
 
   def getSwaggerJsonInfos(swaggerJsonTree: JsObject): JsObject = {
-    val quotes = "\""
-    val swagger = Json.parse(s"{${quotes}swagger$quotes:${swaggerJsonTree.value("swagger")}}").as[JsObject]
-    val host = Json.parse(s"{${quotes}host$quotes:${swaggerJsonTree.value("host")}}").as[JsObject]
-    val basePath = Json.parse(s"{${quotes}basePath$quotes:${swaggerJsonTree.value("basePath")}}").as[JsObject]
-    val definitions = Json.parse(s"{${quotes}definitions$quotes:${swaggerJsonTree.value("definitions")}}").as[JsObject]
-    swagger.deepMerge(Json.parse(s"{${quotes}infos$quotes: {}}").as[JsObject]).deepMerge(host).deepMerge(basePath).deepMerge(definitions)
+    val swagger = Json.parse(s"""{"swagger":${swaggerJsonTree.value("swagger")}}""").as[JsObject]
+    val host = Json.parse(s"""{"host":${swaggerJsonTree.value("host")}}""").as[JsObject]
+    val basePath = Json.parse(s"""{"basePath":${swaggerJsonTree.value("basePath")}}""").as[JsObject]
+    val definitions = Json.parse(s"""{"definitions":${swaggerJsonTree.value("definitions")}}""").as[JsObject]
+    swagger.deepMerge(Json.parse(s"""{"infos": {}}""").as[JsObject]).deepMerge(host).deepMerge(basePath).deepMerge(definitions)
 
   }
 
@@ -129,14 +128,13 @@ object OpenApiClient {
   @silent("missing interpolator")
   def parseSwaggerJsonPaths(swaggerJson: String, reference: Seq[String], methods: Seq[String], refStartsWith: Seq[String]): OpenApiPath = {
     val jsonTree: JsValue = Json.parse(swaggerJson)
-    val quotes = "\""
     val pathTree = (jsonTree \ "paths").asOpt[JsObject].getOrElse(throw new Exception("the url doesn't lead to a swagger.json"))
     val allRef = reference ++ getAllRefStartWith(refStartsWith, pathTree)
     val pathsString = allRef.map { ref =>
       if (methods.nonEmpty) {
-        s"$quotes$ref$quotes: {${filterApiMethods(pathTree.value(ref).asOpt[JsObject], methods)}}"
+        s""""$ref": {${filterApiMethods(pathTree.value(ref).asOpt[JsObject], methods)}}"""
       } else {
-        s"$quotes$ref$quotes: ${pathTree.value(ref)}"
+        s""""$ref": ${pathTree.value(ref)}"""
       }
     }.reduce((path1, path2) => path1 + ",\n" + path2)
     val pathsJsonObject = Json.parse("{\"paths\": {" + pathsString + "}}").asOpt[JsObject]
@@ -152,11 +150,10 @@ object OpenApiClient {
   }
 
   def filterApiMethods(jsonPathObject: Option[JsObject], methods: Seq[String]): String = {
-    val quotes = "\""
     methods.map { method =>
       jsonPathObject.map { jsonPathObject =>
         if (jsonPathObject.keys.contains(method.toLowerCase)) {
-          s"$quotes${method.toLowerCase}$quotes: " + jsonPathObject.value(method.toLowerCase)
+          s""""${method.toLowerCase}": ${jsonPathObject.value(method.toLowerCase)}"""
         } else {
           ""
         }
