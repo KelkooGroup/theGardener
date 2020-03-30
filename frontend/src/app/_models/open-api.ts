@@ -14,3 +14,9 @@ export interface OpenApiModel {
   childrenModels: Array<OpenApiModel>;
   errors: Array<string>
 }
+
+
+export interface OpenApiPath {
+  openApiSpec: JSON;
+  errors: Array<string>
+}

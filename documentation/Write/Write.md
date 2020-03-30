@@ -314,3 +314,61 @@ this module will be displayed as follows:
      }
 }
 ```
+
+
+## Include OpenAPI path   
+
+Be able to exploit and OpenAPI descriptor (the swagger.json provided by an application) to display some specific end points.
+
+To include OpenApi models, use this module :
+
+````
+```thegardener
+{
+  "openApiPath" : 
+     {
+        "openApiUrl": "https://thegardener.kelkoogroup.com/api/docs/swagger.json",
+        "ref": [
+         "/api/projects/{id}",
+         "/api/directories"
+        ],
+       "methods": ["POST","GET"]
+     }
+}
+``` 
+````
+
+Details on the settings :
+
+- "openApi.json.url" refers to the url of the API that match the Open API specification (https://swagger.io/specification).
+   - example : https://thegardener.kelkoogroup.com/api/docs/swagger.json
+   - default value : use the variable ${openApi.json.url}.  The writer could set this variable at project level. In this case he would need to add it at every model inclusion. See #63. 
+- "ref" : Table of paths that represent the exact paths you want to display 
+- "methods" : Define filter on methods
+   - default : display all methods
+   - example : 
+     - if we have the same ref as above and methods: ["GET"]
+     - it will display :  
+       GET         /api/projects/:id               
+       GET         /api/projects/:id/hierarchy      
+       GET         /api/directories
+
+this module will be displayed as follows:  
+
+```thegardener
+{
+  "openApiPath" : 
+     {
+        "openApiUrl": "https://thegardener.kelkoogroup.com/api/docs/swagger.json",
+        "refStartsWith": [
+         "/api/projects/{id}",
+         "/api/directories"
+        ],
+        "ref": [
+         "/api/projects/{id}",
+         "/api/directories"
+        ],
+       "methods": ["POST","GET"]
+     }
+}
+``` 
