@@ -219,7 +219,7 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
   private def getSourceUrl(pageJoinProjectOpt: Option[PageJoinProject]): Option[String] = {
     for {
       pageJoinProject <- pageJoinProjectOpt
-      sourceUrlTemplate <-  pageJoinProject.project.sourceUrlTemplate
+      sourceUrlTemplate <- pageJoinProject.project.sourceUrlTemplate
       docRootPath <- pageJoinProject.project.documentationRootPath
     } yield {
       val branchName = pageJoinProject.branch.name
@@ -363,7 +363,7 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
         case Some(Module(_, _, _, Some(include), _, _)) =>
           (fragments :+ currentFragment.copy(includeExternalPage = Some(include)), PageFragmentUnderProcessing())
 
-        case Some(Module(_, _, _, _, Some(openApi),_)) =>
+        case Some(Module(_, _, _, _, Some(openApi), _)) =>
           (fragments :+ currentFragment.copy(openApiModule = Some(openApi)), PageFragmentUnderProcessing())
 
         case Some(Module(_, _, _, _, _, Some(openApiPath))) =>

@@ -13,6 +13,7 @@ import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
 
+
 @Singleton
 class OpenApiClient @Inject()(wsClient: WSClient)(implicit ec: ExecutionContext) extends Logging {
 
@@ -49,11 +50,11 @@ class OpenApiClient @Inject()(wsClient: WSClient)(implicit ec: ExecutionContext)
     }
     openApiModuleWithUrlFromVariable.openApiUrl.map { url =>
       getOpenApiJsonString(url).map { response =>
-        parseSwaggerJsonPaths(response, openApiPathModule.ref.getOrElse(Seq()), openApiPathModule.methods.getOrElse(Seq()), openApiPathModule.refStartsWith.getOrElse(Seq()))
+        parseSwaggerJsonPaths(response, url, openApiPathModule.ref.getOrElse(Seq()), openApiPathModule.methods.getOrElse(Seq()), openApiPathModule.refStartsWith.getOrElse(Seq()))
       }.recoverWith {
-        case NonFatal(_) => Future.successful(OpenApiPath(Json.parse("{}"), Seq(openApiPathModule.errorMessage.getOrElse(""))))
+        case NonFatal(_) => Future.successful(OpenApiPath(Json.parse("{}"), "", Seq(openApiPathModule.errorMessage.getOrElse(""))))
       }
-    }.getOrElse(Future.successful(OpenApiPath(Json.toJson(""))))
+    }.getOrElse(Future.successful(OpenApiPath(Json.toJson(""), "")))
   }
 }
 
@@ -73,6 +74,9 @@ object OpenApiClient {
             val openApiType = if (valueMap.get("type").isDefined) {
               valueMap.get("type").flatMap(_.asOpt[String])
             } else {
+              if (deep.getOrElse(1) > 1) {
+                openApiChildren = openApiChildren :+ parseSwaggerJsonDefinitions(swaggerJson, valueMap.get("$ref").flatMap(_.asOpt[String]).getOrElse(""), deep.map(_ - 1), None)
+              }
               Option(referenceSplit(valueMap.get("$ref").flatMap(_.asOpt[String]).getOrElse("")))
             }
             val example = valueMap.get("example").flatMap(_.asOpt[String])
@@ -126,7 +130,7 @@ object OpenApiClient {
 
   @silent("Interpolated")
   @silent("missing interpolator")
-  def parseSwaggerJsonPaths(swaggerJson: String, reference: Seq[String], methods: Seq[String], refStartsWith: Seq[String]): OpenApiPath = {
+  def parseSwaggerJsonPaths(swaggerJson: String, url: String, reference: Seq[String], methods: Seq[String], refStartsWith: Seq[String]): OpenApiPath = {
     val jsonTree: JsValue = Json.parse(swaggerJson)
     val pathTree = (jsonTree \ "paths").asOpt[JsObject].getOrElse(throw new Exception("the url doesn't lead to a swagger.json"))
     val allRef = reference ++ getAllRefStartWith(refStartsWith, pathTree)
@@ -139,12 +143,12 @@ object OpenApiClient {
     }.reduce((path1, path2) => path1 + ",\n" + path2)
     val pathsJsonObject = Json.parse("{\"paths\": {" + pathsString + "}}").asOpt[JsObject]
     pathsJsonObject.map(_.deepMerge(jsonTree.as[JsObject]))
-    OpenApiPath(Json.toJson(pathsJsonObject.map(_.deepMerge(getSwaggerJsonInfos(jsonTree.asOpt[JsObject].getOrElse(throw new Exception("the url doesn't lead to a swagger.json")))))))
+    OpenApiPath(Json.toJson(pathsJsonObject.map(_.deepMerge(getSwaggerJsonInfos(jsonTree.asOpt[JsObject].getOrElse(throw new Exception("the url doesn't lead to a swagger.json")))))), url.split(":")(0))
   }
 
   def getAllRefStartWith(refStartsWith: Seq[String], pathTree: JsObject): Seq[String] = {
     val keys = pathTree.keys
-    refStartsWith.flatMap{ref =>
+    refStartsWith.flatMap { ref =>
       keys.filter(_.startsWith(ref))
     }
   }

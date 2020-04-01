@@ -1,4 +1,3 @@
-import {JsonObject} from "@angular/compiler-cli/ngcc/src/packages/entry_point";
 
 export interface OpenApiModelRow {
   title: string;
@@ -13,16 +12,12 @@ export interface OpenApiModel {
   required: Array<string>;
   openApiRows: Array<OpenApiModelRow>;
   childrenModels: Array<OpenApiModel>;
-  errors: Array<string>
+  errors: Array<string>;
 }
 
 
 export interface OpenApiPath {
   openApiSpec: JSON;
-  errors: Array<string>
-}
-
-
-export interface OpenApiPath {
-  OpenApiSpec: JsonObject;
+  protocol: string;
+  errors: Array<string>;
 }
