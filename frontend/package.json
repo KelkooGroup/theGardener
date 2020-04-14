@@ -28,7 +28,7 @@
     "@types/lodash": "4.14.149",
     "angular-super-validator": "2.0.0",
     "core-js": "3.6.5",
-    "cucumber-pretty": "1.5.2",
+    "cucumber-pretty": "6.0.0",
     "font-awesome": "4.7.0",
     "jasmine": "3.5.0",
     "less": "3.11.1",
