@@ -32,7 +32,7 @@ class OpenApiClientTest extends WordSpec with MustMatchers with MockitoSugar wit
   val directory = Directory(1, "directory", "label", "description", 0, "relativePath", "path", 1)
   val branch = Branch(1, "master", isStable = true, "suggestionsWS")
   val variable = Variable("${openApi.json.url}", "/api/docs/swagger.json")
-  val project = Project("suggestionsWS", "Suggestions WebServices", "git@github.com:library/suggestionsWS.git", "master", Some("^(^master$)|(^feature\\/.*$)"), Some("test/features"), variables = Option(Seq(variable)))
+  val project = Project("suggestionsWS", "Suggestions WebServices", "git@github.com:library/suggestionsWS.git", Some("http://github.com:library/suggestionsWS/blob/${branch}/${path}"), "master", Some("^(^master$)|(^feature\\/.*$)"), Some("test/features"), variables = Option(Seq(variable)))
   val pageJoinProject = PageJoinProject(page, directory, branch, project)
 
   val expectedErrorModel = OpenApiModel("", Option(Seq()), Seq(), Seq(), Seq(" "))

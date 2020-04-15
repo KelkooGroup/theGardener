@@ -37,7 +37,7 @@ class GetFeaturesSteps extends ScalaDsl with EN with MockitoSugar {
       addFile(git, "target/data/GetFeatures/library/suggestionsWS/".fixPathSeparator, "test/features/suggestions/provide_book_suggestions.feature".fixPathSeparator, featureContent)
     }
 
-    val project = Project("suggestionsWS", "Suggestions WebServices", Paths.get("target/data/GetFeatures/library/suggestionsWS/".fixPathSeparator).toUri.toString, "master", None, Some("test" + separator + "features"))
+    val project = Project("suggestionsWS", "Suggestions WebServices", Paths.get("target/data/GetFeatures/library/suggestionsWS/".fixPathSeparator).toUri.toString, None, "master", None, Some("test" + separator + "features"))
     projectRepository.save(project)
     CommonSteps.projects = Map(project.id -> project)
   }

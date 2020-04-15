@@ -21,7 +21,7 @@ class GherkinRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with In
   val gherkinRepository = inject[GherkinRepository]
 
   val node = HierarchyNode(".01.", "eng", "Eng", "Systems", "System")
-  val project1 = Project("project1", "Project 1", "repositoryUrl1", "branch2", None, Some("featuresRootPath1"), None)
+  val project1 = Project("project1", "Project 1", "repositoryUrl1", None, "branch2", None, Some("featuresRootPath1"), None)
   val branch1 = Branch(1, "branch1", isStable = false, "project1")
   val branch2 = Branch(2, "branch2", isStable = true, "project1")
   val feature1 = Feature(1, 1, "path1", None, Seq(), Some("language1"), "keyword1", "feature1", "description1", Seq(), Seq("comments1"))
