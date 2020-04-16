@@ -114,6 +114,9 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
   val ImageRegex = """\!\[.*\]\((.*)\)""".r
   val ReferenceRegex = """\[.*\]\:\s(\S*)""".r
 
+  val SourceTemplateBranchToken = "${branch}"
+  val SourceTemplatePathToken = "${path}"
+
   def getLocalRepository(projectId: String, branch: String): String = s"$projectsRootDirectory$projectId/$branch/".fixPathSeparator
 
   def getPagePath(projectId: String, branch: String, path: String, documentationRootPath: String): String = {
@@ -222,8 +225,8 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
       val branchName = pageJoinProject.branch.name
       val filePath = docRootPath + pageJoinProject.page.relativePath + ".md"
       sourceUrlTemplate
-        .replace("${branch}", branchName)
-        .replace("${path}", filePath)
+        .replace(SourceTemplateBranchToken, branchName)
+        .replace(SourceTemplatePathToken, filePath)
     }
   }
 
