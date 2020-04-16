@@ -45,4 +45,5 @@ export interface PageApi {
   description: string;
   order: number;
   content?: Array<PagePart>;
+  sourceUrl?: string;
 }
