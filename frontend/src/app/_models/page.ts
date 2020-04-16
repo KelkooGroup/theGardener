@@ -6,6 +6,7 @@ export interface Page {
   path: string;
   order: number;
   parts: Array<PagePart>;
+  sourceUrl?: string;
 }
 
 export interface PagePart {
