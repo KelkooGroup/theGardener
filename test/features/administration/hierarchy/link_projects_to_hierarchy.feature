@@ -76,7 +76,7 @@ Feature: Link a project to the hierarchy
       | suggestionsWS | .02.        |
 
   @level_2_technical_details @nominal_case @valid
-  Scenario: Get hierarchy nodes related to a project
+  Scenario: Get hierarchy nodes related to a project, case 1
     Given the links between hierarchy nodes are
       | projectId     | hierarchyId |
       | suggestionsWS | .01.01.01.  |
@@ -110,7 +110,7 @@ Feature: Link a project to the hierarchy
   """
 
   @level_2_technical_details @nominal_case @valid
-  Scenario: Get hierarchy nodes related to a project
+  Scenario: Get hierarchy nodes related to a project, case 2
     Given the links between hierarchy nodes are
       | projectId     | hierarchyId |
       | suggestionsWS | .01.01.01.  |

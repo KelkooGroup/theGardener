@@ -25,7 +25,7 @@ Feature: Generate a documentation page
 
     # TODO Make sure to have an index on the column "path"
   @level_2_technical_details @nominal_case @valid
-  Scenario: generate a documentation page
+  Scenario: generate a documentation page, case 1
     Given we have those directories in the database
       | id | name        | label         | description             | order | relativePath  | path                               | branchId |
       | 1  | root        | SuggestionsWS | Suggestions WebServices | 0     | /             | suggestionsWS>master>/             | 1        |
@@ -61,7 +61,7 @@ Feature: Generate a documentation page
 """
 
   @level_2_technical_details @nominal_case @valid
-  Scenario: generate a documentation page
+  Scenario: generate a documentation page, case 2
     Given we have those directories in the database
       | id | name | label         | description             | order | relativePath | path                   | branchId |
       | 1  | root | SuggestionsWS | Suggestions WebServices | 0     | /            | suggestionsWS>master>/ | 1        |

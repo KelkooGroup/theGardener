@@ -18,7 +18,7 @@ Feature: Generate a documentation page without branch in path
 
 
   @level_2_technical_details @nominal_case @valid
-  Scenario: generate a documentation page without branch in path
+  Scenario: generate a documentation page without branch in path, case 1
     Given we have those branches in the database
       | id | name   | isStable | projectId     |
       | 1  | master | true     | suggestionsWS |
@@ -57,7 +57,7 @@ Feature: Generate a documentation page without branch in path
 """
 
   @level_2_technical_details @nominal_case @valid
-  Scenario: generate a documentation page without branch in path
+  Scenario: generate a documentation page without branch in path, case 2
     Given we have those branches in the database
       | id | name       | isStable | projectId     |
       | 1  | master     | true     | suggestionsWS |
