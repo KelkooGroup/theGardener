@@ -18,21 +18,14 @@ import scala.concurrent.ExecutionContext
 @silent("Interpolated")
 @silent("missing interpolator")
 @Api(value = "PageController", produces = "application/json")
-class PageController @Inject()(projectService: ProjectService, pageService: PageService)(implicit ec: ExecutionContext) extends InjectedController {
+class PageController @Inject()(pageService: PageService)(implicit ec: ExecutionContext) extends InjectedController {
 
   @ApiOperation(value = "Get pages from path", response = classOf[PageDTO], responseContainer = "list")
   @ApiResponses(Array(new ApiResponse(code = 404, message = "Page not found")))
   def getPageFromPath(path: String): Action[AnyContent] = Action.async {
     pageService.computePageFromPath(path).map {
-      case Some(pageWithContent) =>
-        // TODO optimize, too much calls to DB here
-        val variables = projectService.getVariables(pageWithContent.page)
-        val content = pageService.replaceVariablesInMarkdown(pageWithContent.content, variables.getOrElse(Seq()))
-        val sourceUrl = projectService.getSourceUrl(pageWithContent.page)
-        val pageDto = PageDTO(pageWithContent.page, content, sourceUrl)
-        Ok(Json.toJson(Seq(pageDto)))
-      case None =>
-        NotFound(s"No Page $path")
+      case Some(pageDto) => Ok(Json.toJson(Seq(pageDto)))
+      case None => NotFound(s"No Page $path")
     }
   }
 
