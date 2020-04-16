@@ -217,9 +217,10 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
     for {
       pageJoinProject <- pageJoinProjectOpt
       sourceUrlTemplate <-  pageJoinProject.project.sourceUrlTemplate
+      docRootPath <- pageJoinProject.project.documentationRootPath
     } yield {
       val branchName = pageJoinProject.branch.name
-      val filePath = StringUtils.removeFirstSlash(pageJoinProject.page.relativePath) + ".md"
+      val filePath = docRootPath + pageJoinProject.page.relativePath + ".md"
       sourceUrlTemplate
         .replace("${branch}", branchName)
         .replace("${path}", filePath)

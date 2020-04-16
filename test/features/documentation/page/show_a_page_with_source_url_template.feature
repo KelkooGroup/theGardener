@@ -40,7 +40,7 @@ Feature: Generate a documentation page with link to the source
   {
     "path": "suggestionsWS>master>/suggestions/examples",
     "relativePath": "/suggestions/examples",
-    "sourceUrl": "http://github.com/theGardener/blob/master/suggestions/examples.md",
+    "sourceUrl": "http://github.com/theGardener/blob/master/doc/suggestions/examples.md",
     "name": "examples",
     "label": "examples",
     "description": "Some examples",
@@ -77,7 +77,7 @@ Feature: Generate a documentation page with link to the source
   {
     "path": "suggestionsWS>master>/suggestions/examples",
     "relativePath": "/suggestions/examples",
-    "sourceUrl": "http://github.com/theGardener/blob/master/suggestions/examples.md",
+    "sourceUrl": "http://github.com/theGardener/blob/master/doc/suggestions/examples.md",
     "name": "examples",
     "label": "examples",
     "description": "Some examples",
