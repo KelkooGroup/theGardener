@@ -4,7 +4,6 @@ import java.io._
 
 import akka.Done
 import akka.actor.{ActorSystem, CoordinatedShutdown}
-import com.github.ghik.silencer.silent
 import javax.inject._
 import models._
 import org.apache.commons.io.FileUtils._
@@ -334,32 +333,6 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
           _ <- deleteBranches(project.id, branchesToDelete)
         } yield ()
       }
-    }
-  }
-
-  @silent("Interpolated")
-  @silent("missing interpolator")
-  def getVariables(page: Page): Option[Seq[Variable]] = {
-    for {
-      directory <- directoryRepository.findById(page.directoryId)
-      branch <- branchRepository.findById(directory.branchId)
-      project <- projectRepository.findById(branch.projectId)
-      availableImplicitVariable = Seq(Variable("${project.current}", s"${project.name}"), Variable("${branch.current}", s"${branch.name}"), Variable("${branch.stable}", s"${project.stableBranch}"))
-    } yield project.variables.getOrElse(Seq()).++(availableImplicitVariable)
-  }
-
-  @silent("missing interpolator")
-  def getSourceUrl(page: Page): Option[String] = {
-    for {
-      directory <- directoryRepository.findById(page.directoryId)
-      branch <- branchRepository.findById(directory.branchId)
-      project <- projectRepository.findById(branch.projectId)
-      sourceUrlTemplate <- project.sourceUrlTemplate
-    } yield {
-      val urlWithoutExtension = sourceUrlTemplate
-        .replace("${branch}", branch.name)
-        .replace("${path}", StringUtils.removeFirstSlash(page.relativePath))
-      s"$urlWithoutExtension.md"
     }
   }
 
