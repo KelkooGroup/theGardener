@@ -160,33 +160,34 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
   }
 
   def computePageFromPath(path: String, refresh: Boolean = false): Future[Option[PageDTO]] = {
-    val projectOpt = projectRepository.findById(projectIdFromPath(path))
+    projectRepository.findById(projectIdFromPath(path))
+      .map(project => completePathWithBranchIfNeeded(path, project.stableBranch))
+      .map { pathWithBranch =>
 
-    val pathWithBranch = projectOpt
-      .map { project =>
-        if (path.contains(">>")) {
-          path.replace(">>", s">${project.stableBranch}>")
-        } else {
-          path
+        val pageJoinProjectOpt = pageRepository.findByPathJoinProject(pathWithBranch)
+
+        computePageFromPath(pageJoinProjectOpt, pathWithBranch, refresh).map {
+          _.map { pageWithContent =>
+            val variables = getVariables(pageJoinProjectOpt)
+            val content = replaceVariablesInMarkdown(pageWithContent.content, variables.getOrElse(Seq()))
+            val sourceUrl = getSourceUrl(pageJoinProjectOpt)
+            PageDTO(pageWithContent.page, content, sourceUrl)
+          }
         }
       }
-      // FIXME is it normal to put an error message in the path variable???
-      .getOrElse(s" Error while computing Page for the path $path")
-
-    val pageJoinProjectOpt = pageRepository.findByPathJoinProject(pathWithBranch)
-
-    computePageFromPath(pageJoinProjectOpt, pathWithBranch, refresh).map {
-      _.map { pageWithContent =>
-        val variables = getVariables(pageJoinProjectOpt)
-        val content = replaceVariablesInMarkdown(pageWithContent.content, variables.getOrElse(Seq()))
-        val sourceUrl = getSourceUrl(pageJoinProjectOpt)
-        PageDTO(pageWithContent.page, content, sourceUrl)
-      }
-    }
+      .getOrElse(Future.successful(None))
   }
 
   private def projectIdFromPath(path: String) = {
     path.split(">")(0)
+  }
+
+  private def completePathWithBranchIfNeeded(path: String, stableBranch: String): String = {
+    if (path.contains(">>")) {
+      path.replace(">>", s">${stableBranch}>")
+    } else {
+      path
+    }
   }
 
   private def computePageFromPath(pageJoinProjectOpt: Option[PageJoinProject], pathWithBranch: String, refresh: Boolean): Future[Option[PageWithContent]] = {
