@@ -19,7 +19,7 @@ Feature: Register a project
       | suggestionsWS | Suggestions WebServices | git@gitlab.corp.kelkoo.net:library/suggestionsWS.git | master       | test/features    |
 
   @level_2_technical_details @nominal_case @valid @register_project
-  Scenario: setup a project
+  Scenario: setup a project, details
     Given no project settings are setup in theGardener
     When I perform a "POST" on following URL "/api/projects" with json body
         """

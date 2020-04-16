@@ -536,7 +536,7 @@ Feature: Provide menu
 """
 
   @level_2_technical_details @nominal_case @valid
-  Scenario: provide pages of a directory
+  Scenario: provide pages of a directory, case 1
     Given the hierarchy nodes are
       | id         | slugName   | name                 | childrenLabel | childLabel   |
       | .          | root       | Hierarchy root       | Views         | View         |
@@ -611,7 +611,7 @@ Feature: Provide menu
     """
 
   @level_2_technical_details @nominal_case @valid
-  Scenario: provide pages of a directory
+  Scenario: provide pages of a directory, case 2
     Given the hierarchy nodes are
       | id         | slugName   | name                 | childrenLabel | childLabel   |
       | .          | root       | Hierarchy root       | Views         | View         |
