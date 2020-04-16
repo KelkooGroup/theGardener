@@ -37,3 +37,9 @@ h1 {
 .top{
   height: 1px;
 }
+
+.view-source {
+  border-top: 1px solid $color-border;
+  padding: 10px 0;
+  text-align: center;
+}

@@ -151,6 +151,27 @@ describe('PageContentComponent', () => {
     PageContentComponentTools.navigate(router, path4);
     expect(router.navigate).not.toHaveBeenCalled();
   }));
+
+  it('should show a link to view source if provided', async(() => {
+    const pageService: PageService = TestBed.get(PageService);
+    spyOn(pageService, 'getPage').and.returnValue(of(PAGE_WITH_SOURCE_URL));
+
+    fixture.detectChanges();
+
+    expect(component).toBeTruthy();
+    expect(page.viewSource).toBeTruthy();
+  }));
+
+  it('should not show a link to view source if not provided', async(() => {
+    const pageService: PageService = TestBed.get(PageService);
+    spyOn(pageService, 'getPage').and.returnValue(of(PAGE_SERVICE_RESPONSE));
+
+    fixture.detectChanges();
+
+    expect(component).toBeTruthy();
+    expect(page.viewSource).toBeFalsy();
+  }));
+
 });
 
 class PageObject {
@@ -175,6 +196,10 @@ class PageObject {
 
   get scenario() {
     return this.fixture.nativeElement.querySelector('.scenario');
+  }
+
+  get viewSource() {
+    return this.fixture.nativeElement.querySelector('.view-source');
   }
 }
 
@@ -329,4 +354,15 @@ const PAGE_WITH_SCENARIO: Page = {
   path: '',
   order: 0,
   parts: [PAGE_MARKDOWN, SCENARIO_PART],
+};
+
+
+const PAGE_WITH_SOURCE_URL: Page = {
+  title: 'overview',
+  order: 0,
+  path: '',
+  parts: [
+    PAGE_MARKDOWN,
+  ],
+  sourceUrl: 'http://github.com/some-link/page.md'
 };

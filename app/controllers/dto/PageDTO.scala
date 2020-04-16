@@ -48,13 +48,13 @@ object PageFragment {
   }
 }
 
-case class PageDTO(path: String, relativePath: String, name: String, label: String, description: String, order: Int, content: Seq[PageFragment])
+case class PageDTO(path: String, relativePath: String, name: String, label: String, description: String, order: Int, content: Seq[PageFragment], sourceUrl: Option[String])
 
 object PageDTO {
   implicit val pageFormat = Json.format[PageDTO]
 
-  def apply(page: Page, content: Seq[PageFragment]): PageDTO = {
-    PageDTO(page.path, page.relativePath, page.name, page.label, page.description, page.order, content)
+  def apply(page: Page, content: Seq[PageFragment], sourceUrl: Option[String]): PageDTO = {
+    PageDTO(page.path, page.relativePath, page.name, page.label, page.description, page.order, content, sourceUrl)
   }
 
 }

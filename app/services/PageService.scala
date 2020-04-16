@@ -2,7 +2,8 @@ package services
 
 import java.io.{File, FileInputStream}
 
-import controllers.dto.{PageFragment, PageFragmentContent}
+import com.github.ghik.silencer.silent
+import controllers.dto.{PageDTO, PageFragment, PageFragmentContent}
 import javax.inject.{Inject, Singleton}
 import models.{PageJoinProject, _}
 import org.apache.commons.io.FileUtils
@@ -113,6 +114,9 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
   val ImageRegex = """\!\[.*\]\((.*)\)""".r
   val ReferenceRegex = """\[.*\]\:\s(\S*)""".r
 
+  val SourceTemplateBranchToken = "${branch}"
+  val SourceTemplatePathToken = "${path}"
+
   def getLocalRepository(projectId: String, branch: String): String = s"$projectsRootDirectory$projectId/$branch/".fixPathSeparator
 
   def getPagePath(projectId: String, branch: String, path: String, documentationRootPath: String): String = {
@@ -155,12 +159,39 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
     } else None
   }
 
-  def computePageFromPath(path: String, refresh: Boolean = false): Future[Option[PageWithContent]] = {
-    val pathWithBranch = projectRepository.findById(path.split(">")(0)).map { project =>
-      if (path.contains(">>")) path.replace(">>", s">${project.stableBranch}>") else path
-    }.getOrElse(s" Error while computing Page for the path $path")
+  def computePageFromPath(path: String, refresh: Boolean = false): Future[Option[PageDTO]] = {
+    val projectOpt = projectRepository.findById(projectIdFromPath(path))
+
+    val pathWithBranch = projectOpt
+      .map { project =>
+        if (path.contains(">>")) {
+          path.replace(">>", s">${project.stableBranch}>")
+        } else {
+          path
+        }
+      }
+      // FIXME is it normal to put an error message in the path variable???
+      .getOrElse(s" Error while computing Page for the path $path")
+
+    val pageJoinProjectOpt = pageRepository.findByPathJoinProject(pathWithBranch)
+
+    computePageFromPath(pageJoinProjectOpt, pathWithBranch, refresh).map {
+      _.map { pageWithContent =>
+        val variables = getVariables(pageJoinProjectOpt)
+        val content = replaceVariablesInMarkdown(pageWithContent.content, variables.getOrElse(Seq()))
+        val sourceUrl = getSourceUrl(pageJoinProjectOpt)
+        PageDTO(pageWithContent.page, content, sourceUrl)
+      }
+    }
+  }
+
+  private def projectIdFromPath(path: String) = {
+    path.split(">")(0)
+  }
+
+  private def computePageFromPath(pageJoinProjectOpt: Option[PageJoinProject], pathWithBranch: String, refresh: Boolean): Future[Option[PageWithContent]] = {
     if (refresh) {
-      computePageFromPathUsingDatabase(pathWithBranch)
+      computePageFromPathUsingDatabaseBis(pageJoinProjectOpt, pathWithBranch)
     } else {
       val key = computePageCacheKey(pathWithBranch)
       cache.get(key) match {
@@ -168,16 +199,46 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
           Future.successful(Some(page))
         case None =>
           logger.debug(s"Page not found in cache: $key")
-          computePageFromPathUsingDatabase(pathWithBranch)
+          computePageFromPathUsingDatabaseBis(pageJoinProjectOpt, pathWithBranch)
       }
+    }
+  }
+
+  @silent("Interpolated")
+  @silent("missing interpolator")
+  private def getVariables(pageJoinProjectOpt: Option[PageJoinProject]): Option[Seq[Variable]] = {
+    pageJoinProjectOpt.map { pageJoinProject =>
+      val project = pageJoinProject.project
+      val branch = pageJoinProject.branch
+      val availableImplicitVariable = Seq(Variable("${project.current}", s"${project.name}"), Variable("${branch.current}", s"${branch.name}"), Variable("${branch.stable}", s"${project.stableBranch}"))
+      project.variables.getOrElse(Seq()) ++ availableImplicitVariable
+    }
+  }
+
+  @silent("missing interpolator")
+  private def getSourceUrl(pageJoinProjectOpt: Option[PageJoinProject]): Option[String] = {
+    for {
+      pageJoinProject <- pageJoinProjectOpt
+      sourceUrlTemplate <-  pageJoinProject.project.sourceUrlTemplate
+      docRootPath <- pageJoinProject.project.documentationRootPath
+    } yield {
+      val branchName = pageJoinProject.branch.name
+      val filePath = docRootPath + pageJoinProject.page.relativePath + ".md"
+      sourceUrlTemplate
+        .replace(SourceTemplateBranchToken, branchName)
+        .replace(SourceTemplatePathToken, filePath)
     }
   }
 
   private def computePageCacheKey(path: String): String = s"page_$path"
 
   def computePageFromPathUsingDatabase(path: String, forceRefresh: Boolean = true): Future[Option[PageWithContent]] = {
+    val pageJoinProjectOpt = pageRepository.findByPathJoinProject(path)
+    computePageFromPathUsingDatabaseBis(pageJoinProjectOpt, path, forceRefresh)
+  }
 
-    pageRepository.findByPathJoinProject(path) match {
+  def computePageFromPathUsingDatabaseBis(pageJoinProjectOpt: Option[PageJoinProject], path: String, forceRefresh: Boolean = true): Future[Option[PageWithContent]] = {
+    pageJoinProjectOpt match {
       case Some(pageJoinProject) =>
         val key = computePageCacheKey(path)
         if (cache.get(key).isEmpty || forceRefresh || pageJoinProject.page.dependOnOpenApi) {
