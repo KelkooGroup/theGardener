@@ -37,7 +37,7 @@ class MenuService @Inject()(hierarchyRepository: HierarchyRepository, projectRep
         branchAndPath._1 -> paths
       }
 
-      val pages = pageRepository.findAll().groupBy(_.directoryId)
+      val pages = pageRepository.findAll().sortBy(_.order).groupBy(_.directoryId)
       val directories = directoryRepository.findAll().map(d => d.copy(pages = pages.getOrElse(d.id, Seq())))
 
       val directoryTree = directories.groupBy(_.branchId).flatMap { case (branchId, branchDirectories) =>
@@ -59,10 +59,11 @@ class MenuService @Inject()(hierarchyRepository: HierarchyRepository, projectRep
         }
         val directory: Option[Directory] = hierarchyNode.directoryPath.flatMap { directoryPath =>
           directoryRepository.findByPath(directoryPath).map { d =>
+            val pages = pageRepository.findAllByDirectoryId(d.id)
             (for {
               branch <- branchRepository.findById(d.branchId)
               project <- projectRepository.findById(branch.projectId)
-            } yield d.copy(path = getCorrectedPath(d.path, project))).getOrElse(d)
+            } yield d.copy(path = getCorrectedPath(d.path, project), pages= pages)).getOrElse(d)
           }
 
         }

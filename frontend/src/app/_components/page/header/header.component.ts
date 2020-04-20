@@ -1,54 +1,52 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {MenuService} from '../../../_services/menu.service';
 import {NotificationService} from '../../../_services/notification.service';
-import {HierarchyNodeApi} from '../../../_models/hierarchy';
 import {ActivatedRoute, Router} from '@angular/router';
-import {UrlCleanerService} from '../../../_services/url-cleaner.service';
+import {MenuHierarchy} from "../../../_models/menu";
+import {NAVIGATE_PATH, RouteService} from "../../../_services/route.service";
 
 @Component({
-  selector: 'app-header',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss']
+    selector: 'app-header',
+    templateUrl: './header.component.html',
+    styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
-  @Input() logoSrc: string;
+    @Input() logoSrc: string;
 
-  @Input() appTitle?: string;
+    @Input() appTitle?: string;
 
-  items: Array<HierarchyNodeApi>;
+    items: Array<MenuHierarchy>;
 
-  constructor(private menuService: MenuService,
-              private urlCleanerService: UrlCleanerService,
-              private notificationService: NotificationService,
-              private activatedRoute: ActivatedRoute,
-              private router: Router) {
-  }
-
-  ngOnInit() {
-    this.menuService.getMenuHeader().subscribe(
-      result => {
-        this.items = result && result.children;
-        if (!this.activatedRoute.firstChild || !this.activatedRoute.firstChild.snapshot.params.name) {
-          if (this.items.length > 0) {
-            this.navigateTo(this.items[0]);
-          }
-        }
-      }, error => {
-        this.notificationService.showError('Error while getting first level of hierarchy', error);
-      });
-  }
-
-  navigateTo(node: HierarchyNodeApi) {
-    if (node.directory) {
-      this.router.navigate(['app/documentation/navigate/', node.hierarchy, {path: this.urlCleanerService.relativePathToUrl(node.directory.path)}]);
-    } else {
-      this.router.navigate(['app/documentation/navigate/', node.hierarchy]);
+    constructor(private menuService: MenuService,
+                private routeService: RouteService,
+                private notificationService: NotificationService,
+                private activatedRoute: ActivatedRoute,
+                private router: Router) {
     }
-  }
 
-  isItemInActivatedRoute(item: HierarchyNodeApi) {
-    const url = this.activatedRoute.firstChild.snapshot.url;
-    return url.filter(p => p.path === item.hierarchy).length > 0;
-  }
+    ngOnInit() {
+        this.menuService.getMenuHeader().subscribe(
+            result => {
+                this.items = result;
+                if (this.items.length > 0) {
+                    const currentRoute = this.routeService.navigationParamsToNavigationRoute(this.activatedRoute.firstChild.snapshot.params);
+                    if ( currentRoute.nodes == undefined || currentRoute.nodes?.length == 0 ) {
+                        this.navigateTo(this.items[0]);
+                    }
+                }
+            }, error => {
+                this.notificationService.showError('Error while getting first level of hierarchy', error);
+            });
+    }
+
+    navigateTo(item: MenuHierarchy) {
+        const itemPath = this.routeService.menuHierarchyToFrontEndPath(item);
+        this.router.navigateByUrl(NAVIGATE_PATH + itemPath.pathFromNodes);
+    }
+
+    isItemInActivatedRoute(item: MenuHierarchy) {
+        const currentRoute = this.routeService.navigationParamsToNavigationRoute(this.activatedRoute.firstChild.snapshot.params);
+        return currentRoute.nodes[0] == item.name;
+    }
 
 }

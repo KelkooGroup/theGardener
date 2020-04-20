@@ -1,11 +1,13 @@
+import {NavigationRoute} from './route';
+
 
 export interface MenuHierarchy {
   name: string;
   label: string;
-  type: 'Project' | 'Node' | 'Branch' | 'Directory' | 'Page';
+  type: string; // 'Node' | 'Project' | 'Branch' | 'Directory' | 'Page';
   depth: number;
-  route?: string;
-  children: Array<MenuHierarchy | MenuProjectHierarchy>;
+  route: NavigationRoute;
+  children: Array<MenuHierarchy | MenuProjectHierarchy | MenuDirectoryHierarchy | MenuPageHierarchy>;
   directory?: string;
 }
 
@@ -20,4 +22,5 @@ export interface MenuDirectoryHierarchy extends MenuHierarchy {
 
 export interface MenuPageHierarchy extends MenuHierarchy {
   order: number;
+  description: string;
 }

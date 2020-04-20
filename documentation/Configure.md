@@ -2,7 +2,7 @@
 {
   "page" :
      {
-        "label": "Configure",
+        "label": "Configure theGardener",
         "description": "How to configure a new instance of theGardener ?"
      }
 }
@@ -11,7 +11,7 @@
 theGardener is an application that gather documentation from projects hosted on git repositories. 
 This application need to be installed and configured. 
 
-![Roles](../assets/images/theGardener_role_admin.png)
+![Roles](assets/images/theGardener_role_admin.png)
 
 
 The main configuration steps are :
@@ -25,7 +25,7 @@ The main configuration steps are :
 
 ## Hierarchy and projects
 
-![Roles](../assets/images/theGardener_hierarchy_projects.png)
+![Roles](assets/images/theGardener_hierarchy_projects.png)
 
 
 

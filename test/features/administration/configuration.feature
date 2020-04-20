@@ -17,6 +17,8 @@ Feature: Provide configuration
      "title":"In our documentation we trust.",
      "logoSrc":"assets/images/logo-white.png",
      "faviconSrc":"assets/images/favicon.png",
-     "colorMain":"#1F7079"
+     "colorMain":"#1F7079",
+     "colorLight":"#1F7079",
+     "colorDark":"#1F7079"
 }
 """

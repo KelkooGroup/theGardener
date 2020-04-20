@@ -1,31 +1,25 @@
 import {DirectoryApi, HierarchyNodeApi, PageApi} from '../_models/hierarchy';
+import { MenuHierarchy} from "../_models/menu";
 
-export const MENU_HEADER_SERVICE_RESPONSE: HierarchyNodeApi = {
-  id: '.',
-  hierarchy: '_',
-  slugName: 'root',
-  name: 'Hierarchy root',
-  childrenLabel: 'Views',
-  childLabel: 'View',
-  children: [
+export const MENU_HEADER_SERVICE_RESPONSE: Array<MenuHierarchy> =  [
     {
-      id: '.01.',
-      hierarchy: '_eng',
-      slugName: 'eng',
-      name: 'Engineering view',
-      childrenLabel: 'System groups',
-      childLabel: 'System group'
+      name: "publisher",
+      label: "Publisher",
+      type: 'Node',
+      depth: 1,
+      route: {nodes: ["publisher"], directories:[] as string[]},
+      children: [] as MenuHierarchy[]
     },
     {
-      id: '.02.',
-      hierarchy: '_biz',
-      slugName: 'biz',
-      name: 'Business view',
-      childrenLabel: 'Units',
-      childLabel: 'Unit'
+      name: "tools",
+      label: "Tools",
+      type: 'Node',
+      depth: 1,
+      route: {nodes: ["tools"], directories:[] as string[]},
+      children: [] as MenuHierarchy[]
     }
   ]
-};
+;
 
 export const MENU_SUBMENU_SERVICE_RESPONSE: HierarchyNodeApi = {
   id: '.01.',

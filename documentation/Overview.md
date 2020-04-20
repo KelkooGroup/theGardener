@@ -2,24 +2,22 @@
 {
   "page" :
      {
-        "label": "Theaser",
-        "description": "Why should I use theGardener?"
+        "label": "Overview",
+        "description": "What is theGardener?"
      }
 }
 ```
 
-# In our documentation we trust.
+## Aim
 
 **We invite you to include the documentation writing task in the development loop.** You will trust again the technical documentation of your projects. With Test Driven Development, we have included the tests in the development loop and made the tests fun. With theGardener, you will include documentation writing in the development loop **and make it fun again**, if it has been ever fun.
 
-## Problem
+### Problem
 
 Developer are lazy, that make them good developers. They are also bored to explain, by writing documentation, how to use the application they are developing. I know that because I'm a developer as well ;) At the end the technical documentation is written at the beginning of the project, when the developer have time or when somebody ask explicitly for it, remember they are lazy and bored... by the time the project is growing **the technical documentation is diverging from what it's actually doing. And nobody really trust the documentation written.**
 
 
-![the Problem](assets/images/theProblem.png)
-
-## Context
+### Context
 
 At some point, a long time ago, it was the same with tests : developer didn't want to write them as it was boring. With Test Driven Development, the test has been included in the development loop and the test became fun to write as much as it is really useful.
 
@@ -40,7 +38,7 @@ We can also make it less painful :
 
 
 
-## Solution
+### Solution
 
 Start using theGardener ! It allow you to :
 
@@ -50,4 +48,78 @@ Start using theGardener ! It allow you to :
  - **Include only the meaningful gherkin scenario** exactly where you want in your documentation.
  - **Include OpenAPI model and endpoint description** exactly where you want in your documentation.
 
-![Write documentation on your IDE with you code](assets/images/theSolution.png)
+
+## Overview
+
+![Architecture](assets/images/theGardener_architecture.png)
+
+### Main features
+
+- Scan projects from git repositories
+- Organize projects in a tree
+- Organize documentation of a project with pages within directories
+- Various features to help the developer in the documentation redaction
+
+   - Support Markdown
+   - Include Gherkin scenarios
+   - Include OpenAPI models and endpoints
+   - Include images
+   - Externalize data by variables
+   - Include external web pages
+   - Preview on theGardener before merge 
+     
+
+### Open sourced
+
+- [Apache License 2.0](https://github.com/KelkooGroup/theGardener/blob/master/LICENSE)
+- [Sources](https://github.com/KelkooGroup/theGardener)
+- [Milestones](https://github.com/KelkooGroup/theGardener/milestones?direction=asc&sort=title)
+- [Kanban](https://github.com/KelkooGroup/theGardener/projects/1)
+- [Issues](https://github.com/KelkooGroup/theGardener/issues)
+- [Speak to a human](https://discordapp.com/channels/417704230531366923/417704230976225281)
+
+### Technical stack
+
+- On Front: TypeScript with Angular
+- On Back: Scala with Play
+
+### Original idea and main contributors
+
+https://www.kelkoogroup.com/
+
+### Prerequisite
+
+ - **Use git** 
+   - theGardener scan only projects hosted on a git repository
+ - **Use feature branching and merge requests**
+   - Your documentation will be reviewed with a pair at the same time as the code: you will trust your documentation
+ - **Write documentation in [Markdown](https://www.markdownguide.org/basic-syntax/)**    
+ - _(Optional but recommended)_ Write code with [Behavior Driven Development](https://cucumber.io/docs/bdd/)
+   - It would help showing meaningful examples
+ - _(Optional but recommended)_ On web services development, [OpenAPI](https://swagger.io/docs/specification/about/) (For instance, use Swagger) 
+   - It would avoid you copy past of model and endpoint descriptions
+
+
+### Roots
+
+- At [KelkooGroup](https://www.kelkoogroup.com/) we are intensively using the Behavior Driven Development to specify, develop and tests our applications.  We prefer talking about Specification by examples but BDD (Behavior Driven Development) name is more popular. There are many advantages to use this process :   
+
+  - Enforce a close collaboration DEV / Product Owner
+    - Use examples to open discussion and find many cases
+    - Allows a very fast feedback loop
+  - Functional tests
+    - Fast and stable tests
+    - The developer is guided, the code is pulled by the tests
+    - Flexible code is required to mock external interactions
+  - Runnable Documentation
+    - Pulled from code, the documentation is always up to date
+    - The documentation is exhaustive 
+
+- So we have exhaustive and up to date documentation with all those scenarios. It used for the specification, the implementation and the regression tests. But we can do more with it: expose it the users of our applications.
+
+- We have not found a proper tool to expose them, so we have started to build one.
+- As we are using a lot of open source project/framework and libraries, we have decided to make it open source : https://github.com/KelkooGroup/theGardener.
+
+
+Read [theGardener roots](assets/decks/src/theGardener_roots.pdf) for the full picture and a full example of user story written / implemented / tested with BDD.
+

@@ -1,140 +1,120 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {
+    Component,
+    Input,
+    OnDestroy,
+    OnInit,
+} from '@angular/core';
 import {MenuHierarchy, MenuProjectHierarchy} from '../../../../_models/menu';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {NotificationService} from '../../../../_services/notification.service';
+import {NAVIGATE_PATH, RouteService} from "../../../../_services/route.service";
+import {FrontendPath, NavigationRoute} from "../../../../_models/route";
+
 
 @Component({
-  selector: 'app-navigate-menu-item',
-  templateUrl: './navigate-menu-item.component.html',
-  styleUrls: ['./navigate-menu-item.component.scss'],
+    selector: 'app-navigate-menu-item',
+    templateUrl: './navigate-menu-item.component.html',
+    styleUrls: ['./navigate-menu-item.component.scss'],
 })
 export class NavigateMenuItemComponent implements OnInit, OnDestroy {
 
-  @Input() menuItem: MenuHierarchy;
-  expanded: boolean;
-  active: boolean;
-  leafSelection: boolean;
-  nodeNameInUrl: string;
-  pathInUrl: string;
-  selectedBranch: MenuHierarchy;
-  private subscription: Subscription;
+    @Input() menuItem: MenuHierarchy;
 
-  constructor(private router: Router,
-              private activatedRoute: ActivatedRoute,
-              private notificationService: NotificationService) {
-  }
+    currentPath: FrontendPath;
+    currentNavigationRoute: NavigationRoute;
 
-  ngOnInit() {
-    this.subscription = this.activatedRoute.params
-      .subscribe(params => {
-        this.nodeNameInUrl = params.name;
-        this.pathInUrl = params.path;
-        this.active = this.isNodeActive(this.menuItem);
-        this.leafSelection = this.isLeafSelection(this.menuItem);
-        this.expanded = this.menuItem.depth <= 1 || this.active;
-        if (this.menuItem.type === 'Project') {
-          const project = this.menuItem as MenuProjectHierarchy;
-          const branchInUrl = this.getBranchFromUrl();
-          const projectInUrl = this.getProjectFromUrl();
-          const branchToSelect = branchInUrl ? branchInUrl : project.stableBranch;
-          this.active = projectInUrl == project.name;
-          if (this.active) {
-            this.selectedBranch = project.children.find(b => b.name === branchToSelect);
-            this.expanded = true;
-          }else{
-            this.selectedBranch = project.children.find(b => b.name === project.stableBranch);
-          }
+    paddingByDepth = 16.75;
+    expanded: boolean;
+    active: boolean;
+    disable: boolean;
+    leafSelection: boolean;
+    selectedBranch: MenuHierarchy;
+
+    private subscription: Subscription;
+
+    constructor(private router: Router,
+                private activatedRoute: ActivatedRoute,
+                private routeService: RouteService,
+                private notificationService: NotificationService) {
+    }
+
+    ngOnInit() {
+        this.subscription = this.activatedRoute.params
+            .subscribe(params => {
+
+                this.currentPath = this.routeService.navigationParamsToFrontEndPath(params);
+                this.currentNavigationRoute = this.routeService.navigationParamsToNavigationRoute(params);
+                this.active = this.isActive(this.menuItem);
+                this.expanded =  this.menuItem.depth == 0 ||  this.active;
+
+                if (this.menuItem.type === 'Project') {
+                    const project = this.menuItem as MenuProjectHierarchy;
+                    const branchToSelect = this.routeService.selectBranchFromNavigationRoute(this.currentNavigationRoute, project.stableBranch);
+
+                    this.active = this.currentNavigationRoute.project == project.name;
+                    if (this.active) {
+                        this.selectedBranch = project.children.find(b => b.name === branchToSelect);
+                        this.expanded = true;
+                    } else {
+                        this.selectedBranch = project.children.find(b => b.name === project.stableBranch);
+                    }
+                }
+
+            }, error => {
+                this.notificationService.showError(`Error while showing menu item ${this.menuItem.name}`, error);
+            });
+
+
+    }
+
+    navigateToItem() {
+        if (this.menuItem.route?.page !== undefined) {
+            this.router.navigateByUrl(NAVIGATE_PATH + this.routeService.navigationRouteToFrontEndPath(this.menuItem.route).pathFromNodes);
+        } else {
+            this.expanded = !this.expanded;
         }
-      }, error => {
-        this.notificationService.showError(`Error while showing menu item ${this.menuItem.name}`, error);
-      });
-  }
-
-  navigateToItem() {
-    if (this.menuItem.route !== undefined) {
-      if (this.activatedRoute.snapshot && this.activatedRoute.snapshot.params && this.menuItem.route === this.activatedRoute.snapshot.params.path) {
-        this.expanded = !this.expanded;
-      } else {
-        this.router.navigate([this.targetUrl, {path: this.menuItem.route}]);
-      }
-    } else {
-      this.expanded = !this.expanded;
-    }
-  }
-
-  navigateToSelectedBranch() {
-    this.router.navigate([this.targetUrl, {path: `${this.selectedBranch.route}>_`}]);
-  }
-
-  private get targetUrl(): string {
-    return `app/documentation/navigate/${this.nodeNameInUrl}`;
-  }
-
-  isRouteInActivatedUrl(node: MenuHierarchy) {
-    const isRouteInActivatedUrl = node.route &&
-      this.pathInUrl &&
-      (this.pathInUrl === this.getRouteWithBranch(node.route) ||
-        // Angular router automatically removes trailing slash from URL so we need to append it to check path
-        this.pathInUrl.concat('/') === this.getRouteWithBranch(node.route));
-    return isRouteInActivatedUrl;
-  }
-
-  isNodeActive(node: MenuHierarchy): boolean {
-    const hasActivatedChild = node.children.some(c => this.isNodeActive(c));
-    return this.isRouteInActivatedUrl(node) || hasActivatedChild;
-  }
-
-  isLeafSelection(node: MenuHierarchy): boolean {
-    const hasActivatedChild = node.children.some(c => this.isNodeActive(c));
-    return this.isRouteInActivatedUrl(node) && !hasActivatedChild;
-  }
-
-  trackMenuItem(index: number, item: MenuHierarchy) {
-    return item.name;
-  }
-
-  branchComparator(branch1: MenuHierarchy, branch2: MenuHierarchy): boolean {
-    return branch1.name === branch2.name;
-  }
-
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
-  }
-
-  calculatePadding(): number {
-    return (this.menuItem.depth + 1) * 16 + (+(this.menuItem.children.length === 0) * 12);
-  }
-
-  getRouteWithBranch(nodeRoute: string) {
-    return nodeRoute.replace('>>', `>${this.getBranchFromUrl()}>`)
-  }
-
-  private getProjectFromUrl(): string | undefined {
-    let project = undefined;
-    if (this.pathInUrl) {
-      const pathParts = this.pathInUrl.split('>');
-      if (pathParts.length == 1) {
-        project = this.pathInUrl;
-      }
-      if (pathParts.length > 1) {
-        project = pathParts[0];
-      }
-    }
-    return project;
-  }
-
-  private getBranchFromUrl(): string | undefined {
-    if (this.pathInUrl) {
-      const pathParts = this.pathInUrl.split('>');
-      if (pathParts.length > 1) {
-        return pathParts[1].replace(/_/g, '/').replace(/~/g, '_');
-      } else {
-        return undefined;
-      }
-    } else {
-      return undefined;
     }
 
-  }
+    navigateToSelectedBranch() {
+        const branchPath = this.routeService.navigationRouteToFrontEndPath(this.selectedBranch.route).pathFromNodes;
+        this.router.navigateByUrl(NAVIGATE_PATH + branchPath);
+    }
+
+    isActive(menuItem: MenuHierarchy): boolean {
+
+        const menuItemNodesPath = this.routeService.navigationRouteToFrontEndPath(menuItem.route).nodesPath;
+        let active = false ;
+        if (menuItem.type == "Node") {
+            active = this.currentPath.pathFromNodes?.startsWith(menuItemNodesPath) === true ;
+        }
+        if (menuItem.type == "Project") {
+            active =  this.currentPath.nodesPath == menuItemNodesPath && this.currentNavigationRoute.project == menuItem.route.project;
+        }
+        if (menuItem.type == "Directory") {
+            active =  this.routeService.directoryPathSimilar(this.currentNavigationRoute, menuItem.route) ;
+        }
+        if (menuItem.type == "Page") {
+            active =  this.routeService.pagePathSimilar(this.currentNavigationRoute, menuItem.route) ;
+        }
+
+        return active;
+    }
+
+    ngOnDestroy(): void {
+        this.subscription.unsubscribe();
+    }
+
+    calculatePadding(): number {
+        return 2 + ((this.menuItem.depth) * this.paddingByDepth);
+    }
+
+    trackMenuItem(index: number, item: MenuHierarchy) {
+        return item.name;
+    }
+
+    branchComparator(branch1: MenuHierarchy, branch2: MenuHierarchy): boolean {
+        return branch1.name === branch2.name;
+    }
+
 }
