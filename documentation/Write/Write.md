@@ -318,9 +318,11 @@ this module will be displayed as follows:
 
 ## Include OpenAPI path   
 
-Be able to exploit and OpenAPI descriptor (the swagger.json provided by an application) to display some specific end points.
+**Some context**: The OpenAPI Specification (OAS) defines a standard, language-agnostic interface to RESTful APIs which allows both humans and computers to discover and understand the capabilities of the service without access to source code, documentation, or through network traffic inspection.
+With OpenApi it is possible to produce a Json file (named swagger.json) that list all the End Points that we can use and all the definitions of models that the API uses.
+Sometimes, it is meaningful to add some End Points to the documentation to be more clear. This is what we will do here  
 
-To include OpenApi models, use this module :
+To include OpenApi Paths, use this module :
 
 ````
 ```thegardener
@@ -328,6 +330,10 @@ To include OpenApi models, use this module :
   "openApiPath" : 
      {
         "openApiUrl": "https://thegardener.kelkoogroup.com/api/docs/swagger.json",
+        "refStartsWith": [
+         "/api/projects/{id}",
+         "/api/directories"
+        ],
         "ref": [
          "/api/projects/{id}",
          "/api/directories"
@@ -343,6 +349,26 @@ Details on the settings :
 - "openApi.json.url" refers to the url of the API that match the Open API specification (https://swagger.io/specification).
    - example : https://thegardener.kelkoogroup.com/api/docs/swagger.json
    - default value : use the variable ${openApi.json.url}.  The writer could set this variable at project level. In this case he would need to add it at every model inclusion. See #63. 
+- "refStartsWith" : Table of paths that represent the start of the paths you want to display 
+   - example: 
+     - if we have the end points :  
+      POST       /api/projects  
+      GET        /api/projects   
+      GET        /api/projects/:id  
+      PUT        /api/projects/:id  
+      DELETE     /api/projects/:id  
+      POST       /api/projects/:id/synchronize  
+      GET        /api/projects/:id/hierarchy  
+      GET        /api/directories    
+     - if we have:
+      "refStartsWith": [ "/api/projects/{id}", "/api/directories"]  
+     - it will display :  
+       GET       /api/projects/:id   
+       PUT       /api/projects/:id  
+       DELETE    /api/projects/:id  
+       POST      /api/projects/:id/synchronize                   
+       GET       /api/projects/:id/hierarchy      
+       GET       /api/directories  
 - "ref" : Table of paths that represent the exact paths you want to display 
 - "methods" : Define filter on methods
    - default : display all methods
@@ -352,6 +378,7 @@ Details on the settings :
        GET         /api/projects/:id               
        GET         /api/projects/:id/hierarchy      
        GET         /api/directories
+- "errorMessage" : displayed if the resource is not reachable, If not provided, no message will be displayed
 
 this module will be displayed as follows:  
 

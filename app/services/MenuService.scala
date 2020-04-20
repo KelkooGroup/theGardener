@@ -45,7 +45,7 @@ class MenuService @Inject()(hierarchyRepository: HierarchyRepository, projectRep
         val project = (for {
           branch <- branchRepository.findById(branchId)
           projectFound <- projectRepository.findById(branch.projectId)
-        } yield projectFound).getOrElse(Project("", "", "", "", None, None))
+        } yield projectFound).getOrElse(Project("", "", "", None, "", None, None))
         rootDirectories.headOption.map(rootDirectory => branchId -> buildDirectoryTree(rootDirectory, children, project))
       }
 

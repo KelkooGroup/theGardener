@@ -35,6 +35,7 @@ export class PageService {
             path: page.path,
             order: page.order,
             parts: page.content,
+            sourceUrl: page.sourceUrl
           };
           return res;
         })

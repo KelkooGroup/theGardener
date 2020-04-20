@@ -40,7 +40,7 @@ case class DirectoryDTO(id: Long, path: String, name: String, label: String, des
    implicit val directoryFormat = Json.format[DirectoryDTO]
 
    def apply(directory: Directory): DirectoryDTO = {
-     DirectoryDTO(directory.id, directory.path, directory.name, directory.label, directory.description, directory.order, directory.pages.map(PageDTO(_, Nil)))
+     DirectoryDTO(directory.id, directory.path, directory.name, directory.label, directory.description, directory.order, directory.pages.map(PageDTO(_, Nil, None)))
    }
  }
 
