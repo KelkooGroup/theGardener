@@ -2,7 +2,7 @@
 {
   "page" :
      {
-        "label": "Operate",
+        "label": "Operate theGardener",
         "description": "How to operate to theGardener instance ?"
      }
 }
@@ -10,7 +10,7 @@
 
 Once the instance is running, the OPS could need some tools to operate the application. Here are some tools. 
 
-![Roles](../assets/images/theGardener_role_ops_operate.png)
+![Roles](assets/images/theGardener_role_ops_operate.png)
 
 ## Refresh data  
 

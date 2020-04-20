@@ -7,14 +7,35 @@ application.logoSrc = <%= value("the_gardener_application_logo_src") %>
 application.faviconSrc = <%= value("the_gardener_application_favicon_src") %>
 application.baseUrl = <%= value("the_gardener_application_base_url") %>
 
-#Green theGardener
-#color.main="#1F7079"
-#Blue Kelkoo Group
-#color.main="#2b709a"
-#Orange Kelkoo Group
-#color.main="#f56026"
+#### Grey
+#color.dark="#424242"
+#color.main="#5c5a5a"
+#color.light="#e3e3e3"
 
+#### Green
+#color.dark="#3d853e"
+#color.main="#55b556"
+#color.light="#f2fff2"
+
+#### Orange
+#color.dark="#d45220"
+#color.main="#f56026"
+#color.light="#fceee8"
+
+####  Blue
+#color.dark="#205373"
+#color.main="#2b709a"
+#color.light="#edf3f7"
+
+####  theGardener
+# color.dark="#154c52"
+# color.main="#1F7079"
+# color.light="#d9f7fa"
+
+color.dark="<%= value("the_gardener_color_dark") %>"
 color.main="<%= value("the_gardener_color_main") %>"
+color.light="<%= value("the_gardener_color_light") %>"
+
 
 play.http.filters=filters.Filters
 

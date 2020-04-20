@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import { Component} from '@angular/core';
 import {ConfigService} from './_services/config.service';
 import {Title} from '@angular/platform-browser';
 
@@ -18,9 +18,9 @@ export class AppComponent {
       this.logoSrc = result.logoSrc;
       this.favIcon = result.faviconSrc;
 
-      (document.querySelector('.custom-backgroundColor-colorMain') as HTMLElement).style.backgroundColor = result.colorMain;
-      (document.querySelector('.custom-borderBottomColor-colorMain') as HTMLElement).style.borderBottomColor = result.colorMain;
-
+      document.documentElement.style.setProperty('--custom-color-main', result.colorMain);
+      document.documentElement.style.setProperty('--custom-color-light', result.colorLight);
+      document.documentElement.style.setProperty('--custom-color-dark', result.colorDark);
     });
   }
 

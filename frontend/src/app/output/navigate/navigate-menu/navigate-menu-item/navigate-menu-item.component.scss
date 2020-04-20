@@ -1,12 +1,17 @@
 @import '_backoffice.scss';
 
+a {
+  text-decoration: none;
+}
+
 .bold {
-  color: $color-text-darker;
   font-weight: bold;
+  color: $custom-color-dark;
 }
 
 .active {
-  color: $color-selected-item;
+  font-weight: bold;
+  color: $custom-color-dark;
 }
 
 .default {
@@ -33,7 +38,7 @@ ul {
   padding: 3px 10px;
   display: flex;
   width: auto;
-  font-size: $font-size-text-small;
+  font-size: 14px;
 }
 
 .item-text {

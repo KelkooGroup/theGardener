@@ -1,4 +1,4 @@
-<div class="header custom-backgroundColor-colorMain  custom-borderBottomColor-colorMain "  >
+<div class="header"  >
 
   <ul class="header-bar" role="navigation">
     <li class="header-logo">
@@ -9,7 +9,7 @@
     <li class="header-navigation" *ngFor="let item of items">
       <a (click)="navigateTo(item)"
          [ngClass]="isItemInActivatedRoute(item) ? 'active' : 'item-with-hover' "
-      >{{ item.name }}</a>
+      >{{ item.label }}</a>
     </li>
 
     <li class="header-logo-the-gardener">

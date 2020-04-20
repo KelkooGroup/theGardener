@@ -4,16 +4,15 @@
     "label": "theGardener",
     "description": "In our documentation we trust.",
     "pages": [
-      "Teaser",
-      "Project",
-      "Changelog"
-    ],
-    "children": [
+      "Overview",
+      "Changelog",
       "Install",
       "Configure",
-      "Write",
       "Operate",
       "Contribute"
+    ],
+    "children": [
+      "Write"
     ]
   }
 }
