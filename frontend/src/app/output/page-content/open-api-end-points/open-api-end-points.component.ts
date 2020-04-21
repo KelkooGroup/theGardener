@@ -1,5 +1,6 @@
 import {AfterViewInit, Component, Input, OnInit} from '@angular/core';
 import {OpenApiPath} from '../../../_models/open-api';
+import {ConfigService} from '../../../_services/config.service';
 
 declare const SwaggerUIBundle: any;
 
@@ -8,17 +9,22 @@ declare const SwaggerUIBundle: any;
   templateUrl: './open-api-end-points.component.html',
   styleUrls: ['./open-api-end-points.component.scss']
 })
-export class OpenApiEndPointsComponent implements OnInit,AfterViewInit {
+export class OpenApiEndPointsComponent implements OnInit, AfterViewInit {
 
   @Input() openApiPathJson: OpenApiPath;
   @Input() position: number;
 
-   id:string;
+  id: string;
+  proxyUrl: string;
 
-  constructor() { }
+  constructor(private applicationService: ConfigService) {
+  }
 
   ngOnInit(): void {
-    this.id  = 'swagger-ui-' + this.position;
+    this.applicationService.getConfigs().subscribe(result => {
+      this.proxyUrl = result.baseUrl + '/api/proxy';
+    });
+    this.id = 'swagger-ui-' + this.position;
   }
 
   ngAfterViewInit(): void {
@@ -35,11 +41,16 @@ export class OpenApiEndPointsComponent implements OnInit,AfterViewInit {
       docExpansion: 'list',
       operationsSorter: 'alpha',
       defaultModelsExpandDepth: -1,
-      enableCORS: false
+      enableCORS: false,
+      showMutatedRequest: false,
+      requestInterceptor: (request: any) => {
+        request.url = this.proxyUrl + '?url=' + request.url.replace('http', this.openApiPathJson.protocol) + '&body=' + request.body;
+        return request
+      }
     });
   }
 
-  containError(){
+  containError() {
     return this.openApiPathJson.errors.length !== 0 && this.openApiPathJson.errors[0] !== '';
   }
 }
