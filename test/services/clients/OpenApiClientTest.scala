@@ -36,7 +36,7 @@ class OpenApiClientTest extends WordSpec with MustMatchers with MockitoSugar wit
   val pageJoinProject = PageJoinProject(page, directory, branch, project)
 
   val expectedErrorModel = OpenApiModel("", Option(Seq()), Seq(), Seq(), Seq(" "))
-  val expectedErrorPath = OpenApiPath(Json.parse("{}"), Seq(""))
+  val expectedErrorPath = OpenApiPath(Json.parse("{}"), "", Seq(""))
 
   val required = Option(Seq("id", "name", "repositoryUrl", "stableBranch"))
   val openApiRows = Seq(
@@ -80,7 +80,7 @@ class OpenApiClientTest extends WordSpec with MustMatchers with MockitoSugar wit
   )
 
   val basicPathModule = OpenApiPathModule(Option("/api/docs/swagger.json"), None, Option(Seq("/api/projects/{id}", "/api/directories")))
-  val pathModuleWithMethod = OpenApiPathModule(Option("/api/docs/swagger.json"), None,Option(Seq("/api/projects/{id}", "/api/directories")), Option(Seq("GET")))
+  val pathModuleWithMethod = OpenApiPathModule(Option("/api/docs/swagger.json"), None, Option(Seq("/api/projects/{id}", "/api/directories")), Option(Seq("GET")))
   val pathModuleWithRefStartsWith = OpenApiPathModule(Option("/api/docs/swagger.json"), Option(Seq("/api/projects/")))
 
 
@@ -1073,9 +1073,9 @@ class OpenApiClientTest extends WordSpec with MustMatchers with MockitoSugar wit
        "swagger":"2.0"
       }
     """
-   val expectedPathWithRefStartsWith = OpenApiPath(Json.parse(expectedSpecWithRefStartsWith))
-   val expectedPath = OpenApiPath(Json.parse(expectedSpecBasic))
-   val expectedPathWithMethodFilter = OpenApiPath(Json.parse(expectedSpecWithMethodFilter))
+  val expectedPathWithRefStartsWith = OpenApiPath(Json.parse(expectedSpecWithRefStartsWith), "/api/docs/swagger.json")
+  val expectedPath = OpenApiPath(Json.parse(expectedSpecBasic), "/api/docs/swagger.json")
+  val expectedPathWithMethodFilter = OpenApiPath(Json.parse(expectedSpecWithMethodFilter), "/api/docs/swagger.json")
 
   val response1 =
     """

@@ -4,4 +4,5 @@ export interface Config {
   logoSrc: string;
   faviconSrc: string;
   colorMain : string;
+  baseUrl: string;
 }

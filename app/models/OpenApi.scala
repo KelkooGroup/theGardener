@@ -2,7 +2,7 @@ package models
 
 import play.api.libs.json._
 
-case class OpenApiModel(modelName:String, required:Option[Seq[String]], openApiRows: Seq[OpenApiRow], childrenModels: Seq[OpenApiModel] = Seq(), errors: Seq[String] = Seq())
+case class OpenApiModel(modelName: String, required: Option[Seq[String]], openApiRows: Seq[OpenApiRow], childrenModels: Seq[OpenApiModel] = Seq(), errors: Seq[String] = Seq())
 
 case class OpenApiRow(title: String, openApiType: String, default: String, description: String, example: String)
 
@@ -12,7 +12,7 @@ object OpenApiModel {
 }
 
 
-case class OpenApiPath(openApiSpec: JsValue, errors: Seq[String] = Seq())
+case class OpenApiPath(openApiSpec: JsValue, protocol: String, errors: Seq[String] = Seq())
 
 
 object OpenApiPath {
