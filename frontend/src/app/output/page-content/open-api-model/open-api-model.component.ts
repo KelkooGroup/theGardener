@@ -20,7 +20,9 @@ export class OpenApiModelComponent implements OnInit {
   }
 
   isRequired(element: OpenApiModelRow) {
-    return this.openApiModule.required.includes(element.title);
+
+      return this.openApiModule.required && this.openApiModule.required.includes(element.title);
+
   }
 
   containError(){
