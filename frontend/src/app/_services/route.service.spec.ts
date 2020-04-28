@@ -169,21 +169,21 @@ describe('RouteService', () => {
     });
 
     it('directoryPathSimilar ', () => {
-        const navigationRoute = { nodes: ["publisher"], project: "ecs",  branch: "_",  directories: [] as string[],  page: "Meta"  };
+        const navigationRoute = { nodes: ["publisher"], project: "ecs",  branch: "_",  directories: [] as  Array<string>,  page: "Meta"  };
 
-        expect(service.directoryPathSimilar(navigationRoute, { nodes: ["publisher"], project: "ecs",  branch: "_",  directories: [] as string[],  page: "Meta"  })).toBeTrue();
-        expect(service.directoryPathSimilar(navigationRoute, { nodes: ["publisher"], project: "ecs",  branch: "master",  directories: [] as string[],  page: "Meta"  })).toBeTrue();
+        expect(service.directoryPathSimilar(navigationRoute, { nodes: ["publisher"], project: "ecs",  branch: "_",  directories: [] as  Array<string>,  page: "Meta"  })).toBeTrue();
+        expect(service.directoryPathSimilar(navigationRoute, { nodes: ["publisher"], project: "ecs",  branch: "master",  directories: [] as  Array<string>,  page: "Meta"  })).toBeTrue();
     });
 
 
     it('pagePathSimilar ', () => {
-        const navigationRoute = { nodes: ["publisher"], project: "ecs",  branch: "_",  directories: [] as string[],  page: "Meta"  };
+        const navigationRoute = { nodes: ["publisher"], project: "ecs",  branch: "_",  directories: [] as  Array<string>,  page: "Meta"  };
 
-        expect(service.pagePathSimilar(navigationRoute, { nodes: ["publisher"], project: "ecs",  branch: "_",  directories: [] as string[],  page: "Meta"  })).toBeTrue();
-        expect(service.pagePathSimilar(navigationRoute, { nodes: ["publisher"], project: "ecs",  branch: "qa",  directories: [] as string[],  page: "Meta"  })).toBeTrue();
-        expect(service.pagePathSimilar(navigationRoute, { nodes: ["publisher"], project: "ecs",  branch: "documentation",  directories: [] as string[],  page: "Meta"  })).toBeTrue();
-        expect(service.pagePathSimilar(navigationRoute, { nodes: ["publisher"], project: "ls",  branch: "_",  directories: [] as string[],  page: "Meta"  })).toBeFalse();
-        expect(service.pagePathSimilar(navigationRoute, { nodes: ["publisher","systems"], project: "ls",  branch: "_",  directories: [] as string[],  page: "Meta"  })).toBeFalse();
+        expect(service.pagePathSimilar(navigationRoute, { nodes: ["publisher"], project: "ecs",  branch: "_",  directories: [] as  Array<string>,  page: "Meta"  })).toBeTrue();
+        expect(service.pagePathSimilar(navigationRoute, { nodes: ["publisher"], project: "ecs",  branch: "qa",  directories: [] as  Array<string>,  page: "Meta"  })).toBeTrue();
+        expect(service.pagePathSimilar(navigationRoute, { nodes: ["publisher"], project: "ecs",  branch: "documentation",  directories: [] as  Array<string>,  page: "Meta"  })).toBeTrue();
+        expect(service.pagePathSimilar(navigationRoute, { nodes: ["publisher"], project: "ls",  branch: "_",  directories: [] as  Array<string>,  page: "Meta"  })).toBeFalse();
+        expect(service.pagePathSimilar(navigationRoute, { nodes: ["publisher","systems"], project: "ls",  branch: "_",  directories: [] as  Array<string>,  page: "Meta"  })).toBeFalse();
     });
 
     it('should transform relative path to clean URL', () => {

@@ -1,10 +1,12 @@
 import {NavigationRoute} from './route';
 
 
+type MenuType = 'Node' | 'Project' | 'Branch' | 'Directory' | 'Page';
+
 export interface MenuHierarchy {
   name: string;
   label: string;
-  type:  string ; //'Node' | 'Project' | 'Branch' | 'Directory' | 'Page';
+  type:  MenuType;
   depth: number;
   route: NavigationRoute;
   children: Array<MenuHierarchy | MenuProjectHierarchy | MenuDirectoryHierarchy | MenuPageHierarchy>;

@@ -126,7 +126,7 @@ export class MenuService {
 
   private buildMenuHierarchyForDirectory(parentRoute: NavigationRoute, directories: Array<DirectoryApi>, depth: number): Array<MenuDirectoryHierarchy> {
     return directories.map(d => {
-      if (d.children.length == 0 && d.pages.length == 1 ) {
+      if (d.children.length === 0 && d.pages.length === 1 ) {
         const p = d.pages[0];
         const pageItem: MenuPageHierarchy = {
           name: p.name,

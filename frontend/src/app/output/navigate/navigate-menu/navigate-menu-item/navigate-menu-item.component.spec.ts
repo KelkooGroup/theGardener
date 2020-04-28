@@ -78,7 +78,7 @@ describe('NavigateMenuItemComponent', () => {
         nodes: ["publisher"],
         project: undefined,
         branch: "_",
-        directories: [] as string[],
+        directories: [] as  Array<string>,
         page: undefined
       },
       children: [
@@ -92,7 +92,7 @@ describe('NavigateMenuItemComponent', () => {
             nodes: ["publisher", "child1"],
             project: undefined,
             branch: "_",
-            directories: [] as string[],
+            directories: [] as  Array<string>,
             page: undefined
           }
         },
@@ -106,7 +106,7 @@ describe('NavigateMenuItemComponent', () => {
             nodes: ["publisher", "child2"],
             project: undefined,
             branch: "_",
-            directories: [] as string[],
+            directories: [] as  Array<string>,
             page: undefined
           }
         },
@@ -131,7 +131,7 @@ describe('NavigateMenuItemComponent', () => {
         nodes: ["publisher"],
         project: "ecs",
         branch: "_",
-        directories: [] as string[],
+        directories: [] as  Array<string>,
         page: "Meta"
       },
       children: [
