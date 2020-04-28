@@ -4,7 +4,7 @@ import java.io.{File, FileInputStream}
 
 import com.github.ghik.silencer.silent
 import controllers.dto.{PageDTO, PageFragment, PageFragmentContent}
-import javax.inject.{Inject, Singleton}
+import javax.inject._
 import models.{PageJoinProject, _}
 import org.apache.commons.io.FileUtils
 import play.api.{Configuration, Logging}
@@ -67,7 +67,7 @@ case class PageFragmentUnderProcessing(status: PageFragmentUnderProcessingStatus
 
 case class PageWithContent(page: Page, content: Seq[PageFragment])
 
-@Singleton
+
 class PageServiceCache @Inject()(cache: SyncCacheApi) extends Logging {
 
   def store(key: String, page: PageWithContent): Unit = {
@@ -85,7 +85,7 @@ class PageServiceCache @Inject()(cache: SyncCacheApi) extends Logging {
 
 }
 
-@Singleton
+
 class PageService @Inject()(config: Configuration, projectRepository: ProjectRepository, directoryRepository: DirectoryRepository, pageRepository: PageRepository,
                             gherkinRepository: GherkinRepository, openApiClient: OpenApiClient, cache: PageServiceCache)(implicit ec: ExecutionContext) extends Logging {
 

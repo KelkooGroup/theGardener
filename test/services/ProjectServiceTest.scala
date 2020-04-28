@@ -86,7 +86,7 @@ class ProjectServiceTest extends WordSpec with MustMatchers with BeforeAndAfter 
 
         verify(gitService, times(1)).clone(project.repositoryUrl, masterDirectory)
         verify(gitService, times(1)).clone(project.repositoryUrl, featureBranchDirectory)
-        verify(gitService, times(1)).clone(project.repositoryUrl, bugfixBranchDirectory)
+        verify(gitService, times(0)).clone(project.repositoryUrl, bugfixBranchDirectory)
       }
     }
 

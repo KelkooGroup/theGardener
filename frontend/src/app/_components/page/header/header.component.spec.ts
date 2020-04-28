@@ -50,7 +50,7 @@ describe('HeaderComponent', () => {
     spyOn(fakeMenuService, 'getMenuHeader').and.returnValue(of(MENU_HEADER_SERVICE_RESPONSE));
 
     activatedRoute = fixture.debugElement.injector.get(ActivatedRoute) as any;
-    activatedRoute.testChildUrl = [];
+    activatedRoute.testUrl = [];
     router = TestBed.get(Router);
     spyOn(router, 'navigateByUrl').and.returnValue(Promise.resolve(true));
   });
@@ -68,18 +68,13 @@ describe('HeaderComponent', () => {
   }));
 
   it('should navigate to first element if no route is set', async(() => {
-    activatedRoute.testChildParams = {};
+    activatedRoute.testParams = {};
     fixture.detectChanges();
 
     expect(router.navigateByUrl).toHaveBeenCalledWith('app/documentation/navigate/_publisher/_/_/_');
   }));
 
-  it('should not navigate to first element if route is set', async(() => {
-    activatedRoute.testChildParams = {nodes: '_biz'};
-    fixture.detectChanges();
 
-    expect(router.navigateByUrl).not.toHaveBeenCalled();
-  }));
 });
 
 class Page {

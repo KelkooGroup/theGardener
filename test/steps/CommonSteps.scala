@@ -377,6 +377,10 @@ Scenario: providing several book suggestions
     managed(Source.fromFile(file.fixPathSeparator)).acquireAndGet(_.mkString mustBe content)
   }
 
+  Then("""^the file system do not store now the file "([^"]*)"$""") { (file: String) =>
+    Files.exists(Paths.get(file.fixPathSeparator)) mustBe( false)
+  }
+
   Then("""^the file system store now the files$""") { files: DataTable =>
     files.asScala.map { line =>
       val file = line("file")
