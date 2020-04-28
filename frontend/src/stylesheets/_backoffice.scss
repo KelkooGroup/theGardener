@@ -10,20 +10,24 @@ $total-header-footer-height: 92px;
 
 $min-width: 1200px;
 
+$font-size-text-big    : 18px;
+$font-size-text        : 14px;
+$font-size-text-small  : 12px;
+$font-size-text-x-small: 10px;
+
 $font-size-h1 : 24px;
 $font-size-h2 : 20px;
 $font-size-h3 : 18px;
 $font-size-h4 : 17px;
 $font-size-h5 : 16px;
 $font-size-h6 : 16px;
-$font-size-h7 : 16px;
-$font-size-h8 : 16px;
-$font-size-h9 : 16px;
 
-$font-size-text-big    : 18px;
-$font-size-text        : 14px;
-$font-size-text-small  : 12px;
-$font-size-text-x-small: 10px;
+$font-weight-h1 : 800;
+$font-weight-h2 : 700;
+$font-weight-h3 : 600;
+$font-weight-h4 : 500;
+$font-weight-h5 : 400;
+$font-weight-h6 : 400;
 
 $font-family:  'Inter','Roboto', "Helvetica Neue", sans-serif;
 
@@ -55,14 +59,16 @@ a {
 }
 
 h1{
-  font-size: $font-size-h1;
   color: $custom-color-dark;
+  font-size: $font-size-h1;
+  font-weight: $font-weight-h1;
   margin-block-start: 1.5em;
   margin-block-end: 2px;
 }
 h2{
-  font-size: $font-size-h2;
   color: $custom-color-dark;
+  font-size: $font-size-h2;
+  font-weight: $font-weight-h2;
   margin-block-start: 1em;
   margin-block-end: 2px;
 }
@@ -70,55 +76,34 @@ h2{
 h3{
   color: $custom-color-dark;
   font-size: $font-size-h3;
+  font-weight: $font-weight-h3;
+  margin-block-start: 1em;
+  margin-block-end: 2px;
+}
+
+h4{
+  color: $custom-color-dark;
+  font-size: $font-size-h4;
+  font-weight: $font-weight-h4;
+  margin-block-start: 1em;
+  margin-block-end: 2px;
+}
+
+h5{
+  color: $custom-color-dark;
+  font-size: $font-size-h5;
+  font-weight: $font-weight-h5;
   margin-block-start: 1em;
   margin-block-end: 2px;
   margin-inline-start: 1em;
 }
 
-h4{
-  font-size: $font-size-h4;
+h6{
   color: $custom-color-dark;
-  margin-block-start: 1em;
-  margin-block-end: 2px;
-  margin-inline-start: 1.5em;
-}
-
-h5{
-  font-size: $font-size-h5;
-  color: $custom-color-dark;
+  font-size: $font-size-h6;
+  font-weight: $font-weight-h6;
   margin-block-start: 1em;
   margin-block-end: 2px;
   margin-inline-start: 2em;
 }
 
-h6{
-  font-size: $font-size-h6;
-  color: $custom-color-dark;
-  margin-block-start: 1em;
-  margin-block-end: 2px;
-  margin-inline-start: 2.5em;
-}
-
-h7{
-  font-size: $font-size-h7;
-  color: $custom-color-dark;
-  margin-block-start: 1em;
-  margin-block-end: 2px;
-  margin-inline-start: 3em;
-}
-
-h8{
-  font-size: $font-size-h8;
-  color: $custom-color-dark;
-  margin-block-start: 1em;
-  margin-block-end: 2px;
-  margin-inline-start: 3.5em;
-}
-
-h9{
-  font-size: $font-size-h9;
-  color: $custom-color-dark;
-  margin-block-start: 1em;
-  margin-block-end: 2px;
-  margin-inline-start: 4em;
-}
