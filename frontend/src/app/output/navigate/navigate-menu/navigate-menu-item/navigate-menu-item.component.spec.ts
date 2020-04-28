@@ -8,7 +8,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {ActivatedRouteStub} from '../../../../_testUtils/activated-route-stub.spec';
 import {FormsModule} from '@angular/forms';
 import {MatSelectHelper} from '../../../../_testUtils/mat-select-helper.spec';
-import { MenuProjectHierarchy} from "../../../../_models/menu";
+import {MenuProjectHierarchy, MenuType} from "../../../../_models/menu";
 
 describe('NavigateMenuItemComponent', () => {
   let component: NavigateMenuItemComponent;
@@ -50,7 +50,7 @@ describe('NavigateMenuItemComponent', () => {
     component.menuItem = {
       name: 'publisher',
       label: 'Publishers',
-      type: 'Node',
+      type: 'Node' as MenuType,
       depth: 1,
       children: [],
       route:  {
@@ -72,7 +72,7 @@ describe('NavigateMenuItemComponent', () => {
     component.menuItem = {
       name: 'publisher',
       label: 'Publishers',
-      type: 'Node',
+      type: 'Node' as MenuType,
       depth: 1,
       route:  {
         nodes: ["publisher"],
@@ -85,7 +85,7 @@ describe('NavigateMenuItemComponent', () => {
         {
           name: 'child1',
           label: 'Child 1',
-          type: 'Node',
+          type: 'Node' as MenuType,
           depth: 2,
           children: [],
           route:  {
@@ -99,7 +99,7 @@ describe('NavigateMenuItemComponent', () => {
         {
           name: 'child2',
           label: 'Child 2',
-          type: 'Node',
+          type: 'Node' as MenuType,
           depth: 2,
           children: [],
           route:  {
@@ -125,7 +125,7 @@ describe('NavigateMenuItemComponent', () => {
     component.menuItem = {
       name: 'publisher',
       label: 'Publishers',
-      type: 'Node',
+      type: 'Node' as MenuType,
       depth: 1,
       route:  {
         nodes: ["publisher"],
@@ -151,7 +151,7 @@ describe('NavigateMenuItemComponent', () => {
     const projectItem: MenuProjectHierarchy = {
       name: 'suggestionWS',
       label: 'Suggestion Webservice',
-      type: 'Project',
+      type: 'Project' as MenuType,
       stableBranch: 'qa',
       depth: 2,
       route:  {},
@@ -159,7 +159,7 @@ describe('NavigateMenuItemComponent', () => {
         {
           name: 'qa',
           label: 'qa',
-          type: 'Branch',
+          type: 'Branch' as MenuType,
           depth: 3,
           children: [],
           route:  {}
@@ -167,7 +167,7 @@ describe('NavigateMenuItemComponent', () => {
         {
           name: 'branch1',
           label: 'Branch 1',
-          type: 'Branch',
+          type: 'Branch' as MenuType,
           depth: 3,
           children: [],
           route:  {}
@@ -191,7 +191,7 @@ describe('NavigateMenuItemComponent', () => {
     const projectItem: MenuProjectHierarchy = {
       name: 'suggestionWS',
       label: 'Suggestion Webservice',
-      type: 'Project',
+      type: 'Project' as MenuType,
       stableBranch: 'qa',
       depth: 2,
       route:  {},
@@ -199,7 +199,7 @@ describe('NavigateMenuItemComponent', () => {
         {
           name: 'branch1',
           label: 'Branch 1',
-          type: 'Branch',
+          type: 'Branch' as MenuType,
           depth: 3,
           children: [],
           route:  {}
@@ -207,7 +207,7 @@ describe('NavigateMenuItemComponent', () => {
         {
           name: 'qa',
           label: 'qa',
-          type: 'Branch',
+          type: 'Branch' as MenuType,
           depth: 3,
           children: [],
           route:  {}
@@ -225,7 +225,7 @@ describe('NavigateMenuItemComponent', () => {
     const projectItem: MenuProjectHierarchy = {
       name: 'suggestionWS',
       label: 'Suggestion Webservice',
-      type: 'Project',
+      type: 'Project' as MenuType,
       stableBranch: 'qa',
       depth: 2,
       route: {},
@@ -233,7 +233,7 @@ describe('NavigateMenuItemComponent', () => {
         {
           name: 'qa',
           label: 'qa',
-          type: 'Branch',
+          type: 'Branch' as MenuType,
           depth: 3,
           children: [],
           route: {},
@@ -241,7 +241,7 @@ describe('NavigateMenuItemComponent', () => {
         {
           name: 'branch1',
           label: 'Branch 1',
-          type: 'Branch',
+          type: 'Branch' as MenuType,
           depth: 3,
           children: [],
           route: {},
@@ -259,7 +259,7 @@ describe('NavigateMenuItemComponent', () => {
     const projectItem: MenuProjectHierarchy = {
       name: 'suggestionWS',
       label: 'Suggestion Webservice',
-      type: 'Project',
+      type: 'Project' as MenuType,
       stableBranch: 'qa',
       depth: 2,
       route: {},
@@ -267,7 +267,7 @@ describe('NavigateMenuItemComponent', () => {
         {
           name: 'qa',
           label: 'qa',
-          type: 'Branch',
+          type: 'Branch' as MenuType,
           depth: 3,
           children: [],
           route: {},

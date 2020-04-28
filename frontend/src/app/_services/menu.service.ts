@@ -7,7 +7,7 @@ import {
   MenuDirectoryHierarchy,
   MenuHierarchy,
   MenuPageHierarchy,
-  MenuProjectHierarchy
+  MenuProjectHierarchy, MenuType
 } from '../_models/menu';
 import {NavigationRoute} from '../_models/route';
 import {RouteService} from './route.service';
@@ -82,7 +82,7 @@ export class MenuService {
     const menu: MenuHierarchy = {
       name: node.slugName,
       label: node.name,
-      type: 'Node',
+      type: 'Node' as MenuType,
       depth,
       route: currentRoute,
       children: this.buildMenuHierarchyForNode(currentRoute, node, depth + 1)
@@ -98,7 +98,7 @@ export class MenuService {
     const menu: MenuProjectHierarchy = {
       name: project.id,
       label: project.label,
-      type: 'Project',
+      type: 'Project' as MenuType,
       depth,
       route: currentRoute,
       stableBranch: project.stableBranch,
@@ -114,7 +114,7 @@ export class MenuService {
       const branchItem: MenuHierarchy = {
         name: b.name,
         label: b.name,
-        type: 'Branch',
+        type: 'Branch' as MenuType,
         depth,
         route: currentRoute,
         children: b.rootDirectory && b.rootDirectory.children ? (this.buildMenuHierarchyForPages(currentRoute, b.rootDirectory.pages , depth + 1).concat( this.buildMenuHierarchyForDirectory(currentRoute, b.rootDirectory.children, depth + 1) ) ) : []
@@ -131,7 +131,7 @@ export class MenuService {
         const pageItem: MenuPageHierarchy = {
           name: p.name,
           label: p.label,
-          type: 'Page',
+          type: 'Page' as MenuType,
           description: p.description,
           order: p.order,
           depth,
@@ -144,7 +144,7 @@ export class MenuService {
         const directoryItem: MenuDirectoryHierarchy = {
           name: d.name,
           label: d.label,
-          type: 'Directory',
+          type: 'Directory' as MenuType,
           description: d.description,
           order: d.order,
           depth,
@@ -165,7 +165,7 @@ export class MenuService {
       const pageItem: MenuPageHierarchy = {
         name: p.name,
         label: p.label,
-        type: 'Page',
+        type: 'Page' as MenuType,
         description: p.description,
         order: p.order,
         depth,
@@ -181,7 +181,7 @@ export class MenuService {
       const pageItem: MenuPageHierarchy = {
         name: p.name,
         label: p.label,
-        type: 'Page',
+        type: 'Page' as MenuType,
         description: p.description,
         order: p.order,
         depth,
