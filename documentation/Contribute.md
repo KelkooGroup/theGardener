@@ -12,8 +12,6 @@ theGardener is an open sourced project, it's there thank to the contributors.
 
 ![Roles](assets/images/theGardener_role_contributor.png)
 
-[Configure](Administration/Configure.md)
-
 ## Want to give feedback
 
 Want to 

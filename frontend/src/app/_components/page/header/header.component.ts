@@ -29,7 +29,7 @@ export class HeaderComponent implements OnInit {
             result => {
                 this.items = result;
                 if (this.items.length > 0) {
-                    const currentRoute = this.routeService.navigationParamsToNavigationRoute(this.activatedRoute.snapshot.params);
+                    const currentRoute = this.routeService.navigationParamsToNavigationRoute(this.activatedRoute.firstChild.snapshot.params);
                     if ( !currentRoute.nodes || currentRoute.nodes?.length == 0 || currentRoute.page === undefined) {
                         this.navigateTo(this.items[0]);
                     }
