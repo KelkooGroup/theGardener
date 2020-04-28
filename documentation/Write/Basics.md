@@ -147,7 +147,7 @@ See [the current page section](https://github.com/KelkooGroup/theGardener/blob/m
 Syntax of the link : usual Markdown syntax.
 
 For instance :
-- [internal link to installation guide](../Install.md)  
+- [internal link to installation guide](../Administration/Install.md)  
 - [internal link to OpenApi page](./OpenApi.md)  
 
 

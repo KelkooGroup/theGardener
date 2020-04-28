@@ -1,0 +1,14 @@
+{
+  "directory" :
+  {
+    "label": "Operate on theGardener",
+    "description": "Operate on theGardener",
+    "pages": [
+      "Install",
+      "Configure",
+      "Operate"
+    ],
+    "children": [
+    ]
+  }
+}
