@@ -1,11 +1,11 @@
 import {DirectoryApi, HierarchyNodeApi, PageApi} from '../_models/hierarchy';
-import { MenuHierarchy} from '../_models/menu';
+import {MenuHierarchy, MenuType} from '../_models/menu';
 
 export const MENU_HEADER_SERVICE_RESPONSE: Array<MenuHierarchy> =  [
     {
       name: 'publisher',
       label: 'Publisher',
-      type: 'Node',
+      type: 'Node' as MenuType,
       depth: 1,
       route: {nodes: ['publisher'], directories:[] as  Array<string>},
       children: [] as Array<MenuHierarchy>
@@ -13,7 +13,7 @@ export const MENU_HEADER_SERVICE_RESPONSE: Array<MenuHierarchy> =  [
     {
       name: 'tools',
       label: 'Tools',
-      type: 'Node',
+      type: 'Node' as MenuType,
       depth: 1,
       route: {nodes: ['tools'], directories:[] as  Array<string>},
       children: [] as Array<MenuHierarchy>

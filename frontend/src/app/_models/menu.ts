@@ -1,7 +1,7 @@
 import {NavigationRoute} from './route';
 
 
-type MenuType = 'Node' | 'Project' | 'Branch' | 'Directory' | 'Page';
+export type MenuType = 'Node' | 'Project' | 'Branch' | 'Directory' | 'Page';
 
 export interface MenuHierarchy {
   name: string;

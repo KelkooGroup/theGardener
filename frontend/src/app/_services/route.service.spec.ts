@@ -1,7 +1,7 @@
 import {TestBed} from '@angular/core/testing';
 
 import {RouteService} from "./route.service";
-import { MenuPageHierarchy} from "../_models/menu";
+import {MenuPageHierarchy, MenuType} from "../_models/menu";
 
 describe('RouteService', () => {
     let service: RouteService;
@@ -90,7 +90,7 @@ describe('RouteService', () => {
 
     it('menuHierarchyToFrontEndPath focus on node without a directory ', () => {
         const menuHierarchy = {
-            type: 'Node',
+            type: 'Node' as MenuType,
             children: [] as MenuPageHierarchy[],
             name:"publisher",
             label:"Publisher",
@@ -104,10 +104,10 @@ describe('RouteService', () => {
 
     it('menuHierarchyToFrontEndPath focus on node with a directory ', () => {
         const menuHierarchy = {
-            type: 'Node',
+            type: 'Node' as MenuType,
             children: [
                 {
-                    type: 'Page',
+                    type: 'Page' as MenuType,
                     depth:1,
                     description:"",
                     label:"",
