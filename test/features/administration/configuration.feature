@@ -1,6 +1,6 @@
 Feature: Provide configuration
 
-  @level_2_technical_details @nominal_case @valid @documentation @ongoing
+  @level_2_technical_details @nominal_case @valid @documentation
   Scenario: provide configuration
     Given the configuration
       | path                    | value                          |
@@ -23,7 +23,7 @@ Feature: Provide configuration
      "faviconSrc":"assets/images/favicon.png",
      "baseUrl":"http://localhost:9000",
      "colorMain":"#55b556",
-     "colorDark":"#3d853e",
-     "colorLight":"#f2fff2"
+     "colorLight":"#f2fff2",
+     "colorDark":"#3d853e"
 }
 """
