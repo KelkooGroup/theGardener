@@ -6,12 +6,10 @@
     "pages": [
       "Overview",
       "Changelog",
-      "Install",
-      "Configure",
-      "Operate",
       "Contribute"
     ],
     "children": [
+      "Admin",
       "Write"
     ]
   }
