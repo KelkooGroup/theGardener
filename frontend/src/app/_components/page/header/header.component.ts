@@ -30,7 +30,7 @@ export class HeaderComponent implements OnInit {
                 this.items = result;
                 if (this.items.length > 0) {
                     const currentRoute = this.routeService.navigationParamsToNavigationRoute(this.activatedRoute.snapshot.params);
-                    if ( currentRoute.nodes == undefined || currentRoute.nodes?.length == 0 || currentRoute.page == undefined) {
+                    if ( !currentRoute.nodes || currentRoute.nodes?.length == 0 || currentRoute.page === undefined) {
                         this.navigateTo(this.items[0]);
                     }
                 }
@@ -46,7 +46,7 @@ export class HeaderComponent implements OnInit {
 
     isItemInActivatedRoute(item: MenuHierarchy) {
         const currentRoute = this.routeService.navigationParamsToNavigationRoute(this.activatedRoute.firstChild.snapshot.params);
-        return currentRoute.nodes[0] == item.name;
+        return currentRoute.nodes[0] === item.name;
     }
 
 }
