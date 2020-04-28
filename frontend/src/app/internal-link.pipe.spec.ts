@@ -1,5 +1,6 @@
 import {InternalLinkPipe} from './internal-link.pipe';
 import {ActivatedRouteStub} from './_testUtils/activated-route-stub.spec';
+import {RouteService} from "./_services/route.service";
 
 describe('InternalLinkPipe', () => {
   let pipe: InternalLinkPipe;
@@ -8,8 +9,9 @@ describe('InternalLinkPipe', () => {
 
   beforeEach(() => {
     activatedRoute = new ActivatedRouteStub() as any;
+    let routeService =  new RouteService();
     activatedRoute.testParams = {nodes: 'Tools',project: 'theGardener',branch: 'master',directories: '_Guide_Write',page: 'Basics'};
-    pipe = new InternalLinkPipe(activatedRoute);
+    pipe = new InternalLinkPipe(activatedRoute,routeService);
   });
 
   it('create an instance', () => {

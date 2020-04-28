@@ -9,7 +9,7 @@ export interface NavigationParams {
   page?: string;
 }
 
-export class NavigationRoute {
+export interface NavigationRoute {
   nodes?: Array<string> ;
   project?: string;
   branch?: string;
@@ -19,10 +19,11 @@ export class NavigationRoute {
 }
 
 
-export class FrontendPath {
+export interface FrontendPath {
   pathFromNodes?: string;
   nodesPath?: string;
 }
-export class BackendPath {
+
+export interface BackendPath {
   pathFromProject?: string;
 }

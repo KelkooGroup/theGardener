@@ -68,7 +68,7 @@ export class RouteService {
     }
 
 
-    static relativeUrlToFullFrontEndUrl(relativePath: string, navigationParams: NavigationParams): string {
+    relativeUrlToFullFrontEndUrl(relativePath: string, navigationParams: NavigationParams): string {
        if ( relativePath == undefined ) {
            return undefined;
        }

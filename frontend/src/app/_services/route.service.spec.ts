@@ -148,16 +148,16 @@ describe('RouteService', () => {
     });
 
     it('relativeUrlToFullFrontEndUrl ', () => {
-        expect(RouteService.relativeUrlToFullFrontEndUrl('./OpenApi',{nodes: 'Tools',project: 'theGardener',branch: 'master',directories: '_Guide_Write',page: 'Basics'} ))
+        expect(service.relativeUrlToFullFrontEndUrl('./OpenApi',{nodes: 'Tools',project: 'theGardener',branch: 'master',directories: '_Guide_Write',page: 'Basics'} ))
                .toEqual("app/documentation/navigate/Tools/theGardener/master/_Guide_Write/OpenApi");
-        expect(RouteService.relativeUrlToFullFrontEndUrl('../Guides',{nodes: 'Tools',project: 'theGardener',branch: 'master',directories: '_Guide_Write',page: 'Basics'} ))
+        expect(service.relativeUrlToFullFrontEndUrl('../Guides',{nodes: 'Tools',project: 'theGardener',branch: 'master',directories: '_Guide_Write',page: 'Basics'} ))
                .toEqual("app/documentation/navigate/Tools/theGardener/master/_Guide/Guides");
-        expect(RouteService.relativeUrlToFullFrontEndUrl('../../Changelog',{nodes: 'Tools',project: 'theGardener',branch: 'master',directories: '_Guide_Write',page: 'Basics'} ))
+        expect(service.relativeUrlToFullFrontEndUrl('../../Changelog',{nodes: 'Tools',project: 'theGardener',branch: 'master',directories: '_Guide_Write',page: 'Basics'} ))
             .toEqual("app/documentation/navigate/Tools/theGardener/master/_/Changelog");
-        expect(RouteService.relativeUrlToFullFrontEndUrl('../../Features/Projects/Model',{nodes: 'Tools',project: 'theGardener',branch: 'master',directories: '_Guide_Write',page: 'Basics'} ))
+        expect(service.relativeUrlToFullFrontEndUrl('../../Features/Projects/Model',{nodes: 'Tools',project: 'theGardener',branch: 'master',directories: '_Guide_Write',page: 'Basics'} ))
             .toEqual("app/documentation/navigate/Tools/theGardener/master/_Features_Projects/Model");
 
-        expect(RouteService.relativeUrlToFullFrontEndUrl('../../../Features/Projects/Model',{nodes: 'Tools',project: 'theGardener',branch: 'master',directories: '_Guide_Write',page: 'Basics'} ))
+        expect(service.relativeUrlToFullFrontEndUrl('../../../Features/Projects/Model',{nodes: 'Tools',project: 'theGardener',branch: 'master',directories: '_Guide_Write',page: 'Basics'} ))
             .toEqual(undefined);
 
     });

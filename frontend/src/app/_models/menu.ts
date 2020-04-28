@@ -4,7 +4,7 @@ import {NavigationRoute} from './route';
 export interface MenuHierarchy {
   name: string;
   label: string;
-  type: string; // 'Node' | 'Project' | 'Branch' | 'Directory' | 'Page';
+  type:  string ; //'Node' | 'Project' | 'Branch' | 'Directory' | 'Page';
   depth: number;
   route: NavigationRoute;
   children: Array<MenuHierarchy | MenuProjectHierarchy | MenuDirectoryHierarchy | MenuPageHierarchy>;

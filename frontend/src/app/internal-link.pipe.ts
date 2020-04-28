@@ -13,7 +13,7 @@ export class InternalLinkPipe implements PipeTransform {
   directories : string;
 
 
-  constructor(private activatedRoute: ActivatedRoute) {
+  constructor(private activatedRoute: ActivatedRoute, private routeService: RouteService) {
   }
 
   transform(value: string): string {
@@ -36,9 +36,10 @@ export class InternalLinkPipe implements PipeTransform {
     const project = this.project;
     const branch = this.branch;
     const directories = this.directories;
+    const routeService = this.routeService;
 
     function replacer(p1: string, p2: string, relativePath: string) {
-      const targetUrl = RouteService.relativeUrlToFullFrontEndUrl(relativePath, {nodes,project,branch,directories});
+      const targetUrl = routeService.relativeUrlToFullFrontEndUrl(relativePath, {nodes,project,branch,directories});
       return `onclick="navigateTo('${targetUrl}')"`;
     }
 
