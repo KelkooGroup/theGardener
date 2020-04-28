@@ -10,20 +10,20 @@ $total-header-footer-height: 92px;
 
 $min-width: 1200px;
 
-$font-size-h1 : 30px;
-$font-size-h2 : 26px;
-$font-size-h3 : 24px;
-$font-size-h4 : 22px;
-$font-size-h5 : 20px;
-$font-size-h6 : 19px;
-$font-size-h7 : 18px;
-$font-size-h8 : 17px;
+$font-size-h1 : 24px;
+$font-size-h2 : 20px;
+$font-size-h3 : 18px;
+$font-size-h4 : 17px;
+$font-size-h5 : 16px;
+$font-size-h6 : 16px;
+$font-size-h7 : 16px;
+$font-size-h8 : 16px;
 $font-size-h9 : 16px;
 $font-size-text : 16px;
 $font-size-text-small: 15px;
 $font-size-text-x-small: 10px;
 $font-size-text-big: 22px;
-$font-family: Roboto, "Helvetica Neue", sans-serif;
+$font-family:  'Inter','Roboto', "Helvetica Neue", sans-serif;
 
 html, body {
   height: 100%;
@@ -34,6 +34,11 @@ html, body {
   font-family: $font-family;
   margin: 0;
   overflow: hidden;
+}
+
+p{
+  margin-block-start: 2px;
+  margin-block-end: 1em;
 }
 
 a {
@@ -47,26 +52,70 @@ a {
 }
 
 h1{
+  font-size: $font-size-h1;
   color: $custom-color-dark;
+  margin-block-start: 1.5em;
+  margin-block-end: 2px;
 }
 h2{
+  font-size: $font-size-h2;
   color: $custom-color-dark;
+  margin-block-start: 1em;
+  margin-block-end: 2px;
 }
+
 h3{
   color: $custom-color-dark;
+  font-size: $font-size-h3;
+  margin-block-start: 1em;
+  margin-block-end: 2px;
+  margin-inline-start: 1em;
 }
+
 h4{
-  color: $custom-color-main;
+  font-size: $font-size-h4;
+  color: $custom-color-dark;
+  margin-block-start: 1em;
+  margin-block-end: 2px;
+  margin-inline-start: 1.5em;
 }
+
 h5{
-  color: $custom-color-main;
+  font-size: $font-size-h5;
+  color: $custom-color-dark;
+  margin-block-start: 1em;
+  margin-block-end: 2px;
+  margin-inline-start: 2em;
 }
+
 h6{
-  color: $custom-color-main;
+  font-size: $font-size-h6;
+  color: $custom-color-dark;
+  margin-block-start: 1em;
+  margin-block-end: 2px;
+  margin-inline-start: 2.5em;
 }
+
 h7{
-  color: $custom-color-main;
+  font-size: $font-size-h7;
+  color: $custom-color-dark;
+  margin-block-start: 1em;
+  margin-block-end: 2px;
+  margin-inline-start: 3em;
 }
+
 h8{
-  color: $custom-color-main;
+  font-size: $font-size-h8;
+  color: $custom-color-dark;
+  margin-block-start: 1em;
+  margin-block-end: 2px;
+  margin-inline-start: 3.5em;
+}
+
+h9{
+  font-size: $font-size-h9;
+  color: $custom-color-dark;
+  margin-block-start: 1em;
+  margin-block-end: 2px;
+  margin-inline-start: 4em;
 }
