@@ -4,7 +4,7 @@
 .markdown-container {
   color: $color-text-darker;
 
-  .markdown, .scenario, .openApi {
+  .markdown, .scenario, .openApi, .openApiPath {
     padding-left: $margin-left;
     padding-right: 40px;
     line-height: 22px;
@@ -36,4 +36,10 @@ h1 {
 
 .top{
   height: 1px;
+}
+
+.view-source {
+  border-top: 1px solid $color-border;
+  padding: 10px 0;
+  text-align: center;
 }

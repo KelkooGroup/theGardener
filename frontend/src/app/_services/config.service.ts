@@ -8,7 +8,12 @@ import {Config} from '../_models/config';
 })
 export class ConfigService {
 
+  config?: Config;
+
   constructor(private http: HttpClient) {
+    this.getConfigs().subscribe(result => {
+      this.config = result;
+    });
   }
 
   getConfigs(): Observable<Config> {

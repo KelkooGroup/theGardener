@@ -3,5 +3,8 @@ export interface Config {
   title: string;
   logoSrc: string;
   faviconSrc: string;
-  colorMain : string;
+  colorMain: string;
+  baseUrl: string;
+  colorDark: string;
+  colorLight: string;
 }

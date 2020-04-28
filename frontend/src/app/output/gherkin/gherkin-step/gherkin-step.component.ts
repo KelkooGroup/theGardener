@@ -10,6 +10,7 @@ export class GherkinStepComponent implements OnInit {
   @Input() step: GherkinStep;
   table: Array<Array<string>>;
   longText: string;
+  longTextType: string | undefined;
   textFragments: Array<GherkinTextFragment>;
 
   constructor() {
@@ -21,6 +22,7 @@ export class GherkinStepComponent implements OnInit {
       if (this.step.argument && this.step.argument.length > 0) {
         if (this.step.argument.length === 1) {
           this.longText = this.step.argument[0][0];
+          this.longTextType = this.step.argumentTextType;
         } else {
           this.table = this.step.argument;
         }

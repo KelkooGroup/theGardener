@@ -40,6 +40,12 @@ Feature: Provide menu
       | 2  | suggestions | Suggestions   | Suggestions...                     | 0     | /suggestions/ | suggestionsWS>master>/suggestions/ | 1        |
       | 3  | admin       | Admin         | Administration...                  | 1     | /admin/       | suggestionsWS>master>/admin/       | 1        |
       | 4  | libraryDoc  | libraryDoc    | library system group documentation | 0     | /             | libraryDoc>master>/                | 5        |
+    And we have those pages in the database
+      | id | name       | label      | description | order | relativePath            | path                                         | markdown                              | directoryId |
+      | 1  | context    | context    | context     | 0     | /context                | suggestionsWS>master>/context                | **Feature**: Provide book suggestions | 1           |
+      | 2  | suggestion | suggestion | suggestion  | 0     | /suggestions/suggestion | suggestionsWS>master>/suggestions/suggestion | **What's a suggestion ?**             | 2           |
+      | 3  | examples   | examples   | examples    | 1     | /suggestions/examples   | suggestionsWS>master>/suggestions/examples   | **Some suggestion examples**          | 2           |
+      | 4  | admin      | admin      | admin       | 0     | /admin/admin            | suggestionsWS>master>/admin/admin            | **Page for the admin users**          | 3           |
     When I perform a "GET" on following URL "/api/menu"
     Then I get a response with status "200"
     And  I get the following json response body
@@ -69,15 +75,6 @@ Feature: Provide menu
           "name": "Library system group",
           "childrenLabel": "Systems",
           "childLabel": "System",
-          "directory" : {
-              "id": 4,
-              "path": "libraryDoc>master>/",
-              "name": "libraryDoc",
-              "label": "libraryDoc",
-              "description": "library system group documentation",
-              "order": 0,
-              "pages": []
-          },
           "projects": [],
           "children": [
             {
@@ -116,6 +113,17 @@ Feature: Provide menu
                         "label": "SuggestionsWS",
                         "description": "Suggestions WebServices",
                         "order": 0,
+                        "pages": [
+                          {
+                            "path": "suggestionsWS>master>/context",
+                            "relativePath": "/context",
+                            "name": "context",
+                            "label": "context",
+                            "description": "context",
+                            "order": 0,
+                            "content": []
+                          }
+                        ],
                         "children": [
                           {
                             "id": 2,
@@ -124,6 +132,26 @@ Feature: Provide menu
                             "label": "Suggestions",
                             "description": "Suggestions...",
                             "order": 0,
+                            "pages": [
+                              {
+                                "path": "suggestionsWS>master>/suggestions/suggestion",
+                                "relativePath": "/suggestions/suggestion",
+                                "name": "suggestion",
+                                "label": "suggestion",
+                                "description": "suggestion",
+                                "order": 0,
+                                "content": []
+                              },
+                              {
+                                "path": "suggestionsWS>master>/suggestions/examples",
+                                "relativePath": "/suggestions/examples",
+                                "name": "examples",
+                                "label": "examples",
+                                "description": "examples",
+                                "order": 1,
+                                "content": []
+                              }
+                            ],
                             "children": []
                           },
                           {
@@ -133,6 +161,17 @@ Feature: Provide menu
                             "label": "Admin",
                             "description": "Administration...",
                             "order": 1,
+                            "pages": [
+                              {
+                                "path": "suggestionsWS>master>/admin/admin",
+                                "relativePath": "/admin/admin",
+                                "name": "admin",
+                                "label": "admin",
+                                "description": "admin",
+                                "order": 0,
+                                "content": []
+                              }
+                            ],
                             "children": []
                           }
                         ]
@@ -180,7 +219,16 @@ Feature: Provide menu
               "projects": [],
               "children": []
             }
-          ]
+          ],
+          "directory": {
+            "id": 4,
+            "path": "libraryDoc>master>/",
+            "name": "libraryDoc",
+            "label": "libraryDoc",
+            "description": "library system group documentation",
+            "order": 0,
+            "pages": []
+          }
         }
       ]
     },
@@ -209,7 +257,6 @@ Feature: Provide menu
     }
   ]
 }
-
 """
 
   @level_2_technical_details @nominal_case @valid
@@ -407,6 +454,12 @@ Feature: Provide menu
       | 1  | root        | SuggestionsWS | Suggestions WebServices | 0     | /             | suggestionsWS>master>/             | 1        |
       | 2  | suggestions | Suggestions   | Suggestions...          | 0     | /suggestions/ | suggestionsWS>master>/suggestions/ | 1        |
       | 3  | admin       | Admin         | Administration...       | 1     | /admin/       | suggestionsWS>master>/admin/       | 1        |
+    And we have those pages in the database
+      | id | name       | label      | description | order | relativePath            | path                                         | markdown                              | directoryId |
+      | 1  | context    | context    | context     | 0     | /context                | suggestionsWS>master>/context                | **Feature**: Provide book suggestions | 1           |
+      | 2  | suggestion | suggestion | suggestion  | 0     | /suggestions/suggestion | suggestionsWS>master>/suggestions/suggestion | **What's a suggestion ?**             | 2           |
+      | 3  | examples   | examples   | examples    | 1     | /suggestions/examples   | suggestionsWS>master>/suggestions/examples   | **Some suggestion examples**          | 2           |
+      | 4  | admin      | admin      | admin       | 0     | /admin/admin            | suggestionsWS>master>/admin/admin            | **Page for the admin users**          | 3           |
     When I perform a "GET" on following URL "/api/menu/submenu/_eng"
     Then I get a response with status "200"
     And I get the following json response body
@@ -465,6 +518,17 @@ Feature: Provide menu
                     "label": "SuggestionsWS",
                     "description": "Suggestions WebServices",
                     "order": 0,
+                    "pages": [
+                      {
+                        "path": "suggestionsWS>master>/context",
+                        "relativePath": "/context",
+                        "name": "context",
+                        "label": "context",
+                        "description": "context",
+                        "order": 0,
+                        "content": []
+                      }
+                    ],
                     "children": [
                       {
                         "id": 2,
@@ -473,6 +537,26 @@ Feature: Provide menu
                         "label": "Suggestions",
                         "description": "Suggestions...",
                         "order": 0,
+                        "pages": [
+                          {
+                            "path": "suggestionsWS>master>/suggestions/suggestion",
+                            "relativePath": "/suggestions/suggestion",
+                            "name": "suggestion",
+                            "label": "suggestion",
+                            "description": "suggestion",
+                            "order": 0,
+                            "content": []
+                          },
+                          {
+                            "path": "suggestionsWS>master>/suggestions/examples",
+                            "relativePath": "/suggestions/examples",
+                            "name": "examples",
+                            "label": "examples",
+                            "description": "examples",
+                            "order": 1,
+                            "content": []
+                          }
+                        ],
                         "children": []
                       },
                       {
@@ -482,6 +566,17 @@ Feature: Provide menu
                         "label": "Admin",
                         "description": "Administration...",
                         "order": 1,
+                        "pages": [
+                          {
+                            "path": "suggestionsWS>master>/admin/admin",
+                            "relativePath": "/admin/admin",
+                            "name": "admin",
+                            "label": "admin",
+                            "description": "admin",
+                            "order": 0,
+                            "content": []
+                          }
+                        ],
                         "children": []
                       }
                     ]
@@ -534,6 +629,184 @@ Feature: Provide menu
   ]
 }
 """
+
+  @level_2_technical_details @nominal_case @valid
+  Scenario: provide sub menu with directories attached to node
+    Given the hierarchy nodes are
+      | id      | slugName | name                 | childrenLabel | childLabel   | directoryPath       |
+      | .       | root     | Hierarchy root       | Views         | View         |                     |
+      | .01.    | eng      | Engineering view     | System groups | System group | libraryDoc>master>/ |
+      | .02.    | biz      | Business view        | Units         | Unit         |                     |
+      | .01.01. | library  | Library system group | Systems       | System       | libraryDoc>master>/ |
+    And we have the following projects
+      | id         | name                                | repositoryUrl                                      | stableBranch | featuresRootPath |
+      | libraryDoc | library  system group documentation | target/remote/data/GetFeatures/library/libraryDoc/ | master       |                  |
+    And the links between hierarchy nodes are
+      | projectId  | hierarchyId |
+      | libraryDoc | .01.        |
+    And we have those branches in the database
+      | id | name   | isStable | projectId  |
+      | 1  | master | true     | libraryDoc |
+    And we have those directories in the database
+      | id | name       | label      | description                        | order | relativePath | path                | branchId |
+      | 1  | libraryDoc | libraryDoc | library system group documentation | 0     | /            | libraryDoc>master>/ | 1        |
+    And we have those pages in the database
+      | id | name | label | description         | order | relativePath | path                    | markdown       | directoryId |
+      | 1  | doc3 | doc3  | documentation three | 2     | /doc3        | libraryDoc>master>/doc3 | **Page doc 3** | 1           |
+      | 2  | doc2 | doc2  | documentation two   | 1     | /doc2        | libraryDoc>master>/doc2 | **Page doc 2** | 1           |
+      | 3  | doc1 | doc1  | documentation one   | 0     | /doc1        | libraryDoc>master>/doc1 | **Page doc 1** | 1           |
+    When I perform a "GET" on following URL "/api/menu/submenu/_eng"
+    Then I get a response with status "200"
+    And I get the following json response body
+"""
+{
+  "id": ".01.",
+  "hierarchy": "_eng",
+  "slugName": "eng",
+  "name": "Engineering view",
+  "childrenLabel": "System groups",
+  "childLabel": "System group",
+  "projects": [
+    {
+      "id": "libraryDoc",
+      "path": "libraryDoc",
+      "label": "library  system group documentation",
+      "stableBranch": "master",
+      "branches": [
+        {
+          "name": "master",
+          "path": "libraryDoc>master",
+          "rootDirectory": {
+            "id": 1,
+            "path": "libraryDoc>master>/",
+            "name": "libraryDoc",
+            "label": "libraryDoc",
+            "description": "library system group documentation",
+            "order": 0,
+            "pages": [
+              {
+                "path": "libraryDoc>master>/doc1",
+                "relativePath": "/doc1",
+                "name": "doc1",
+                "label": "doc1",
+                "description": "documentation one",
+                "order": 0,
+                "content": []
+              },
+              {
+                "path": "libraryDoc>master>/doc2",
+                "relativePath": "/doc2",
+                "name": "doc2",
+                "label": "doc2",
+                "description": "documentation two",
+                "order": 1,
+                "content": []
+              },
+              {
+                "path": "libraryDoc>master>/doc3",
+                "relativePath": "/doc3",
+                "name": "doc3",
+                "label": "doc3",
+                "description": "documentation three",
+                "order": 2,
+                "content": []
+              }
+            ],
+            "children": []
+          }
+        }
+      ]
+    }
+  ],
+  "children": [
+    {
+      "id": ".01.01.",
+      "hierarchy": "_eng_library",
+      "slugName": "library",
+      "name": "Library system group",
+      "childrenLabel": "Systems",
+      "childLabel": "System",
+      "projects": [],
+      "children": [],
+      "directory": {
+        "id": 1,
+        "path": "libraryDoc>master>/",
+        "name": "libraryDoc",
+        "label": "libraryDoc",
+        "description": "library system group documentation",
+        "order": 0,
+        "pages": [
+          {
+            "path": "libraryDoc>master>/doc1",
+            "relativePath": "/doc1",
+            "name": "doc1",
+            "label": "doc1",
+            "description": "documentation one",
+            "order": 0,
+            "content": []
+          },
+          {
+            "path": "libraryDoc>master>/doc2",
+            "relativePath": "/doc2",
+            "name": "doc2",
+            "label": "doc2",
+            "description": "documentation two",
+            "order": 1,
+            "content": []
+          },
+          {
+            "path": "libraryDoc>master>/doc3",
+            "relativePath": "/doc3",
+            "name": "doc3",
+            "label": "doc3",
+            "description": "documentation three",
+            "order": 2,
+            "content": []
+          }
+        ]
+      }
+    }
+  ],
+  "directory": {
+    "id": 1,
+    "path": "libraryDoc>master>/",
+    "name": "libraryDoc",
+    "label": "libraryDoc",
+    "description": "library system group documentation",
+    "order": 0,
+    "pages": [
+      {
+        "path": "libraryDoc>master>/doc1",
+        "relativePath": "/doc1",
+        "name": "doc1",
+        "label": "doc1",
+        "description": "documentation one",
+        "order": 0,
+        "content": []
+      },
+      {
+        "path": "libraryDoc>master>/doc2",
+        "relativePath": "/doc2",
+        "name": "doc2",
+        "label": "doc2",
+        "description": "documentation two",
+        "order": 1,
+        "content": []
+      },
+      {
+        "path": "libraryDoc>master>/doc3",
+        "relativePath": "/doc3",
+        "name": "doc3",
+        "label": "doc3",
+        "description": "documentation three",
+        "order": 2,
+        "content": []
+      }
+    ]
+  }
+}
+"""
+
 
   @level_2_technical_details @nominal_case @valid
   Scenario: provide pages of a directory
@@ -626,8 +899,8 @@ Feature: Provide menu
       | projectId     | hierarchyId |
       | suggestionsWS | .01.01.01.  |
     And we have those branches in the database
-      | id | name       | isStable | projectId     |
-      | 1  | master     | true     | suggestionsWS |
+      | id | name   | isStable | projectId     |
+      | 1  | master | true     | suggestionsWS |
     And we have those directories in the database
       | id | name        | label         | description             | order | relativePath  | path                               | branchId |
       | 1  | root        | SuggestionsWS | Suggestions WebServices | 0     | /             | suggestionsWS>master>/             | 1        |
@@ -673,7 +946,7 @@ Feature: Provide menu
     ]
   }
 ]
-    """+
+    """
 
   @level_2_technical_details @nominal_case @valid
   Scenario: provide menu without branch name in directory path
@@ -700,58 +973,70 @@ Feature: Provide menu
     Then I get a response with status "200"
     And  I get the following json response body
 """
- {"id":".",
- "hierarchy":"_",
- "slugName":"root",
- "name":"Hierarchy root",
- "childrenLabel":"Views",
- "childLabel":"View",
- "projects":[],
- "children":[{
-                "id":".01.",
-                "hierarchy":"_eng",
-                "slugName":"eng",
-                "name":"Engineering view",
-                "childrenLabel":"System groups",
-                "childLabel":"System group",
-                "projects":[{
-                              "id":"suggestionsWS",
-                              "path":"suggestionsWS",
-                              "label":"Suggestions WebServices",
-                              "stableBranch":"master",
-                              "branches":[{
-                                            "name":"master",
-                                            "path":"suggestionsWS>master",
-                                            "rootDirectory":{
-                                                              "id":1,
-                                                              "path":"suggestionsWS>>/",
-                                                              "name":"root",
-                                                              "label":"SuggestionsWS",
-                                                              "description":"Suggestions WebServices",
-                                                              "order":0,
-                                                              "children":[{
-                                                                            "id":2,
-                                                                            "path":"suggestionsWS>>/suggestions/",
-                                                                            "name":"suggestions",
-                                                                            "label":"Suggestions",
-                                                                            "description":"Suggestions...",
-                                                                            "order":0,
-                                                                            "children":[]
-                                                                          },
-                                                                          {
-                                                                           "id":3,
-                                                                           "path":"suggestionsWS>>/admin/",
-                                                                           "name":"admin",
-                                                                           "label":"Admin",
-                                                                           "description":"Administration...",
-                                                                           "order":1,
-                                                                           "children":[]
-                                                                          }]
-                                                             }
-                                           }]
-                             }],
-                "children":[]
-               }]
- }
+ {
+  "id": ".",
+  "hierarchy": "_",
+  "slugName": "root",
+  "name": "Hierarchy root",
+  "childrenLabel": "Views",
+  "childLabel": "View",
+  "projects": [],
+  "children": [
+    {
+      "id": ".01.",
+      "hierarchy": "_eng",
+      "slugName": "eng",
+      "name": "Engineering view",
+      "childrenLabel": "System groups",
+      "childLabel": "System group",
+      "projects": [
+        {
+          "id": "suggestionsWS",
+          "path": "suggestionsWS",
+          "label": "Suggestions WebServices",
+          "stableBranch": "master",
+          "branches": [
+            {
+              "name": "master",
+              "path": "suggestionsWS>master",
+              "rootDirectory": {
+                "id": 1,
+                "path": "suggestionsWS>>/",
+                "name": "root",
+                "label": "SuggestionsWS",
+                "description": "Suggestions WebServices",
+                "order": 0,
+                "pages": [],
+                "children": [
+                  {
+                    "id": 2,
+                    "path": "suggestionsWS>>/suggestions/",
+                    "name": "suggestions",
+                    "label": "Suggestions",
+                    "description": "Suggestions...",
+                    "order": 0,
+                    "pages": [],
+                    "children": []
+                  },
+                  {
+                    "id": 3,
+                    "path": "suggestionsWS>>/admin/",
+                    "name": "admin",
+                    "label": "Admin",
+                    "description": "Administration...",
+                    "order": 1,
+                    "pages": [],
+                    "children": []
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "children": []
+    }
+  ]
+}
 """
 

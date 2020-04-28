@@ -21,6 +21,7 @@ import {RemoveHtmlSanitizerPipe} from '../../removehtmlsanitizer.pipe';
 import {RouterTestingModule} from '@angular/router/testing';
 import {AnchorPipe} from '../../anchor.pipe';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {OpenApiEndPointsComponent} from './open-api-end-points/open-api-end-points.component';
 
 
 describe('PageContentComponent', () => {
@@ -38,6 +39,7 @@ describe('PageContentComponent', () => {
         GherkinLongTextComponent,
         GherkinTableComponent,
         OpenApiModelComponent,
+        OpenApiEndPointsComponent,
         SafePipe,
         InternalLinkPipe,
         AnchorPipe,
@@ -69,8 +71,8 @@ describe('PageContentComponent', () => {
     page = new PageObject(fixture);
     activatedRoute = fixture.debugElement.injector.get(ActivatedRoute) as any;
 
-    activatedRoute.testParentParams = {name: '_eng', path: 'suggestionsWS>qa>_pmws_'};
-    activatedRoute.testParams = {page: 'overview'};
+    activatedRoute.testParentParams = {name: '_eng', path: 'suggestionsWS>qa>/overview'};
+    activatedRoute.testParams = { nodes:'_eng', project:'suggestionsWS', branch:'qa', directories: '_', page: 'overview'};
     activatedRoute.fragment = of('');
   });
 
@@ -80,7 +82,7 @@ describe('PageContentComponent', () => {
 
     fixture.detectChanges();
     expect(component).toBeTruthy();
-    expect(pageService.getPage).toHaveBeenCalledWith('suggestionsWS>qa>_pmws_overview');
+    expect(pageService.getPage).toHaveBeenCalledWith('suggestionsWS>qa>/overview');
 
     expect(page.title).toMatch('overview');
     expect(page.pageContent.startsWith('For various reasons'))
@@ -94,6 +96,8 @@ describe('PageContentComponent', () => {
 
     fixture.detectChanges();
     expect(component).toBeTruthy();
+
+    expect(pageService.getPage).toHaveBeenCalledWith('suggestionsWS>qa>/overview');
 
   }));
 
@@ -119,16 +123,6 @@ describe('PageContentComponent', () => {
     expect(page.scenario).toBeTruthy();
   }));
 
-  it('should navigate to the right url when click on internal link', async(() => {
-    const path = 'app/documentation/navigate/HierarchyNode;path=theGardener>master>_features_/administration';
-
-    const router: Router = TestBed.get(Router);
-    spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
-    PageContentComponentTools.navigate(router, path);
-
-    expect(router.navigate).toHaveBeenCalledWith(['app/documentation/navigate/HierarchyNode', {path: 'theGardener>master>_features_'}, 'administration'], {fragment: undefined})
-  }));
-
   it('should not crash when bad path in internal link', async(() => {
     const path: string = null;
     const path2 = '';
@@ -149,6 +143,27 @@ describe('PageContentComponent', () => {
     PageContentComponentTools.navigate(router, path4);
     expect(router.navigate).not.toHaveBeenCalled();
   }));
+
+  it('should show a link to view source if provided', async(() => {
+    const pageService: PageService = TestBed.get(PageService);
+    spyOn(pageService, 'getPage').and.returnValue(of(PAGE_WITH_SOURCE_URL));
+
+    fixture.detectChanges();
+
+    expect(component).toBeTruthy();
+    expect(page.viewSource).toBeTruthy();
+  }));
+
+  it('should not show a link to view source if not provided', async(() => {
+    const pageService: PageService = TestBed.get(PageService);
+    spyOn(pageService, 'getPage').and.returnValue(of(PAGE_SERVICE_RESPONSE));
+
+    fixture.detectChanges();
+
+    expect(component).toBeTruthy();
+    expect(page.viewSource).toBeFalsy();
+  }));
+
 });
 
 class PageObject {
@@ -173,6 +188,10 @@ class PageObject {
 
   get scenario() {
     return this.fixture.nativeElement.querySelector('.scenario');
+  }
+
+  get viewSource() {
+    return this.fixture.nativeElement.querySelector('.view-source');
   }
 }
 
@@ -327,4 +346,15 @@ const PAGE_WITH_SCENARIO: Page = {
   path: '',
   order: 0,
   parts: [PAGE_MARKDOWN, SCENARIO_PART],
+};
+
+
+const PAGE_WITH_SOURCE_URL: Page = {
+  title: 'overview',
+  order: 0,
+  path: '',
+  parts: [
+    PAGE_MARKDOWN,
+  ],
+  sourceUrl: 'http://github.com/some-link/page.md'
 };

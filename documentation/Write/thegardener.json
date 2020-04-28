@@ -1,9 +1,12 @@
 {
-  "directory": {
-    "label": "Write",
-    "description": "Write",
+  "directory" :
+  {
+    "label": "Write documentation",
+    "description": "Write documentation",
     "pages": [
-      "Write"
+      "Basics",
+      "Gherkin",
+      "OpenApi"
     ],
     "children": [
     ]

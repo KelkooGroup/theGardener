@@ -74,7 +74,7 @@ publishArtifact in(Compile, packageDoc) := false
 //Removing the top level directory
 topLevelDirectory := None
 
-val silencerVersion = "1.4.3"
+val silencerVersion = "1.5.0"
 libraryDependencies ++= Seq(
   ws,
   filters,
@@ -90,7 +90,7 @@ libraryDependencies ++= Seq(
   "io.cucumber" % "gherkin" % "5.2.0",
   "com.typesafe.play" %% "anorm" % "2.5.3",
   "mysql" % "mysql-connector-java" % "5.1.48",
-  "org.eclipse.jgit" % "org.eclipse.jgit" % "5.6.0.201912101111-r",
+  "org.eclipse.jgit" % "org.eclipse.jgit" % "5.6.1.202002131546-r",
   "io.swagger" %% "swagger-play2" % "1.7.1",
   "com.h2database" % "h2" % "1.4.199",
   "com.jsuereth" %% "scala-arm" % "2.0",

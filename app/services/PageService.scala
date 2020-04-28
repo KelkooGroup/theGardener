@@ -2,8 +2,9 @@ package services
 
 import java.io.{File, FileInputStream}
 
-import controllers.dto.{PageFragment, PageFragmentContent}
-import javax.inject.{Inject, Singleton}
+import com.github.ghik.silencer.silent
+import controllers.dto.{PageDTO, PageFragment, PageFragmentContent}
+import javax.inject._
 import models.{PageJoinProject, _}
 import org.apache.commons.io.FileUtils
 import play.api.{Configuration, Logging}
@@ -27,8 +28,9 @@ case class ScenariosModule(project: Option[String] = None, branchName: Option[St
 
 case class IncludeExternalPageModule(url: String)
 
-case class OpenApiModule(openApiUrl: Option[String] = None, openApiType: Option[String] = None, ref: Option[String] = None, deep: Option[Int] = None, label: Option[String] = None, errorMessage: Option[String] = None)
+case class OpenApiModelModule(openApiUrl: Option[String] = None, openApiType: Option[String] = None, ref: Option[String] = None, deep: Option[Int] = None, label: Option[String] = None, errorMessage: Option[String] = None)
 
+case class OpenApiPathModule(openApiUrl: Option[String] = None, refStartsWith: Option[Seq[String]], ref: Option[Seq[String]] = None, methods: Option[Seq[String]] = None, errorMessage: Option[String] = None)
 
 case class Items(openApiType: String, ref: String)
 
@@ -40,7 +42,8 @@ case class Module(directory: Option[DirectoryMeta] = None,
                   page: Option[PageMeta] = None,
                   scenarios: Option[ScenariosModule] = None,
                   includeExternalPage: Option[IncludeExternalPageModule] = None,
-                  openApi: Option[OpenApiModule] = None)
+                  openApi: Option[OpenApiModelModule] = None,
+                  openApiPath: Option[OpenApiPathModule] = None)
 
 sealed trait PageFragmentUnderProcessingStatus
 
@@ -57,12 +60,14 @@ case class PageFragmentUnderProcessing(status: PageFragmentUnderProcessingStatus
                                        scenariosModule: Option[ScenariosModule] = None,
                                        scenarios: Option[Feature] = None,
                                        includeExternalPage: Option[IncludeExternalPageModule] = None,
-                                       openApi: Option[OpenApi] = None,
-                                       openApiModule: Option[OpenApiModule] = None)
+                                       openApi: Option[OpenApiModel] = None,
+                                       openApiModule: Option[OpenApiModelModule] = None,
+                                       openApiPath: Option[OpenApiPath] = None,
+                                       openApiPathModule: Option[OpenApiPathModule] = None)
 
 case class PageWithContent(page: Page, content: Seq[PageFragment])
 
-@Singleton
+
 class PageServiceCache @Inject()(cache: SyncCacheApi) extends Logging {
 
   def store(key: String, page: PageWithContent): Unit = {
@@ -80,7 +85,7 @@ class PageServiceCache @Inject()(cache: SyncCacheApi) extends Logging {
 
 }
 
-@Singleton
+
 class PageService @Inject()(config: Configuration, projectRepository: ProjectRepository, directoryRepository: DirectoryRepository, pageRepository: PageRepository,
                             gherkinRepository: GherkinRepository, openApiClient: OpenApiClient, cache: PageServiceCache)(implicit ec: ExecutionContext) extends Logging {
 
@@ -90,7 +95,8 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
 
   implicit val tagsModuleFormat = Json.format[TagsModule]
   implicit val scenariosModuleMetaFormat = Json.format[ScenariosModule]
-  implicit val openApiModuleFormat = Json.format[OpenApiModule]
+  implicit val openApiModuleFormat = Json.format[OpenApiModelModule]
+  implicit val openApiPathModuleFormat = Json.format[OpenApiPathModule]
   implicit val metaFormat = Json.format[Module]
   implicit val itemsFormat = Json.format[Items]
 
@@ -107,6 +113,9 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
   val PageModuleRegex = """\`\`\`thegardener([\s\S]*"page"[^`]*)\`\`\`""".r
   val ImageRegex = """\!\[.*\]\((.*)\)""".r
   val ReferenceRegex = """\[.*\]\:\s(\S*)""".r
+
+  val SourceTemplateBranchToken = "${branch}"
+  val SourceTemplatePathToken = "${path}"
 
   def getLocalRepository(projectId: String, branch: String): String = s"$projectsRootDirectory$projectId/$branch/".fixPathSeparator
 
@@ -150,12 +159,40 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
     } else None
   }
 
-  def computePageFromPath(path: String, refresh: Boolean = false): Future[Option[PageWithContent]] = {
-    val pathWithBranch = projectRepository.findById(path.split(">")(0)).map { project =>
-      if (path.contains(">>")) path.replace(">>", s">${project.stableBranch}>") else path
-    }.getOrElse(s" Error while computing Page for the path $path")
+  def computePageFromPath(path: String, refresh: Boolean = false): Future[Option[PageDTO]] = {
+    projectRepository.findById(projectIdFromPath(path))
+      .map(project => completePathWithBranchIfNeeded(path, project.stableBranch))
+      .map { pathWithBranch =>
+
+        val pageJoinProjectOpt = pageRepository.findByPathJoinProject(pathWithBranch)
+
+        computePageFromPath(pageJoinProjectOpt, pathWithBranch, refresh).map {
+          _.map { pageWithContent =>
+            val variables = getVariables(pageJoinProjectOpt)
+            val content = replaceVariablesInMarkdown(pageWithContent.content, variables.getOrElse(Seq()))
+            val sourceUrl = getSourceUrl(pageJoinProjectOpt)
+            PageDTO(pageWithContent.page, content, sourceUrl)
+          }
+        }
+      }
+      .getOrElse(Future.successful(None))
+  }
+
+  private def projectIdFromPath(path: String) = {
+    path.split(">")(0)
+  }
+
+  private def completePathWithBranchIfNeeded(path: String, stableBranch: String): String = {
+    if (path.contains(">>")) {
+      path.replace(">>", s">${stableBranch}>")
+    } else {
+      path
+    }
+  }
+
+  private def computePageFromPath(pageJoinProjectOpt: Option[PageJoinProject], pathWithBranch: String, refresh: Boolean): Future[Option[PageWithContent]] = {
     if (refresh) {
-      computePageFromPathUsingDatabase(pathWithBranch)
+      computePageFromPathUsingDatabaseBis(pageJoinProjectOpt, pathWithBranch)
     } else {
       val key = computePageCacheKey(pathWithBranch)
       cache.get(key) match {
@@ -163,16 +200,46 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
           Future.successful(Some(page))
         case None =>
           logger.debug(s"Page not found in cache: $key")
-          computePageFromPathUsingDatabase(pathWithBranch)
+          computePageFromPathUsingDatabaseBis(pageJoinProjectOpt, pathWithBranch)
       }
+    }
+  }
+
+  @silent("Interpolated")
+  @silent("missing interpolator")
+  private def getVariables(pageJoinProjectOpt: Option[PageJoinProject]): Option[Seq[Variable]] = {
+    pageJoinProjectOpt.map { pageJoinProject =>
+      val project = pageJoinProject.project
+      val branch = pageJoinProject.branch
+      val availableImplicitVariable = Seq(Variable("${project.current}", s"${project.name}"), Variable("${branch.current}", s"${branch.name}"), Variable("${branch.stable}", s"${project.stableBranch}"))
+      project.variables.getOrElse(Seq()) ++ availableImplicitVariable
+    }
+  }
+
+  @silent("missing interpolator")
+  private def getSourceUrl(pageJoinProjectOpt: Option[PageJoinProject]): Option[String] = {
+    for {
+      pageJoinProject <- pageJoinProjectOpt
+      sourceUrlTemplate <- pageJoinProject.project.sourceUrlTemplate
+      docRootPath <- pageJoinProject.project.documentationRootPath
+    } yield {
+      val branchName = pageJoinProject.branch.name
+      val filePath = docRootPath + pageJoinProject.page.relativePath + ".md"
+      sourceUrlTemplate
+        .replace(SourceTemplateBranchToken, branchName)
+        .replace(SourceTemplatePathToken, filePath)
     }
   }
 
   private def computePageCacheKey(path: String): String = s"page_$path"
 
   def computePageFromPathUsingDatabase(path: String, forceRefresh: Boolean = true): Future[Option[PageWithContent]] = {
+    val pageJoinProjectOpt = pageRepository.findByPathJoinProject(path)
+    computePageFromPathUsingDatabaseBis(pageJoinProjectOpt, path, forceRefresh)
+  }
 
-    pageRepository.findByPathJoinProject(path) match {
+  def computePageFromPathUsingDatabaseBis(pageJoinProjectOpt: Option[PageJoinProject], path: String, forceRefresh: Boolean = true): Future[Option[PageWithContent]] = {
+    pageJoinProjectOpt match {
       case Some(pageJoinProject) =>
         val key = computePageCacheKey(path)
         if (cache.get(key).isEmpty || forceRefresh || pageJoinProject.page.dependOnOpenApi) {
@@ -288,17 +355,20 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
     if (line.trim.startsWith(MarkdownCodeStart)) {
 
       currentFragment.data.flatMap(data => parseModule(data.replace(ModuleStart, ""), path)) match {
-        case Some(Module(_, Some(page), _, _, _)) =>
+        case Some(Module(_, Some(page), _, _, _, _)) =>
           (fragments :+ currentFragment.copy(page = Some(page)), PageFragmentUnderProcessing())
 
-        case Some(Module(_, _, Some(scenarios), _, _)) =>
+        case Some(Module(_, _, Some(scenarios), _, _, _)) =>
           (fragments :+ currentFragment.copy(scenariosModule = Some(scenarios)), PageFragmentUnderProcessing())
 
-        case Some(Module(_, _, _, Some(include), _)) =>
+        case Some(Module(_, _, _, Some(include), _, _)) =>
           (fragments :+ currentFragment.copy(includeExternalPage = Some(include)), PageFragmentUnderProcessing())
 
-        case Some(Module(_, _, _, _, Some(openApi))) =>
+        case Some(Module(_, _, _, _, Some(openApi), _)) =>
           (fragments :+ currentFragment.copy(openApiModule = Some(openApi)), PageFragmentUnderProcessing())
+
+        case Some(Module(_, _, _, _, _, Some(openApiPath))) =>
+          (fragments :+ currentFragment.copy(openApiPathModule = Some(openApiPath)), PageFragmentUnderProcessing())
 
         case _ =>
           (fragments, PageFragmentUnderProcessing())
@@ -311,7 +381,7 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
   def processPageFragments(fragments: Seq[PageFragmentUnderProcessing], pageJoinProject: PageJoinProject): Future[Seq[PageFragment]] = {
     Future.sequence(fragments.map {
 
-      case PageFragmentUnderProcessing(PageFragmentStatusModule, _, _, _, Some(scenariosModule), _, _, _, _) =>
+      case PageFragmentUnderProcessing(PageFragmentStatusModule, _, _, _, Some(scenariosModule), _, _, _, _, _, _) =>
         val feature = buildFeature(scenariosModule, pageJoinProject)
 
         if (scenariosModule.includeBackground.getOrElse(false)) {
@@ -321,7 +391,7 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
           Future.successful(PageFragmentUnderProcessing(scenarios = feature.map(_.copy(background = None))))
         }
 
-      case PageFragmentUnderProcessing(PageFragmentStatusMarkdown, _, Some(rawMarkdown), _, _, _, _, _, _) =>
+      case PageFragmentUnderProcessing(PageFragmentStatusMarkdown, _, Some(rawMarkdown), _, _, _, _, _, _, _, _) =>
 
         val images = findPageImagesWithRelativePath(rawMarkdown)
         val references = findPageReferencesWithRelativePath(rawMarkdown)
@@ -331,8 +401,10 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
 
         Future.successful(PageFragmentUnderProcessing(markdown = Some(markdown)))
 
-      case PageFragmentUnderProcessing(PageFragmentStatusModule, _, _, _, _, _, _, _, Some(openApiModule)) =>
+      case PageFragmentUnderProcessing(PageFragmentStatusModule, _, _, _, _, _, _, _, Some(openApiModule), _, _) =>
         openApiClient.getOpenApiDescriptor(openApiModule, pageJoinProject).flatMap(openApiModel => Future.successful(PageFragmentUnderProcessing(openApi = Some(openApiModel))))
+      case PageFragmentUnderProcessing(PageFragmentStatusModule, _, _, _, _, _, _, _, _, _, Some(openApiPathModule)) =>
+        openApiClient.getOpenApiPathSpec(openApiPathModule, pageJoinProject).flatMap(openApiPath => Future.successful(PageFragmentUnderProcessing(openApiPath = Some(openApiPath))))
       case fragmentUnderProcessing => Future.successful(fragmentUnderProcessing)
 
     }.map(fragments => fragments.map(PageFragment(_)))).map(_.filter(fragment => fragment.`type` != PageFragment.TypeUnknown))

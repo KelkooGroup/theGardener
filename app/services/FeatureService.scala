@@ -6,7 +6,7 @@ import java.util.{List => JList}
 import com.typesafe.config.Config
 import gherkin.ast.GherkinDocument
 import gherkin.{AstBuilder, Parser, ast}
-import javax.inject.{Inject, Singleton}
+import javax.inject._
 import models._
 import repositories.FeatureRepository
 import resource._
@@ -15,7 +15,7 @@ import utils._
 import scala.collection.JavaConverters._
 import scala.util.Try
 
-@Singleton
+
 class FeatureService @Inject()(config: Config, featureRepository: FeatureRepository) {
   val projectsRootDirectory = config.getString("projects.root.directory")
 
@@ -82,19 +82,19 @@ def parseFeatureFile (projectId: String, branch: Branch, filePath: String): Try[
 }.logError (s"Error while parsing file $filePath")
 }
 
-  private def mapGherkinSteps (gherkinSteps: JList[ast.Step] ): Seq[Step] = {
-  gherkinSteps.asScala.zipWithIndex.map {
-  case (step, id) =>
-  val argument = step.getArgument match {
-  case dataTable: ast.DataTable => dataTable.getRows.asScala.map (_.getCells.asScala.map (_.getValue) )
-  case tableRow: ast.TableRow => Seq (tableRow.getCells.asScala.map (_.getValue) )
-  case docString: ast.DocString => Seq (Seq (docString.getContent) )
-  case _ => Seq ()
-}
+  private def mapGherkinSteps(gherkinSteps: JList[ast.Step]): Seq[Step] = {
+    gherkinSteps.asScala.zipWithIndex.map {
+      case (step, id) =>
+        val (argument, argumentTextType) = step.getArgument match {
+          case dataTable: ast.DataTable => (dataTable.getRows.asScala.map(_.getCells.asScala.map(_.getValue)),None)
+          case tableRow: ast.TableRow => (Seq(tableRow.getCells.asScala.map(_.getValue)),None)
+          case docString: ast.DocString => (Seq(Seq(docString.getContent)),Some(docString.getContentType))
+          case _ => (Seq(), None)
+        }
 
-  Step (id.toLong, step.getKeyword.trim, step.getText, argument)
-}
-}
+        Step(id.toLong, step.getKeyword.trim, step.getText, argument, argumentTextType)
+    }
+  }
 
   private def mapGherkinTags (gherkinTags: JList[ast.Tag] ): (Seq[String], String, String, String) = {
   val tags = gherkinTags.asScala.map (_.getName.replace ("@", "") )

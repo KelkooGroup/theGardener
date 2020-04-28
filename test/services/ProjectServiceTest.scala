@@ -43,7 +43,7 @@ class ProjectServiceTest extends WordSpec with MustMatchers with BeforeAndAfter 
 
   val projectService = new ProjectService(projectRepository, gitService, featureService, featureRepository, branchRepository, directoryRepository, pageRepository, menuService, pageService, Configuration.load(Environment.simple()), environment, ActorSystem())
 
-  val project = Project("suggestionsWS", "Suggestions WebServices", "git@github.com:library/suggestionsWS.git", "master", Some("^(^master$)|(^feature\\/.*$)"), Some("test/features"))
+  val project = Project("suggestionsWS", "Suggestions WebServices", "git@github.com:library/suggestionsWS.git", Some("http://github.com:library/suggestionsWS/blob/${branch}/${path}"), "master", Some("^(^master$)|(^feature\\/.*$)"), Some("test/features"))
   val masterDirectory = projectService.getLocalRepository(project.id, project.stableBranch)
   val featureBranchDirectory = projectService.getLocalRepository(project.id, featureBranch)
   val bugfixBranchDirectory = projectService.getLocalRepository(project.id, bugfixBranch)
@@ -86,7 +86,7 @@ class ProjectServiceTest extends WordSpec with MustMatchers with BeforeAndAfter 
 
         verify(gitService, times(1)).clone(project.repositoryUrl, masterDirectory)
         verify(gitService, times(1)).clone(project.repositoryUrl, featureBranchDirectory)
-        verify(gitService, times(1)).clone(project.repositoryUrl, bugfixBranchDirectory)
+        verify(gitService, times(0)).clone(project.repositoryUrl, bugfixBranchDirectory)
       }
     }
 

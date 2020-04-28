@@ -12,6 +12,7 @@ case class Project(
                     @ApiModelProperty(value = "id of the project", example = "theGardener", required = true) id: String,
                     @ApiModelProperty(value = "name of the project", example = "theGardener", required = true) name: String,
                     @ApiModelProperty(value = "location of the project", example = "https://github.com/KelkooGroup/theGardener", required = true) repositoryUrl: String,
+                    @ApiModelProperty(value = "source URL template", example = "https://github.com/KelkooGroup/theGardener/blob/${branch}/${path}", required = false) sourceUrlTemplate: Option[String],
                     @ApiModelProperty(value = "stableBranch of the project", example = "master", required = true) stableBranch: String,
                     @ApiModelProperty(value = "branches that will be displayed", example = "qa|master|feature.*|bugfix.*") displayedBranches: Option[String] = None,
                     @ApiModelProperty(value = "path that lead to the feature files", example = "test/features") featuresRootPath: Option[String],

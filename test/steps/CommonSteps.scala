@@ -57,10 +57,10 @@ object Injector {
   def inject[T: ClassTag]: T = injector.instanceOf[T]
 }
 
-case class ProjectTableRow(id: String, name: String, repositoryUrl: String, stableBranch: String, displayedBranches: String, featuresRootPath: String, documentationRootPath: String, variables: String) {
+case class ProjectTableRow(id: String, name: String, repositoryUrl: String, sourceUrlTemplate: String, stableBranch: String, displayedBranches: String, featuresRootPath: String, documentationRootPath: String, variables: String) {
   def toProject(): Project = {
     implicit val variableFormat = Json.format[Variable]
-    Project(this.id, this.name, this.repositoryUrl, this.stableBranch, Option(this.displayedBranches), Option(this.featuresRootPath), Option(this.documentationRootPath), Option(variables).map(Json.parse(_).as[Seq[Variable]]))
+    Project(id, name, repositoryUrl, Option(sourceUrlTemplate).filter(_.nonEmpty), stableBranch, Option(displayedBranches), Option(featuresRootPath), Option(documentationRootPath), Option(variables).map(Json.parse(_).as[Seq[Variable]]))
   }
 }
 
@@ -322,14 +322,14 @@ Scenario: providing several book suggestions
 
   Given("""^swagger\.json cannot be requested$"""){ () =>
     reset(fakeOpenApiClient)
-    when(fakeOpenApiClient.getOpenApiDescriptor(any[OpenApiModule](), any[PageJoinProject]())).thenReturn(Future.successful(OpenApi("",Option(Seq()),Seq(),Seq(),Seq("ERROR HTTP"))))
+    when(fakeOpenApiClient.getOpenApiDescriptor(any[OpenApiModelModule](), any[PageJoinProject]())).thenReturn(Future.successful(OpenApiModel("",Option(Seq()),Seq(),Seq(),Seq("ERROR HTTP"))))
   }
 
   private def mockOpenApiClient(swaggerJson: String) = {
     reset(fakeOpenApiClient)
-    when(fakeOpenApiClient.getOpenApiDescriptor(any[OpenApiModule](), any[PageJoinProject]())).thenAnswer((invocation: InvocationOnMock) => {
+    when(fakeOpenApiClient.getOpenApiDescriptor(any[OpenApiModelModule](), any[PageJoinProject]())).thenAnswer((invocation: InvocationOnMock) => {
       val args = invocation.getArguments
-      val openApiModule = args(0).asInstanceOf[OpenApiModule]
+      val openApiModule = args(0).asInstanceOf[OpenApiModelModule]
 
       Future.successful(OpenApiClient.parseSwaggerJsonDefinitions(swaggerJson, openApiModule.ref.getOrElse(""), openApiModule.deep, openApiModule.label))
     })
@@ -375,6 +375,10 @@ Scenario: providing several book suggestions
 
   Then("""^the file system store now the file "([^"]*)"$""") { (file: String, content: String) =>
     managed(Source.fromFile(file.fixPathSeparator)).acquireAndGet(_.mkString mustBe content)
+  }
+
+  Then("""^the file system do not store now the file "([^"]*)"$""") { (file: String) =>
+    Files.exists(Paths.get(file.fixPathSeparator)) mustBe( false)
   }
 
   Then("""^the file system store now the files$""") { files: DataTable =>

@@ -4,7 +4,6 @@ import java.io._
 
 import akka.Done
 import akka.actor.{ActorSystem, CoordinatedShutdown}
-import com.github.ghik.silencer.silent
 import javax.inject._
 import models._
 import org.apache.commons.io.FileUtils._
@@ -15,7 +14,7 @@ import utils._
 import scala.concurrent._
 import scala.concurrent.duration._
 
-@Singleton
+
 class ProjectService @Inject()(projectRepository: ProjectRepository, gitService: GitService, featureService: FeatureService,
                                featureRepository: FeatureRepository, branchRepository: BranchRepository, directoryRepository: DirectoryRepository,
                                pageRepository: PageRepository, menuService: MenuService, pageService: PageService,
@@ -78,9 +77,11 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
 
   private def checkoutBranches(project: Project, branches: Set[String]): Future[Unit] = {
     if (branches.nonEmpty) {
-      logger.info(s"checkout ${project.id} branches ${branches.mkString(", ")}")
+      val displayedBranches = branches.filter(branch => project.displayedBranches.forall(regex => branch.matches(regex)))
 
-      FutureExt.sequentially(branches.toSeq) { branchName =>
+      logger.info(s"checkout ${project.id} branches ${displayedBranches.mkString(", ")}")
+
+      FutureExt.sequentially(displayedBranches.toSeq) { branchName =>
         val localRepository = getLocalRepository(project.id, branchName)
 
         val branch = branchRepository.findByProjectIdAndName(project.id, branchName).getOrElse(branchRepository.save(Branch(-1, branchName, branchName == project.stableBranch, project.id)))
@@ -339,14 +340,4 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
     }
   }
 
-  @silent("Interpolated")
-  @silent("missing interpolator")
-  def getVariables(page: Page): Option[Seq[Variable]] = {
-    for {
-      directory <- directoryRepository.findById(page.directoryId)
-      branch <- branchRepository.findById(directory.branchId)
-      project <- projectRepository.findById(branch.projectId)
-      availableImplicitVariable = Seq(Variable("${project.current}", s"${project.name}"), Variable("${branch.current}", s"${branch.name}"), Variable("${branch.stable}", s"${project.stableBranch}"))
-    } yield project.variables.getOrElse(Seq()).++(availableImplicitVariable)
-  }
 }

@@ -1,6 +1,6 @@
 package services
 
-import javax.inject.{Inject, Singleton}
+import javax.inject._
 import models.HierarchyNode._
 import models._
 import play.api.cache._
@@ -10,7 +10,7 @@ import utils._
 
 import scala.util.Try
 
-@Singleton
+
 class MenuService @Inject()(hierarchyRepository: HierarchyRepository, projectRepository: ProjectRepository, branchRepository: BranchRepository, featureRepository: FeatureRepository, directoryRepository: DirectoryRepository, pageRepository: PageRepository, cache: SyncCacheApi) {
 
   def refreshCache(): Try[Menu] = Try(getMenuTree(true))
@@ -37,7 +37,7 @@ class MenuService @Inject()(hierarchyRepository: HierarchyRepository, projectRep
         branchAndPath._1 -> paths
       }
 
-      val pages = pageRepository.findAll().groupBy(_.directoryId)
+      val pages = pageRepository.findAll().sortBy(_.order).groupBy(_.directoryId)
       val directories = directoryRepository.findAll().map(d => d.copy(pages = pages.getOrElse(d.id, Seq())))
 
       val directoryTree = directories.groupBy(_.branchId).flatMap { case (branchId, branchDirectories) =>
@@ -45,7 +45,7 @@ class MenuService @Inject()(hierarchyRepository: HierarchyRepository, projectRep
         val project = (for {
           branch <- branchRepository.findById(branchId)
           projectFound <- projectRepository.findById(branch.projectId)
-        } yield projectFound).getOrElse(Project("", "", "", "", None, None))
+        } yield projectFound).getOrElse(Project("", "", "", None, "", None, None))
         rootDirectories.headOption.map(rootDirectory => branchId -> buildDirectoryTree(rootDirectory, children, project))
       }
 
@@ -59,10 +59,11 @@ class MenuService @Inject()(hierarchyRepository: HierarchyRepository, projectRep
         }
         val directory: Option[Directory] = hierarchyNode.directoryPath.flatMap { directoryPath =>
           directoryRepository.findByPath(directoryPath).map { d =>
+            val pages = pageRepository.findAllByDirectoryId(d.id)
             (for {
               branch <- branchRepository.findById(d.branchId)
               project <- projectRepository.findById(branch.projectId)
-            } yield d.copy(path = getCorrectedPath(d.path, project))).getOrElse(d)
+            } yield d.copy(path = getCorrectedPath(d.path, project), pages= pages)).getOrElse(d)
           }
 
         }

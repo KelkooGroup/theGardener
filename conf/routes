@@ -51,13 +51,17 @@ POST       /api/admin/projects/:id/synchronizeFromRemoteGitRepository controller
 POST       /api/admin/projects/:id/refreshFromRemoteGitRepository     controllers.AdminController.refreshProjectFromRemote(id:String)
 
 
-GET        /api/assets                                     controllers.PageAssetController.getImageFromPath(path: String)
+GET        /api/assets                                       controllers.PageAssetController.getImageFromPath(path: String)
 
 # API DOCUMENTATION
 GET          /api/docs/                                      controllers.Assets.at(path="/public/swagger-ui",file="index.html")
 GET          /api/docs/swagger.json                          controllers.ApiHelpController.getResources
 GET          /api/docs/*file                                 controllers.Assets.at(path="/public/swagger-ui",file)
 
+GET          /api/proxy                                      controllers.OpenApiController.getSwaggerResponse(url: String)
+PUT          /api/proxy                                      controllers.OpenApiController.swaggerPutMethod(url: String, body: String)
+POST         /api/proxy                                      controllers.OpenApiController.swaggerPostMethod(url: String, body: String)
+DELETE       /api/proxy                                      controllers.OpenApiController.swaggerDeleteMethod(url: String)
 #IsAlive
 GET           /HealthCheck/isAlive                            controllers.Application.isAlive
 

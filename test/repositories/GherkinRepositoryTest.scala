@@ -21,14 +21,14 @@ class GherkinRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with In
   val gherkinRepository = inject[GherkinRepository]
 
   val node = HierarchyNode(".01.", "eng", "Eng", "Systems", "System")
-  val project1 = Project("project1", "Project 1", "repositoryUrl1", "branch2", None, Some("featuresRootPath1"), None)
+  val project1 = Project("project1", "Project 1", "repositoryUrl1", None, "branch2", None, Some("featuresRootPath1"), None)
   val branch1 = Branch(1, "branch1", isStable = false, "project1")
   val branch2 = Branch(2, "branch2", isStable = true, "project1")
   val feature1 = Feature(1, 1, "path1", None, Seq(), Some("language1"), "keyword1", "feature1", "description1", Seq(), Seq("comments1"))
   val feature2 = Feature(2, 1, "path2", None, Seq(), Some("language2"), "keyword2", "feature2", "description2", Seq(), Seq("comments1"))
-  val scenario1 = Scenario(1, Seq("s_tag1", "s_tag2"), "abstractionLevel1", "caseType1", "workflowStep1", "keyword1", "scenario1", "description1", Seq(Step(1, "keyword1", "text1", Seq(Seq("argument1")))))
-  val scenario2 = Scenario(2, Seq("s_tag2", "s_tag3"), "abstractionLevel1", "caseType1", "workflowStep1", "keyword1", "scenario2", "description1", Seq(Step(2, "keyword1", "text1", Seq(Seq("argument1")))))
-  val scenario3 = Scenario(3, Seq("s_tag1", "s_tag3"), "abstractionLevel1", "caseType1", "workflowStep1", "keyword1", "scenario3", "description1", Seq(Step(3, "keyword1", "text1", Seq(Seq("argument1")))))
+  val scenario1 = Scenario(1, Seq("s_tag1", "s_tag2"), "abstractionLevel1", "caseType1", "workflowStep1", "keyword1", "scenario1", "description1", Seq(Step(1, "keyword1", "text1", Seq(Seq("argument1")), None)))
+  val scenario2 = Scenario(2, Seq("s_tag2", "s_tag3"), "abstractionLevel1", "caseType1", "workflowStep1", "keyword1", "scenario2", "description1", Seq(Step(2, "keyword1", "text1", Seq(Seq("argument1")), None)))
+  val scenario3 = Scenario(3, Seq("s_tag1", "s_tag3"), "abstractionLevel1", "caseType1", "workflowStep1", "keyword1", "scenario3", "description1", Seq(Step(3, "keyword1", "text1", Seq(Seq("argument1")), None)))
 
 
   override def beforeEach(): Unit = {

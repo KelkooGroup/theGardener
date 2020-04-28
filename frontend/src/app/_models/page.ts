@@ -1,16 +1,17 @@
 import {Scenario} from './gherkin';
-import {OpenApiModel} from './open-api';
+import {OpenApiModel, OpenApiPath} from './open-api';
 
 export interface Page {
   title: string;
   path: string;
   order: number;
   parts: Array<PagePart>;
+  sourceUrl?: string;
 }
 
 export interface PagePart {
-  type: 'markdown' | 'includeExternalPage' | 'scenarios' | 'openApi';
-  data: MarkdownPart | IncludeExternalPagePart | ScenarioPart | OpenApiPart;
+  type: 'markdown' | 'includeExternalPage' | 'scenarios' | 'openApi' | 'openApiPath';
+  data: MarkdownPart | IncludeExternalPagePart | ScenarioPart | OpenApiPart | OpenApiPathPart;
 }
 
 export interface MarkdownPart {
@@ -27,4 +28,8 @@ export interface ScenarioPart {
 
 export interface OpenApiPart {
   openApi: OpenApiModel;
+}
+
+export interface OpenApiPathPart {
+  openApiPath: OpenApiPath;
 }

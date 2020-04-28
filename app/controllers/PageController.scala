@@ -2,6 +2,7 @@ package controllers
 
 import java.io.File
 
+import com.github.ghik.silencer.silent
 import controllers.AssetAccessError.{AssetNotAllowed, AssetNotFound}
 import controllers.dto._
 import io.swagger.annotations._
@@ -12,24 +13,23 @@ import play.api.mvc._
 import repositories._
 import services._
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
-
+@silent("Interpolated")
+@silent("missing interpolator")
 @Api(value = "PageController", produces = "application/json")
-class PageController @Inject()(projectService: ProjectService, pageService: PageService)(implicit ec: ExecutionContext) extends InjectedController {
+class PageController @Inject()(pageService: PageService)(implicit ec: ExecutionContext) extends InjectedController {
 
   @ApiOperation(value = "Get pages from path", response = classOf[PageDTO], responseContainer = "list")
   @ApiResponses(Array(new ApiResponse(code = 404, message = "Page not found")))
   def getPageFromPath(path: String): Action[AnyContent] = Action.async {
-    pageService.computePageFromPath(path).flatMap {
-      case Some(pageWithContent) =>
-        val variables = projectService.getVariables(pageWithContent.page)
-        Future.successful(Ok(Json.toJson(Seq(PageDTO(pageWithContent.page, pageService.replaceVariablesInMarkdown(pageWithContent.content, variables.getOrElse(Seq())))))))
-      case None => Future.successful(NotFound(s"No Page $path"))
+    pageService.computePageFromPath(path).map {
+      case Some(pageDto) => Ok(Json.toJson(Seq(pageDto)))
+      case None => NotFound(s"No Page $path")
     }
   }
-}
 
+}
 
 sealed abstract class AssetAccessError(message: String) extends Throwable(message)
 

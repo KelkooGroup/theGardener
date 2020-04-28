@@ -50,9 +50,9 @@ describe('HeaderComponent', () => {
     spyOn(fakeMenuService, 'getMenuHeader').and.returnValue(of(MENU_HEADER_SERVICE_RESPONSE));
 
     activatedRoute = fixture.debugElement.injector.get(ActivatedRoute) as any;
-    activatedRoute.testChildUrl = [];
+    activatedRoute.testUrl = [];
     router = TestBed.get(Router);
-    spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+    spyOn(router, 'navigateByUrl').and.returnValue(Promise.resolve(true));
   });
 
   /*
@@ -62,24 +62,19 @@ describe('HeaderComponent', () => {
     fixture.detectChanges();
     expect(component).toBeTruthy();
     expect(page.navigationItems.length).toBe(2);
-    expect(page.navigationItems[0].textContent).toBe('Engineering view');
+    expect(page.navigationItems[0].textContent).toBe('Publisher');
     // ng-reflect---- properties are for debugging / devtime only, and they're truncated so they don't dump huge amounts of data into the DOM.
-    expect(page.navigationItems[1].textContent).toBe('Business view');
+    expect(page.navigationItems[1].textContent).toBe('Tools');
   }));
 
   it('should navigate to first element if no route is set', async(() => {
-    activatedRoute.testChildParams = {};
+    activatedRoute.testParams = {};
     fixture.detectChanges();
 
-    expect(router.navigate).toHaveBeenCalledWith(['app/documentation/navigate/', '_eng']);
+    expect(router.navigateByUrl).toHaveBeenCalledWith('app/documentation/navigate/_publisher/_/_/_');
   }));
 
-  it('should not navigate to first element if route is set', async(() => {
-    activatedRoute.testChildParams = {name: '_biz'};
-    fixture.detectChanges();
 
-    expect(router.navigate).not.toHaveBeenCalled();
-  }));
 });
 
 class Page {

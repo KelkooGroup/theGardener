@@ -2,8 +2,8 @@
 {
   "page" :
      {
-        "label": "Operate",
-        "description": "How to operate to theGardener instance ?"
+        "label": "Operate theGardener",
+        "description": "How to operate a theGardener instance ?"
      }
 }
 ```

@@ -1,7 +1,11 @@
 <mat-progress-spinner *ngIf="!page"></mat-progress-spinner>
+
 <div id="top-page" class="top">&nbsp;</div>
-<div *ngIf="page" class="markdown-container"  >
+
+<div *ngIf="page" class="markdown-container">
+
   <h1 *ngIf=page.title id="page-title">{{ page.title }}</h1>
+
   <div *ngFor="let part of page.parts">
     <div [ngSwitch]="part.type">
       <div *ngSwitchCase="'markdown'">
@@ -21,6 +25,16 @@
           <app-open-api-model [openApiModule]="getOpenApiModel(part)"></app-open-api-model>
         </div>
       </div>
+      <div *ngSwitchCase="'openApiPath'">
+        <div class="openApiPath">
+          <app-open-api-end-points [openApiPathJson]="getOpenApiPaths(part)" [position]="getPosition(part)"></app-open-api-end-points>
+        </div>
+      </div>
     </div>
   </div>
+
+  <div *ngIf="page.sourceUrl" class="view-source">
+    <a [href]="page.sourceUrl" target="_blank">View source <i class="fas fa-external-link-alt"></i></a>
+  </div>
+
 </div>

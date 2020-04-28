@@ -40,6 +40,7 @@ class PageRepository @Inject()(db: Database) {
     p_id <- str("p_id")
     p_name <- str("p_name")
     p_repositoryUrl <- str("p_repositoryUrl")
+    p_sourceUrlTemplate <- str("p_sourceUrlTemplate").?
     p_stableBranch <- str("p_stableBranch")
     p_displayedBranches <- str("p_displayedBranches").?
     p_featuresRootPath <- str("p_featuresRootPath").?
@@ -50,7 +51,7 @@ class PageRepository @Inject()(db: Database) {
       Page(id, name, label, description, order, Some(markdown), relativePath, path, directoryId, dependOnOpenApi),
       Directory(d_id, d_name, d_label, d_description, d_order, d_relativePath, d_path, d_branchId),
       Branch(b_id, b_name, b_isStable, b_projectId),
-      Project(p_id, p_name, p_repositoryUrl, p_stableBranch, p_displayedBranches, p_featuresRootPath, p_documentationRootPath, p_variables.map(Json.parse(_).as[Seq[Variable]]))
+      Project(p_id, p_name, p_repositoryUrl, p_sourceUrlTemplate, p_stableBranch, p_displayedBranches, p_featuresRootPath, p_documentationRootPath, p_variables.map(Json.parse(_).as[Seq[Variable]]))
     )
 
 
@@ -131,7 +132,7 @@ class PageRepository @Inject()(db: Database) {
 
   def findAllByDirectoryId(directoryId: Long): Seq[Page] = {
     db.withConnection { implicit connection =>
-      SQL"SELECT id, name, label, description, `order`, relativePath, path, directoryId, dependOnOpenApi FROM page WHERE directoryId = $directoryId".as(parser.*)
+      SQL"SELECT id, name, label, description, `order`, relativePath, path, directoryId, dependOnOpenApi FROM page WHERE directoryId = $directoryId order by `order` ".as(parser.*)
     }
   }
 
@@ -221,7 +222,7 @@ class PageRepository @Inject()(db: Database) {
 
   def findByDirectoryIdAndName(directoryId: Long, name: String): Option[Page] = {
     db.withConnection { implicit connection =>
-      SQL"SELECT * FROM page WHERE directoryId = $directoryId AND name = $name".as(fullParser.*).headOption
+      SQL"SELECT * FROM page WHERE directoryId = $directoryId AND name = $name  order by `order`".as(fullParser.*).headOption
     }
   }
 
@@ -233,7 +234,7 @@ class PageRepository @Inject()(db: Database) {
 
   def findByPath(path: String): Option[Page] = {
     db.withConnection { implicit connection =>
-      SQL"SELECT * FROM page WHERE path = $path".as(fullParser.*).headOption
+      SQL"SELECT * FROM page WHERE path = $path  order by `order`".as(fullParser.*).headOption
     }
   }
 
@@ -255,6 +256,7 @@ class PageRepository @Inject()(db: Database) {
                    p.id as p_id,
                    p.name as p_name,
                    p.repositoryUrl as p_repositoryUrl,
+                   p.sourceUrlTemplate as p_sourceUrlTemplate,
                    p.stableBranch as p_stableBranch,
                    p.displayedBranches as p_displayedBranches,
                    p.featuresRootPath as p_featuresRootPath,

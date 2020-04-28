@@ -2,7 +2,7 @@
 {
   "page" :
      {
-        "label": "Configure",
+        "label": "Configure theGardener",
         "description": "How to configure a new instance of theGardener ?"
      }
 }
@@ -78,6 +78,7 @@ Field | Type  | Description
 id | string |  the identify the project
 name | string |  label of the project in the menu
 repositoryUrl | string |  url of the project in a git server. should start with _http_ and end by _.git_
+sourceUrlTemplate | string | url template to use for the "view source" links, can contain `${branch}` and `${path}` tokens, for instance: `"http://github.com/myproject/blob/${branch}/${path}"` (documentation root path will be added automatically)
 stableBranch | string |  existing branch that is considered as stable. Could be _master_ for instance.
 displayedBranches | regexpr |  regular expression to filter the branches that are synchronized and displayed.
 featuresRootPath | string |  relative path to the directory that host gherkin scenarios. Can be empty.
