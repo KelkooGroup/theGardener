@@ -8,7 +8,7 @@
 }
 ```
 
-### NEXT 
+### [2020-04][1.2.0]  
 
 The main feature is:
 - [Include OpenAPI endpoints](https://github.com/KelkooGroup/theGardener/issues/568)
@@ -23,7 +23,7 @@ The improvements are:
 - [Add a link to the source of the page](https://github.com/KelkooGroup/theGardener/issues/604)
 - [Relative internal links](https://github.com/KelkooGroup/theGardener/issues/342) 
 
-Bug fixed :
+Bugs fixed :
 - [Display properly Scenario steps with XML](https://github.com/KelkooGroup/theGardener/issues/606) 
 - [Hierarchy is not fully respected in the url](https://github.com/KelkooGroup/theGardener/issues/322) 
 - [Node link to a directory on the left menu](https://github.com/KelkooGroup/theGardener/issues/642)
