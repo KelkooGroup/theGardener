@@ -131,13 +131,9 @@ ng serve
 
 Open [http://localhost:4200](http://localhost:4200)
 
-![image](https://user-images.githubusercontent.com/5529106/59674697-1f85f100-91c4-11e9-82dd-d52b8acd7a74.png)
-
 ##### Use the backend
 
 Open [http://localhost:9000/api/docs](http://localhost:9000/api/docs)
-
-![image](https://user-images.githubusercontent.com/5529106/59674484-a71f3000-91c3-11e9-9d94-2d57400bf45f.png)
 
 ### Development on Back
 
