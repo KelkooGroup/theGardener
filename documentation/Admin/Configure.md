@@ -2,7 +2,7 @@
 {
   "page" :
      {
-        "label": "Configure",
+        "label": "Configure theGardener",
         "description": "How to configure a new instance of theGardener ?"
      }
 }

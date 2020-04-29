@@ -3,20 +3,20 @@ import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {DirectoryApi, PageApi} from '../_models/hierarchy';
 import {map} from 'rxjs/operators';
-import {UrlCleanerService} from './url-cleaner.service';
 import {Page} from '../_models/page';
+import {RouteService} from "./route.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class PageService {
   constructor(private http: HttpClient,
-              private urlCleaner: UrlCleanerService) {
+              private routeService: RouteService) {
   }
 
   getRootDirectoryForPath(path: string): Observable<DirectoryApi> {
     const url = `api/directories`;
-    const params = new HttpParams().set('path', this.urlCleaner.urlToRelativePath(path));
+    const params = new HttpParams().set('path', this.routeService.urlToRelativePath(path));
     return this.http.get<Array<DirectoryApi>>(url, {params})
       .pipe(
         map(res => res[0])
@@ -25,7 +25,7 @@ export class PageService {
 
   getPage(path: string): Observable<Page> {
     const url = `api/pages`;
-    const params = new HttpParams().set('path', this.urlCleaner.urlToRelativePath(path));
+    const params = new HttpParams().set('path', this.routeService.urlToRelativePath(path));
     return this.http.get<Array<PageApi>>(url, {params})
       .pipe(
         map(res => res[0]),

@@ -2,35 +2,43 @@
 {
   "page" :
      {
-        "label": "Project",
-        "description": "What is this project ?"
+        "label": "Overview",
+        "description": "What is theGardener?"
      }
 }
 ```
 
+## Aim
 
+**We invite you to include the documentation writing task in the development loop.** 
+
+You will trust again the technical documentation of your projects. 
+
+![](global/assets/images/development_workflow.png)
+
+The same way Test Driven Development have invited the tests in the development loop, with theGardener, you will include the documentation writing task in the development loop.
 
 ## Overview
 
-![Architecture](assets/images/theGardener_architecture.png)
+![Architecture](assets/images/theGardener_project_roles_reader_writer.png)
 
-## Main features
+### Main features
 
 - Scan projects from git repositories
 - Organize projects in a tree
 - Organize documentation of a project with pages within directories
-- Various features to help the developer in the documentation redaction
+- Features to help the developer in the documentation redaction
 
-   - Support Markdown
-   - Include Gherkin scenarios
-   - Include OpenAPI models and endpoints
+   - Support [Markdown](https://www.markdownguide.org/basic-syntax/) documents
+   - Include [Gherkin](https://cucumber.io/docs/gherkin/reference/) scenarios
+   - Include [OpenAPI](https://swagger.io/resources/open-api/) models and endpoints (standard behind [swagger.io](https://swagger.io))
    - Include images
    - Externalize data by variables
    - Include external web pages
    - Preview on theGardener before merge 
      
 
-## Open sourced
+### Open sourced
 
 - [Apache License 2.0](https://github.com/KelkooGroup/theGardener/blob/master/LICENSE)
 - [Sources](https://github.com/KelkooGroup/theGardener)
@@ -39,16 +47,16 @@
 - [Issues](https://github.com/KelkooGroup/theGardener/issues)
 - [Speak to a human](https://discordapp.com/channels/417704230531366923/417704230976225281)
 
-## Technical stack
+### Technical stack
 
 - On Front: TypeScript with Angular
 - On Back: Scala with Play
 
-## Original idea and main contributors
+### Original idea and main contributors
 
 https://www.kelkoogroup.com/
 
-## Prerequisite
+### Prerequisite
 
  - **Use git** 
    - theGardener scan only projects hosted on a git repository
@@ -61,7 +69,7 @@ https://www.kelkoogroup.com/
    - It would avoid you copy past of model and endpoint descriptions
 
 
-## Roots
+### Roots
 
 - At [KelkooGroup](https://www.kelkoogroup.com/) we are intensively using the Behavior Driven Development to specify, develop and tests our applications.  We prefer talking about Specification by examples but BDD (Behavior Driven Development) name is more popular. There are many advantages to use this process :   
 
@@ -78,33 +86,9 @@ https://www.kelkoogroup.com/
 
 - So we have exhaustive and up to date documentation with all those scenarios. It used for the specification, the implementation and the regression tests. But we can do more with it: expose it the users of our applications.
 
-
-![Without theGardener](assets/images/bdd_worflow_without_the_gardener.png)
-
 - We have not found a proper tool to expose them, so we have started to build one.
 - As we are using a lot of open source project/framework and libraries, we have decided to make it open source : https://github.com/KelkooGroup/theGardener.
 
 
-Read [theGardener roots](assets/decks/src/theGardener_roots.pdf) for the full picture and a full example of user story written / implemented / tested with BDD.
-
-    
-## Plan
-
-- Provide a good way to 
-   - organize
-   - navigate
-   - write
-   - search documentation. 
-   
-- Help the collaboration between the product owner and the dev team when it's time to write the gherkin scenario.
-
-![With theGardener](assets/images/bdd_worflow_with_the_gardener.png)
-
-
-See [the detailed milestones](https://github.com/KelkooGroup/theGardener/milestones?direction=asc&sort=title&state=open)
-
- 
-
-
-
+Read [theGardener roots](assets/decks/theGardener_roots.pdf) for the full picture and a full example of user story written / implemented / tested with BDD.
 

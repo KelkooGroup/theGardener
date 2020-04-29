@@ -27,6 +27,7 @@ describe('ConfigService', () => {
   it('should be created', () => {
     const service: ConfigService = TestBed.get(ConfigService);
     expect(service).toBeTruthy();
+    httpMock.expectOne('api/config');
   });
 
   it('should parse service response', async(() => {
@@ -35,8 +36,11 @@ describe('ConfigService', () => {
       expect(h.title).toBe('In our documentation we trust.');
       expect(h.logoSrc).toBe('assets/images/logo-white.png');
       expect(h.faviconSrc).toBe('assets/images/favicon.png');
+      expect(h.colorMain).toBe('#1F7079');
+      expect(h.colorDark).toBe('#0f3438');
+      expect(h.colorLight).toBe('#b4ced1');
     });
-    const req = httpMock.expectOne('api/config');
+    const req = httpMock.match('api/config')[0];
     expect(req.request.method).toBe('GET');
     req.flush(SERVER_RESPONSE);
   }));
@@ -47,5 +51,8 @@ const SERVER_RESPONSE: Config = {
   title: 'In our documentation we trust.',
   logoSrc: 'assets/images/logo-white.png',
   faviconSrc: 'assets/images/favicon.png',
-  colorMain:"#1F7079"
+  baseUrl:"http://localhost:9000",
+  colorMain:"#1F7079",
+  colorDark:"#0f3438",
+  colorLight:"#b4ced1"
 };

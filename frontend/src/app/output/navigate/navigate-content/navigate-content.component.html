@@ -1,12 +1,3 @@
-<nav mat-tab-nav-bar *ngIf="hasTabs">
-  <a mat-tab-link
-     *ngFor="let page of pages; trackBy: trackByPage"
-     [routerLink]="page.name"
-     routerLinkActive #rla="routerLinkActive"
-     [active]="rla.isActive">
-    {{ page.label }}
-  </a>
-</nav>
-<div class="content" [ngStyle]="{'max-height': 'calc(100vh - ' + calculateHeight() + 'px)'}">
-  <router-outlet></router-outlet>
+<div class="content" [ngStyle]="{'max-height': 'calc(100vh - 100px)'}">
+  <app-page-content></app-page-content>
 </div>
