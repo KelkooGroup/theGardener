@@ -4,13 +4,13 @@
     "label": "theGardener",
     "description": "In our documentation we trust.",
     "pages": [
-      "Overview",
-      "Changelog",
-      "Contribute"
+      "Meta",
+      "Changelog"
     ],
     "children": [
       "Admin",
-      "Write"
+      "Write",
+      "Contribute"
     ]
   }
 }

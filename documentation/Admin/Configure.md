@@ -3,7 +3,7 @@
   "page" :
      {
         "label": "Configure theGardener",
-        "description": "How to configure a new instance of theGardener ?"
+        "description": "Configure theGardener"
      }
 }
 ```
@@ -112,11 +112,12 @@ The web hook should do a **POST** on **/api/projects/:id/synchronize** : this wi
 
 Settings on the _application.conf_ can be adapted to context of the instance :
 
-
 Key                     | Usage
 ----------------------- | -------------
 application.windowTitle | Title displayed at the user browser window
 application.faviconSrc  | Source of the favicon displayed in the user browser window. Should be a *.png*.  
 application.logoSrc     | Source of the main logo displayed at the top left in the header. Should be transparent with only white color. 
 application.title       | Title displayed under the main logo on the header.
-
+color.dark  | Color for titles
+color.main  | Color for the header
+color.light | Color for the left menu
