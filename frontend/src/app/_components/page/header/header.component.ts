@@ -4,6 +4,7 @@ import {NotificationService} from '../../../_services/notification.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {MenuHierarchy} from "../../../_models/menu";
 import {NAVIGATE_PATH, RouteService} from "../../../_services/route.service";
+import {NavigationParams, NavigationRoute} from "../../../_models/route";
 
 @Component({
     selector: 'app-header',
@@ -29,8 +30,9 @@ export class HeaderComponent implements OnInit {
             result => {
                 this.items = result;
                 if (this.items.length > 0) {
-                    const currentRoute = this.routeService.navigationParamsToNavigationRoute(this.activatedRoute.firstChild.snapshot.params);
-                    if ( !currentRoute.nodes || currentRoute.nodes?.length == 0 || currentRoute.page === undefined) {
+                    const currentRoute = this.getCurrentRoute();
+                    
+                    if ( !currentRoute.nodes || currentRoute.nodes?.length === 0 || currentRoute.page === undefined) {
                         this.navigateTo(this.items[0]);
                     }
                 }
@@ -39,14 +41,24 @@ export class HeaderComponent implements OnInit {
             });
     }
 
+    getCurrentRoute(): NavigationRoute{
+        let params : NavigationParams;
+        if (this.activatedRoute.firstChild && this.activatedRoute.firstChild.snapshot){
+            params = this.activatedRoute.firstChild.snapshot.params;
+        }
+        if (!params && this.activatedRoute && this.activatedRoute.snapshot){
+            params = this.activatedRoute.snapshot.params;
+        }
+        return this.routeService.navigationParamsToNavigationRoute(params);
+    }
+
     navigateTo(item: MenuHierarchy) {
         const itemPath = this.routeService.menuHierarchyToFrontEndPath(item);
         this.router.navigateByUrl(NAVIGATE_PATH + itemPath.pathFromNodes);
     }
 
     isItemInActivatedRoute(item: MenuHierarchy) {
-        const currentRoute = this.routeService.navigationParamsToNavigationRoute(this.activatedRoute.firstChild.snapshot.params);
-        return currentRoute.nodes[0] === item.name;
+        return this.getCurrentRoute().nodes[0] === item.name;
     }
 
 }
