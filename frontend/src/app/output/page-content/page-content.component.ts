@@ -13,6 +13,7 @@ import {
   ScenarioPart
 } from '../../_models/page';
 import {NotificationService} from '../../_services/notification.service';
+import {RouteService} from "../../_services/route.service";
 
 
 @Component({
@@ -30,6 +31,7 @@ export class PageContentComponent implements OnInit, OnDestroy, AfterViewChecked
 
   constructor(private activatedRoute: ActivatedRoute,
               private pageService: PageService,
+              private routeService: RouteService,
               private notificationService: NotificationService,
               private router: Router,
               private ngZone: NgZone) {
@@ -54,20 +56,18 @@ export class PageContentComponent implements OnInit, OnDestroy, AfterViewChecked
       }
     });
     this.subscription = combineLatest([
-      this.activatedRoute.parent.params,
       this.activatedRoute.params
     ]).pipe(
-      map(([parentParams, params]) => {
-        const name = parentParams.name;
-        const path = parentParams.path;
-        const page = params.page;
-        return {name, path, page};
+      map(([params]) => {
+        return params;
       }),
-      switchMap(pageRoute => {
-        if (pageRoute.path && pageRoute.path.endsWith('_')) {
-          return this.pageService.getPage(`${pageRoute.path}${pageRoute.page}`)
-        } else {
+      switchMap(params => {
+        const navigationRoute = this.routeService.navigationParamsToNavigationRoute(params);
+        if ( navigationRoute.page == undefined ){
           return of<Page>();
+        }else{
+          const backEndPath = this.routeService.navigationRouteToBackEndPath(navigationRoute);
+          return this.pageService.getPage(backEndPath.pathFromProject);
         }
       }),
       catchError(err => {
@@ -88,6 +88,8 @@ export class PageContentComponent implements OnInit, OnDestroy, AfterViewChecked
         }
       }
     }
+
+
   }
 
   ngOnDestroy(): void {
@@ -135,15 +137,10 @@ const navigateTo = (router: Router, ngZone: NgZone) => (path: string) => {
 export class PageContentComponentTools {
 
   static navigate(router: Router, path: string) {
-    if (path) {
-      const pathParams = path.split(';');
-      if (pathParams.length > 1) {
-        const slashes = pathParams[1].split('/');
-        if (slashes.length > 1) {
-          const fragment = slashes[slashes.length - 1].split('#');
-          router.navigate([pathParams[0], {path: decodeURIComponent(slashes[0].replace('path=', ''))}, fragment[0]], {fragment: fragment[1]}).catch(err => console.log(err));
-        }
-      }
+    if(path != undefined) {
+
+      const targetUrl =  RouteService.legacyFullFrontEndUrlToFullFrontEndUrl(path);
+      router.navigateByUrl(targetUrl);
     }
   }
 

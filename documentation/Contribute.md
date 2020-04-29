@@ -2,16 +2,15 @@
 {
   "page" :
      {
-        "label": "Contribut",
-        "description": "How to contribut to theGardener development ?"
+        "label": "Contribute to the project",
+        "description": "How to contribute to theGardener development ?"
      }
 }
 ```
 
 theGardener is an open sourced project, it's there thank to the contributors. 
 
-![Roles](../assets/images/theGardener_role_contributor.png)
-
+![Roles](assets/images/theGardener_role_contributor.png)
 
 ## Want to give feedback
 

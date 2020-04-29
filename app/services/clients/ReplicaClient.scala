@@ -1,12 +1,12 @@
 package services.clients
 
-import javax.inject.{Inject, Singleton}
+import javax.inject._
 import play.api.libs.ws.WSClient
 import play.api.{Configuration, Logging}
 
 import scala.concurrent._
 
-@Singleton
+
 class ReplicaClient @Inject()(config: Configuration, wsClient: WSClient) extends Logging {
 
   val replicaUrlOpt = config.getOptional[String]("replica.url")

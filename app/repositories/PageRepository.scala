@@ -132,7 +132,7 @@ class PageRepository @Inject()(db: Database) {
 
   def findAllByDirectoryId(directoryId: Long): Seq[Page] = {
     db.withConnection { implicit connection =>
-      SQL"SELECT id, name, label, description, `order`, relativePath, path, directoryId, dependOnOpenApi FROM page WHERE directoryId = $directoryId".as(parser.*)
+      SQL"SELECT id, name, label, description, `order`, relativePath, path, directoryId, dependOnOpenApi FROM page WHERE directoryId = $directoryId order by `order` ".as(parser.*)
     }
   }
 
@@ -222,7 +222,7 @@ class PageRepository @Inject()(db: Database) {
 
   def findByDirectoryIdAndName(directoryId: Long, name: String): Option[Page] = {
     db.withConnection { implicit connection =>
-      SQL"SELECT * FROM page WHERE directoryId = $directoryId AND name = $name".as(fullParser.*).headOption
+      SQL"SELECT * FROM page WHERE directoryId = $directoryId AND name = $name  order by `order`".as(fullParser.*).headOption
     }
   }
 
@@ -234,7 +234,7 @@ class PageRepository @Inject()(db: Database) {
 
   def findByPath(path: String): Option[Page] = {
     db.withConnection { implicit connection =>
-      SQL"SELECT * FROM page WHERE path = $path".as(fullParser.*).headOption
+      SQL"SELECT * FROM page WHERE path = $path  order by `order`".as(fullParser.*).headOption
     }
   }
 

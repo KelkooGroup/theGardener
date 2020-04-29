@@ -30,6 +30,6 @@ export interface OpenApiPart {
   openApi: OpenApiModel;
 }
 
-export interface OpenApiPathPart{
+export interface OpenApiPathPart {
   openApiPath: OpenApiPath;
 }

@@ -10,12 +10,10 @@ export class AnchorPipe implements PipeTransform {
   }
 
   transform(value: string): string {
+    const params = this.activatedRoute.snapshot.params;
     const linkRegexString = '<h([0-9]) id="(\\S*)?">.*?<\\/h[0-9]>';
     const linkRegex = new RegExp(linkRegexString, 'g');
-    const path = this.activatedRoute.parent.snapshot.params.path;
-    const hierarchy = this.activatedRoute.parent.snapshot.params.name;
-    const page = this.activatedRoute.snapshot.params.page;
-    const currentUrl = `app/documentation/navigate/${hierarchy};path=${path}/${page}`;
+    const currentUrl = `app/documentation/navigate/${params.nodes}/${params.project}/${params.branch}/${params.directories}/${params.page}`;
 
     function replacer(fullMatch: string, hNumber: string, titleId: string) {
       return `${fullMatch.replace(`</h${hNumber}>`, '')} <a class="linkToAnchorForTitleAndSubTitle" onclick="navigateTo('${currentUrl}#${titleId}')"> <i class="fas fa-link"></i> </a> </h${hNumber}>`;

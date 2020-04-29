@@ -6,4 +6,5 @@ import {Component} from '@angular/core';
   styleUrls: ['./navigate-page.component.scss']
 })
 export class NavigatePageComponent  {
+
 }

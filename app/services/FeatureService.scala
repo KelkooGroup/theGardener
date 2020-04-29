@@ -6,7 +6,7 @@ import java.util.{List => JList}
 import com.typesafe.config.Config
 import gherkin.ast.GherkinDocument
 import gherkin.{AstBuilder, Parser, ast}
-import javax.inject.{Inject, Singleton}
+import javax.inject._
 import models._
 import repositories.FeatureRepository
 import resource._
@@ -15,7 +15,7 @@ import utils._
 import scala.collection.JavaConverters._
 import scala.util.Try
 
-@Singleton
+
 class FeatureService @Inject()(config: Config, featureRepository: FeatureRepository) {
   val projectsRootDirectory = config.getString("projects.root.directory")
 
