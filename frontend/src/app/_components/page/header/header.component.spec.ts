@@ -7,9 +7,9 @@ import {MenuService} from '../../../_services/menu.service';
 import {HttpClientModule} from '@angular/common/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {of} from 'rxjs';
-import {MENU_HEADER_SERVICE_RESPONSE} from '../../../_testUtils/test-data.spec';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ActivatedRouteStub} from '../../../_testUtils/activated-route-stub.spec';
+import {MenuHierarchy, MenuType} from "../../../_models/menu";
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;
@@ -86,3 +86,23 @@ class Page {
   }
 
 }
+
+export const MENU_HEADER_SERVICE_RESPONSE: Array<MenuHierarchy> =  [
+      {
+        name: 'publisher',
+        label: 'Publisher',
+        type: 'Node' as MenuType,
+        depth: 1,
+        route: {nodes: ['publisher'], directories:[] as  Array<string>},
+        children: [] as Array<MenuHierarchy>
+      },
+      {
+        name: 'tools',
+        label: 'Tools',
+        type: 'Node' as MenuType,
+        depth: 1,
+        route: {nodes: ['tools'], directories:[] as  Array<string>},
+        children: [] as Array<MenuHierarchy>
+      }
+    ]
+;
