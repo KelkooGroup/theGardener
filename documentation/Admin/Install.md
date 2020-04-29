@@ -36,7 +36,7 @@ You can load sample data by using following commands.
 
 This will configure theGardener itself as a sample project in your running instance.
 
-```sh
+```shell script
 curl -X POST "http://localhost:9000/api/hierarchy" \
     -H "accept: application/json" -H "Content-Type: application/json" \
     -d "{  \"id\": \".\",  \"slugName\": \"root\",  \"name\": \"root\",  \"childrenLabel\": \"Views\",  \"childLabel\": \"View\"}"
@@ -70,7 +70,9 @@ application.windowTitle = "Title in the browser tab"
 application.title = "Title in the page under the logo"
 application.logoSrc = "assets/images/logo-white.png"
 application.faviconSrc = "assets/images/favicon.png"
+color.dark="#205373"
 color.main="#2b709a"
+color.light="#edf3f7"
 
 ```
 
@@ -79,7 +81,7 @@ values.
 
 Then, you need to mount this file in the `/app-conf` volume in the container and add it as
 an arg when running the container. For example:
-```
+```shell script
 docker run --name thegardener \
     -p 9000:9000 \
     -v /tmp/application-custom.conf:/app-conf/application-custom.conf:ro \
@@ -94,7 +96,7 @@ file but you can also put it in any place you want.
 
 If you want to persist Git data outside of the container, just mount the volume `/git-data`
 in a host directory. For example:
-```
+```shell script
 docker run --name thegardener \
     -p 9000:9000 \
     -v /tmp/git-data:/git-data:rw \
@@ -105,7 +107,7 @@ docker run --name thegardener \
 
 If you want to persist the embedded database data outside of the container, just mount
 the volume `/data`. For example:
-```
+```shell script
 docker run --name thegardener \
     -p 9000:9000 \
     -v /tmp/db:/data:rw \
@@ -133,7 +135,7 @@ db.default.password="root"
 ```
 
 Then, you can use the following `docker-compose.yml` file:
-```
+```yaml
 version: '3'
 services:
   thegardener:
