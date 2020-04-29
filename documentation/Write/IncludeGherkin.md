@@ -45,3 +45,15 @@ Details on the settings :
 - "includeBackground" : by default false. In case of scenario selection, include or not the background in the given step list.
  
 
+this module will be displayed as follows: 
+
+```thegardener
+{
+  "scenarios" : 
+     {
+        "feature": "/documentation/page/show_a_page_with_variables.feature",
+        "select": { "tags" : ["@nominal_case"]  }
+     }
+}
+```
+

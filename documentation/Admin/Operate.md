@@ -30,13 +30,16 @@ Compute the menu from the database and put it in the cache
 
 ```thegardener
 {
-  "scenarios" : 
+  "openApiPath" : 
      {
-        "feature": "/administration/operation.feature",
-        "select": { "tags" : ["@refresh_menu"]  }
+        "openApiUrl": "https://thegardener.kelkoogroup.com/api/docs/swagger.json",
+        "refStartsWith": [
+         "/api/admin/menu",
+       "methods": ["POST"]
      }
 }
-```      
+```   
+
    
 #### Refresh one or all projects from the database:
 
@@ -46,13 +49,16 @@ Compute the menu from the database and put it in the cache
 
 ```thegardener
 {
-  "scenarios" : 
+  "openApiPath" : 
      {
-        "feature": "/administration/operation.feature",
-        "select": { "tags" : ["@refresh_project_from_db"]  }
+        "openApiUrl": "https://thegardener.kelkoogroup.com/api/docs/swagger.json",
+        "ref": [
+         "/api/admin/projects/{id}/refreshFromDatabase",
+       "methods": ["POST"]
      }
 }
 ```   
+ 
 
 #### Refresh one or all projects from the local files:
 
@@ -63,13 +69,15 @@ Compute the menu from the database and put it in the cache
 
 ```thegardener
 {
-  "scenarios" : 
+  "openApiPath" : 
      {
-        "feature": "/administration/operation.feature",
-        "select": { "tags" : ["@refresh_project_from_disk"]  }
+        "openApiUrl": "https://thegardener.kelkoogroup.com/api/docs/swagger.json",
+        "ref": [
+         "/api/admin/projects/{id}/refreshFromDisk",
+       "methods": ["POST"]
      }
 }
-```
+```   
 
 
 #### Synchronize one project from the remote git repository:
@@ -81,13 +89,15 @@ Compute the menu from the database and put it in the cache
 
 ```thegardener
 {
-  "scenarios" : 
+  "openApiPath" : 
      {
-        "feature": "/administration/operation.feature",
-        "select": { "tags" : ["@synchronize_project_from_git"]  }
+        "openApiUrl": "https://thegardener.kelkoogroup.com/api/docs/swagger.json",
+        "ref": [
+         "/api/admin/projects/{id}/synchronizeFromRemoteGitRepository",
+       "methods": ["POST"]
      }
 }
-```
+``` 
 
 #### Refresh one project from the remote git repository:
 
@@ -100,10 +110,12 @@ Compute the menu from the database and put it in the cache
  
 ```thegardener
 {
-  "scenarios" : 
+  "openApiPath" : 
      {
-        "feature": "/administration/operation.feature",
-        "select": { "tags" : ["@refresh_project_from_git"]  }
+        "openApiUrl": "https://thegardener.kelkoogroup.com/api/docs/swagger.json",
+        "ref": [
+         "/api/admin/projects/{id}/refreshFromRemoteGitRepository",
+       "methods": ["POST"]
      }
 }
 ``` 

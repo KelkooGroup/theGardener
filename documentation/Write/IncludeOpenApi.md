@@ -67,10 +67,6 @@ this module will be displayed as follows:
 
 ## Include OpenAPI path   
 
-**Some context**: The OpenAPI Specification (OAS) defines a standard, language-agnostic interface to RESTful APIs which allows both humans and computers to discover and understand the capabilities of the service without access to source code, documentation, or through network traffic inspection.
-With OpenApi it is possible to produce a Json file (named swagger.json) that list all the End Points that we can use and all the definitions of models that the API uses.
-Sometimes, it is meaningful to add some End Points to the documentation to be more clear. This is what we will do here  
-
 To include OpenApi Paths, use this module :
 
 ````
