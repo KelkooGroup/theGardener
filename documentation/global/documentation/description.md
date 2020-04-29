@@ -2,7 +2,7 @@
 {
   "page" :
      {
-        "label": "theGardener",
+        "label": "What is theGardener ?",
         "description": "What is theGardener ?"
      }
 }
