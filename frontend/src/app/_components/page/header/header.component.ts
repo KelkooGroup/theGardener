@@ -31,7 +31,7 @@ export class HeaderComponent implements OnInit {
                 this.items = result;
                 if (this.items.length > 0) {
                     const currentRoute = this.getCurrentRoute();
-                    
+
                     if ( !currentRoute.nodes || currentRoute.nodes?.length === 0 || currentRoute.page === undefined) {
                         this.navigateTo(this.items[0]);
                     }
