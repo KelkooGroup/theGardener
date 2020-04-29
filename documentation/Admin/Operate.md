@@ -34,7 +34,10 @@ Compute the menu from the database and put it in the cache
      {
         "openApiUrl": "https://thegardener.kelkoogroup.com/api/docs/swagger.json",
         "refStartsWith": [
-         "/api/admin/menu",
+         "/api/admin/menu"
+        ],
+        "ref": [
+        ],
        "methods": ["POST"]
      }
 }
@@ -52,8 +55,11 @@ Compute the menu from the database and put it in the cache
   "openApiPath" : 
      {
         "openApiUrl": "https://thegardener.kelkoogroup.com/api/docs/swagger.json",
+        "refStartsWith": [
+         "/api/admin/projects/{id}/refreshFromDatabase"
+        ],
         "ref": [
-         "/api/admin/projects/{id}/refreshFromDatabase",
+        ],
        "methods": ["POST"]
      }
 }
@@ -72,8 +78,11 @@ Compute the menu from the database and put it in the cache
   "openApiPath" : 
      {
         "openApiUrl": "https://thegardener.kelkoogroup.com/api/docs/swagger.json",
+        "refStartsWith": [
+         "/api/admin/projects/{id}/refreshFromDisk"
+        ],
         "ref": [
-         "/api/admin/projects/{id}/refreshFromDisk",
+        ],
        "methods": ["POST"]
      }
 }
@@ -92,8 +101,11 @@ Compute the menu from the database and put it in the cache
   "openApiPath" : 
      {
         "openApiUrl": "https://thegardener.kelkoogroup.com/api/docs/swagger.json",
+        "refStartsWith": [
+         "/api/admin/projects/{id}/synchronizeFromRemoteGitRepository"
+        ],
         "ref": [
-         "/api/admin/projects/{id}/synchronizeFromRemoteGitRepository",
+        ],
        "methods": ["POST"]
      }
 }
@@ -113,8 +125,11 @@ Compute the menu from the database and put it in the cache
   "openApiPath" : 
      {
         "openApiUrl": "https://thegardener.kelkoogroup.com/api/docs/swagger.json",
+        "refStartsWith": [
+         "/api/admin/projects/{id}/refreshFromRemoteGitRepository"
+        ],
         "ref": [
-         "/api/admin/projects/{id}/refreshFromRemoteGitRepository",
+        ],
        "methods": ["POST"]
      }
 }
