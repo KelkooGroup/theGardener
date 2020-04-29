@@ -3,7 +3,7 @@
   "page" :
      {
         "label": "Operate theGardener",
-        "description": "How to operate a theGardener instance ?"
+        "description": "Operate theGardener"
      }
 }
 ```

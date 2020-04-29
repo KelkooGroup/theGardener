@@ -48,5 +48,5 @@ https://www.kelkoogroup.com/
 - As we are using a lot of open source project/framework and libraries, we have decided to make it open source : https://github.com/KelkooGroup/theGardener.
 
 
-Read [theGardener roots](assets/decks/theGardener_roots.pdf) for the full picture and a full example of user story written / implemented / tested with BDD.
+Read [theGardener roots](https://github.com/KelkooGroup/theGardener/blob/master/documentation/assets/decks/theGardener_roots.pdf) for the full picture and a full example of user story written / implemented / tested with BDD.
 

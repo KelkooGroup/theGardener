@@ -1,7 +1,7 @@
 {
   "directory" :
   {
-    "label": "Operate on theGardener",
+    "label": "Admin",
     "description": "Operate on theGardener",
     "pages": [
       "Install",

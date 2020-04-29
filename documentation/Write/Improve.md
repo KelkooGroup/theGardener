@@ -3,7 +3,7 @@
   "page" :
      {
         "label": "Improve",
-        "description": "Improve the documentation with theGardener modules"
+        "description": "Improve the documentation"
      }
 }
 ```

@@ -9,7 +9,9 @@
 ```
 
 
-**Some context**: The gherkin scenarios are really good to specify with the product owner what need to be implemented. 
+### Some context 
+
+The gherkin scenarios are really good to specify with the product owner what need to be implemented. 
 The gherkin scenarios are living documentation and regression tests. 
 There can be quite a lot of scenarios to cover all possible cases of all features. 
 Usually, all the gherkin scenarios are needed for regression tests and when you want to dig on a very specific case BUT it can be quite difficult to understand them when you are not in the team. 

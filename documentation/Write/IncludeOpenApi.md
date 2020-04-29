@@ -8,7 +8,9 @@
 }
 ```
 
-**Some context**: The OpenAPI Specification (OAS) defines a standard, language-agnostic interface to RESTful APIs which allows both humans and computers to discover and understand the capabilities of the service without access to source code, documentation, or through network traffic inspection.
+### Some context
+
+The OpenAPI Specification (OAS) defines a standard, language-agnostic interface to RESTful APIs which allows both humans and computers to discover and understand the capabilities of the service without access to source code, documentation, or through network traffic inspection.
 With OpenApi it is possible to produce a Json file (named swagger.json) that list all the paths that we can use and all the definitions of models that the API uses.
 Sometimes, it is meaningful to add some Models from the source code to the documentation to be more clear. This is what we will do here  
 By default in swagger.json models definitions there is only the names and types of the parameters.   

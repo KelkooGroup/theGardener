@@ -88,5 +88,5 @@ To **enrich the Markdown syntax**, several additional command can be applied. Th
 ## Publish
 
 Push the files to the git repository. 
-- If the [webhook](../Admin/Configure.md#hooks-on-the-git-servers) on the git repository is in place, the documentation is available right away.
+- If the [webhook](../Admin/Configure.md) on the git repository is in place, the documentation is available right away.
 - If not, theGardener instance will pull the changes at the next synchronization 

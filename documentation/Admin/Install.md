@@ -3,7 +3,7 @@
   "page" :
      {
         "label": "Install theGardener",
-        "description": "How to install a new instance of theGardener ?"
+        "description": "Install theGardener"
      }
 }
 ```
