@@ -2,8 +2,8 @@
 {
   "page" :
      {
-        "label": "What is theGardener ?",
-        "description": "What is theGardener ?"
+        "label": "What is theGardener?",
+        "description": "What is theGardener?"
      }
 }
 ```

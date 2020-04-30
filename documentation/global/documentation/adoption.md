@@ -3,7 +3,7 @@
   "page" :
      {
         "label": "theGardener adoption",
-        "description": "Who is using theGardener ?"
+        "description": "Who is using theGardener?"
      }
 }
 ```
