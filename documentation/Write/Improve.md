@@ -69,15 +69,17 @@ Syntax of the link : thegardener://navigate/{hierarchy}/{project}/{branch}/{dire
 - for the branch, use '_' to access to the stable one.
 
 For instance :
-[theGardener adoption](thegardener://navigate/_adoption/theGardenerNodes/master/_adoption/adoption)
+[theGardener adoption](thegardener://navigate/_doc/theGardener/master/_Admin/Configure)
 
 ````
-[theGardener adoption](thegardener://navigate/_adoption/theGardenerNodes/master/_adoption/adoption)
+[theGardener adoption](thegardener://navigate/_doc/theGardener/master/_Admin/Configure)
 ````
+
+*Note: there are only one project here, but you got the idea.*
 
 ## Include external web page
 
-This can be useful to include the Swagger documentation. At the top of the markdown file, use this module :
+This can be useful to include external pages. At the top of the markdown file, use this module :
 
 ````
 ```thegardener
@@ -119,7 +121,7 @@ For instance :
 ]
 ```
 
-Note: we do not assume of the format of the variable name: it a simple replaceAll in that data at display time of the page.
+Note: we do not assume of the format of the variable name: it's a simple replaceAll on the data. In the previous example => replace all `"${swagger.url}"` by `http://thegardener.kelkoogroup.net/api/docs/` in the text of all pages of the project.
 
 Implicit variables that are always available :
 

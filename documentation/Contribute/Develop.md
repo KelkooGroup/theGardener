@@ -2,31 +2,11 @@
 {
   "page" :
      {
-        "label": "Contribute",
-        "description": "Contribute to theGardener"
+        "label": "Develop",
+        "description": "Develop on theGardener"
      }
 }
 ```
-
-theGardener is an open sourced project, it's there thank to the contributors. 
-
-![Roles](../assets/images/theGardener_role_contributor.png)
-
-## Want to give feedback
-
-Want to 
-
-- Give feedback,
-- Raise issues,
-- Propose enhancement ? 
-
-Please create an issue on https://github.com/KelkooGroup/theGardener/issues/new
-
-## Want to talk to a human
-
-Join us on [Discord](https://discordapp.com/channels/417704230531366923/417704230976225281) 
-
-## Want to develop  
 
 ### Requirements 
 
@@ -164,74 +144,4 @@ Before push:
 ng test
 ng lint --fix
 ```
-
-
-### Build and push a Docker image
-
-As a theGardener developer you can build and push a Docker image of theGardener with
-following commands.
-
-#### Pre-requisites
-
-_Please notet that we aim to smooth the build experience with a single command in the future._
-
-As the frontend Angular build is not included in the sbt lifecycle for now, you have to run following
-commands before building a Docker image:
-
-```
-cd frontend
-npm install
-npm run build-prod
-rm -rf ../public/dist
-cp -r dist ../public/dist
-cd ..
-```
-
-This will build the Angular app and copy generated files in the `public` folder included in the 
-backend build.
-
-Then, run:
-
-```
-sbt clean stage
-```
-
-#### Build an image
-
-```
-sbt docker
-```
-
-This will build an image called `kelkoogroup/thegardener` with 2 tags: `latest` and
-`X.Y.Z` where `X.Y.Z` is the version defined in the `version.sbt` file.
-
-To build the image, we use the [sbt-docker](https://github.com/marcuslonnberg/sbt-docker)
-plugin which allows the Docker build to be part of the sbt lifecycle. The Dockerfile is
-defined in the `build.sbt` file within the following section:
-```
-dockerfile in docker := {
-    new Dockerfile {
-        ...
-    }
-}
-```
-
-#### Push an image
-
-To be able to push, you need a Docker account allowed on the _kelkoogroup_ Docker Hub
-organization and you need to login first with following command:
-
-```
-docker login
-```
-
-Then you can use one of those commands:
-
-```
-sbt dockerPush # If image already built
-sbt dockerBuildAndPush # To build and push in one command
-```
-
-Note that pushing an image to Docker Hub can take few minutes.
-
 
