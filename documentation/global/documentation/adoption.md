@@ -2,7 +2,7 @@
 {
   "page" :
      {
-        "label": "theGardener adoption",
+        "label": "Who is using theGardener?",
         "description": "Who is using theGardener?"
      }
 }
