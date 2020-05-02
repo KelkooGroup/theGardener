@@ -15,12 +15,28 @@ This application need to be installed and configured.
 
 
 The main configuration steps are :
-
+- some UI settings
 - define the hierarchy
 - register projects hosted on a git repository
 - make the links between the projects and the hierarchy
 - define hooks on git servers to trigger theGardener synchronisation
-- some UI settings
+
+
+
+## UI settings
+
+Settings on the _application.conf_ can be adapted to context of the instance :
+
+Key                     | Usage
+----------------------- | -------------
+application.windowTitle | Title displayed at the user browser window
+application.faviconSrc  | Source of the favicon displayed in the user browser window. Should be a *.png*.  
+application.logoSrc     | Source of the main logo displayed at the top left in the header. Should be transparent with only white color. 
+application.title       | Title displayed under the main logo on the header.
+color.dark  | Color for titles
+color.main  | Color for the header
+color.light | Color for the left menu
+
 
 
 ## Hierarchy and projects
@@ -107,17 +123,3 @@ To be able to have fast feedback on theGardener when a change is pushed on a pro
 The web hook configuration depends on the web application that serve the git repositories. For instance it can be GitLab.
 The web hook should do a **POST** on **/api/projects/:id/synchronize** : this will trigger the synchronisation of this project on theGardener.
 
-
-## UI settings
-
-Settings on the _application.conf_ can be adapted to context of the instance :
-
-Key                     | Usage
------------------------ | -------------
-application.windowTitle | Title displayed at the user browser window
-application.faviconSrc  | Source of the favicon displayed in the user browser window. Should be a *.png*.  
-application.logoSrc     | Source of the main logo displayed at the top left in the header. Should be transparent with only white color. 
-application.title       | Title displayed under the main logo on the header.
-color.dark  | Color for titles
-color.main  | Color for the header
-color.light | Color for the left menu
