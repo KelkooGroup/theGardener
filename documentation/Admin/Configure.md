@@ -38,17 +38,31 @@ color.main  | Color for the header
 color.light | Color for the left menu
 
 
+from the default UI:
+
+![](../global/assets/images/theGardener_settings_ui_theGardener.png)
+
+you can change the UI the look and feel of you organisation, for instance:
+
+![](../global/assets/images/theGardener_settings_ui_kkg_internal.png)
+
 
 ## Hierarchy and projects
-
-![Roles](../assets/images/theGardener_hierarchy_projects.png)
-
 
 
 The hierarchy consist on a tree that can be as fat and as deep as needed. 
 For a better user experience we advise to have 
 - less than 8 nodes on the first level
 - less that 5 levels 
+
+For instance:
+
+![Roles](../assets/images/theGardener_hierarchy_projects.png)
+
+will be displayed:
+
+![](../assets/images/theGardener_configure_hierarchy.png)
+
 
 The list of project can be as long as needed. The limit is the disk size to store the different project sources in the database and on the file system.
 
@@ -66,28 +80,42 @@ Define hierarchy:
 
 ```thegardener
 {
-  "scenarios" : 
+  "openApiPath" : 
      {
-        "feature": "/administration/hierarchy/define_hierarchy.feature",
-        "select": { "tags" : ["@define_hierarchy"]  }
+        "openApiUrl": "https://thegardener.kelkoogroup.com/api/docs/swagger.json",
+        "refStartsWith": [
+         "/api/hierarchy"
+        ],
+        "ref": [
+        ],
+       "methods": ["GET","POST","PUT","DELETE"]
      }
 }
-```
+``` 
 
 
 ### Projects
 
 Register a project:
 
+Define hierarchy:
+
 ```thegardener
 {
-  "scenarios" : 
+  "openApiPath" : 
      {
-        "feature": "/administration/projects/register_a_project.feature",
-        "select": { "tags" : ["@register_project"]  }
+        "openApiUrl": "https://thegardener.kelkoogroup.com/api/docs/swagger.json",
+        "refStartsWith": [
+         
+        ],
+        "ref": [
+            "/api/projects",
+            "/api/projects/{id}"
+        ],
+       "methods": ["GET","POST","PUT","DELETE"]
      }
 }
-```
+``` 
 
 Field | Type  | Description
 ------------ | ------------- | -------------
@@ -108,13 +136,18 @@ A given project can be put on any node. It can be put on several nodes if it mak
 
 ```thegardener
 {
-  "scenarios" : 
+  "openApiPath" : 
      {
-        "feature": "/administration/hierarchy/link_projects_to_hierarchy.feature",
-        "select": { "tags" : ["@put_project_in_hierarchy"]  }
+        "openApiUrl": "https://thegardener.kelkoogroup.com/api/docs/swagger.json",
+        "refStartsWith": [
+          "/api/projects/{id}/hierarchy"
+        ],
+        "ref": [
+        ],
+       "methods": ["GET","POST","PUT","DELETE"]
      }
 }
-```
+``` 
 
 
 ## Hooks on the git servers

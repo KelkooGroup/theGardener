@@ -8,6 +8,18 @@
 }
 ```
 
+
+
+### Architecture
+
+![](../assets/images/theGardener_architecture.png)
+
+### Entities
+
+![](../assets/images/theGardener_entities.png)
+
+
+
 ### Requirements 
 
 You will need following tools to develop on theGardener project:

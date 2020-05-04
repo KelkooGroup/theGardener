@@ -27,4 +27,9 @@ Please create an issue on https://github.com/KelkooGroup/theGardener/issues/new
 Join us on [Discord](https://discordapp.com/channels/417704230531366923/417704230976225281) 
 
 
+## Want to code ?
+
+[Follow the developer guide](./Develop.md)
+
+
 

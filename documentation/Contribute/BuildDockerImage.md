@@ -10,9 +10,9 @@
 
 As a theGardener developer you can build and push a Docker image of theGardener with following commands.
 
-#### Pre-requisites
+#### Prerequisite
 
-_Please notet that we aim to smooth the build experience with a single command in the future._
+_Please note that we aim to smooth the build experience with a single command in the future._
 
 As the frontend Angular build is not included in the sbt lifecycle for now, you have to run following
 commands before building a Docker image:

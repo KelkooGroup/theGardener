@@ -44,3 +44,8 @@ by
    - It would help showing meaningful examples
  - _(Optional but recommended)_ On web services development, [OpenAPI](https://swagger.io/docs/specification/about/) (For instance, use Swagger) 
    - It would avoid you copy past of model and endpoint descriptions
+
+
+### Want to talk to a human
+
+Join us on [Discord](https://discordapp.com/channels/417704230531366923/417704230976225281) 
