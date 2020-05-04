@@ -36,7 +36,6 @@ describe('ConfigService', () => {
       expect(h.title).toBe('In our documentation we trust.');
       expect(h.logoSrc).toBe('assets/images/logo-white.png');
       expect(h.faviconSrc).toBe('assets/images/favicon.png');
-      expect(h.baseUrl).toBe('http://localhost:9000');
       expect(h.colorMain).toBe('#1F7079');
       expect(h.colorDark).toBe('#0f3438');
       expect(h.colorLight).toBe('#b4ced1');

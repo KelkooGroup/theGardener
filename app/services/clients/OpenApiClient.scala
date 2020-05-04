@@ -124,7 +124,7 @@ object OpenApiClient {
     val host = Json.parse(s"""{"host":${swaggerJsonTree.value("host")}}""").as[JsObject]
     val basePath = Json.parse(s"""{"basePath":${swaggerJsonTree.value("basePath")}}""").as[JsObject]
     val definitions = Json.parse(s"""{"definitions":${swaggerJsonTree.value("definitions")}}""").as[JsObject]
-    swagger.deepMerge(Json.parse(s"""{"infos": {}}""").as[JsObject]).deepMerge(host).deepMerge(basePath).deepMerge(definitions)
+    swagger.deepMerge(Json.parse("""{"infos": {}}""").as[JsObject]).deepMerge(host).deepMerge(basePath).deepMerge(definitions)
 
   }
 

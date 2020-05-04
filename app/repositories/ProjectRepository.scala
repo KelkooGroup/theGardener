@@ -73,6 +73,12 @@ class ProjectRepository @Inject()(db: Database) {
     }
   }
 
+  def findAllByGitRepository(repositoryUrl: String): Seq[Project] = {
+    db.withConnection { implicit connection =>
+      SQL"SELECT * FROM project WHERE repositoryUrl = ($repositoryUrl)".as(parser.*)
+    }
+  }
+
   def findById(id: String): Option[Project] = {
     db.withConnection { implicit connection =>
       SQL"SELECT * FROM project WHERE id = $id".as(parser.*).headOption

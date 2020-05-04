@@ -4,9 +4,10 @@
     "label": "Write documentation",
     "description": "Write documentation",
     "pages": [
-      "Basics",
-      "Gherkin",
-      "OpenApi"
+      "Start",
+      "Improve",
+      "IncludeGherkin",
+      "IncludeOpenApi"
     ],
     "children": [
     ]

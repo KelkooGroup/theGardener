@@ -125,8 +125,11 @@ export class MenuService {
   }
 
   private buildMenuHierarchyForDirectory(parentRoute: NavigationRoute, directories: Array<DirectoryApi>, depth: number): Array<MenuDirectoryHierarchy> {
+    if (directories === undefined){
+      return [] as Array<MenuDirectoryHierarchy>;
+    }
     return directories.map(d => {
-      if (d.children.length === 0 && d.pages.length === 1 ) {
+      if (d.children.length === 0 && d.pages && d.pages.length === 1 ) {
         const p = d.pages[0];
         const pageItem: MenuPageHierarchy = {
           name: p.name,
@@ -177,6 +180,9 @@ export class MenuService {
   }
 
   private buildMenuHierarchyForPages(parentRoute: NavigationRoute, pages: Array<PageApi>, depth: number): Array<MenuPageHierarchy> {
+    if (pages === undefined){
+      return [] as Array<MenuPageHierarchy>;
+    }
     return pages.map(p => {
       const pageItem: MenuPageHierarchy = {
         name: p.name,
