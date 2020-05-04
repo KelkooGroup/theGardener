@@ -11,11 +11,13 @@
 ![Roles](../assets/images/theGardener_role_writer.png)
 
 
-To **enrich the Markdown syntax**, several additional command can be applied. Those commands use the fact that Markdown syntax accept syntax highlighting: we will had a new language called _thegardener_ with a json format. 
+To **enrich the Markdown syntax**, several additional command can be applied. 
+
+Those commands use the fact that Markdown syntax accept syntax highlighting: we will had a new language called _thegardener_ with a json format. 
 
 **We will call refer to those kind of command as module.** 
 
-_Trick: eee the source of the current documentation by using **View source** button._  
+_Trick: see the source of the current documentation by using **View source** button._  
 
 ## Define meta data
 

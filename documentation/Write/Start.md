@@ -83,7 +83,7 @@ The format of the page respect the [Markdown syntax](https://www.markdownguide.o
 
 Note: to be displayed in theGardener, the Markdown file need to have been listed in the _thegardener.json_ file of the current directory as explained above. 
 
-To **enrich the Markdown syntax**, several additional command can be applied. Those commands use the fact that Markdown syntax accept syntax highlighting: we will had a new language called _thegardener_ with a json format. **We will call refer to those kind of command as module.** Make sure to use ``` before and after the command  (in the current documentation we are using ''' otherwise it would have been escapted at the rendering :) ). 
+To **enrich the Markdown syntax**, [several additional command can be applied.](./Improve.md) 
 
 ## Publish
 
