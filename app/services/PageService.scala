@@ -17,6 +17,7 @@ import services.clients.OpenApiClient
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
+import com.outr.lucene4s._
 
 case class PageMeta(label: Option[String] = None, description: Option[String] = None)
 
@@ -116,6 +117,17 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
 
   val SourceTemplateBranchToken = "${branch}"
   val SourceTemplatePathToken = "${path}"
+
+  val luceneSearchIndex = new DirectLucene(Nil, None)
+  val name = luceneSearchIndex.create.field[String]("name")
+  luceneSearchIndex.doc().fields(name("write")).index()
+  luceneSearchIndex.doc().fields(name("ws")).index()
+  luceneSearchIndex.doc().fields(name("contribute")).index()
+  luceneSearchIndex.doc().fields(name("write")).index()
+
+  def searchTest():String = {
+    luceneSearchIndex.query().sort(Sort(name)).search()
+  }
 
   def getLocalRepository(projectId: String, branch: String): String = s"$projectsRootDirectory$projectId/$branch/".fixPathSeparator
 
