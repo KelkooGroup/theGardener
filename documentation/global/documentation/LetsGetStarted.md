@@ -57,6 +57,8 @@ After this step the projects will be accessible through the menu and refreshed r
 
 ### Follow theGardener documentation format 
 
+[=> Start writing documentation](thegardener://navigate/_doc/theGardener/master/_Write/Start)
+
 - If your documentation is already in [Markdown](https://www.markdownguide.org/basic-syntax/), you will just have to reference your `.md` files in a `thegarderner.json` file at each directory.
 - If not, the [Markdown](https://www.markdownguide.org/basic-syntax/) is a really simple syntax, it's gonna be easy.
 

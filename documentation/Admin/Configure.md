@@ -42,7 +42,7 @@ from the default UI:
 
 ![](../global/assets/images/theGardener_settings_ui_theGardener.png)
 
-you can change the UI the look and feel of you organisation, for instance:
+you can change the UI to match the look and feel of your organisation, for instance:
 
 ![](../global/assets/images/theGardener_settings_ui_kkg_internal.png)
 
