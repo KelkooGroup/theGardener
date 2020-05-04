@@ -114,8 +114,10 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
   val ImageRegex = """\!\[.*\]\((.*)\)""".r
   val ReferenceRegex = """\[.*\]\:\s(\S*)""".r
 
-  val SourceTemplateBranchToken = "${branch}"
-  val SourceTemplatePathToken = "${path}"
+  val StartVar = "${"
+  val EndVar = "}"
+  val SourceTemplateBranchToken = s"${StartVar}branch${EndVar}"
+  val SourceTemplatePathToken = s"${StartVar}path${EndVar}"
 
   def getLocalRepository(projectId: String, branch: String): String = s"$projectsRootDirectory$projectId/$branch/".fixPathSeparator
 

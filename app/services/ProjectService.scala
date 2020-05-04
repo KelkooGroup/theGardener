@@ -298,18 +298,24 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
     ()
   }
 
-  def synchronizeProjectId(projectId: String): Option[Future[Unit]] = {
+  def synchronizeProjects(projects: Seq[Project]): Future[Seq[Seq[ProjectBranch]]] = {
+    FutureExt.sequentially(projects)(synchronize)
+  }
+
+  def synchronizeProjectId(projectId: String): Option[Future[Seq[ProjectBranch]]] = {
     projectRepository.findById(projectId).map { project =>
       synchronize(project)
     }
   }
 
-  def synchronize(project: Project): Future[Unit] = {
+  def synchronize(project: Project): Future[Seq[ProjectBranch]] = {
 
     if (!synchronizeFromRemoteEnabled) {
       logger.info(s"No synchronization of project ${project.id}, as this feature is disabled")
       refreshAllPages(project)
-      Future.successful({})
+      Future.successful({
+        Seq[ProjectBranch]()
+      })
     } else {
 
       logger.info(s"Start synchronizing project ${project.id}")
@@ -335,6 +341,7 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
           _ <- deleteBranches(project.id, branchesToDelete)
         } yield ()
       }
+      Future.successful({branchRepository.findAllByProjectId(project.id).map(branch => ProjectBranch(project,branch))})
     }
   }
 

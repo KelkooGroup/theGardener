@@ -20,3 +20,5 @@ case class Project(
                     @ApiModelProperty(value = "variables defined for this project", example = "[{\"name\":\"${swagger.url}\",\"value\":\"http://dc1-pmbo-corp-srv-pp.corp.dc1.kelkoo.net:9001/docs\"}]") variables: Option[Seq[Variable]] = None,
                     @ApiModelProperty(value = "Hierarchy matching the project") hierarchy: Option[Seq[HierarchyNode]] = None,
                     @ApiModelProperty(value = "branches of the project") branches: Option[Seq[Branch]] = None)
+
+case class ProjectBranch(project:Project,branch:Branch)
