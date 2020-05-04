@@ -14,7 +14,7 @@ import utils._
 import scala.concurrent._
 import scala.concurrent.duration._
 
-
+@Singleton
 class ProjectService @Inject()(projectRepository: ProjectRepository, gitService: GitService, featureService: FeatureService,
                                featureRepository: FeatureRepository, branchRepository: BranchRepository, directoryRepository: DirectoryRepository,
                                pageRepository: PageRepository, menuService: MenuService, pageService: PageService,
@@ -284,9 +284,12 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
   }
 
   def refreshAllPagesFromAllProjects(): Unit = {
+    val startTime = System.currentTimeMillis()
     logger.info("Start refreshing pages not in cache")
     projectRepository.findAll().foreach(p => refreshAllPages(p, forceRefresh = false))
-    logger.info("Pages are now all in cache")
+    val endTime = System.currentTimeMillis()
+    val duration = DurationUtil.durationFromMillisToHumanReadable( endTime-startTime   )
+    logger.info(s"Pages are now all in cache. Computed in $duration")
     ()
   }
 
