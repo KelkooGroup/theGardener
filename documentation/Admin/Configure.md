@@ -76,7 +76,7 @@ Once a first level node is selected, the sub tree will be displayed on the left 
 
 ### Hierarchy
 
-Define hierarchy:
+Define the hierarchy with the following endpoints:
 
 ```thegardener
 {
@@ -98,7 +98,20 @@ Define hierarchy:
 
 Register a project:
 
-Define hierarchy:
+Field | Type  | Description
+------------ | ------------- | -------------
+id | string |  the identify the project
+name | string |  label of the project in the menu
+repositoryUrl | string |  url of the project in a git server. should start with _http_ and end by _.git_
+sourceUrlTemplate | string | url template to use for the "view source" links, can contain `${branch}` and `${path}` tokens, for instance: `"http://github.com/myproject/blob/${branch}/${path}"` (documentation root path will be added automatically)
+stableBranch | string |  existing branch that is considered as stable. Could be _master_ for instance.
+displayedBranches | regexpr |  regular expression to filter the branches that are synchronized and displayed.
+featuresRootPath | string |  relative path to the directory that host gherkin scenarios. Can be empty.
+documentationRootPath | string |  relative path to the directory that host the documentation. This directory should store the first _thegardener.json_ file.
+
+When displayedBranch == stableBranch, the branch name is removed from the url. The field displayBranch need to be exactly the stableBranch name to remove it from the url, it will not work with a regexpr matching on the stableBranch
+
+Manage projects with the following endpoints:
 
 ```thegardener
 {
@@ -117,22 +130,12 @@ Define hierarchy:
 }
 ``` 
 
-Field | Type  | Description
------------- | ------------- | -------------
-id | string |  the identify the project
-name | string |  label of the project in the menu
-repositoryUrl | string |  url of the project in a git server. should start with _http_ and end by _.git_
-sourceUrlTemplate | string | url template to use for the "view source" links, can contain `${branch}` and `${path}` tokens, for instance: `"http://github.com/myproject/blob/${branch}/${path}"` (documentation root path will be added automatically)
-stableBranch | string |  existing branch that is considered as stable. Could be _master_ for instance.
-displayedBranches | regexpr |  regular expression to filter the branches that are synchronized and displayed.
-featuresRootPath | string |  relative path to the directory that host gherkin scenarios. Can be empty.
-documentationRootPath | string |  relative path to the directory that host the documentation. This directory should store the first _thegardener.json_ file.
-
-When displayedBranch == stableBranch, the branch name is removed from the url. The field displayBranch need to be exactly the stableBranch name to remove it from the url, it will not work with a regexpr matching on the stableBranch
 
 ### Link between projects and hierarchy
 
 A given project can be put on any node. It can be put on several nodes if it make sense.
+
+Manage relation between projects and hierarchy with the following endpoints:
 
 ```thegardener
 {
