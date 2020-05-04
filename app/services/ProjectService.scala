@@ -286,9 +286,12 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
   }
 
   def refreshAllPagesFromAllProjects(): Unit = {
+    val startTime = System.currentTimeMillis()
     logger.info("Start refreshing pages not in cache")
     projectRepository.findAll().foreach(p => refreshAllPages(p, forceRefresh = false))
-    logger.info("Pages are now all in cache")
+    val endTime = System.currentTimeMillis()
+    val duration = DurationUtil.durationFromMillisToHumanReadable( endTime-startTime   )
+    logger.info(s"Pages are now all in cache. Computed in $duration")
     ()
   }
 
@@ -300,18 +303,24 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
     ()
   }
 
-  def synchronizeProjectId(projectId: String): Option[Future[Unit]] = {
+  def synchronizeProjects(projects: Seq[Project]): Future[Seq[Seq[ProjectBranch]]] = {
+    FutureExt.sequentially(projects)(synchronize)
+  }
+
+  def synchronizeProjectId(projectId: String): Option[Future[Seq[ProjectBranch]]] = {
     projectRepository.findById(projectId).map { project =>
       synchronize(project)
     }
   }
 
-  def synchronize(project: Project): Future[Unit] = {
+  def synchronize(project: Project): Future[Seq[ProjectBranch]] = {
 
     if (!synchronizeFromRemoteEnabled) {
       logger.info(s"No synchronization of project ${project.id}, as this feature is disabled")
       refreshAllPages(project)
-      Future.successful({})
+      Future.successful({
+        Seq[ProjectBranch]()
+      })
     } else {
 
       logger.info(s"Start synchronizing project ${project.id}")
@@ -337,6 +346,7 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
           _ <- deleteBranches(project.id, branchesToDelete)
         } yield ()
       }
+      Future.successful({branchRepository.findAllByProjectId(project.id).map(branch => ProjectBranch(project,branch))})
     }
   }
 

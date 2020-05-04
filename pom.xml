@@ -5,7 +5,7 @@
    <modelVersion>4.0.0</modelVersion>
    <groupId>com.kelkoo.gardener</groupId>
    <artifactId>theGardener</artifactId>
-   <version>1.0.1-SNAPSHOT</version>
+   <version>1.2.2-SNAPSHOT</version>
    <packaging>kelkoo-rpm</packaging>
 
    <name>theGardener</name>

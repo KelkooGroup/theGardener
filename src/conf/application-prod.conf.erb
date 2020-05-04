@@ -102,3 +102,18 @@ akka.http.server.request-timeout = 1200s
 <% if has_variable?("the_gardener_replica_url") %>
 replica.url= "<%= value("the_gardener_replica_url") %>"
 <% end %>
+
+# DB pool size (for each DB)
+play.db.prototype.hikaricp.maximumPoolSize = 20
+
+akka {
+  actor {
+    default-dispatcher {
+      executor = "thread-pool-executor"
+      throughput = 1
+      thread-pool-executor {
+        fixed-pool-size = 55 # db conn pool (50) + number of cores (4) + housekeeping (1)
+      }
+    }
+  }
+}

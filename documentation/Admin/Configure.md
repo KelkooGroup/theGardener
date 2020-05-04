@@ -3,7 +3,7 @@
   "page" :
      {
         "label": "Configure theGardener",
-        "description": "How to configure a new instance of theGardener ?"
+        "description": "Configure theGardener"
      }
 }
 ```
@@ -15,24 +15,54 @@ This application need to be installed and configured.
 
 
 The main configuration steps are :
-
+- some UI settings
 - define the hierarchy
 - register projects hosted on a git repository
 - make the links between the projects and the hierarchy
 - define hooks on git servers to trigger theGardener synchronisation
-- some UI settings
+
+
+
+## UI settings
+
+Settings on the _application.conf_ can be adapted to context of the instance :
+
+Key                     | Usage
+----------------------- | -------------
+application.windowTitle | Title displayed at the user browser window
+application.faviconSrc  | Source of the favicon displayed in the user browser window. Should be a *.png*.  
+application.logoSrc     | Source of the main logo displayed at the top left in the header. Should be transparent with only white color. 
+application.title       | Title displayed under the main logo on the header.
+color.dark  | Color for titles
+color.main  | Color for the header
+color.light | Color for the left menu
+
+
+from the default UI:
+
+![](../global/assets/images/theGardener_settings_ui_theGardener.png)
+
+you can change the UI to match the look and feel of your organisation, for instance:
+
+![](../global/assets/images/theGardener_settings_ui_kkg_internal.png)
 
 
 ## Hierarchy and projects
-
-![Roles](../assets/images/theGardener_hierarchy_projects.png)
-
 
 
 The hierarchy consist on a tree that can be as fat and as deep as needed. 
 For a better user experience we advise to have 
 - less than 8 nodes on the first level
 - less that 5 levels 
+
+For instance:
+
+![Roles](../assets/images/theGardener_hierarchy_projects.png)
+
+will be displayed:
+
+![](../assets/images/theGardener_configure_hierarchy.png)
+
 
 The list of project can be as long as needed. The limit is the disk size to store the different project sources in the database and on the file system.
 
@@ -46,32 +76,27 @@ Once a first level node is selected, the sub tree will be displayed on the left 
 
 ### Hierarchy
 
-Define hierarchy:
+Define the hierarchy with the following endpoints:
 
 ```thegardener
 {
-  "scenarios" : 
+  "openApiPath" : 
      {
-        "feature": "/administration/hierarchy/define_hierarchy.feature",
-        "select": { "tags" : ["@define_hierarchy"]  }
+        "openApiUrl": "https://thegardener.kelkoogroup.com/api/docs/swagger.json",
+        "refStartsWith": [
+         "/api/hierarchy"
+        ],
+        "ref": [
+        ],
+       "methods": ["GET","POST","PUT","DELETE"]
      }
 }
-```
+``` 
 
 
 ### Projects
 
 Register a project:
-
-```thegardener
-{
-  "scenarios" : 
-     {
-        "feature": "/administration/projects/register_a_project.feature",
-        "select": { "tags" : ["@register_project"]  }
-     }
-}
-```
 
 Field | Type  | Description
 ------------ | ------------- | -------------
@@ -86,19 +111,46 @@ documentationRootPath | string |  relative path to the directory that host the d
 
 When displayedBranch == stableBranch, the branch name is removed from the url. The field displayBranch need to be exactly the stableBranch name to remove it from the url, it will not work with a regexpr matching on the stableBranch
 
+Manage projects with the following endpoints:
+
+```thegardener
+{
+  "openApiPath" : 
+     {
+        "openApiUrl": "https://thegardener.kelkoogroup.com/api/docs/swagger.json",
+        "refStartsWith": [
+         
+        ],
+        "ref": [
+            "/api/projects",
+            "/api/projects/{id}"
+        ],
+       "methods": ["GET","POST","PUT","DELETE"]
+     }
+}
+``` 
+
+
 ### Link between projects and hierarchy
 
 A given project can be put on any node. It can be put on several nodes if it make sense.
 
+Manage relation between projects and hierarchy with the following endpoints:
+
 ```thegardener
 {
-  "scenarios" : 
+  "openApiPath" : 
      {
-        "feature": "/administration/hierarchy/link_projects_to_hierarchy.feature",
-        "select": { "tags" : ["@put_project_in_hierarchy"]  }
+        "openApiUrl": "https://thegardener.kelkoogroup.com/api/docs/swagger.json",
+        "refStartsWith": [
+          "/api/projects/{id}/hierarchy"
+        ],
+        "ref": [
+        ],
+       "methods": ["GET","POST","PUT","DELETE"]
      }
 }
-```
+``` 
 
 
 ## Hooks on the git servers
@@ -106,17 +158,4 @@ A given project can be put on any node. It can be put on several nodes if it mak
 To be able to have fast feedback on theGardener when a change is pushed on a project registered on theGardener, we need to put in place a web hook.
 The web hook configuration depends on the web application that serve the git repositories. For instance it can be GitLab.
 The web hook should do a **POST** on **/api/projects/:id/synchronize** : this will trigger the synchronisation of this project on theGardener.
-
-
-## UI settings
-
-Settings on the _application.conf_ can be adapted to context of the instance :
-
-
-Key                     | Usage
------------------------ | -------------
-application.windowTitle | Title displayed at the user browser window
-application.faviconSrc  | Source of the favicon displayed in the user browser window. Should be a *.png*.  
-application.logoSrc     | Source of the main logo displayed at the top left in the header. Should be transparent with only white color. 
-application.title       | Title displayed under the main logo on the header.
 

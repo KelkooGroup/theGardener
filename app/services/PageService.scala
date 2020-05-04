@@ -67,7 +67,7 @@ case class PageFragmentUnderProcessing(status: PageFragmentUnderProcessingStatus
 
 case class PageWithContent(page: Page, content: Seq[PageFragment])
 
-
+@Singleton
 class PageServiceCache @Inject()(cache: SyncCacheApi) extends Logging {
 
   def store(key: String, page: PageWithContent): Unit = {
@@ -85,7 +85,7 @@ class PageServiceCache @Inject()(cache: SyncCacheApi) extends Logging {
 
 }
 
-
+@Singleton
 class PageService @Inject()(config: Configuration, projectRepository: ProjectRepository, directoryRepository: DirectoryRepository, pageRepository: PageRepository,
                             gherkinRepository: GherkinRepository, openApiClient: OpenApiClient, cache: PageServiceCache)(implicit ec: ExecutionContext) extends Logging {
 
@@ -114,8 +114,10 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
   val ImageRegex = """\!\[.*\]\((.*)\)""".r
   val ReferenceRegex = """\[.*\]\:\s(\S*)""".r
 
-  val SourceTemplateBranchToken = "${branch}"
-  val SourceTemplatePathToken = "${path}"
+  val StartVar = "${"
+  val EndVar = "}"
+  val SourceTemplateBranchToken = s"${StartVar}branch${EndVar}"
+  val SourceTemplatePathToken = s"${StartVar}path${EndVar}"
 
   def getLocalRepository(projectId: String, branch: String): String = s"$projectsRootDirectory$projectId/$branch/".fixPathSeparator
 
