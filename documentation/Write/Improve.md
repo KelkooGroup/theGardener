@@ -51,12 +51,14 @@ Syntax of the link : usual [Markdown syntax](https://www.markdownguide.org/basic
 
 For instance :
 - [IncludeOpenApi](IncludeOpenApi.md)
+- [IncludeOpenApi](./IncludeOpenApi.md)
 - [IncludeOpenApi path section](./IncludeOpenApi.md#include-openapi-path)
 - [Install](../Admin/Install.md)  
 
-
+with 
 ````
 For instance :
+- [IncludeOpenApi](IncludeOpenApi.md)
 - [IncludeOpenApi](./IncludeOpenApi.md)
 - [IncludeOpenApi path section](./IncludeOpenApi.md#include-openapi-path)
 - [Install](../Admin/Install.md)  
