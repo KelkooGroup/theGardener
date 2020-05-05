@@ -33,7 +33,7 @@ class OpenApiClient @Inject()(wsClient: WSClient)(implicit ec: ExecutionContext)
   }
 
   def getOpenApiJsonString(openApiUrl: String): Future[String] = {
-    wsClient.url(openApiUrl).withRequestTimeout(2.second).get().map { response =>
+    wsClient.url(openApiUrl).withRequestTimeout(20.second).get().map { response =>
       if (response.status == 200) {
         response.body
       } else {
