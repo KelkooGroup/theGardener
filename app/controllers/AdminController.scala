@@ -93,11 +93,12 @@ class AdminController @Inject()(menuService: MenuService, projectService: Projec
       map { project =>
         projectRepository.findAllByGitRepository(project.repositoryUrl)
       }
-    projectWithSameGitRepo.map { projects =>
-      projectService.synchronizeProjects(projects)
-        .map {
-          _.flatten.map(pb => s"${pb.project.id}>${pb.branch.name}")
-        }.map(branches => returnOkAndLogMessage(s"Branches synchronized from the remote git repository linked to project $projectId are", Some(branches)))
+    projectWithSameGitRepo.map { projectWithSameGitRepo =>
+      projectService.synchronizeProjects(projectWithSameGitRepo)
+        .map { _ =>
+          val projectIdsWithSameGitRepo = projectWithSameGitRepo.map(p=>p.id)
+          returnOkAndLogMessage(s"Projects synchronized from the remote git repository linked to project $projectId are", Some(projectIdsWithSameGitRepo))
+        }
     }.getOrElse(Future.successful(returnNotFoundAndLogMessage(s"$projectId not found while synchronizing from the remote git repository")))
   }
 
