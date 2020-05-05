@@ -12,7 +12,6 @@
 
 The main feature is:
 - [0568 - Include OpenAPI endpoints](https://github.com/KelkooGroup/theGardener/issues/568)
-   - see [documentation](./Write/IncludeOpenApi.md#include-openapi-path)
 
 The UX improvements are:
 - Navigation review: 
@@ -23,7 +22,6 @@ The improvements are:
 - [0652 - Have more standard urls](https://github.com/KelkooGroup/theGardener/issues/652)
 - [0604 - Add a link to the source of the page](https://github.com/KelkooGroup/theGardener/issues/604)
 - [0342 - Relative internal links](https://github.com/KelkooGroup/theGardener/issues/342)
-  - see [documentation](./Write/Improve.md#define-an-internal-link) 
 
 Bugs fixed :
 - [0606 - Display properly Scenario steps with XML](https://github.com/KelkooGroup/theGardener/issues/606) 
