@@ -2,8 +2,8 @@ import {Injectable} from '@angular/core';
 import {BackendPath, FrontendPath, NavigationParams, NavigationRoute} from '../_models/route';
 import {MenuHierarchy} from '../_models/menu';
 
-const EMPTY_CHAR = '_';
-const EMPTY_CHAR_REGEX = /_/g;
+export const EMPTY_CHAR = '_';
+export const EMPTY_CHAR_REGEX = /_/g;
 export const NAVIGATE_PATH = 'app/documentation/navigate/';
 
 @Injectable({
