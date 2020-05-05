@@ -54,7 +54,7 @@ describe('MenuService', () => {
         req.flush(MENU_HEADER_SERVICE_RESPONSE);
     }));
 
-    it('should provide submenu for selected node', async(() => {
+    fit('should provide submenu for selected node', async(() => {
       menuService.getSubMenuForNode('_eng').subscribe(submenu => {
         expect(submenu).toEqual(EXPECTED_MENU_FOR_ENGINEERING_VIEW);
       });
@@ -129,7 +129,7 @@ const EXPECTED_MENU_FOR_ENGINEERING_VIEW: Array<MenuHierarchy> = [
                                 route: {
                                     nodes: ["eng", "library", "suggestion"],
                                     project: "suggestionsReports",
-                                    branch: "master",
+                                    branch: "_",
                                     directories: [] as Array<string>
                                 },
                                 children: [] as Array<MenuHierarchy>,
@@ -240,7 +240,7 @@ const EXPECTED_MENU_FOR_ENGINEERING_VIEW: Array<MenuHierarchy> = [
                                 route: {
                                     nodes: ["eng","library", "user"],
                                     project: "usersWS",
-                                    branch: "master",
+                                    branch: "_",
                                     directories: [] as Array<string>
                                 },
                                 children: [],
