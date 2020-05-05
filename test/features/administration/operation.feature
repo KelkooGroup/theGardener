@@ -121,12 +121,12 @@ Feature: Provide some tools to operate the application when something is not wor
 """
 
   @level_2_technical_details @nominal_case @valid @data_refresh @synchronize_project_from_git 
-  Scenario: force a project to synchronize from the remote git repository
+  Scenario: force a projects to synchronize from the same remote git repository
     When I perform a "POST" on following URL "/api/admin/projects/suggestionsWS/synchronizeAllFromSameRemoteGitRepository"
     Then I get a response with status "200"
     And  I get the following response body
 """
-{"message":"Branches synchronized from the remote git repository linked to project suggestionsWS are","elements":["suggestionsWS>master","suggestionsWSPublic>master"]}
+{"message":"Projects synchronized from the remote git repository linked to project suggestionsWS are","elements":["suggestionsWS","suggestionsWSPublic"]}
 """
 
 

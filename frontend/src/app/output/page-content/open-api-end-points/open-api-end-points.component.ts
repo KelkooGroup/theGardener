@@ -42,7 +42,7 @@ export class OpenApiEndPointsComponent implements OnInit, AfterViewInit {
       operationsSorter: 'alpha',
       defaultModelsExpandDepth: -1,
       enableCORS: false,
-      showMutatedRequest: false,
+      showMutatedRequest: true,
       requestInterceptor: (request: any) => {
         request.url = this.proxyUrl + '?url=' + request.url.replace('http', this.openApiPathJson.protocol) + '&body=' + request.body;
         return request
