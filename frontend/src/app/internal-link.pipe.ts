@@ -48,7 +48,7 @@ export class InternalLinkPipe implements PipeTransform {
   }
 
   transformInternalRelativeLinksWithAnchor(value: string): string {
-    const linkRegexString = '(href=)["\'](.*?)[\.]md#(.*?)["\']';
+    const linkRegexString = '(href=)["\'](.*?)[\.]md#([a-z\-]+)["\']';
     const linkRegex = new RegExp(linkRegexString, 'g');
 
     const nodes = this.nodes;

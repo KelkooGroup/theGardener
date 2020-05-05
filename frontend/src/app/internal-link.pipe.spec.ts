@@ -32,6 +32,7 @@ describe('InternalLinkPipe', () => {
 
   it('replace occurences of internal relative links', () => {
     expect(pipe.transform(SIMPLE_HTML_INPUT_RELATIVE_SAME_DIRECTORY)).toBe(SIMPLE_HTML_OUTPUT_RELATIVE_SAME_DIRECTORY);
+    expect(pipe.transform(SIMPLE_HTML_INPUT_RELATIVE_SAME_DIRECTORY_2)).toBe(SIMPLE_HTML_OUTPUT_RELATIVE_SAME_DIRECTORY);
     expect(pipe.transform(SIMPLE_HTML_INPUT_RELATIVE_PARENT_DIRECTORY)).toBe(SIMPLE_HTML_OUTPUT_RELATIVE_PARENT_DIRECTORY);
     expect(pipe.transform(SIMPLE_HTML_INPUT_RELATIVE_SAME_DIRECTORY_WITH_ANCHOR)).toBe(SIMPLE_HTML_OUTPUT_RELATIVE_SAME_DIRECTORY_WITH_ANCHOR);
   });
@@ -39,7 +40,8 @@ describe('InternalLinkPipe', () => {
 });
 
 
-const SIMPLE_HTML_INPUT_RELATIVE_SAME_DIRECTORY = '<p>Note 2: <code><a href="./OpenApi.md">link to OpenAPI</a>.</p>';
+const SIMPLE_HTML_INPUT_RELATIVE_SAME_DIRECTORY   = '<p>Note 2: <code><a href="OpenApi.md">link to OpenAPI</a>.</p>';
+const SIMPLE_HTML_INPUT_RELATIVE_SAME_DIRECTORY_2 = '<p>Note 2: <code><a href="./OpenApi.md">link to OpenAPI</a>.</p>';
 
 const SIMPLE_HTML_OUTPUT_RELATIVE_SAME_DIRECTORY = '<p>Note 2: <code><a onclick=\"navigateTo(\'app/documentation/navigate/Tools/theGardener/master/_Guide_Write/OpenApi\')\">link to OpenAPI</a>.</p>';
 
