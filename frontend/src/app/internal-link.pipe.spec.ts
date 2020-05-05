@@ -33,6 +33,7 @@ describe('InternalLinkPipe', () => {
   it('replace occurences of internal relative links', () => {
     expect(pipe.transform(SIMPLE_HTML_INPUT_RELATIVE_SAME_DIRECTORY)).toBe(SIMPLE_HTML_OUTPUT_RELATIVE_SAME_DIRECTORY);
     expect(pipe.transform(SIMPLE_HTML_INPUT_RELATIVE_PARENT_DIRECTORY)).toBe(SIMPLE_HTML_OUTPUT_RELATIVE_PARENT_DIRECTORY);
+    expect(pipe.transform(SIMPLE_HTML_INPUT_RELATIVE_SAME_DIRECTORY_WITH_ANCHOR)).toBe(SIMPLE_HTML_OUTPUT_RELATIVE_SAME_DIRECTORY_WITH_ANCHOR);
   });
 
 });
@@ -45,6 +46,11 @@ const SIMPLE_HTML_OUTPUT_RELATIVE_SAME_DIRECTORY = '<p>Note 2: <code><a onclick=
 const SIMPLE_HTML_INPUT_RELATIVE_PARENT_DIRECTORY = '<p>Note 2: <code><a href="../../Changelog.md">link to OpenAPI</a>.</p>';
 
 const SIMPLE_HTML_OUTPUT_RELATIVE_PARENT_DIRECTORY = '<p>Note 2: <code><a onclick=\"navigateTo(\'app/documentation/navigate/Tools/theGardener/master/_/Changelog\')\">link to OpenAPI</a>.</p>';
+
+const SIMPLE_HTML_INPUT_RELATIVE_SAME_DIRECTORY_WITH_ANCHOR = '<p>Note 2: <code><a href="./OpenApi.md#include-openapi-path">link to OpenAPI</a>.</p>';
+
+const SIMPLE_HTML_OUTPUT_RELATIVE_SAME_DIRECTORY_WITH_ANCHOR = '<p>Note 2: <code><a onclick=\"navigateTo(\'app/documentation/navigate/Tools/theGardener/master/_Guide_Write/OpenApi#include-openapi-path\')\">link to OpenAPI</a>.</p>';
+
 
 const SIMPLE_HTML_INPUT = '<p>Note 2: <code>Navigate with full path</code> parameter must be encoded using <a href="thegardener://navigate/Documentation/theGardener/master/_Write/Basics">URL encoding</a>.</p>';
 

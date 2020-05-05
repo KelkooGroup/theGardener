@@ -50,12 +50,15 @@ Be able to make link to pages in theGardener application.
 Syntax of the link : usual [Markdown syntax](https://www.markdownguide.org/basic-syntax/#links).
 
 For instance :
-- [IncludeOpenApi](./IncludeOpenApi.md)
+- [IncludeOpenApi](IncludeOpenApi.md)
+- [IncludeOpenApi path section](./IncludeOpenApi.md#include-openapi-path)
 - [Install](../Admin/Install.md)  
+
 
 ````
 For instance :
 - [IncludeOpenApi](./IncludeOpenApi.md)
+- [IncludeOpenApi path section](./IncludeOpenApi.md#include-openapi-path)
 - [Install](../Admin/Install.md)  
 ````
 

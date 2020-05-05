@@ -54,7 +54,7 @@ describe('MenuService', () => {
         req.flush(MENU_HEADER_SERVICE_RESPONSE);
     }));
 
-    fit('should provide submenu for selected node', async(() => {
+    it('should provide submenu for selected node', async(() => {
       menuService.getSubMenuForNode('_eng').subscribe(submenu => {
         expect(submenu).toEqual(EXPECTED_MENU_FOR_ENGINEERING_VIEW);
       });
