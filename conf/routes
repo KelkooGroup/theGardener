@@ -42,13 +42,14 @@ GET        /api/directories                                controllers.Directory
 
 GET        /api/pages                                      controllers.PageController.getPageFromPath(path: String)
 
-POST       /api/admin/menu/refreshFromDatabase                        controllers.AdminController.refreshMenu()
-POST       /api/admin/projects/refreshFromDatabase                    controllers.AdminController.refreshAllProjectsFromDatabase()
-POST       /api/admin/projects/:id/refreshFromDatabase                controllers.AdminController.refreshProjectFromDatabase(id:String)
-POST       /api/admin/projects/refreshFromDisk                        controllers.AdminController.refreshAllProjectsFromDisk()
-POST       /api/admin/projects/:id/refreshFromDisk                    controllers.AdminController.refreshProjectFromDisk(id:String)
-POST       /api/admin/projects/:id/synchronizeFromRemoteGitRepository controllers.AdminController.synchronizeProjectFromRemote(id:String)
-POST       /api/admin/projects/:id/refreshFromRemoteGitRepository     controllers.AdminController.refreshProjectFromRemote(id:String)
+POST       /api/admin/menu/refreshFromDatabase                               controllers.AdminController.refreshMenu()
+POST       /api/admin/projects/refreshFromDatabase                           controllers.AdminController.refreshAllProjectsFromDatabase()
+POST       /api/admin/projects/:id/refreshFromDatabase                       controllers.AdminController.refreshProjectFromDatabase(id:String)
+POST       /api/admin/projects/refreshFromDisk                               controllers.AdminController.refreshAllProjectsFromDisk()
+POST       /api/admin/projects/:id/refreshFromDisk                           controllers.AdminController.refreshProjectFromDisk(id:String)
+POST       /api/admin/projects/:id/synchronizeFromRemoteGitRepository        controllers.AdminController.synchronizeProjectFromRemote(id:String)
+POST       /api/admin/projects/:id/synchronizeAllFromSameRemoteGitRepository controllers.AdminController.synchronizeProjectFromRemoteWithSameGitRepository(id:String)
+POST       /api/admin/projects/:id/refreshFromRemoteGitRepository            controllers.AdminController.refreshProjectFromRemote(id:String)
 
 
 GET        /api/assets                                       controllers.PageAssetController.getImageFromPath(path: String)

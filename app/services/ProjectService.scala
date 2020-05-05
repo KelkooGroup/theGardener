@@ -77,9 +77,11 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
 
   private def checkoutBranches(project: Project, branches: Set[String]): Future[Unit] = {
     if (branches.nonEmpty) {
-      logger.info(s"checkout ${project.id} branches ${branches.mkString(", ")}")
+      val displayedBranches = branches.filter(branch => project.displayedBranches.forall(regex => branch.matches(regex)))
 
-      FutureExt.sequentially(branches.toSeq) { branchName =>
+      logger.info(s"checkout ${project.id} branches ${displayedBranches.mkString(", ")}")
+
+      FutureExt.sequentially(displayedBranches.toSeq) { branchName =>
         val localRepository = getLocalRepository(project.id, branchName)
 
         val branch = branchRepository.findByProjectIdAndName(project.id, branchName).getOrElse(branchRepository.save(Branch(-1, branchName, branchName == project.stableBranch, project.id)))
@@ -282,9 +284,12 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
   }
 
   def refreshAllPagesFromAllProjects(): Unit = {
+    val startTime = System.currentTimeMillis()
     logger.info("Start refreshing pages not in cache")
     projectRepository.findAll().foreach(p => refreshAllPages(p, forceRefresh = false))
-    logger.info("Pages are now all in cache")
+    val endTime = System.currentTimeMillis()
+    val duration = DurationUtil.durationFromMillisToHumanReadable( endTime-startTime   )
+    logger.info(s"Pages are now all in cache. Computed in $duration")
     ()
   }
 
@@ -295,6 +300,11 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
     }
     ()
   }
+
+  def synchronizeProjects(projects: Seq[Project]): Future[Seq[Unit]] = {
+    FutureExt.sequentially(projects)(synchronize)
+  }
+
 
   def synchronizeProjectId(projectId: String): Option[Future[Unit]] = {
     projectRepository.findById(projectId).map { project =>

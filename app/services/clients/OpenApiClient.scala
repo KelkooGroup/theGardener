@@ -1,7 +1,7 @@
 package services.clients
 
 import com.github.ghik.silencer.silent
-import javax.inject.{Inject, Singleton}
+import javax.inject._
 import models.{OpenApiModel, OpenApiPath, OpenApiRow, PageJoinProject, Variable}
 import play.api.Logging
 import play.api.libs.json.{JsObject, JsValue, Json}
@@ -14,7 +14,7 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
 
 
-@Singleton
+
 class OpenApiClient @Inject()(wsClient: WSClient)(implicit ec: ExecutionContext) extends Logging {
 
   def getOpenApiDescriptor(openApiModule: OpenApiModelModule, pageJoinProject: PageJoinProject): Future[OpenApiModel] = {
@@ -124,7 +124,7 @@ object OpenApiClient {
     val host = Json.parse(s"""{"host":${swaggerJsonTree.value("host")}}""").as[JsObject]
     val basePath = Json.parse(s"""{"basePath":${swaggerJsonTree.value("basePath")}}""").as[JsObject]
     val definitions = Json.parse(s"""{"definitions":${swaggerJsonTree.value("definitions")}}""").as[JsObject]
-    swagger.deepMerge(Json.parse(s"""{"infos": {}}""").as[JsObject]).deepMerge(host).deepMerge(basePath).deepMerge(definitions)
+    swagger.deepMerge(Json.parse("""{"infos": {}}""").as[JsObject]).deepMerge(host).deepMerge(basePath).deepMerge(definitions)
 
   }
 

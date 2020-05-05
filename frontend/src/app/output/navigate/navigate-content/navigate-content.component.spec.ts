@@ -9,101 +9,83 @@ import {PageService} from '../../../_services/page.service';
 import {DIRECTORIES_SERVICE_RESPONSE} from '../../../_testUtils/test-data.spec';
 import {ActivatedRouteStub} from '../../../_testUtils/activated-route-stub.spec';
 import {MatSnackBarModule, MatTabsModule} from '@angular/material';
+import {PageContentComponent} from "../../page-content/page-content.component";
+import {MatProgressSpinner} from "@angular/material/progress-spinner";
+import {RemoveHtmlSanitizerPipe} from "../../../removehtmlsanitizer.pipe";
+import {InternalLinkPipe} from "../../../internal-link.pipe";
+import {AnchorPipe} from "../../../anchor.pipe";
+import {GherkinComponent} from "../../gherkin/gherkin.component";
+import {GherkinLongTextComponent} from "../../gherkin/gherkin-long-text/gherkin-long-text.component";
+import {GherkinStepComponent} from "../../gherkin/gherkin-step/gherkin-step.component";
+import {SafePipe} from "../../../safe.pipe";
+import {OpenApiEndPointsComponent} from "../../page-content/open-api-end-points/open-api-end-points.component";
+import {OpenApiModelComponent} from "../../page-content/open-api-model/open-api-model.component";
+import {MarkdownModule} from "ngx-markdown";
+import {NgxJsonViewerModule} from "ngx-json-viewer";
+import {GherkinTableComponent} from "../../gherkin/gherkin-table/gherkin-table.component";
+import {MatTableModule} from "@angular/material/table";
 
 
 describe('NavigateContentComponent', () => {
-  let component: NavigateContentComponent;
-  let fixture: ComponentFixture<NavigateContentComponent>;
-  let activatedRoute: ActivatedRouteStub;
-  let router: Router;
-  let page: Page;
+    let component: NavigateContentComponent;
+    let fixture: ComponentFixture<NavigateContentComponent>;
+    let router: Router;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        NavigateContentComponent,
-      ], imports: [
-        HttpClientTestingModule,
-        NoopAnimationsModule,
-        RouterTestingModule,
-        MatTabsModule,
-        MatSnackBarModule,
-      ], providers: [
-        {
-          provide: ActivatedRoute,
-          useClass: ActivatedRouteStub,
-        }
-      ]
-    })
-      .compileComponents();
-  }));
+    beforeEach(async(() => {
+        TestBed.configureTestingModule({
+            declarations: [
+                NavigateContentComponent,
+                PageContentComponent,
+                MatProgressSpinner,
+                RemoveHtmlSanitizerPipe,
+                SafePipe,
+                InternalLinkPipe,
+                AnchorPipe,
+                GherkinTableComponent,
+                GherkinComponent,
+                GherkinLongTextComponent,
+                GherkinStepComponent,
+                OpenApiEndPointsComponent,
+                OpenApiModelComponent,
+            ], imports: [
+                HttpClientTestingModule,
+                MatSnackBarModule,
+                MatTabsModule,
+                NoopAnimationsModule,
+                MarkdownModule.forRoot(),
+                NgxJsonViewerModule,
+                MatTableModule,
+                RouterTestingModule,
+                HttpClientTestingModule,
+                NoopAnimationsModule,
+                RouterTestingModule,
+                MatTabsModule,
+                MatSnackBarModule,
+            ], providers: [
+                {
+                    provide: ActivatedRoute,
+                    useClass: ActivatedRouteStub,
+                }
+            ]
+        })
+            .compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(NavigateContentComponent);
-    component = fixture.componentInstance;
-    page = new Page(fixture);
-    const pageService: PageService = TestBed.get(PageService);
-    spyOn(pageService, 'getRootDirectoryForPath').and.returnValue(of(DIRECTORIES_SERVICE_RESPONSE));
+    beforeEach(() => {
+        fixture = TestBed.createComponent(NavigateContentComponent);
+        component = fixture.componentInstance;
+        const pageService: PageService = TestBed.get(PageService);
+        spyOn(pageService, 'getRootDirectoryForPath').and.returnValue(of(DIRECTORIES_SERVICE_RESPONSE));
 
-    router = TestBed.get(Router);
-    spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+        router = TestBed.get(Router);
+        spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
 
-    activatedRoute = fixture.debugElement.injector.get(ActivatedRoute) as any;
-  });
-
-  afterAll(() => {
-    fixture.destroy();
-  });
-
-  it('should show tabs in the right order', () => {
-    activatedRoute.testParams = {path: 'constraints_'};
-    activatedRoute.testChildParams = {};
-
-    fixture.detectChanges();
-    expect(component).toBeTruthy();
-    expect(page.tabs).toBeTruthy();
-    expect(page.tabs.length).toBe(4);
-    expect(page.tabs[0].textContent).toMatch('Overview');
-    expect(page.tabs[1].textContent).toMatch('For a publisher');
-    expect(page.tabs[2].textContent).toMatch('For an offer');
-    expect(page.tabs[3].textContent).toMatch('For a merchant');
-  });
-
-  it('should navigate to item when clicking on a tab', () => {
-    activatedRoute.testParams = {path: 'constraints_'};
-    activatedRoute.testChildParams = {};
-
-    fixture.detectChanges();
-    const href = page.tabs[2].getAttribute('ng-reflect-router-link');
-    expect(href).toEqual('for_an_offer');
-  });
-
-  // it('should redirect to first child page if route was on directory', async(() => {
-  //   activatedRoute.testParams = {path: 'constraints_'};
-  //   activatedRoute.testChildParams = {};
-  //
-  //   fixture.detectChanges();
-  //   fixture.whenStable().then(() => {
-  //     expect(router.navigate).toHaveBeenCalledWith(['overview'], {relativeTo: activatedRoute});
-  //   });
-  // }));
-
-  it('should not redirect if child page is already defined in route', async(() => {
-    activatedRoute.testParams = {path: 'constraints_'};
-    activatedRoute.testChildParams = {page: 'for_a_merchant'};
-    fixture.detectChanges();
-
-    fixture.whenStable().then(() => {
-      expect(router.navigate).not.toHaveBeenCalled();
     });
-  }));
+
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
+
 });
 
-class Page {
-  constructor(private fixture: ComponentFixture<NavigateContentComponent>) {
-  }
 
-  get tabs() {
-    return this.fixture.nativeElement.querySelectorAll('.mat-tab-link');
-  }
-}

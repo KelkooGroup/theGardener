@@ -85,6 +85,22 @@ class AdminController @Inject()(menuService: MenuService, projectService: Projec
       .getOrElse(Future.successful(returnNotFoundAndLogMessage(s"$projectId not found while synchronizing from the remote git repository")))
   }
 
+  @ApiOperation(value = "Synchronize all projects with the same git repository, get synchronized branches", response = classOf[String], responseContainer = "list")
+  @ApiResponses(Array(new ApiResponse(code = 404, message = "Project not found")))
+  def synchronizeProjectFromRemoteWithSameGitRepository(projectId: String): Action[AnyContent] = Action.async {
+    logger.info(s"Starting synchronizing project $projectId and all other projects with the same git repository")
+    val projectWithSameGitRepo = projectRepository.findById(projectId).
+      map { project =>
+        projectRepository.findAllByGitRepository(project.repositoryUrl)
+      }
+    projectWithSameGitRepo.map { projectWithSameGitRepo =>
+      projectService.synchronizeProjects(projectWithSameGitRepo)
+        .map { _ =>
+          val projectIdsWithSameGitRepo = projectWithSameGitRepo.map(p=>p.id)
+          returnOkAndLogMessage(s"Projects synchronized from the remote git repository linked to project $projectId are", Some(projectIdsWithSameGitRepo))
+        }
+    }.getOrElse(Future.successful(returnNotFoundAndLogMessage(s"$projectId not found while synchronizing from the remote git repository")))
+  }
 
   @ApiOperation(value = "Refresh projects from the remote git repository")
   def refreshProjectFromRemote(projectId: String): Action[AnyContent] = Action.async {

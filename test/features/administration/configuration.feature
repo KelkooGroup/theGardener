@@ -8,6 +8,10 @@ Feature: Provide configuration
       | application.title       | In our documentation we trust. |
       | application.logoSrc     | assets/images/logo-white.png   |
       | application.faviconSrc  | assets/images/favicon.png      |
+      | application.baseUrl     | http://localhost:9000          |
+      | color.dark              | #3d853e                        |
+      | color.main              | #55b556                        |
+      | color.light             | #f2fff2                        |
     When I perform a "GET" on following URL "/api/config"
     Then I get a response with status "200"
     And  I get the following json response body
@@ -17,6 +21,9 @@ Feature: Provide configuration
      "title":"In our documentation we trust.",
      "logoSrc":"assets/images/logo-white.png",
      "faviconSrc":"assets/images/favicon.png",
-     "colorMain":"#1F7079"
+     "baseUrl":"http://localhost:9000",
+     "colorMain":"#55b556",
+     "colorLight":"#f2fff2",
+     "colorDark":"#3d853e"
 }
 """

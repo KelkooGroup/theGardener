@@ -1,5 +1,5 @@
 <a [ngStyle]="{'padding-left': calculatePadding() + 'px'}"
-   [ngClass]="leafSelection ? 'active': active ? 'bold' : 'default'"
+   [ngClass]="active ? 'bold' : 'default'"
    (click)="navigateToItem()"
    class="item"
 >
@@ -26,7 +26,8 @@
         </ng-template>
       </ng-template>
     </div>
-    <span class="item-text">{{ menuItem.label }}</span>
+    <div [ngStyle]="{'padding-left': paddingByDepth + 'px'}"  *ngIf="menuItem.children.length==0"></div>
+    <span class="item-text">{{ menuItem.label  }}</span>
   </ul>
 </a>
 
