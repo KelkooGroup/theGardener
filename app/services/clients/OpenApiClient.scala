@@ -37,6 +37,7 @@ class OpenApiClient @Inject()(wsClient: WSClient)(implicit ec: ExecutionContext)
       if (response.status == 200) {
         response.body
       } else {
+        logger.info("error on the openApi inclusion ")
         throw new Exception(s"Request to $openApiUrl failed with code ${response.status}")
       }
     }
