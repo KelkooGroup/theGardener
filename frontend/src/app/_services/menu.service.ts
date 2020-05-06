@@ -10,7 +10,7 @@ import {
   MenuProjectHierarchy, MenuType
 } from '../_models/menu';
 import {NavigationRoute} from '../_models/route';
-import {RouteService} from './route.service';
+import {EMPTY_CHAR, RouteService} from './route.service';
 
 @Injectable({
   providedIn: 'root'
@@ -110,7 +110,11 @@ export class MenuService {
   private buildMenuHierarchyForBranches(parentRoute: NavigationRoute, project: ProjectApi, depth: number): Array<MenuHierarchy> {
 
     const branchesMenu = project.branches.map(b => {
-      const currentRoute = { nodes: parentRoute.nodes, project: project.id, branch: b.name , directories: [] as Array<string>};
+      let currentBranch = b.name;
+      if ( project.stableBranch === b.name  && project.branches.length === 1) {
+        currentBranch= EMPTY_CHAR;
+      }
+      const currentRoute = { nodes: parentRoute.nodes, project: project.id, branch: currentBranch , directories: [] as Array<string>};
       const branchItem: MenuHierarchy = {
         name: b.name,
         label: b.name,
