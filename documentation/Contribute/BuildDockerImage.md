@@ -71,6 +71,8 @@ sbt dockerPush # If image already built
 sbt dockerBuildAndPush # To build and push in one command
 ```
 
-Note that pushing an image to Docker Hub can take few minutes.
+_Note that pushing an image to Docker Hub can take few minutes._
+
+Then it will be available under https://hub.docker.com/repository/docker/kelkoogroup/thegardener
 
 

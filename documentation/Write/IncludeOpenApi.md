@@ -26,7 +26,6 @@ To include OpenApi models, use this module :
 {
   "openApi" : 
      {
-        "openApiUrl": "https://thegardener.kelkoogroup.com/api/docs/swagger.json",
         "openApiType": "model",
         "ref": "#/definitions/Project",
         "deep": 1
@@ -56,7 +55,6 @@ this module will be displayed as follows:
 {
   "openApi" : 
      {
-        "openApiUrl": "https://thegardener.kelkoogroup.com/api/docs/swagger.json",
         "openApiType": "model",
         "ref": "#/definitions/Project",
         "deep": 1

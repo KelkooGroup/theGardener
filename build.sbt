@@ -122,6 +122,7 @@ enablePlugins(sbtdocker.DockerPlugin, JavaAppPackaging)
 dockerfile in docker := {
   val appDir: File = stage.value
   val defaultConfFile: File = new File("./docker/application.conf")
+  val defaultLogBackFile: File = new File("./local-conf/logback.xml")
   val targetDir = "/app"
   val confDir = "/app-conf"
   val gitDataDir = "/git-data"
@@ -134,6 +135,7 @@ dockerfile in docker := {
     entryPoint(s"$targetDir/bin/${executableScriptName.value}")
     cmd(s"-Dconfig.file=$confDir/application.conf")
     copy(defaultConfFile, s"$confDir/", chown = "daemon:daemon")
+    copy(defaultLogBackFile, s"$confDir/", chown = "daemon:daemon")
     copy(appDir, targetDir, chown = "daemon:daemon")
   }
 }

@@ -8,7 +8,7 @@
 }
 ```
 
-### [2020-05][1.2.3]  
+### [2020-05][1.2.4]  
 
 The main feature is:
 - [0568 - Include OpenAPI endpoints](https://github.com/KelkooGroup/theGardener/issues/568)
