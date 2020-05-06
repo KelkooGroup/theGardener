@@ -148,8 +148,13 @@ describe('RouteService', () => {
     });
 
     it('relativeUrlToFullFrontEndUrl ', () => {
-        expect(service.relativeUrlToFullFrontEndUrl('./OpenApi',{nodes: 'Tools',project: 'theGardener',branch: 'master',directories: '_Guide_Write',page: 'Basics'} ))
+
+        expect(service.relativeUrlToFullFrontEndUrl('https://thegardener.kelkoogroup.com',{nodes: 'Tools',project: 'theGardener',branch: 'master',directories: '_Guide_Write',page: 'Basics'} ))
+            .toEqual("https://thegardener.kelkoogroup.com");
+        expect(service.relativeUrlToFullFrontEndUrl('OpenApi',{nodes: 'Tools',project: 'theGardener',branch: 'master',directories: '_Guide_Write',page: 'Basics'} ))
                .toEqual("app/documentation/navigate/Tools/theGardener/master/_Guide_Write/OpenApi");
+        expect(service.relativeUrlToFullFrontEndUrl('./OpenApi',{nodes: 'Tools',project: 'theGardener',branch: 'master',directories: '_Guide_Write',page: 'Basics'} ))
+            .toEqual("app/documentation/navigate/Tools/theGardener/master/_Guide_Write/OpenApi");
         expect(service.relativeUrlToFullFrontEndUrl('../Guides',{nodes: 'Tools',project: 'theGardener',branch: 'master',directories: '_Guide_Write',page: 'Basics'} ))
                .toEqual("app/documentation/navigate/Tools/theGardener/master/_Guide/Guides");
         expect(service.relativeUrlToFullFrontEndUrl('../../Changelog',{nodes: 'Tools',project: 'theGardener',branch: 'master',directories: '_Guide_Write',page: 'Basics'} ))

@@ -129,7 +129,7 @@ const EXPECTED_MENU_FOR_ENGINEERING_VIEW: Array<MenuHierarchy> = [
                                 route: {
                                     nodes: ["eng", "library", "suggestion"],
                                     project: "suggestionsReports",
-                                    branch: "master",
+                                    branch: "_",
                                     directories: [] as Array<string>
                                 },
                                 children: [] as Array<MenuHierarchy>,
@@ -240,7 +240,7 @@ const EXPECTED_MENU_FOR_ENGINEERING_VIEW: Array<MenuHierarchy> = [
                                 route: {
                                     nodes: ["eng","library", "user"],
                                     project: "usersWS",
-                                    branch: "master",
+                                    branch: "_",
                                     directories: [] as Array<string>
                                 },
                                 children: [],

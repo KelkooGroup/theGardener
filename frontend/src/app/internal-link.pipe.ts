@@ -25,6 +25,7 @@ export class InternalLinkPipe implements PipeTransform {
     let transformedValue = this.transformLegacy(value);
     transformedValue = this.transformInternalLinks(transformedValue);
     transformedValue = this.transformInternalRelativeLinks(transformedValue);
+    transformedValue = this.transformInternalRelativeLinksWithAnchor(transformedValue);
     return transformedValue;
   }
 
@@ -40,6 +41,25 @@ export class InternalLinkPipe implements PipeTransform {
 
     function replacer(p1: string, p2: string, relativePath: string) {
       const targetUrl = routeService.relativeUrlToFullFrontEndUrl(relativePath, {nodes,project,branch,directories});
+      return `onclick="navigateTo('${targetUrl}')"`;
+    }
+
+    return value.replace(linkRegex, replacer);
+  }
+
+  transformInternalRelativeLinksWithAnchor(value: string): string {
+    const linkRegexString = '(href=)["\'](.*?)[\.]md#([a-z\-]+)["\']';
+    const linkRegex = new RegExp(linkRegexString, 'g');
+
+    const nodes = this.nodes;
+    const project = this.project;
+    const branch = this.branch;
+    const directories = this.directories;
+    const routeService = this.routeService;
+
+    function replacer(p1: string, p2: string, relativePath: string,anchor: string) {
+      let relativePathWithAnchor = `${relativePath}#${anchor}`
+      const targetUrl = routeService.relativeUrlToFullFrontEndUrl(relativePathWithAnchor, {nodes,project,branch,directories});
       return `onclick="navigateTo('${targetUrl}')"`;
     }
 

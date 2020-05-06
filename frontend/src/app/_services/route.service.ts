@@ -2,8 +2,8 @@ import {Injectable} from '@angular/core';
 import {BackendPath, FrontendPath, NavigationParams, NavigationRoute} from '../_models/route';
 import {MenuHierarchy} from '../_models/menu';
 
-const EMPTY_CHAR = '_';
-const EMPTY_CHAR_REGEX = /_/g;
+export const EMPTY_CHAR = '_';
+export const EMPTY_CHAR_REGEX = /_/g;
 export const NAVIGATE_PATH = 'app/documentation/navigate/';
 
 @Injectable({
@@ -72,10 +72,9 @@ export class RouteService {
        if ( relativePath === undefined ) {
            return undefined;
        }
-       if (relativePath.startsWith('./')) {
-           const page = relativePath.substr(2, relativePath.length);
-           return  `${NAVIGATE_PATH}${navigationParams.nodes}/${navigationParams.project}/${navigationParams.branch}/${navigationParams.directories}/${page}`;
-       }
+        if ( relativePath.startsWith('http') ) {
+            return relativePath;
+        }
 
        if (relativePath.startsWith('../')) {
             const directories = navigationParams.directories.split(EMPTY_CHAR);
@@ -107,8 +106,13 @@ export class RouteService {
 
 
             return  `${NAVIGATE_PATH}${navigationParams.nodes}/${navigationParams.project}/${navigationParams.branch}/${targetDirectoriesPath}/${page}`;
-        }
-       return undefined;
+       } else {
+           let page = relativePath;
+           if (relativePath.startsWith('./')) {
+               page = relativePath.substr(2, relativePath.length);
+           }
+           return `${NAVIGATE_PATH}${navigationParams.nodes}/${navigationParams.project}/${navigationParams.branch}/${navigationParams.directories}/${page}`;
+       }
     }
 
     splitParamPathInArray(param: string): Array<string> {
