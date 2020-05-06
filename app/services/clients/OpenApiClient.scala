@@ -14,7 +14,6 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
 
 
-
 class OpenApiClient @Inject()(wsClient: WSClient)(implicit ec: ExecutionContext) extends Logging {
 
   def getOpenApiDescriptor(openApiModule: OpenApiModelModule, pageJoinProject: PageJoinProject): Future[OpenApiModel] = {
@@ -27,18 +26,27 @@ class OpenApiClient @Inject()(wsClient: WSClient)(implicit ec: ExecutionContext)
       getOpenApiJsonString(url).map { response =>
         parseSwaggerJsonDefinitions(response, openApiModule.ref.getOrElse(""), openApiModule.deep, openApiModule.label)
       }.recoverWith {
-        case NonFatal(_) => Future.successful(OpenApiModel("", Option(Seq()), Seq(), Seq(), Seq(openApiModule.errorMessage.getOrElse(" "))))
+        case NonFatal(e) => {
+          if (e.getMessage == "Time out exception") {
+            Future.successful(OpenApiModel("", Option(Seq()), Seq(), Seq(), Seq(s"Calling the url ${openApiModuleWithUrlFromVariable.openApiUrl.getOrElse("")} lead to a Time out")))
+          } else {
+            Future.successful(OpenApiModel("", Option(Seq()), Seq(), Seq(), Seq(openApiModule.errorMessage.getOrElse(" "))))
+          }
+        }
       }
     }.getOrElse(Future.successful(OpenApiModel("", Option(Seq()), Seq())))
   }
 
   def getOpenApiJsonString(openApiUrl: String): Future[String] = {
-    wsClient.url(openApiUrl).withRequestTimeout(20.second).get().map { response =>
+    wsClient.url(openApiUrl).withRequestTimeout(2.second).get().map { response =>
       if (response.status == 200) {
         response.body
       } else {
-        logger.info("error on the openApi inclusion ")
-        throw new Exception(s"Request to $openApiUrl failed with code ${response.status}")
+        if (response.status == 504) {
+          throw new Exception("Time out exception")
+        } else {
+          throw new Exception(s"Request to $openApiUrl failed with code ${response.status}")
+        }
       }
     }
   }
@@ -54,6 +62,7 @@ class OpenApiClient @Inject()(wsClient: WSClient)(implicit ec: ExecutionContext)
         parseSwaggerJsonPaths(response, url, openApiPathModule.ref.getOrElse(Seq()), openApiPathModule.methods.getOrElse(Seq()), openApiPathModule.refStartsWith.getOrElse(Seq()))
       }.recoverWith {
         case NonFatal(_) => Future.successful(OpenApiPath(Json.parse("{}"), "", Seq(openApiPathModule.errorMessage.getOrElse(""))))
+
       }
     }.getOrElse(Future.successful(OpenApiPath(Json.toJson(""), "")))
   }
@@ -119,16 +128,6 @@ object OpenApiClient {
     }
   }
 
-
-  def getSwaggerJsonInfos(swaggerJsonTree: JsObject): JsObject = {
-    val swagger = Json.parse(s"""{"swagger":${swaggerJsonTree.value("swagger")}}""").as[JsObject]
-    val host = Json.parse(s"""{"host":${swaggerJsonTree.value("host")}}""").as[JsObject]
-    val basePath = Json.parse(s"""{"basePath":${swaggerJsonTree.value("basePath")}}""").as[JsObject]
-    val definitions = Json.parse(s"""{"definitions":${swaggerJsonTree.value("definitions")}}""").as[JsObject]
-    swagger.deepMerge(Json.parse("""{"infos": {}}""").as[JsObject]).deepMerge(host).deepMerge(basePath).deepMerge(definitions)
-
-  }
-
   @silent("Interpolated")
   @silent("missing interpolator")
   def parseSwaggerJsonPaths(swaggerJson: String, url: String, reference: Seq[String], methods: Seq[String], refStartsWith: Seq[String]): OpenApiPath = {
@@ -145,6 +144,15 @@ object OpenApiClient {
     val pathsJsonObject = Json.parse("{\"paths\": {" + pathsString + "}}").asOpt[JsObject]
     pathsJsonObject.map(_.deepMerge(jsonTree.as[JsObject]))
     OpenApiPath(Json.toJson(pathsJsonObject.map(_.deepMerge(getSwaggerJsonInfos(jsonTree.asOpt[JsObject].getOrElse(throw new Exception("the url doesn't lead to a swagger.json")))))), url.split(":")(0))
+  }
+
+  def getSwaggerJsonInfos(swaggerJsonTree: JsObject): JsObject = {
+    val swagger = Json.parse(s"""{"swagger":${swaggerJsonTree.value("swagger")}}""").as[JsObject]
+    val host = Json.parse(s"""{"host":${swaggerJsonTree.value("host")}}""").as[JsObject]
+    val basePath = Json.parse(s"""{"basePath":${swaggerJsonTree.value("basePath")}}""").as[JsObject]
+    val definitions = Json.parse(s"""{"definitions":${swaggerJsonTree.value("definitions")}}""").as[JsObject]
+    swagger.deepMerge(Json.parse("""{"infos": {}}""").as[JsObject]).deepMerge(host).deepMerge(basePath).deepMerge(definitions)
+
   }
 
   def getAllRefStartWith(refStartsWith: Seq[String], pathTree: JsObject): Seq[String] = {
