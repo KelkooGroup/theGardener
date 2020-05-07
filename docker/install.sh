@@ -2,6 +2,7 @@
 
 currentDir=$(pwd)
 applicationFile="$currentDir/custom-application.conf"
+dataDir="$currentDir/data"
 gitDataDir="$currentDir/git-data"
 logFile="$currentDir/theGardener.log"
 
@@ -12,23 +13,21 @@ echo
 echo "theGardener installation"
 echo
 echo "This script will:"
+echo " - stop and remove existing thegardener container if it exists"
 echo " - create the directory for the data downloaded by theGardener from git repositories: $gitDataDir"
+echo " - create the directory for H2 data used by theGardener from git repositories: $dataDir"
 echo " - ask a few questions to customize your instance and create $applicationFile"
 echo " - launch theGardener with docker with a database in memory"
 echo
-echo "This script assume that "
-echo " - docker is installed"
-echo " - no container thegardener exists "
-echo "      if a previous run is still running :"
-echo "           - To stop the docker container => docker stop thegardener"
-echo "           - To remove the docker container => docker rm thegardener"
-
+echo "This script assume that docker is installed"
 echo
 echo
 read -p "Shall we continue? [enter to continue]"
 echo
-
-
+docker stop thegardener > /dev/null 2> /dev/null
+docker rm thegardener > /dev/null 2> /dev/null
+echo
+echo
 echo "Several questions to customize your theGardener instance: "
 echo "(Default values are working fine)"
 
@@ -68,19 +67,27 @@ echo
 echo "The following $applicationFile has been generated:"
 cat $applicationFile
 
-FILE=/etc/resolv.conf
 if [ -f "$gitDataDir" ]; then
     echo "$gitDataDir is is already there..."
 else
-    mkdir $gitDataDir
+    mkdir $gitDataDir  >2 /dev/null
     echo "$gitDataDir ready to get data"
 fi
+
+if [ -f "$dataDir" ]; then
+    echo "$dataDir is is already there..."
+else
+    mkdir $dataDir >2 /dev/null
+    echo "$dataDir ready to get data"
+fi
+
 
 
 echo
 echo -n "Launching in background theGardener instance"
 
 docker run --name thegardener -p 9000:9000 \
+       -v $dataDir:/data:rw \
        -v $applicationFile:/app-conf/application-custom.conf:ro \
        -v $gitDataDir:/git-data:rw  kelkoogroup/thegardener:latest \
        -Dconfig.file=/app-conf/application-custom.conf  > $logFile 2> $logFile &
@@ -137,9 +144,15 @@ do
      sleep 2
      echo -n "."
 done
-sleep 2
-echo ""
+i="0"
+while [ $i -lt 4 ]
+do
+  sleep 2
+  echo -n "."
+  ((i++))
+done
 
+echo ""
 echo ""
 echo ""
 echo "Refresh the menu"

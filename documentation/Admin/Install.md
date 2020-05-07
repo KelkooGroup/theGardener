@@ -38,13 +38,16 @@ You can now configure your application through [Configure endpoints](http://loca
 From `/current_dir/install.sh` after the installation, you will have:
 - `/current_dir/custom-application.conf`: application configuration customized based on your answers
 - `/current_dir/git-data`: directory that store the git repositories sources
+- `/current_dir/data`: directory that store H2 database
 
 The script has launched the `thegardener` container the following way:
 
 ```shell script
 docker run --name thegardener -p 9000:9000 \
        -v /current_dir/custom-application.conf:/app-conf/application-custom.conf:ro \
-       -v /current_dir/git-data:/git-data:rw  kelkoogroup/thegardener:latest \
+       -v /current_dir/git-data:/git-data:rw \  
+       -v /current_dir/data:/data:rw \
+        kelkoogroup/thegardener:latest \
        -Dconfig.file=/app-conf/application-custom.conf  
 ```
 
