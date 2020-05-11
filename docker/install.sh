@@ -70,14 +70,14 @@ cat $applicationFile
 if [ -f "$gitDataDir" ]; then
     echo "$gitDataDir is is already there..."
 else
-    mkdir $gitDataDir  >2 /dev/null
+    mkdir $gitDataDir  2> /dev/null
     echo "$gitDataDir ready to get data"
 fi
 
 if [ -f "$dataDir" ]; then
     echo "$dataDir is is already there..."
 else
-    mkdir $dataDir >2 /dev/null
+    mkdir $dataDir 2> /dev/null
     echo "$dataDir ready to get data"
 fi
 
@@ -119,9 +119,11 @@ echo ""
 echo ""
 echo "Register theGardener:"
 
+sourceUrlTemplate='  "sourceUrlTemplate": "https://github.com/KelkooGroup/theGardener/blob/${branch}/${path}",    '
+
 curl -X POST "http://localhost:9000/api/projects" \
     -H  "accept: application/json" -H  "Content-Type: application/json" \
-    -d "{  \"id\": \"theGardener\",  \"name\": \"theGardener\",  \"repositoryUrl\": \"https://github.com/KelkooGroup/theGardener.git\",  \"stableBranch\": \"master\",  \"displayedBranches\": \"master\",  \"featuresRootPath\": \"test/features\",  \"documentationRootPath\": \"documentation\", \"variables\": [{ \"name\": \"\${openApi.json.url}\", \"value\": \"http://localhost:9000/api/docs/swagger.json\"}]}"
+    -d "{  \"id\": \"theGardener\",  \"name\": \"theGardener\",  \"repositoryUrl\": \"https://github.com/KelkooGroup/theGardener.git\", $sourceUrlTemplate \"stableBranch\": \"master\",  \"displayedBranches\": \"master\",  \"featuresRootPath\": \"test/features\",  \"documentationRootPath\": \"documentation\", \"variables\": [{ \"name\": \"\${openApi.json.url}\", \"value\": \"http://localhost:9000/api/docs/swagger.json\"}]}"
 
 
 echo ""
