@@ -51,17 +51,19 @@ Syntax of the link : usual [Markdown syntax](https://www.markdownguide.org/basic
 
 For instance :
 - [IncludeOpenApi](IncludeOpenApi.md)
-- [IncludeOpenApi](./IncludeOpenApi.md)
-- [IncludeOpenApi path section](./IncludeOpenApi.md#include-openapi-path)
-- [Install](../Admin/Install.md)  
+- [IncludeOpenApi with ./](./IncludeOpenApi.md)
+- [IncludeOpenApi with anchor path section](./IncludeOpenApi.md#include-openapi-path)
+- [Install with ../](../Admin/Install.md)
+- [Install with ../ anchor mysql](../Admin/Install.md#usage-with-a-mysql-database)    
 
 with 
 ````
 For instance :
 - [IncludeOpenApi](IncludeOpenApi.md)
-- [IncludeOpenApi](./IncludeOpenApi.md)
-- [IncludeOpenApi path section](./IncludeOpenApi.md#include-openapi-path)
-- [Install](../Admin/Install.md)  
+- [IncludeOpenApi with ./](./IncludeOpenApi.md)
+- [IncludeOpenApi with anchor path section](./IncludeOpenApi.md#include-openapi-path)
+- [Install with ../](../Admin/Install.md)
+- [Install with ../ anchor mysql](../Admin/Install.md#usage-with-a-mysql-database)    
 ````
 
 **To a page outside of your project:**

@@ -44,7 +44,7 @@ export class OpenApiEndPointsComponent implements OnInit, AfterViewInit {
       enableCORS: false,
       showMutatedRequest: false,
       requestInterceptor: (request: any) => {
-        request.url = this.proxyUrl + '?url=' + request.url.replace('http', this.openApiPathJson.protocol) + '&body=' + request.body;
+        request.url = this.proxyUrl + '?url=' + request.url.replace('http', this.openApiPathJson.protocol).replace(/&/g, 'amp') + '&body=' + request.body;
         return request
       }
     });
@@ -54,3 +54,4 @@ export class OpenApiEndPointsComponent implements OnInit, AfterViewInit {
     return this.openApiPathJson.errors.length !== 0 && this.openApiPathJson.errors[0] !== '';
   }
 }
+

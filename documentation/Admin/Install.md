@@ -10,18 +10,10 @@
 
 ## With Docker
 
-You can easily run an instance of theGardener using public Docker images published
-on the [Docker Hub](https://hub.docker.com/r/kelkoogroup/thegardener).
+You can easily run an instance of theGardener using public Docker images published 
+on the [Docker Hub](https://hub.docker.com/r/kelkoogroup/thegardener/tags).
 
-### Basic usage
-
-Run a theGardener instance with an embedded database (H2):
-
-```
-docker run --name thegardener -p 9000:9000 kelkoogroup/thegardener:latest
-```
-
-Then go to http://localhost:9000 in your browser.
+The following steps will propose you to create a `thegardener` docker container with the last version available.
 
 #### New to Docker?
 
@@ -30,111 +22,51 @@ If you are new to Docker, here is some commands that you might need:
 - remove the container: `docker container rm thegardener`
 - view logs: `docker container logs -f thegardener`
 
-### Load sample data
+### Install with a H2 database
 
-You can load sample data by using following commands.
-
-This will configure theGardener itself as a sample project in your running instance.
+The script will create a simple theGardener instance with an embedded database (H2) with one hierarchy node and one project: theGardener documentation itself.
 
 ```shell script
-curl -X POST "http://localhost:9000/api/hierarchy" \
-    -H "accept: application/json" -H "Content-Type: application/json" \
-    -d "{  \"id\": \".\",  \"slugName\": \"root\",  \"name\": \"root\",  \"childrenLabel\": \"Views\",  \"childLabel\": \"View\"}"
-
-curl -X POST "http://localhost:9000/api/hierarchy" \
-    -H  "accept: application/json" -H  "Content-Type: application/json" \
-    -d "{  \"id\": \".01.\",  \"slugName\": \"tools\",  \"name\": \"Tools\",  \"childrenLabel\": \"Projects\",  \"childLabel\": \"Project\"}"
-
-curl -X POST "http://localhost:9000/api/projects" \
-    -H  "accept: application/json" -H  "Content-Type: application/json" \
-    -d "{  \"id\": \"theGardener\",  \"name\": \"theGardener\",  \"repositoryUrl\": \"https://github.com/KelkooGroup/theGardener-template.git\",  \"stableBranch\": \"master\",  \"displayedBranches\": \"master\",  \"featuresRootPath\": \"test/features\",  \"documentationRootPath\": \"documentation\"}"
-
-curl -X POST "http://localhost:9000/api/projects/theGardener/hierarchy/.01." \
-    -H  "accept: application/json"
-
-curl -X POST "http://localhost:9000/api/projects/theGardener/synchronize" \
-    -H  "accept: application/json"
-    
-curl -X POST "http://localhost:9000/api/admin/menu/refreshFromDatabase" -H  "accept: application/json"
-    
+wget https://raw.githubusercontent.com/KelkooGroup/theGardener/master/docker/install.sh
+chmod +x install.sh
+./install.sh
 ```
 
-### Customize the configuration
+Then go to http://localhost:9000 in your browser to navigate to the documentation.
+You can now configure your application through [Configure endpoints](http://localhost:9000/app/documentation/navigate/_tools/theGardener/_/_Admin/Configure) available in the documentation itself.
 
-If needed, you can override the application configuration by creating a custom
-configuration file, let's say `/tmp/application-custom.conf` which can look like this:
-```
-include "application.conf"
+From `/current_dir/install.sh` after the installation, you will have:
+- `/current_dir/custom-application.conf`: application configuration customized based on your answers
+- `/current_dir/git-data`: directory that store the git repositories sources
+- `/current_dir/data`: directory that store H2 database
 
-application.windowTitle = "Title in the browser tab"
-application.title = "Title in the page under the logo"
-application.logoSrc = "assets/images/logo-white.png"
-application.faviconSrc = "assets/images/favicon.png"
-color.dark="#205373"
-color.main="#2b709a"
-color.light="#edf3f7"
+The script has launched the `thegardener` container the following way:
 
-```
-
-This will override default configuration defined in `application.conf` with your custom
-values.
-
-Then, you need to mount this file in the `/app-conf` volume in the container and add it as
-an arg when running the container. For example:
 ```shell script
-docker run --name thegardener \
-    -p 9000:9000 \
-    -v /tmp/application-custom.conf:/app-conf/application-custom.conf:ro \
-    kelkoogroup/thegardener:latest \
-    -Dconfig.file=/app-conf/application-custom.conf
+docker run --name thegardener -p 9000:9000 \
+       -v /current_dir/custom-application.conf:/app-conf/application-custom.conf:ro \
+       -v /current_dir/git-data:/git-data:rw \  
+       -v /current_dir/data:/data:rw \
+        kelkoogroup/thegardener:latest \
+       -Dconfig.file=/app-conf/application-custom.conf  
 ```
 
-Putting your file in the `/app-conf` directory allows you to include the default configuration
-file but you can also put it in any place you want.
 
-### Persist Git data
+### Install with a MySQL database
 
-If you want to persist Git data outside of the container, just mount the volume `/git-data`
-in a host directory. For example:
-```shell script
-docker run --name thegardener \
-    -p 9000:9000 \
-    -v /tmp/git-data:/git-data:rw \
-    kelkoogroup/thegardener:latest
+The previous installation give the opportunity to play with an instance. 
+H2 is very easy to define but do not work properly with a large scale. 
+You can run theGardener with a proper SQL engine, like for instance MySQL :
+
+Add the following lines in the `/current_dir/custom-application.conf` generated above.
 ```
-
-### Persist embedded database data
-
-If you want to persist the embedded database data outside of the container, just mount
-the volume `/data`. For example:
-```shell script
-docker run --name thegardener \
-    -p 9000:9000 \
-    -v /tmp/db:/data:rw \
-    kelkoogroup/thegardener:latest
-```
-
-You would probably want to use a real database instead of the embedded database though.
-To do that, see the section above.
-
-### Usage with a MySQL database
-
-You can run theGardener with a MySQL database. Here is how to do with a MySQL instance
-running as a container.
-
-You will need to customize the configuration of the app (see above) with a custom
-`application-mysql.conf` file configuring the database credentials.
-For instance:
-```
-include "application.conf"
-
 db.default.driver=com.mysql.cj.jdbc.Driver
 db.default.url="jdbc:mysql://mysql:3306/thegardener?autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=false&characterEncoding=utf8&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC"
 db.default.username=root
 db.default.password="root"
 ```
 
-Then, you can use the following `docker-compose.yml` file:
+Then, you can use the following `docker-compose.yml` file to launch the composed container:
 ```yaml
 version: '3'
 services:
@@ -143,7 +75,7 @@ services:
     ports:
     - "9000:9000"
     volumes:
-    - /tmp/application-mysql.conf:/app-conf/application-mysql.conf:ro
+    - /current_dir/custom-application.conf:/app-conf/application-mysql.conf:ro
     links:
     - mysql
     entrypoint:
