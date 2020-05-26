@@ -15,18 +15,12 @@ To use theGardener to serve your documentation, follow the next steps:
 
 [=> Install an instance with Docker](thegardener://navigate/_doc/theGardener/master/_Admin/Install).
 
-After this step you will have a running instance of theGardener with
-- default colors, logos, titles
+After this step you will have a running instance of theGardener that looks like your own back office
+- the [UI customized](thegardener://navigate/_doc/theGardener/master/_Admin/Configure#ui-settings) 
 - a simple hierarchy with one node
 - one project, theGardener project, attached to this node  
 
 ### Configure the instance
-
-#### Customize the UI
-
-[=> Choose your logo, title, colors...](thegardener://navigate/_doc/theGardener/master/_Admin/Configure#ui-settings)
-
-After this step you will have a running instance of theGardener that looks like your own back office.
 
 #### Define the hierarchy to host your projects
 

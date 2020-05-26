@@ -82,7 +82,6 @@ Define the hierarchy with the following endpoints:
 {
   "openApiPath" : 
      {
-        "openApiUrl": "https://thegardener.kelkoogroup.com/api/docs/swagger.json",
         "refStartsWith": [
          "/api/hierarchy"
         ],
@@ -117,7 +116,6 @@ Manage projects with the following endpoints:
 {
   "openApiPath" : 
      {
-        "openApiUrl": "https://thegardener.kelkoogroup.com/api/docs/swagger.json",
         "refStartsWith": [
          
         ],
@@ -141,7 +139,6 @@ Manage relation between projects and hierarchy with the following endpoints:
 {
   "openApiPath" : 
      {
-        "openApiUrl": "https://thegardener.kelkoogroup.com/api/docs/swagger.json",
         "refStartsWith": [
           "/api/projects/{id}/hierarchy"
         ],
