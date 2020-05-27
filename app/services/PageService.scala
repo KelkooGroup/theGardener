@@ -4,7 +4,7 @@ import java.io.{File, FileInputStream}
 
 import com.github.ghik.silencer.silent
 import controllers.dto.{PageDTO, PageFragment, PageFragmentContent}
-import javax.inject.{Inject, Singleton}
+import javax.inject._
 import models.{PageJoinProject, _}
 import org.apache.commons.io.FileUtils
 import play.api.{Configuration, Logging}
@@ -115,8 +115,10 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
   val ImageRegex = """\!\[.*\]\((.*)\)""".r
   val ReferenceRegex = """\[.*\]\:\s(\S*)""".r
 
-  val SourceTemplateBranchToken = "${branch}"
-  val SourceTemplatePathToken = "${path}"
+  val StartVar = "${"
+  val EndVar = "}"
+  val SourceTemplateBranchToken = s"${StartVar}branch${EndVar}"
+  val SourceTemplatePathToken = s"${StartVar}path${EndVar}"
 
   val luceneSearchIndex = new DirectLucene(Nil, None)
   val name = luceneSearchIndex.create.field[String]("name")

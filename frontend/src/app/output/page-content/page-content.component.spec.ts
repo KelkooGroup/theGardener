@@ -71,8 +71,8 @@ describe('PageContentComponent', () => {
     page = new PageObject(fixture);
     activatedRoute = fixture.debugElement.injector.get(ActivatedRoute) as any;
 
-    activatedRoute.testParentParams = {name: '_eng', path: 'suggestionsWS>qa>_pmws_'};
-    activatedRoute.testParams = {page: 'overview'};
+    activatedRoute.testParentParams = {name: '_eng', path: 'suggestionsWS>qa>/overview'};
+    activatedRoute.testParams = { nodes:'_eng', project:'suggestionsWS', branch:'qa', directories: '_', page: 'overview'};
     activatedRoute.fragment = of('');
   });
 
@@ -82,7 +82,7 @@ describe('PageContentComponent', () => {
 
     fixture.detectChanges();
     expect(component).toBeTruthy();
-    expect(pageService.getPage).toHaveBeenCalledWith('suggestionsWS>qa>_pmws_overview');
+    expect(pageService.getPage).toHaveBeenCalledWith('suggestionsWS>qa>/overview');
 
     expect(page.title).toMatch('overview');
     expect(page.pageContent.startsWith('For various reasons'))
@@ -96,6 +96,8 @@ describe('PageContentComponent', () => {
 
     fixture.detectChanges();
     expect(component).toBeTruthy();
+
+    expect(pageService.getPage).toHaveBeenCalledWith('suggestionsWS>qa>/overview');
 
   }));
 
@@ -119,16 +121,6 @@ describe('PageContentComponent', () => {
     expect(component).toBeTruthy();
     expect(page.iframe).toBeFalsy();
     expect(page.scenario).toBeTruthy();
-  }));
-
-  it('should navigate to the right url when click on internal link', async(() => {
-    const path = 'app/documentation/navigate/HierarchyNode;path=theGardener>master>_features_/administration';
-
-    const router: Router = TestBed.get(Router);
-    spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
-    PageContentComponentTools.navigate(router, path);
-
-    expect(router.navigate).toHaveBeenCalledWith(['app/documentation/navigate/HierarchyNode', {path: 'theGardener>master>_features_'}, 'administration'], {fragment: undefined})
   }));
 
   it('should not crash when bad path in internal link', async(() => {

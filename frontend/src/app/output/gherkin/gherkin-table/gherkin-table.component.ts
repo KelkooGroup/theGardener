@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {GherkinExamples} from "../../../_models/gherkin";
+import {GherkinExamples} from '../../../_models/gherkin';
 
 @Component({
   selector: 'app-gherkin-table',
@@ -18,11 +18,11 @@ export class GherkinTableComponent implements OnInit {
   }
 
   ngOnInit() {
-    if ( this.table ){
+    if ( this.table ) {
       this.tableHeader = this.table[0];
       this.tableRows = this.table.slice(1);
     }
-    if ( this.examples && this.examples.length >0  ){
+    if ( this.examples && this.examples.length > 0  ) {
       this.tableHeader = this.examples[0].tableHeader;
       this.tableRows = this.examples[0].tableBody;
     }

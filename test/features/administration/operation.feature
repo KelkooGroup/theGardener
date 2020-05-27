@@ -44,17 +44,21 @@ Feature: Provide some tools to operate the application when something is not wor
 **Feature**: Provide book suggestions LOCAL DIFF
 """
     Given  we have the following projects
-      | id            | name                    | repositoryUrl                                       | stableBranch | featuresRootPath | documentationRootPath |
-      | suggestionsWS | Suggestions WebServices | target/remote/data/Operation/library/suggestionsWS/ | master       | test/features    | doc                   |
+      | id                  | name                    | repositoryUrl                                       | stableBranch | featuresRootPath | documentationRootPath |
+      | suggestionsWS       | Suggestions WebServices | target/remote/data/Operation/library/suggestionsWS/ | master       | test/features    | doc                   |
+      | suggestionsWSPublic | Suggestions WebServices | target/remote/data/Operation/library/suggestionsWS/ | master       | test/features    | doc/Public            |
     And we have those branches in the database
-      | id | name   | isStable | projectId     |
-      | 1  | master | true     | suggestionsWS |
+      | id | name   | isStable | projectId           |
+      | 1  | master | true     | suggestionsWS       |
+      | 2  | master | true     | suggestionsWSPublic |
     And we have those directories in the database
-      | id | name | label         | description             | order | relativePath | path                   | branchId |
-      | 1  | root | SuggestionsWS | Suggestions WebServices | 0     | /            | suggestionsWS>master>/ | 1        |
+      | id | name | label               | description                    | order | relativePath | path                   | branchId |
+      | 1  | root | SuggestionsWS       | Suggestions WebServices        | 0     | /            | suggestionsWS>master>/ | 1        |
+      | 2  | root | SuggestionsWSPublic | Suggestions WebServices Public | 0     | /            | suggestionsWS>master>/ | 2        |
     And we have those pages in the database
       | id | name    | label   | description | order | relativePath | path                          | markdown                                      | directoryId |
       | 1  | context | context | context     | 0     | /context     | suggestionsWS>master>/context | **Feature**: Provide book suggestions DB DIFF | 1           |
+      | 2  | context | context | context     | 0     | /context     | suggestionsWS>master>/context | **Feature**: Provide book suggestions PUBLIC  | 2           |
 
 
   @level_2_technical_details @nominal_case @valid @data_refresh @refresh_menu
@@ -85,15 +89,17 @@ Feature: Provide some tools to operate the application when something is not wor
 """
     And the menu has been reloaded
     And we have now those branches in the database
-      | id | name   | isStable | projectId     |
-      | 1  | master | true     | suggestionsWS |
+      | id | name   | isStable | projectId           |
+      | 1  | master | true     | suggestionsWS       |
+      | 2  | master | true     | suggestionsWSPublic |
     And we have now those directories in the database
-      | id | name | label         | description             | order | relativePath | path                   | branchId |
-      | 2  | root | SuggestionsWS | Suggestions WebServices | 0     | /            | suggestionsWS>master>/ | 1        |
+      | id | name | label               | description                    | order | relativePath | path                   | branchId |
+      | 2  | root | SuggestionsWSPublic | Suggestions WebServices Public | 0     | /            | suggestionsWS>master>/ | 2        |
+      | 3  | root | SuggestionsWS       | Suggestions WebServices        | 0     | /            | suggestionsWS>master>/ | 1        |
     And we have now those pages in the database
       | id | name    | label   | description | order | relativePath | path                          | markdown                                         | directoryId |
-      | 2  | context | context | context     | 0     | /context     | suggestionsWS>master>/context | **Feature**: Provide book suggestions LOCAL DIFF | 2           |
-
+      | 2  | context | context | context     | 0     | /context     | suggestionsWS>master>/context | **Feature**: Provide book suggestions PUBLIC     | 2           |
+      | 3  | context | context | context     | 0     | /context     | suggestionsWS>master>/context | **Feature**: Provide book suggestions LOCAL DIFF | 3           |
 
   @level_1_specifications @nominal_case @valid @data_refresh
   Scenario: force all projects refresh from the disk
@@ -102,7 +108,7 @@ Feature: Provide some tools to operate the application when something is not wor
     And the menu has been reloaded
     And  I get the following response body
 """
-{"message":"Projects refreshed from the disk are","elements":["suggestionsWS"]}
+{"message":"Projects refreshed from the disk are","elements":["suggestionsWS","suggestionsWSPublic"]}
 """
 
   @level_2_technical_details @nominal_case @valid @data_refresh @synchronize_project_from_git
@@ -114,6 +120,16 @@ Feature: Provide some tools to operate the application when something is not wor
 {"message":"Branches synchronized from the remote git repository linked to project suggestionsWS are","elements":["master"]}
 """
 
+  @level_2_technical_details @nominal_case @valid @data_refresh @synchronize_project_from_git 
+  Scenario: force a projects to synchronize from the same remote git repository
+    When I perform a "POST" on following URL "/api/admin/projects/suggestionsWS/synchronizeAllFromSameRemoteGitRepository"
+    Then I get a response with status "200"
+    And  I get the following response body
+"""
+{"message":"Projects synchronized from the remote git repository linked to project suggestionsWS are","elements":["suggestionsWS","suggestionsWSPublic"]}
+"""
+
+
   @level_2_technical_details @nominal_case @valid @data_refresh @refresh_project_from_git
   Scenario: force a project refresh from the remote git repository
     When I perform a "POST" on following URL "/api/admin/projects/suggestionsWS/refreshFromRemoteGitRepository"
@@ -124,13 +140,15 @@ Feature: Provide some tools to operate the application when something is not wor
 """
     And the menu has been reloaded
     And we have now those branches in the database
-      | id | name   | isStable | projectId     |
-      | 2  | master | true     | suggestionsWS |
+      | id | name   | isStable | projectId           |
+      | 2  | master | true     | suggestionsWSPublic |
+      | 3  | master | true     | suggestionsWS       |
     And we have now those directories in the database
-      | id | name | label         | description             | order | relativePath | path                   | branchId |
-      | 2  | root | SuggestionsWS | Suggestions WebServices | 0     | /            | suggestionsWS>master>/ | 2        |
+      | id | name | label               | description                    | order | relativePath | path                   | branchId |
+      | 2  | root | SuggestionsWSPublic | Suggestions WebServices Public | 0     | /            | suggestionsWS>master>/ | 2        |
+      | 3  | root | SuggestionsWS       | Suggestions WebServices        | 0     | /            | suggestionsWS>master>/ | 3        |
     And we have now those pages in the database
-      | id | name    | label   | description | order | relativePath | path                          | markdown                              | directoryId |
-      | 2  | context | context | context     | 0     | /context     | suggestionsWS>master>/context | **Feature**: Provide book suggestions | 2           |
-
+      | id | name    | label   | description | order | relativePath | path                          | markdown                                     | directoryId |
+      | 2  | context | context | context     | 0     | /context     | suggestionsWS>master>/context | **Feature**: Provide book suggestions PUBLIC | 2           |
+      | 3  | context | context | context     | 0     | /context     | suggestionsWS>master>/context | **Feature**: Provide book suggestions        | 3           |
 

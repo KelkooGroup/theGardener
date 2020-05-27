@@ -1,22 +1,22 @@
-<div class="header custom-backgroundColor-colorMain  custom-borderBottomColor-colorMain "  >
+<div class="header">
 
-  <ul class="header-bar" role="navigation">
-    <li class="header-logo">
-      <img *ngIf="logoSrc" [src]="logoSrc" alt="Organisation logo">
-      <div *ngIf="appTitle" class="header-logo-text">{{ appTitle }}</div>
-    </li>
+    <ul class="header-bar" role="navigation">
+        <li class="header-logo">
+            <img *ngIf="logoSrc" [src]="logoSrc" alt="Organisation logo">
+            <div *ngIf="appTitle" class="header-logo-text">{{ appTitle }}</div>
+        </li>
 
-    <li class="header-navigation" *ngFor="let item of items">
-      <a (click)="navigateTo(item)"
-         [ngClass]="isItemInActivatedRoute(item) ? 'active' : 'item-with-hover' "
-      >{{ item.name }}</a>
-    </li>
+        <li class="header-navigation" *ngFor="let item of items">
+            <a (click)="navigateTo(item)"
+               [ngClass]="isItemInActivatedRoute(item) ? 'active' : 'item-with-hover' "
+            >{{ item.label }}</a>
+        </li>
 
-    <li class="header-logo-the-gardener">
-      <div class="align-left">Powered by</div>
-      <a href="https://thegardener.kelkoogroup.com"><img src="assets/images/logo-white.png" alt="Logo"></a>
-    </li>
-  </ul>
+        <li class="header-logo-the-gardener">
+            <div class="align-left">Powered by</div>
+            <a href="https://thegardener.kelkoogroup.com"><img src="assets/images/logo-white.png" alt="Logo"></a>
+        </li>
+    </ul>
 
 </div>
 

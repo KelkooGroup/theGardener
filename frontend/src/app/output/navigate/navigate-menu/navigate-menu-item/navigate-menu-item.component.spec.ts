@@ -6,9 +6,9 @@ import {RouterTestingModule} from '@angular/router/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ActivatedRouteStub} from '../../../../_testUtils/activated-route-stub.spec';
-import {MenuDirectoryHierarchy, MenuProjectHierarchy} from '../../../../_models/menu';
 import {FormsModule} from '@angular/forms';
 import {MatSelectHelper} from '../../../../_testUtils/mat-select-helper.spec';
+import {MenuProjectHierarchy, MenuType} from "../../../../_models/menu";
 
 describe('NavigateMenuItemComponent', () => {
   let component: NavigateMenuItemComponent;
@@ -35,7 +35,7 @@ describe('NavigateMenuItemComponent', () => {
         }
       ]
     })
-      .compileComponents();
+        .compileComponents();
   }));
 
   beforeEach(() => {
@@ -46,151 +46,131 @@ describe('NavigateMenuItemComponent', () => {
   });
 
   it('should create without chevron when no children', () => {
-    activatedRoute.testParams = {};
+    activatedRoute.testParams = { nodes:"_publisher"  };
     component.menuItem = {
-      name: 'suggestion',
-      label: 'Suggestion system',
-      type: 'Node',
+      name: 'publisher',
+      label: 'Publishers',
+      type: 'Node' as MenuType,
       depth: 1,
-      children: []
+      children: [],
+      route:  {
+        nodes: ["publisher", "systems", "services"],
+        project: "ecs",
+        branch: "_",
+        directories: ["Features", "Categories"],
+        page: "Model"
+      }
     };
     fixture.detectChanges();
     expect(component).toBeTruthy();
-    expect(page.label.textContent).toEqual('Suggestion system');
+    expect(page.label.textContent).toEqual('Publishers');
     expect(page.chevron).toBeFalsy();
   });
 
   it('should expand / collapse hierarchy nodes', () => {
-    activatedRoute.testParams = {};
+    activatedRoute.testParams = {nodes:"_publisher"};
     component.menuItem = {
-      name: 'suggestion',
-      label: 'Suggestion system',
-      type: 'Node',
+      name: 'publisher',
+      label: 'Publishers',
+      type: 'Node' as MenuType,
       depth: 1,
+      route:  {
+        nodes: ["publisher"],
+        project: undefined,
+        branch: "_",
+        directories: [] as  Array<string>,
+        page: undefined
+      },
       children: [
         {
           name: 'child1',
           label: 'Child 1',
-          type: 'Node',
+          type: 'Node' as MenuType,
           depth: 2,
-          children: []
+          children: [],
+          route:  {
+            nodes: ["publisher", "child1"],
+            project: undefined,
+            branch: "_",
+            directories: [] as  Array<string>,
+            page: undefined
+          }
         },
         {
           name: 'child2',
           label: 'Child 2',
-          type: 'Node',
+          type: 'Node' as MenuType,
           depth: 2,
-          children: []
+          children: [],
+          route:  {
+            nodes: ["publisher", "child2"],
+            project: undefined,
+            branch: "_",
+            directories: [] as  Array<string>,
+            page: undefined
+          }
         },
       ]
     };
     fixture.detectChanges();
     expect(component).toBeTruthy();
-    expect(page.label.textContent).toEqual('Suggestion system');
+    expect(page.label.textContent).toEqual('Publishers');
     expect(component.expanded).toBeTruthy();
     page.clickOnChevron();
     expect(component.expanded).toBeFalsy();
   });
 
   it('should navigate to item on click', () => {
-    activatedRoute.testParams = {name: 'library'};
+    activatedRoute.testParams = {nodes: '_publisher'};
     component.menuItem = {
-      name: 'suggestion',
-      label: 'Suggestion system',
-      type: 'Node',
+      name: 'publisher',
+      label: 'Publishers',
+      type: 'Node' as MenuType,
       depth: 1,
-      route: 'suggestion',
+      route:  {
+        nodes: ["publisher"],
+        project: "ecs",
+        branch: "_",
+        directories: [] as  Array<string>,
+        page: "Meta"
+      },
       children: [
-        {
-          name: 'branch',
-          label: 'Child 1',
-          type: 'Node',
-          depth: 2,
-          children: []
-        },
       ]
     };
     fixture.detectChanges();
-    expect(component.nodeNameInUrl).toEqual('library');
 
     const router: Router = TestBed.get(Router);
-    spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+    spyOn(router, 'navigateByUrl').and.returnValue(Promise.resolve(true));
 
     page.clickOnItem();
-    expect(router.navigate).toHaveBeenCalledWith(['app/documentation/navigate/library', {path: 'suggestion'}]);
-  });
-
-  it('should activate node if path is current route with no branch name from internal link',() => {
-    activatedRoute.testParams = {name: 'library'};
-    component.menuItem = {
-      name: 'theGardener',
-      label: 'Suggestion system',
-      type: 'Node',
-      depth: 1,
-      route: 'theGardener>>_/theTeaser',
-      children: [
-        {
-          name: 'master',
-          label: 'Child 1',
-          type: 'Node',
-          depth: 2,
-          children: []
-        },
-      ]
-    };
-    fixture.detectChanges();
-    component.pathInUrl = 'theGardener>master>_/theTeaser';
-    fixture.detectChanges();
-    expect(component.isNodeActive(component.menuItem)).toBeTruthy();
-  });
-
-  it('should activate node if path is current route with no branch name',() => {
-    activatedRoute.testParams = {name: 'library'};
-    component.menuItem = {
-      name: 'theGardener',
-      label: 'Suggestion system',
-      type: 'Node',
-      depth: 1,
-      route: 'theGardener>>_/theTeaser',
-      children: [
-        {
-          name: 'master',
-          label: 'Child 1',
-          type: 'Node',
-          depth: 2,
-          children: []
-        },
-      ]
-    };
-    fixture.detectChanges();
-    component.pathInUrl = 'theGardener>>_/theTeaser';
-    fixture.detectChanges();
-    expect(component.isNodeActive(component.menuItem)).toBeTruthy();
+    expect(router.navigateByUrl).toHaveBeenCalledWith('app/documentation/navigate/_publisher/ecs/_/_/Meta');
   });
 
   it('should show branches in a select if node is a project', async(() => {
-    activatedRoute.testParams = {name: '_eng', path: 'suggestionWS'};
+    activatedRoute.testParams = {nodes: '_eng', project: 'suggestionWS'};
     const projectItem: MenuProjectHierarchy = {
       name: 'suggestionWS',
       label: 'Suggestion Webservice',
-      type: 'Project',
+      type: 'Project' as MenuType,
       stableBranch: 'qa',
       depth: 2,
-      route: 'suggestionWS',
+      route:  {},
       children: [
         {
           name: 'qa',
           label: 'qa',
-          type: 'Branch',
+          type: 'Branch' as MenuType,
           depth: 3,
-          children: []
+          children: [],
+          route:  {}
         },
         {
           name: 'branch1',
           label: 'Branch 1',
-          type: 'Branch',
+          type: 'Branch' as MenuType,
           depth: 3,
-          children: []
+          children: [],
+          route:  {}
         },
       ]
     };
@@ -205,29 +185,32 @@ describe('NavigateMenuItemComponent', () => {
     expect(page.availableBranches[1].textContent).toMatch('branch1');
   }));
 
+
   it('should select stable branch by default', () => {
-    activatedRoute.testParams = {name: '_eng', path: 'suggestionWS'};
+    activatedRoute.testParams = {nodes: '_eng', project: 'suggestionWS'};
     const projectItem: MenuProjectHierarchy = {
       name: 'suggestionWS',
       label: 'Suggestion Webservice',
-      type: 'Project',
+      type: 'Project' as MenuType,
       stableBranch: 'qa',
       depth: 2,
-      route: 'suggestionWS',
+      route:  {},
       children: [
-        {
-          name: 'qa',
-          label: 'qa',
-          type: 'Branch',
-          depth: 3,
-          children: []
-        },
         {
           name: 'branch1',
           label: 'Branch 1',
-          type: 'Branch',
+          type: 'Branch' as MenuType,
           depth: 3,
-          children: []
+          children: [],
+          route:  {}
+        },
+        {
+          name: 'qa',
+          label: 'qa',
+          type: 'Branch' as MenuType,
+          depth: 3,
+          children: [],
+          route:  {}
         },
       ]
     };
@@ -238,28 +221,30 @@ describe('NavigateMenuItemComponent', () => {
   });
 
   it('should select branch specified in URL', () => {
-    activatedRoute.testParams = {name: '_eng', path: 'suggestionWS>branch1>'};
+    activatedRoute.testParams = {nodes: '_eng', project: 'suggestionWS', branch: "branch1"};
     const projectItem: MenuProjectHierarchy = {
       name: 'suggestionWS',
       label: 'Suggestion Webservice',
-      type: 'Project',
+      type: 'Project' as MenuType,
       stableBranch: 'qa',
       depth: 2,
-      route: 'suggestionWS',
+      route: {},
       children: [
         {
           name: 'qa',
           label: 'qa',
-          type: 'Branch',
+          type: 'Branch' as MenuType,
           depth: 3,
-          children: []
+          children: [],
+          route: {},
         },
         {
           name: 'branch1',
           label: 'Branch 1',
-          type: 'Branch',
+          type: 'Branch' as MenuType,
           depth: 3,
-          children: []
+          children: [],
+          route: {},
         },
       ]
     };
@@ -269,112 +254,24 @@ describe('NavigateMenuItemComponent', () => {
     expect(component.selectedBranch.name).toEqual('branch1');
   });
 
-  it('should navigate to the right URL when selecting a branch', () => {
-    activatedRoute.testParams = {name: '_eng', path: 'suggestionWS'};
+   it('should not show branches select if only one branch', () => {
+    activatedRoute.testParams = {nodes: '_eng', project: 'suggestionWS', branch: "branch1"};
     const projectItem: MenuProjectHierarchy = {
       name: 'suggestionWS',
       label: 'Suggestion Webservice',
-      type: 'Project',
+      type: 'Project' as MenuType,
       stableBranch: 'qa',
       depth: 2,
-      route: 'suggestionWS',
+      route: {},
       children: [
         {
           name: 'qa',
           label: 'qa',
-          type: 'Branch',
+          type: 'Branch' as MenuType,
           depth: 3,
-          route: 'suggestionWS>qa>/',
-          children: []
-        },
-        {
-          name: 'branch1',
-          label: 'Branch 1',
-          type: 'Branch',
-          depth: 3,
-          route: 'suggestionWS>branch1>/',
-          children: []
-        },
-      ]
-    };
-    component.menuItem = projectItem;
-    fixture.detectChanges();
-
-    const router: Router = TestBed.get(Router);
-    spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
-
-    // when
-    page.selectBranch('branch1');
-
-    // then
-    expect(router.navigate).toHaveBeenCalledWith(['app/documentation/navigate/_eng', {path: 'suggestionWS>branch1>/>_'}]);
-  });
-
-  it('should navigate to the right URL when selecting a branch with / or _ in the name', () => {
-    activatedRoute.testParams = {name: '_eng', path: 'suggestionWS'};
-    const projectItem: MenuProjectHierarchy = {
-      name: 'suggestionWS',
-      label: 'Suggestion Webservice',
-      type: 'Project',
-      stableBranch: 'qa',
-      depth: 2,
-      route: 'suggestionWS',
-      children: [
-        {
-          name: 'qa',
-          label: 'qa',
-          type: 'Branch',
-          depth: 3,
-          route: 'suggestionWS>qa>/',
-          children: []
-        },
-        {
-          name: 'foo/bar_foo_bar',
-          label: 'Branch 1',
-          type: 'Branch',
-          depth: 3,
-          route: 'suggestionWS>foo_bar~foo~bar>/',
-          children: []
-        },
-      ]
-    };
-    component.menuItem = projectItem;
-    fixture.detectChanges();
-
-    const router: Router = TestBed.get(Router);
-    spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
-
-    // when
-    page.selectBranch('foo/bar_foo_bar');
-
-    // then
-    expect(router.navigate).toHaveBeenCalledWith(['app/documentation/navigate/_eng', {path: 'suggestionWS>foo_bar~foo~bar>/>_'}]);
-  });
-
-  it('should not show branches select if only one branch', () => {
-    activatedRoute.testParams = {name: '_eng', path: 'suggestionWS'};
-    const projectItem: MenuProjectHierarchy = {
-      name: 'suggestionWS',
-      label: 'Suggestion Webservice',
-      type: 'Project',
-      stableBranch: 'qa',
-      depth: 2,
-      route: 'suggestionWS',
-      children: [
-        {
-          name: 'qa',
-          label: 'qa',
-          type: 'Branch',
-          depth: 3,
-          children: [{
-            name: 'suggestionWS',
-            label: 'suggestionWS',
-            type: 'Directory',
-            route: 'suggestionsWS>qa>/',
-            depth: 4,
-            children: [],
-          }]
-        },
+          children: [],
+          route: {},
+        }
       ]
     };
     component.menuItem = projectItem;
@@ -383,86 +280,9 @@ describe('NavigateMenuItemComponent', () => {
     expect(page.branchSelect).toBeFalsy();
   });
 
-  it('should show directory for selected branch if node is a project', async(() => {
-    activatedRoute.testParams = {name: '_eng', path: 'suggestionWS'};
-    const rootDirectoryItem: MenuDirectoryHierarchy = {
-      name: 'suggestionWS',
-      label: 'suggestionWS',
-      type: 'Directory',
-      description: 'Suggestion WS documentation',
-      route: 'suggestionsWS>qa>/',
-      depth: 4,
-      order: 0,
-      children: [],
-    };
 
-    const projectItem: MenuProjectHierarchy = {
-      name: 'suggestionWS',
-      label: 'Suggestion Webservice',
-      type: 'Project',
-      stableBranch: 'qa',
-      depth: 2,
-      route: 'suggestionWS',
-      children: [
-        {
-          name: 'qa',
-          label: 'qa',
-          type: 'Branch',
-          depth: 3,
-          children: [
-            rootDirectoryItem,
-          ]
-        },
-        {
-          name: 'branch1',
-          label: 'Branch 1',
-          type: 'Branch',
-          depth: 3,
-          children: []
-        },
-      ]
-    };
-    component.menuItem = projectItem;
-    fixture.detectChanges();
 
-    // default branch is selected. Check that associated directory is displayed.
-    expect(page.directories).toBeTruthy();
-    expect(page.directories.length).toEqual(1);
-  }));
 
-  it('should not fail if selected branch has no root directory', () => {
-    activatedRoute.testParams = {name: '_eng', path: 'suggestionWS'};
-
-    const projectItem: MenuProjectHierarchy = {
-      name: 'suggestionWS',
-      label: 'Suggestion Webservice',
-      type: 'Project',
-      stableBranch: 'qa',
-      depth: 2,
-      route: 'suggestionWS',
-      children: [
-        {
-          name: 'qa',
-          label: 'qa',
-          type: 'Branch',
-          depth: 3,
-          children: []
-        },
-        {
-          name: 'branch1',
-          label: 'Branch 1',
-          type: 'Branch',
-          depth: 3,
-          children: []
-        },
-      ]
-    };
-    component.menuItem = projectItem;
-    fixture.detectChanges();
-
-    expect(page.directories.length).toBe(0);
-
-  });
 });
 
 class Page {

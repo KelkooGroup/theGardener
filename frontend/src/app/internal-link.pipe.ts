@@ -1,22 +1,92 @@
 import {Pipe, PipeTransform} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
+import {RouteService} from "./_services/route.service";
 
 @Pipe({
   name: 'internalLink'
 })
 export class InternalLinkPipe implements PipeTransform {
 
-  constructor(private activatedRoute: ActivatedRoute) {
+  nodes : string;
+  project : string;
+  branch : string;
+  directories : string;
+
+
+  constructor(private activatedRoute: ActivatedRoute, private routeService: RouteService) {
   }
 
-
   transform(value: string): string {
+    this.nodes = this.activatedRoute.snapshot.params.nodes;
+    this.project = this.activatedRoute.snapshot.params.project;
+    this.branch = this.activatedRoute.snapshot.params.branch;
+    this.directories = this.activatedRoute.snapshot.params.directories;
+
+    let transformedValue = this.transformLegacy(value);
+    transformedValue = this.transformInternalLinks(transformedValue);
+    transformedValue = this.transformInternalRelativeLinks(transformedValue);
+    transformedValue = this.transformInternalRelativeLinksWithAnchor(transformedValue);
+    return transformedValue;
+  }
+
+  transformInternalRelativeLinks(value: string): string {
+    const linkRegexString = '(href=)["\'](.*?)[\.]md["\']';
+    const linkRegex = new RegExp(linkRegexString, 'g');
+
+    const nodes = this.nodes;
+    const project = this.project;
+    const branch = this.branch;
+    const directories = this.directories;
+    const routeService = this.routeService;
+
+    function replacer(p1: string, p2: string, relativePath: string) {
+      const targetUrl = routeService.relativeUrlToFullFrontEndUrl(relativePath, {nodes,project,branch,directories});
+      return `onclick="navigateTo('${targetUrl}')"`;
+    }
+
+    return value.replace(linkRegex, replacer);
+  }
+
+  transformInternalRelativeLinksWithAnchor(value: string): string {
+    const linkRegexString = '(href=)["\'](.*?)[\.]md#([a-z\-]+)["\']';
+    const linkRegex = new RegExp(linkRegexString, 'g');
+
+    const nodes = this.nodes;
+    const project = this.project;
+    const branch = this.branch;
+    const directories = this.directories;
+    const routeService = this.routeService;
+
+    function replacer(p1: string, p2: string, relativePath: string,anchor: string) {
+      let relativePathWithAnchor = `${relativePath}#${anchor}`
+      const targetUrl = routeService.relativeUrlToFullFrontEndUrl(relativePathWithAnchor, {nodes,project,branch,directories});
+      return `onclick="navigateTo('${targetUrl}')"`;
+    }
+
+    return value.replace(linkRegex, replacer);
+  }
+
+  transformInternalLinks(value: string): string {
+    const linkRegexString = '(href=)["\'](thegardener:\\/\\/navigate\\/)(.*?)["\']';
+    const linkRegex = new RegExp(linkRegexString, 'g');
+
+    function replacer(p1: string, p2: string, p3: string, navigationPath: string) {
+      const targetUrl = `app/documentation/navigate/${navigationPath}`;
+      return `onclick="navigateTo('${targetUrl}')"`;
+    }
+
+    return value.replace(linkRegex, replacer);
+  }
+
+  transformLegacy(value: string): string {
     const linkRegexString = '(href=)["\'](thegardener:\\/\\/)(\\w*)?\\/?(\\w*)?;?path=(.*?)["\']';
     const linkRegex = new RegExp(linkRegexString, 'g');
-    const hierarchy = this.activatedRoute.parent.snapshot.params.name;
+    const nodes = this.nodes;
 
     function replacer(p1: string, p2: string, p3: string, firstString: string, hierarchyIdGiven: string, path: string) {
-      return `onclick="navigateTo('app/documentation/navigate/${firstString !== 'navigate' ? hierarchy : hierarchyIdGiven};path=${path}')"`;
+      const targetLegacyUrl = `app/documentation/navigate/${firstString !== 'navigate' ? nodes : hierarchyIdGiven};path=${path}`;
+      const targetUrl = RouteService.legacyFullFrontEndUrlToFullFrontEndUrl(targetLegacyUrl);
+      return `onclick="navigateTo('${targetUrl}')"`;
     }
 
     return value.replace(linkRegex, replacer);

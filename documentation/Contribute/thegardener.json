@@ -1,9 +1,12 @@
 {
-  "directory": {
+  "directory" :
+  {
     "label": "Contribute",
-    "description": "Contribute",
+    "description": "Contribute to theGardener",
     "pages": [
-      "Contribute"
+      "Overview",
+      "Develop",
+      "BuildDockerImage"
     ],
     "children": [
     ]

@@ -7,8 +7,7 @@ describe('AnchorPipe', () => {
 
   beforeEach(() => {
     activatedRoute = new ActivatedRouteStub() as any;
-    activatedRoute.testParentParams = {name: '_doc', path: 'theGardener%3E%3E_guides_'};
-    activatedRoute.testParams = {page: 'write'};
+    activatedRoute.testParams = {nodes: '_Tools',project: 'theGardener',branch: 'master',directories: '_Guide_Write',page: 'Basics'};
     pipe = new AnchorPipe(activatedRoute);
   });
 
@@ -25,12 +24,12 @@ describe('AnchorPipe', () => {
 
 const HTML_INPUT_WITH_SPACE_IN_TITLE = '<h2 id="service-specification">Service specification</h2>';
 
-const HTML_OUTPUT_WITH_SPACE_IN_TITLE = '<h2 id="service-specification">Service specification <a class="linkToAnchorForTitleAndSubTitle" onclick="navigateTo(\'app/documentation/navigate/_doc;path=theGardener%3E%3E_guides_/write#service-specification\')"> <i class="fas fa-link"></i> </a> </h2>';
+const HTML_OUTPUT_WITH_SPACE_IN_TITLE = '<h2 id="service-specification">Service specification <a class="linkToAnchorForTitleAndSubTitle" onclick="navigateTo(\'app/documentation/navigate/_Tools/theGardener/master/_Guide_Write/Basics#service-specification\')"> <i class="fas fa-link"></i> </a> </h2>';
 
 const HTML_INPUT_WITHOUT_SPACE_IN_TITLE = '<h1 id="requirement">Requirement</h1>';
 
-const HTML_OUTPUT_WITHOUT_SPACE_IN_TITLE = '<h1 id="requirement">Requirement <a class="linkToAnchorForTitleAndSubTitle" onclick="navigateTo(\'app/documentation/navigate/_doc;path=theGardener%3E%3E_guides_/write#requirement\')"> <i class="fas fa-link"></i> </a> </h1>';
+const HTML_OUTPUT_WITHOUT_SPACE_IN_TITLE = '<h1 id="requirement">Requirement <a class="linkToAnchorForTitleAndSubTitle" onclick="navigateTo(\'app/documentation/navigate/_Tools/theGardener/master/_Guide_Write/Basics#requirement\')"> <i class="fas fa-link"></i> </a> </h1>';
 
 const COMPLEX_HTML_INPUT = '<h2 id="service-specification">Service specification</h2> <a href="link"></a> <h1 id="requirement">Requirement</h1> <h3 id="development-on-back">Development on Back</h3>';
 
-const COMPLEX_HTML_OUTPUT = '<h2 id="service-specification">Service specification <a class="linkToAnchorForTitleAndSubTitle" onclick="navigateTo(\'app/documentation/navigate/_doc;path=theGardener%3E%3E_guides_/write#service-specification\')"> <i class="fas fa-link"></i> </a> </h2> <a href="link"></a> <h1 id="requirement">Requirement <a class="linkToAnchorForTitleAndSubTitle" onclick="navigateTo(\'app/documentation/navigate/_doc;path=theGardener%3E%3E_guides_/write#requirement\')"> <i class="fas fa-link"></i> </a> </h1> <h3 id="development-on-back">Development on Back <a class="linkToAnchorForTitleAndSubTitle" onclick="navigateTo(\'app/documentation/navigate/_doc;path=theGardener%3E%3E_guides_/write#development-on-back\')"> <i class="fas fa-link"></i> </a> </h3>';
+const COMPLEX_HTML_OUTPUT = '<h2 id="service-specification">Service specification <a class="linkToAnchorForTitleAndSubTitle" onclick="navigateTo(\'app/documentation/navigate/_Tools/theGardener/master/_Guide_Write/Basics#service-specification\')"> <i class="fas fa-link"></i> </a> </h2> <a href="link"></a> <h1 id="requirement">Requirement <a class="linkToAnchorForTitleAndSubTitle" onclick="navigateTo(\'app/documentation/navigate/_Tools/theGardener/master/_Guide_Write/Basics#requirement\')"> <i class="fas fa-link"></i> </a> </h1> <h3 id="development-on-back">Development on Back <a class="linkToAnchorForTitleAndSubTitle" onclick="navigateTo(\'app/documentation/navigate/_Tools/theGardener/master/_Guide_Write/Basics#development-on-back\')"> <i class="fas fa-link"></i> </a> </h3>';
