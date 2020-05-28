@@ -18,6 +18,7 @@ import services.clients.OpenApiClient
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 import com.outr.lucene4s._
+import com.outr.lucene4s.query.Sort
 
 case class PageMeta(label: Option[String] = None, description: Option[String] = None)
 
@@ -120,17 +121,19 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
   val SourceTemplateBranchToken = s"${StartVar}branch${EndVar}"
   val SourceTemplatePathToken = s"${StartVar}path${EndVar}"
 
-  val luceneSearchIndex = new DirectLucene(Nil, None)
-  val name = luceneSearchIndex.create.field[String]("name")
-  luceneSearchIndex.doc().fields(name("write")).index()
-  luceneSearchIndex.doc().fields(name("ws")).index()
-  luceneSearchIndex.doc().fields(name("contribute")).index()
-  luceneSearchIndex.doc().fields(name("write")).index()
 
-  def searchTest():String = {
-    luceneSearchIndex.query().sort(Sort(name)).search()
-  }
+  val luceneSearchIndex = new DirectLucene(uniqueFields = List("path"), defaultFullTextSearchable = true)
 
+  val name = luceneSearchIndex.create.field[String]("hierarchy")
+  val path = luceneSearchIndex.create.field[String]("path").fullTextSearchable(false)
+  val branch = luceneSearchIndex.create.field[String]("branch")
+  val label = luceneSearchIndex.create.field[String]("label")
+  val description = luceneSearchIndex.create.field[String]("description")
+  val pageContent = luceneSearchIndex.create.field[String]("pageContent")
+ val test =  luceneSearchIndex.doc().fields(name("write")).index()
+
+
+  luceneSearchIndex.query().scoreDocs(true).sort(Sort.Score).search()
   def getLocalRepository(projectId: String, branch: String): String = s"$projectsRootDirectory$projectId/$branch/".fixPathSeparator
 
   def getPagePath(projectId: String, branch: String, path: String, documentationRootPath: String): String = {
