@@ -807,81 +807,195 @@ Feature: Provide menu
 }
 """
 
-
-  @level_2_technical_details @nominal_case @valid
-  Scenario: provide pages of a directory
+  @level_2_technical_details @nominal_case @valid @ongoing
+  Scenario: provide sub menu with shortcuts
     Given the hierarchy nodes are
-      | id         | slugName   | name                 | childrenLabel | childLabel   |
-      | .          | root       | Hierarchy root       | Views         | View         |
-      | .01.       | eng        | Engineering view     | System groups | System group |
-      | .02.       | biz        | Business view        | Units         | Unit         |
-      | .01.01.    | library    | Library system group | Systems       | System       |
-      | .01.01.01. | suggestion | Suggestion system    | Projects      | Project      |
-      | .01.01.02. | user       | User system          | Projects      | Project      |
-      | .01.01.03. | search     | Search system        | Projects      | Project      |
+      | id      | slugName | name                         | childrenLabel | childLabel   | directoryPath       | shortcut |
+      | .       | root     | Hierarchy root               | Views         | View         |                     |          |
+      | .01.    | eng      | Engineering view             | System groups | System group | libraryDoc>master>/ |          |
+      | .02.    | biz      | Business view                | Units         | Unit         |                     |          |
+      | .01.01. | library  | Library system group         | Systems       | System       | libraryDoc>master>/ |          |
+      | .02.01. | eng      | Engineering view in biz view | System groups | System group |                     | .01.     |
     And we have the following projects
-      | id                 | name                    | repositoryUrl                                              | stableBranch | featuresRootPath |
-      | suggestionsWS      | Suggestions WebServices | target/remote/data/GetFeatures/library/suggestionsWS/      | master       | test/features    |
-      | suggestionsReports | Suggestions Reports     | target/remote/data/GetFeatures/library/suggestionsReports/ | master       | test/features    |
-      | usersWS            | Users WebServices       | target/remote/data/GetFeatures/library/usersWS/            | master       | test/features    |
+      | id         | name                                | repositoryUrl                                      | stableBranch | featuresRootPath |
+      | libraryDoc | library  system group documentation | target/remote/data/GetFeatures/library/libraryDoc/ | master       |                  |
     And the links between hierarchy nodes are
-      | projectId          | hierarchyId |
-      | suggestionsWS      | .01.01.01.  |
-      | suggestionsReports | .01.01.01.  |
-      | usersWS            | .01.01.02.  |
-      | usersWS            | .02.        |
+      | projectId  | hierarchyId |
+      | libraryDoc | .01.        |
     And we have those branches in the database
-      | id | name       | isStable | projectId          |
-      | 1  | master     | true     | suggestionsWS      |
-      | 2  | bugfix/351 | false    | suggestionsWS      |
-      | 3  | master     | true     | suggestionsReports |
-      | 4  | master     | true     | usersWS            |
+      | id | name   | isStable | projectId  |
+      | 1  | master | true     | libraryDoc |
     And we have those directories in the database
-      | id | name        | label         | description             | order | relativePath  | path                               | branchId |
-      | 1  | root        | SuggestionsWS | Suggestions WebServices | 0     | /             | suggestionsWS>master>/             | 1        |
-      | 2  | suggestions | Suggestions   | Suggestions...          | 0     | /suggestions/ | suggestionsWS>master>/suggestions/ | 1        |
-      | 3  | admin       | Admin         | Administration...       | 1     | /admin/       | suggestionsWS>master>/admin/       | 1        |
+      | id | name       | label      | description                        | order | relativePath | path                | branchId |
+      | 1  | libraryDoc | libraryDoc | library system group documentation | 0     | /            | libraryDoc>master>/ | 1        |
     And we have those pages in the database
-      | id | name       | label      | description | order | relativePath            | path                                         | markdown                              | directoryId |
-      | 1  | context    | context    | context     | 0     | /context                | suggestionsWS>master>/context                | **Feature**: Provide book suggestions | 1           |
-      | 2  | suggestion | suggestion | suggestion  | 0     | /suggestions/suggestion | suggestionsWS>master>/suggestions/suggestion | **What's a suggestion ?**             | 2           |
-      | 3  | examples   | examples   | examples    | 1     | /suggestions/examples   | suggestionsWS>master>/suggestions/examples   | **Some suggestion examples**          | 2           |
-      | 4  | admin      | admin      | admin       | 0     | /admin/admin            | suggestionsWS>master>/admin/admin            | **Page for the admin users**          | 3           |
-    When I perform a "GET" on following URL "/api/directories?path=suggestionsWS>master>/suggestions/"
+      | id | name | label | description         | order | relativePath | path                    | markdown       | directoryId |
+      | 1  | doc3 | doc3  | documentation three | 2     | /doc3        | libraryDoc>master>/doc3 | **Page doc 3** | 1           |
+      | 2  | doc2 | doc2  | documentation two   | 1     | /doc2        | libraryDoc>master>/doc2 | **Page doc 2** | 1           |
+      | 3  | doc1 | doc1  | documentation one   | 0     | /doc1        | libraryDoc>master>/doc1 | **Page doc 1** | 1           |
+    When I perform a "GET" on following URL "/api/menu/submenu/_biz"
     Then I get a response with status "200"
-    And  I get the following json response body
-    """
-[
-  {
-    "id": 2,
-    "path": "suggestionsWS>master>/suggestions/",
-    "name": "suggestions",
-    "label": "Suggestions",
-    "description": "Suggestions...",
-    "order": 0,
-    "pages": [
-      {
-        "path": "suggestionsWS>master>/suggestions/suggestion",
-        "relativePath": "/suggestions/suggestion",
-        "name": "suggestion",
-        "label": "suggestion",
-        "description": "suggestion",
+    And I get the following json response body
+"""
+{
+  "id": ".02.",
+  "hierarchy": "_biz",
+  "slugName": "biz",
+  "name": "Business view",
+  "childrenLabel": "Units",
+  "childLabel": "Unit",
+  "projects": [],
+  "children": [
+    {
+      "id": ".02.01.",
+      "hierarchy": "_biz_eng",
+      "slugName": "eng",
+      "name": "Engineering view in biz view",
+      "childrenLabel": "System groups",
+      "childLabel": "System group",
+      "projects": [
+        {
+          "id": "libraryDoc",
+          "path": "libraryDoc",
+          "label": "library  system group documentation",
+          "stableBranch": "master",
+          "branches": [
+            {
+              "name": "master",
+              "path": "libraryDoc>master",
+              "rootDirectory": {
+                "id": 1,
+                "path": "libraryDoc>master>/",
+                "name": "libraryDoc",
+                "label": "libraryDoc",
+                "description": "library system group documentation",
+                "order": 0,
+                "pages": [
+                  {
+                    "path": "libraryDoc>master>/doc1",
+                    "relativePath": "/doc1",
+                    "name": "doc1",
+                    "label": "doc1",
+                    "description": "documentation one",
+                    "order": 0,
+                    "content": []
+                  },
+                  {
+                    "path": "libraryDoc>master>/doc2",
+                    "relativePath": "/doc2",
+                    "name": "doc2",
+                    "label": "doc2",
+                    "description": "documentation two",
+                    "order": 1,
+                    "content": []
+                  },
+                  {
+                    "path": "libraryDoc>master>/doc3",
+                    "relativePath": "/doc3",
+                    "name": "doc3",
+                    "label": "doc3",
+                    "description": "documentation three",
+                    "order": 2,
+                    "content": []
+                  }
+                ],
+                "children": []
+              }
+            }
+          ]
+        }
+      ],
+      "children": [
+        {
+          "id": ".01.01.",
+          "hierarchy": "_eng_library",
+          "slugName": "library",
+          "name": "Library system group",
+          "childrenLabel": "Systems",
+          "childLabel": "System",
+          "projects": [],
+          "children": [],
+          "directory": {
+            "id": 1,
+            "path": "libraryDoc>master>/",
+            "name": "libraryDoc",
+            "label": "libraryDoc",
+            "description": "library system group documentation",
+            "order": 0,
+            "pages": [
+              {
+                "path": "libraryDoc>master>/doc1",
+                "relativePath": "/doc1",
+                "name": "doc1",
+                "label": "doc1",
+                "description": "documentation one",
+                "order": 0,
+                "content": []
+              },
+              {
+                "path": "libraryDoc>master>/doc2",
+                "relativePath": "/doc2",
+                "name": "doc2",
+                "label": "doc2",
+                "description": "documentation two",
+                "order": 1,
+                "content": []
+              },
+              {
+                "path": "libraryDoc>master>/doc3",
+                "relativePath": "/doc3",
+                "name": "doc3",
+                "label": "doc3",
+                "description": "documentation three",
+                "order": 2,
+                "content": []
+              }
+            ]
+          }
+        }
+      ],
+      "directory": {
+        "id": 1,
+        "path": "libraryDoc>master>/",
+        "name": "libraryDoc",
+        "label": "libraryDoc",
+        "description": "library system group documentation",
         "order": 0,
-        "content":[]
-      },
-      {
-        "path": "suggestionsWS>master>/suggestions/examples",
-        "relativePath": "/suggestions/examples",
-        "name": "examples",
-        "label": "examples",
-        "description": "examples",
-        "order": 1,
-        "content":[]
+        "pages": [
+          {
+            "path": "libraryDoc>master>/doc1",
+            "relativePath": "/doc1",
+            "name": "doc1",
+            "label": "doc1",
+            "description": "documentation one",
+            "order": 0,
+            "content": []
+          },
+          {
+            "path": "libraryDoc>master>/doc2",
+            "relativePath": "/doc2",
+            "name": "doc2",
+            "label": "doc2",
+            "description": "documentation two",
+            "order": 1,
+            "content": []
+          },
+          {
+            "path": "libraryDoc>master>/doc3",
+            "relativePath": "/doc3",
+            "name": "doc3",
+            "label": "doc3",
+            "description": "documentation three",
+            "order": 2,
+            "content": []
+          }
+        ]
       }
-    ]
-  }
-]
-    """
+    }
+  ]
+}
+"""
+
 
   @level_2_technical_details @nominal_case @valid
   Scenario: provide pages of a directory

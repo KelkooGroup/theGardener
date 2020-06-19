@@ -27,8 +27,12 @@ class DefineHierarchySteps extends ScalaDsl with EN with MockitoSugar {
       val directoryPath = if (f.keys.exists(_ == "directoryPath")) {
         if (f("directoryPath") == "") None else Some(f("directoryPath"))
       } else None
+      val shortcut = if (f.keys.exists(_ == "shortcut")) {
+        if (f("shortcut") == "") None else Some(f("shortcut"))
+      } else None
+
       HierarchyNode(
-        f("id"), f("slugName"), f("name"), f("childrenLabel"), f("childLabel"), directoryPath
+        f("id"), f("slugName"), f("name"), f("childrenLabel"), f("childLabel"), directoryPath, shortcut
       )
     }
   }

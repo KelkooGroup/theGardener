@@ -15,11 +15,12 @@ class HierarchyRepository @Inject()(db: Database) {
     childrenLabel <- str("childrenLabel")
     childLabel <- str("childLabel")
     directoryPath <- get[String]("directoryPath").?
-  } yield HierarchyNode(id, slugName, name, childrenLabel, childLabel, directoryPath)
+    shortcut <- get[String]("shortcut").?
+  } yield HierarchyNode(id, slugName, name, childrenLabel, childLabel, directoryPath, shortcut)
 
   def save(hierarchy: HierarchyNode): HierarchyNode = {
     db.withConnection { implicit connection =>
-      SQL"REPLACE INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel, directoryPath) VALUES (${hierarchy.id}, ${hierarchy.slugName}, ${hierarchy.name}, ${hierarchy.childrenLabel}, ${hierarchy.childLabel}, ${hierarchy.directoryPath})".executeUpdate()
+      SQL"REPLACE INTO hierarchyNode (id, slugName, name, childrenLabel, childLabel, directoryPath, shortcut) VALUES (${hierarchy.id}, ${hierarchy.slugName}, ${hierarchy.name}, ${hierarchy.childrenLabel}, ${hierarchy.childLabel}, ${hierarchy.directoryPath}, ${hierarchy.shortcut})".executeUpdate()
       SQL"SELECT * FROM hierarchyNode WHERE id = ${hierarchy.id}".as(parser.single)
     }
   }
