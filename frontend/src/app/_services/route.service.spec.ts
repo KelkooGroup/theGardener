@@ -161,6 +161,10 @@ describe('RouteService', () => {
             .toEqual("app/documentation/navigate/Tools/theGardener/master/_/Changelog");
         expect(service.relativeUrlToFullFrontEndUrl('../../Features/Projects/Model',{nodes: 'Tools',project: 'theGardener',branch: 'master',directories: '_Guide_Write',page: 'Basics'} ))
             .toEqual("app/documentation/navigate/Tools/theGardener/master/_Features_Projects/Model");
+        expect(service.relativeUrlToFullFrontEndUrl('Features/Projects/Model',{nodes: 'Tools',project: 'theGardener',branch: 'master',directories: '_Guide_Write',page: 'Basics'} ))
+            .toEqual("app/documentation/navigate/Tools/theGardener/master/_Guide_Write_Features_Projects/Model");
+        expect(service.relativeUrlToFullFrontEndUrl('./Features/Projects/Model',{nodes: 'Tools',project: 'theGardener',branch: 'master',directories: '_Guide_Write',page: 'Basics'} ))
+            .toEqual("app/documentation/navigate/Tools/theGardener/master/_Guide_Write_Features_Projects/Model");
 
         expect(service.relativeUrlToFullFrontEndUrl('../../../Features/Projects/Model',{nodes: 'Tools',project: 'theGardener',branch: 'master',directories: '_Guide_Write',page: 'Basics'} ))
             .toEqual(undefined);

@@ -6,11 +6,10 @@ import javax.inject._
 import models._
 import play.api.libs.json._
 import play.api.mvc._
-import repositories.HierarchyRepository
-import services.MenuService
+import services.{HierarchyService, MenuService}
 
 @Api(value = "HierarchyController", produces = "application/json")
-class HierarchyController @Inject()(hierarchyRepository: HierarchyRepository, criteriaService: MenuService) extends InjectedController {
+class HierarchyController @Inject()(hierarchyService: HierarchyService, criteriaService: MenuService) extends InjectedController {
 
   implicit val hierarchyFormat = Json.format[HierarchyNode]
 
@@ -20,11 +19,11 @@ class HierarchyController @Inject()(hierarchyRepository: HierarchyRepository, cr
   def addHierarchy(): Action[HierarchyNode] = Action(parse.json[HierarchyNode]) { implicit request =>
     val hierarchy = request.body
 
-    if (hierarchyRepository.existsById(hierarchy.id)) {
+    if (hierarchyService.existsById(hierarchy.id) || ! hierarchyService.wellFormedId(hierarchy.id) || ! hierarchyService.wellFormedShortcut(hierarchy)) {
       BadRequest
 
     } else {
-      val addHierarchy = hierarchyRepository.save(hierarchy)
+      val addHierarchy = hierarchyService.save(hierarchy)
 
       criteriaService.refreshCache()
 
@@ -34,7 +33,7 @@ class HierarchyController @Inject()(hierarchyRepository: HierarchyRepository, cr
 
   @ApiOperation(value = "Get all hierarchies", response = classOf[HierarchyNode])
   def getAllHierarchies(): Action[AnyContent] = Action {
-    Ok(Json.toJson(hierarchyRepository.findAll()))
+    Ok(Json.toJson(hierarchyService.findAll()))
   }
 
   @ApiOperation(value = "Update an hierarchy", response = classOf[HierarchyNode])
@@ -46,16 +45,16 @@ class HierarchyController @Inject()(hierarchyRepository: HierarchyRepository, cr
   def updateHierarchy(@ApiParam("Hierarchy id") id: String): Action[HierarchyNode] = Action(parse.json[HierarchyNode]) { implicit request =>
     val hierarchy = request.body
 
-    if (id != hierarchy.id) {
+    if (id != hierarchy.id || ! hierarchyService.wellFormedShortcut(hierarchy)) {
       BadRequest
 
     } else {
-      if (hierarchyRepository.existsById(id)) {
-        hierarchyRepository.save(hierarchy)
+      if (hierarchyService.existsById(id)) {
+        hierarchyService.save(hierarchy)
 
         criteriaService.refreshCache()
 
-        Ok(Json.toJson(hierarchyRepository.findById(id)))
+        Ok(Json.toJson(hierarchyService.findById(id)))
 
       } else {
         NotFound(s"No hierarchy $id")
@@ -67,8 +66,8 @@ class HierarchyController @Inject()(hierarchyRepository: HierarchyRepository, cr
   @ApiResponses(Array(new ApiResponse(code = 404, message = "Hierarchy not found")))
   def deleteHierarchy(@ApiParam("Hierarchy id") id: String): Action[AnyContent] = Action {
 
-    if (hierarchyRepository.existsById(id)) {
-      hierarchyRepository.deleteById(id)
+    if (hierarchyService.existsById(id)) {
+      hierarchyService.deleteById(id)
 
       criteriaService.refreshCache()
 
