@@ -32,9 +32,13 @@
       </div>
     </div>
   </div>
+</div>
 
-  <div *ngIf="page.sourceUrl" class="view-source">
-    <a [href]="page.sourceUrl" target="_blank">View source <i class="fas fa-external-link-alt"></i></a>
-  </div>
+<div *ngIf="page && page.sourceUrl" class="view-source">
+  <a [href]="page && page.sourceUrl" target="_blank">View source <i class="fas fa-external-link-alt"></i></a>
+</div>
 
+
+<div class="responsive-footer">
+  <app-footer></app-footer>
 </div>

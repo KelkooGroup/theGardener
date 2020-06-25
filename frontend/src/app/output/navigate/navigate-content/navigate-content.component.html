@@ -1,3 +1,4 @@
-<div class="content" [ngStyle]="{'max-height': 'calc(100vh - 100px)'}">
+<div class="content">
+  <app-navigate-mobile-menu (navigationEvent)="mobileMenuService.toggleMobileMenu()" *ngIf="mobileMenuService.isMobileMenuDisplayed"></app-navigate-mobile-menu>
   <app-page-content></app-page-content>
 </div>

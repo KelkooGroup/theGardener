@@ -20,6 +20,14 @@ export class MenuService {
   constructor(private http: HttpClient, private routeService: RouteService) {
   }
 
+  getMenu(): Observable<Array<MenuHierarchy>> {
+    const url = 'api/menu';
+    return this.http.get<HierarchyNodeApi>(url)
+      .pipe(
+        map(menu => this.buildMenuHierarchyForNode({ nodes: [], directories: []}, menu, 0))
+      );
+  }
+
   getMenuHeader(): Observable<Array<MenuHierarchy>> {
 
     const url = 'api/menu/header';
