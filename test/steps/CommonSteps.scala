@@ -173,6 +173,8 @@ case class Configuration(path: String, value: String)
 
 case class PageRow(id: Long, name: String, label: String, description: String, order: Int, markdown: String, relativePath: String, path: String, directoryId: Long, dependOnOpenApi: Boolean)
 
+case class LuceneDoc(hierarchy: String, path: String, branch: String, label: String, description: String, pageContent: String)
+
 class CommonSteps extends ScalaDsl with EN with MockitoSugar with Logging {
 
   import CommonSteps._
@@ -295,6 +297,10 @@ Scenario: providing several book suggestions
     pageRepository.saveAll(pages.asScala.map(p => Page(p.id, p.name, p.label, p.description, p.order, Option(p.markdown), p.relativePath, p.path, p.directoryId)))
   }
 
+  Given("""^we have the following document in the lucene index$""") {docs: util.List[LuceneDoc] =>
+    docs.asScala.map( doc => pageService.luceneSearchIndex.doc().fields(pageService.hierarchy(doc.hierarchy),pageService.path(doc.path),pageService.branch(doc.branch),pageService.label(doc.label),pageService.description(doc.description),pageService.pageContent(doc.pageContent)))
+  }
+
   Given("""^we have the following markdown for the page "([^"]*)"$""") { (path: String, markdown: String) =>
     pageRepository.findByPath(path).map { page =>
       pageRepository.save(page.copy(markdown = Some(markdown)))
@@ -312,17 +318,18 @@ Scenario: providing several book suggestions
     await(asyncCache.removeAll())
   }
 
+
   Given("""^we have the following swagger.json hosted on "([^"]*)"$""") { (_: String, swaggerJson: String) =>
     mockOpenApiClient(swaggerJson)
   }
 
-  When("""^the swagger.json hosted on "([^"]*)" is now$"""){ (_: String, swaggerJson: String) =>
+  When("""^the swagger.json hosted on "([^"]*)" is now$""") { (_: String, swaggerJson: String) =>
     mockOpenApiClient(swaggerJson)
   }
 
-  Given("""^swagger\.json cannot be requested$"""){ () =>
+  Given("""^swagger\.json cannot be requested$""") { () =>
     reset(fakeOpenApiClient)
-    when(fakeOpenApiClient.getOpenApiDescriptor(any[OpenApiModelModule](), any[PageJoinProject]())).thenReturn(Future.successful(OpenApiModel("",Option(Seq()),Seq(),Seq(),Seq("ERROR HTTP"))))
+    when(fakeOpenApiClient.getOpenApiDescriptor(any[OpenApiModelModule](), any[PageJoinProject]())).thenReturn(Future.successful(OpenApiModel("", Option(Seq()), Seq(), Seq(), Seq("ERROR HTTP"))))
   }
 
   private def mockOpenApiClient(swaggerJson: String) = {
@@ -378,7 +385,7 @@ Scenario: providing several book suggestions
   }
 
   Then("""^the file system do not store now the file "([^"]*)"$""") { (file: String) =>
-    Files.exists(Paths.get(file.fixPathSeparator)) mustBe( false)
+    Files.exists(Paths.get(file.fixPathSeparator)) mustBe (false)
   }
 
   Then("""^the file system store now the files$""") { files: DataTable =>

@@ -122,18 +122,16 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
   val SourceTemplatePathToken = s"${StartVar}path${EndVar}"
 
 
-  val luceneSearchIndex = new DirectLucene(uniqueFields = List("path"), defaultFullTextSearchable = true)
+  val luceneSearchIndex = new DirectLucene(uniqueFields = List(), defaultFullTextSearchable = true)
 
-  val name = luceneSearchIndex.create.field[String]("hierarchy")
-  val path = luceneSearchIndex.create.field[String]("path").fullTextSearchable(false)
+  val hierarchy = luceneSearchIndex.create.field[String]("hierarchy")
+  val path = luceneSearchIndex.create.field[String]("path", fullTextSearchable = false)
   val branch = luceneSearchIndex.create.field[String]("branch")
   val label = luceneSearchIndex.create.field[String]("label")
   val description = luceneSearchIndex.create.field[String]("description")
-  val pageContent = luceneSearchIndex.create.field[String]("pageContent")
- val test =  luceneSearchIndex.doc().fields(name("write")).index()
+  val pageContent = luceneSearchIndex.create.field[String]("pageContent", sortable = false)
 
 
-  luceneSearchIndex.query().scoreDocs(true).sort(Sort.Score).search()
   def getLocalRepository(projectId: String, branch: String): String = s"$projectsRootDirectory$projectId/$branch/".fixPathSeparator
 
   def getPagePath(projectId: String, branch: String, path: String, documentationRootPath: String): String = {
@@ -258,6 +256,7 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
   def computePageFromPathUsingDatabaseBis(pageJoinProjectOpt: Option[PageJoinProject], path: String, forceRefresh: Boolean = true): Future[Option[PageWithContent]] = {
     pageJoinProjectOpt match {
       case Some(pageJoinProject) =>
+        luceneSearchIndex.doc().fields(description(pageJoinProject.page.description), label(pageJoinProject.page.label), this.path(pageJoinProject.page.path), branch(pageJoinProject.branch.name), pageContent(pageJoinProject.page.markdown.getOrElse(""))).index()
         val key = computePageCacheKey(path)
         if (cache.get(key).isEmpty || forceRefresh || pageJoinProject.page.dependOnOpenApi) {
           logger.debug(s"Page computed: $path")
@@ -486,5 +485,10 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
 
   def getAllPagePaths(project: Project, directoryId: Long): Seq[Page] = {
     pageRepository.findAllByDirectoryId(directoryId).map(page => page.copy(path = getCorrectedPath(page.path, project)))
+  }
+
+  def searchForPage(keywords: String): Seq[Option[Page]] = {
+    val results = luceneSearchIndex.query().sort(Sort.Score).filter(parse("label:" + keywords + "*^100 | pageContent:" + keywords + "*^30 | description:" + keywords + "*^50 | branch:" + keywords + "*^30")).highlight().search()
+    results.results.map( result => pageRepository.findByPath(result(path)))
   }
 }

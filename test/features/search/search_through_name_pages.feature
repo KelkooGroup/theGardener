@@ -22,7 +22,7 @@ Feature: search through pages by name
       | 1  | master                                       | true     | suggestionsWS |
       | 2  | feature/654-simple-full-text-search-on-pages | false    | suggestionsWS |
 
-  @level_2_technical_details @nominal_case @ready
+  @level_2_technical_details @nominal_case @ongoing
   Scenario: get result of a search by name
     Given we have those directories in the database
       | id | name        | label         | description             | order | relativePath  | path                               | branchId |
@@ -35,21 +35,32 @@ Feature: search through pages by name
       | 2  | suggestion | The suggestions | The suggestions...        | 0     | /suggestions/suggestion | suggestionsWS>master>/suggestions/suggestion | **What's a suggestion ?**             | 2           |
       | 3  | examples   | examples        | Some examples             | 1     | /suggestions/examples   | suggestionsWS>master>/suggestions/examples   | **Some suggestion examples**          | 2           |
       | 4  | admin      | admin           | admin                     | 0     | /admin/admin            | suggestionsWS>master>/admin/admin            | **Page for the admin users**          | 3           |
-    When I perform a "GET" on following URL "/api/pages/search?keywords=context"
+    And we have the following document in the lucene index
+      | hierarchy | path                                         | branch | label           | description               | pageContent                           |
+      | projet    | suggestionsWS>master>/context                | master | The context     | Why providing suggestions | **Feature**: Provide book suggestions |
+      | project   | suggestionsWS>master>/suggestions/suggestion | master | The suggestions | The suggestions...        | **What's a suggestion ?**             |
+      | project   | suggestionsWS>master>/suggestions/examples   | master | examples        | Some examples             | **Some suggestion examples**          |
+      | project   | suggestionsWS>master>/admin/admin            | master | admin           | admin                     | **Page for the admin users**          |
+    And I perform a "GET" on following URL "/api/pages/search?keywords=context"
     Then I get the following json response body
     """
 [
   {
-    "path": "suggestionsWS>master>/context",
-    "relativePath": "/context",
+    "id": 1,
     "name": "context",
     "label": "The context",
-    "description": "Why providing suggestions"
+    "description": "Why providing suggestions",
+    "order": 0,
+    "markdown": "**Feature**: Provide book suggestions",
+    "relativePath": "/context",
+    "path": "suggestionsWS>master>/context",
+    "directoryId": 1,
+    "dependOnOpenApi": false
   }
 ]
 """
 
-  @level_2_technical_details @ready
+  @level_2_technical_details @ongoing
   Scenario: get result of a search by name with multiple results
     Given we have those directories in the database
       | id | name        | label         | description             | order | relativePath  | path                               | branchId |
@@ -58,35 +69,45 @@ Feature: search through pages by name
       | 3  | admin       | Admin         | Administration...       | 1     | /admin/       | suggestionsWS>master>/admin/       | 1        |
       | 4  | root        | SuggestionsWS | Suggestions WebServices | 0     | /             | suggestionsWS>master>/             | 2        |
     And we have those pages in the database
-      | id | name       | label           | description               | order | relativePath            | path                                                                | markdown                              | directoryId |
-      | 1  | context    | The context     | Why providing suggestions | 0     | /context                | suggestionsWS>master>/context                                       | **Feature**: Provide book suggestions | 1           |
-      | 2  | suggestion | The suggestions | The suggestions...        | 0     | /suggestions/suggestion | suggestionsWS>master>/suggestions/suggestion                        | **What's a suggestion ?**             | 2           |
-      | 3  | examples   | examples        | Some examples             | 1     | /suggestions/examples   | suggestionsWS>master>/suggestions/examples                          | **Some suggestion examples**          | 2           |
-      | 4  | admin      | admin           | admin                     | 0     | /admin/admin            | suggestionsWS>master>/admin/admin                                   | **Page for the admin users**          | 3           |
-      | 5  | context    | The context     | Why providing suggestions | 0     | /context                | suggestionsWS>feature/654-simple-full-text-search-on-pages>/context | **Feature**: Provide book suggestions | 4           |
+      | id | name       | label           | description               | order | relativePath            | path                                                                | markdown                                      | directoryId |
+      | 1  | context    | The context     | Why providing suggestions | 0     | /context                | suggestionsWS>master>/context                                       | **Feature**: Provide book suggestions         | 1           |
+      | 2  | suggestion | The suggestions | The suggestions...        | 0     | /suggestions/suggestion | suggestionsWS>master>/suggestions/suggestion                        | **What's a suggestion ?**                     | 2           |
+      | 3  | examples   | examples        | Some examples             | 1     | /suggestions/examples   | suggestionsWS>master>/suggestions/examples                          | **Some suggestion examples**                  | 2           |
+      | 4  | admin      | admin           | admin                     | 0     | /admin/admin            | suggestionsWS>master>/admin/admin                                   | **Page for the admin users**                  | 3           |
+      | 5  | context    | The context     | Why providing suggestions | 0     | /context                | suggestionsWS>feature/654-simple-full-text-search-on-pages>/context | **Feature**: Provide book suggestions context | 4           |
 
     When I perform a "GET" on following URL "/api/pages/search?keywords=context"
     Then I get the following json response body
     """
 [
   {
-    "path": "suggestionsWS>master>/context",
-    "relativePath": "/context",
+    "id": 5,
     "name": "context",
     "label": "The context",
-    "description": "Why providing suggestions"
-  },
-    {
+    "description": "Why providing suggestions",
+    "order": 0,
+    "markdown": "**Feature**: Provide book suggestions context",
+    "relativePath": "/context",
     "path": "suggestionsWS>feature/654-simple-full-text-search-on-pages>/context",
-    "relativePath": "/context",
+    "directoryId": 4,
+    "dependOnOpenApi": false
+  },
+  {
+    "id": 1,
     "name": "context",
     "label": "The context",
-    "description": "Why providing suggestions"
+    "description": "Why providing suggestions",
+    "order": 0,
+    "markdown": "**Feature**: Provide book suggestions",
+    "relativePath": "/context",
+    "path": "suggestionsWS>master>/context",
+    "directoryId": 1,
+    "dependOnOpenApi": false
   }
 ]
 """
 
-  @level_2_technical_details @ready
+  @level_2_technical_details @ongoing
   Scenario: get result of a search by markdown
     Given we have those directories in the database
       | id | name        | label         | description             | order | relativePath  | path                               | branchId |

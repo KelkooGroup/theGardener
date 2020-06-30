@@ -7,6 +7,7 @@ import controllers.AssetAccessError.{AssetNotAllowed, AssetNotFound}
 import controllers.dto._
 import io.swagger.annotations._
 import javax.inject.Inject
+import models.Page
 import play.api.Configuration
 import play.api.libs.json.Json
 import play.api.mvc._
@@ -20,6 +21,7 @@ import scala.concurrent.ExecutionContext
 @Api(value = "PageController", produces = "application/json")
 class PageController @Inject()(pageService: PageService)(implicit ec: ExecutionContext) extends InjectedController {
 
+
   @ApiOperation(value = "Get pages from path", response = classOf[PageDTO], responseContainer = "list")
   @ApiResponses(Array(new ApiResponse(code = 404, message = "Page not found")))
   def getPageFromPath(path: String): Action[AnyContent] = Action.async {
@@ -27,6 +29,13 @@ class PageController @Inject()(pageService: PageService)(implicit ec: ExecutionC
       case Some(pageDto) => Ok(Json.toJson(Seq(pageDto)))
       case None => NotFound(s"No Page $path")
     }
+  }
+
+  @ApiOperation(value = "Search pages through keywords", response = classOf[Seq[Page]], responseContainer = "list")
+  @ApiResponses(Array(new ApiResponse(code = 404, message = "Page not found")))
+  def searchPage(keywords: String): Action[AnyContent] = Action {
+    implicit val itemsFormat = Json.format[Page]
+      Ok(Json.toJson(pageService.searchForPage(keywords)))
   }
 
 }
