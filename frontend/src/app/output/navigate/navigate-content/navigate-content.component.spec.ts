@@ -24,6 +24,11 @@ import {MarkdownModule} from "ngx-markdown";
 import {NgxJsonViewerModule} from "ngx-json-viewer";
 import {GherkinTableComponent} from "../../gherkin/gherkin-table/gherkin-table.component";
 import {MatTableModule} from "@angular/material/table";
+import {FooterComponent} from '../../../_components/page/footer/footer.component';
+import {NavigateMobileMenuComponent} from '../navigate-mobile-menu/navigate-mobile-menu.component';
+import {NavigateMenuItemComponent} from '../navigate-menu/navigate-menu-item/navigate-menu-item.component';
+import {MatSelectModule} from '@angular/material/select';
+import {FormsModule} from '@angular/forms';
 
 
 describe('NavigateContentComponent', () => {
@@ -47,6 +52,9 @@ describe('NavigateContentComponent', () => {
                 GherkinStepComponent,
                 OpenApiEndPointsComponent,
                 OpenApiModelComponent,
+                FooterComponent,
+                NavigateMobileMenuComponent,
+                NavigateMenuItemComponent,
             ], imports: [
                 HttpClientTestingModule,
                 MatSnackBarModule,
@@ -61,6 +69,8 @@ describe('NavigateContentComponent', () => {
                 RouterTestingModule,
                 MatTabsModule,
                 MatSnackBarModule,
+                MatSelectModule,
+                FormsModule,
             ], providers: [
                 {
                     provide: ActivatedRoute,
