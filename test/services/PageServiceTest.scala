@@ -31,7 +31,8 @@ class PageServiceTest extends WordSpec with MustMatchers with BeforeAndAfter wit
 
   when(config.getOptional[String]("application.baseUrl")).thenReturn(None)
 
-  val pageService = new PageService(config, projectRepository, directoryRepository, pageRepository, gherkinRepository, openApiClient, cache)
+  val pageIndex = new PageIndex()
+  val pageService = new PageService(config, projectRepository, directoryRepository, pageRepository, gherkinRepository, openApiClient, cache, pageIndex)
 
   val variables = Seq(Variable(s"$${name1}", "value"), Variable(s"$${name2}", "value2"))
   val contentWithMarkdown = Seq(PageFragment("markdown", PageFragmentContent(Some(s"$${name1}"))))
@@ -47,27 +48,21 @@ class PageServiceTest extends WordSpec with MustMatchers with BeforeAndAfter wit
 
   before {
     Mockito.reset(pageRepository)
+
+    // TODO : remove this comment : GERALD : Moved here : it's initialisation of your tests
+    pageService.replaceVariablesInMarkdown(contentWithMarkdown, variables) must contain theSameElementsAs Seq(PageFragment("markdown", PageFragmentContent(Some(s"value"))))
+
+    pageService.replaceVariablesInMarkdown(contentWithTwoFragment, variables) must contain theSameElementsAs Seq(PageFragment("markdown", PageFragmentContent(Some(s"value"))), PageFragment("includeExternalPage", PageFragmentContent(None, None, Some(s"value"))))
+
+    pageIndex.addDocument( PageIndexDocument("hierarchy1","path1","branch1","Doeco", "this is a test for markdown","") )
+    pageIndex.addDocument( PageIndexDocument("hierarchy2","path2","branch2","Superstore", "","") )
+    pageIndex.addDocument( PageIndexDocument("hierarchy3","path3","branch3","Doe co", "this is a text for markdown doe","") )
+    pageIndex.addDocument( PageIndexDocument("hierarchy4","path4","branch4","co", "doe","") )
+    pageIndex.addDocument( PageIndexDocument("hierarchy5","path5","branch5","Buymore", "this is a test for markdown this is a text for markdown","") )
+    pageIndex.addDocument( PageIndexDocument("hierarchy6","path6","branch6","Do-Lots-Co", "","") )
   }
 
   "PageService" should {
-
-
-    "Replace Variable in Markdown" in {
-      pageService.replaceVariablesInMarkdown(contentWithMarkdown, variables) must contain theSameElementsAs Seq(PageFragment("markdown", PageFragmentContent(Some(s"value"))))
-    }
-
-    "Replace Variables in Markdown with external Link" in {
-      pageService.replaceVariablesInMarkdown(contentWithTwoFragment, variables) must contain theSameElementsAs Seq(PageFragment("markdown", PageFragmentContent(Some(s"value"))), PageFragment("includeExternalPage", PageFragmentContent(None, None, Some(s"value"))))
-    }
-
-    "index a few documents" in {
-      pageService.luceneSearchIndex.doc().fields(pageService.hierarchy("hierarchy1"), pageService.path("path1"), pageService.branch("branch1"), pageService.label("Doeco"), pageService.description("this is a test for markdown"), pageService.pageContent("")).index()
-      pageService.luceneSearchIndex.doc().fields(pageService.hierarchy("hierarchy2"), pageService.path("path2"), pageService.branch("branch2"), pageService.label("Superstore"), pageService.description(""), pageService.pageContent("")).index()
-      pageService.luceneSearchIndex.doc().fields(pageService.hierarchy("hierarchy3"), pageService.path("path3"), pageService.branch("branch3"), pageService.label("Doe co"), pageService.description("this is a text for markdown doe"), pageService.pageContent("")).index()
-      pageService.luceneSearchIndex.doc().fields(pageService.hierarchy("hierarchy4"), pageService.path("path4"), pageService.branch("branch4"), pageService.label("co"), pageService.description("doe"), pageService.pageContent("")).index()
-      pageService.luceneSearchIndex.doc().fields(pageService.hierarchy("hierarchy5"), pageService.path("path5"), pageService.branch("branch5"), pageService.label("Buymore"), pageService.description("this is a test for markdown this is a text for markdown"), pageService.pageContent("")).index()
-      pageService.luceneSearchIndex.doc().fields(pageService.hierarchy("hierarchy6"), pageService.path("path6"), pageService.branch("branch6"), pageService.label("Do-Lots-Co"), pageService.description(""), pageService.pageContent("")).index()
-    }
 
     "search in lucene" in {
       when(pageRepository.findByPath("path1")) thenReturn Option(page1)
