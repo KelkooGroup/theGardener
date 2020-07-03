@@ -113,6 +113,10 @@ class PageIndex {
     }
   }
 
+  def reset(): Unit ={
+    luceneSearchIndex.deleteAll()
+  }
+
 }
 
 

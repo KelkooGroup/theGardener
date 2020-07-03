@@ -304,6 +304,7 @@ Scenario: providing several book suggestions
   }
 
   Given("""^the lucene index is loaded from the database$""") { () =>
+    pageIndex.reset()
     response = route(app, FakeRequest("POST", "/api/admin/projects/refreshFromDatabase")).get
     Await.result(response, 30.seconds)
   }

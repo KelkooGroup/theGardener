@@ -55,7 +55,7 @@ Feature: search through pages by name
 ]
 """
 
-  @level_2_technical_details @nominal_case @ongoing
+  @level_2_technical_details @nominal_case @valid
   Scenario: get result of a search by name with multiple results
     Given we have those directories in the database
       | id | name        | label         | description             | order | relativePath  | path                               | branchId |
@@ -102,7 +102,7 @@ Feature: search through pages by name
 ]
 """
 
-  @level_2_technical_details @nominal_case  @ongoing
+  @level_2_technical_details @nominal_case @valid
   Scenario: get result of a search by markdown
     Given we have those directories in the database
       | id | name        | label         | description             | order | relativePath  | path                               | branchId |
@@ -121,25 +121,40 @@ Feature: search through pages by name
     """
 [
   {
-    "path": "suggestionsWS>master>/context",
-    "relativePath": "/context",
-    "name": "context",
-    "label": "The context",
-    "description": "Why providing suggestions"
-  },
-  {
-    "path": "suggestionsWS>master>/suggestions/suggestion ",
-    "relativePath": "/suggestions/suggestion ",
+    "id": 2,
     "name": "suggestion",
     "label": "The suggestions",
-    "description": "The suggestions..."
+    "description": "The suggestions...",
+    "order": 0,
+    "markdown": "**What's a suggestion ?**",
+    "relativePath": "/suggestions/suggestion",
+    "path": "suggestionsWS>master>/suggestions/suggestion",
+    "directoryId": 2,
+    "dependOnOpenApi": false
   },
   {
-    "path": "suggestionsWS>master>/suggestions/examples ",
-    "relativePath": "/suggestions/examples ",
+    "id": 1,
+    "name": "context",
+    "label": "The context",
+    "description": "Why providing suggestions",
+    "order": 0,
+    "markdown": "**Feature**: Provide book suggestions",
+    "relativePath": "/context",
+    "path": "suggestionsWS>master>/context",
+    "directoryId": 1,
+    "dependOnOpenApi": false
+  },
+  {
+    "id": 3,
     "name": "examples",
     "label": "examples",
-    "description": "Some examples"
+    "description": "Some examples",
+    "order": 1,
+    "markdown": "**Some suggestion examples**",
+    "relativePath": "/suggestions/examples",
+    "path": "suggestionsWS>master>/suggestions/examples",
+    "directoryId": 2,
+    "dependOnOpenApi": false
   }
 ]
 """
