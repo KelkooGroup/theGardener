@@ -37,7 +37,7 @@
 
   <ng-template #nodeBlock>
     <div *ngFor="let child of menuItem.children; trackBy: trackMenuItem">
-      <app-navigate-menu-item [menuItem]="child"></app-navigate-menu-item>
+      <app-navigate-menu-item [menuItem]="child" (navigationEvent)="onChildNavigationEvent($event)"></app-navigate-menu-item>
     </div>
   </ng-template>
 
@@ -58,7 +58,7 @@
       </mat-form-field>
     </div>
     <div *ngIf="selectedBranch && selectedBranch.children">
-      <app-navigate-menu-item *ngFor="let child of selectedBranch.children" [menuItem]="child"></app-navigate-menu-item>
+      <app-navigate-menu-item *ngFor="let child of selectedBranch.children" [menuItem]="child" (navigationEvent)="onChildNavigationEvent($event)"></app-navigate-menu-item>
     </div>
   </ng-template>
 </div>

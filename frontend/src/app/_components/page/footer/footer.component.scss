@@ -13,6 +13,12 @@
 
 
   font-size: $font-size-text-x-small;
+
+
+  @media screen and (max-width: 600px) {
+    flex-wrap: wrap;
+  }
+
 }
 
 .footer-logo {
