@@ -95,10 +95,11 @@ libraryDependencies ++= Seq(
   "com.jsuereth" %% "scala-arm" % "2.0",
   "commons-io" % "commons-io" % "2.6",
   "net.ruippeixotog" %% "scala-scraper" % "2.2.0" % Test,
-  "io.cucumber" %% "cucumber-scala" % "2.0.1" % Test,
-  "io.cucumber" % "cucumber-junit" % "2.4.0" % Test,
-  "io.cucumber" % "cucumber-picocontainer" % "2.4.0" % Test,
-  "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0" % Test,
+  "io.cucumber" %% "cucumber-scala" % "6.2.2" % Test,
+  "io.cucumber" % "cucumber-junit" % "6.2.2" % Test,
+  "io.cucumber" % "cucumber-picocontainer" % "6.2.2" % Test,
+  "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.10.3" % Test,
+  "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.3" % Test,
   "org.mockito" % "mockito-all" % "1.10.19" % Test,
 
    compilerPlugin("com.github.ghik" % "silencer-plugin" % silencerVersion cross CrossVersion.full),
@@ -122,6 +123,7 @@ enablePlugins(sbtdocker.DockerPlugin, JavaAppPackaging)
 dockerfile in docker := {
   val appDir: File = stage.value
   val defaultConfFile: File = new File("./docker/application.conf")
+  val defaultLogBackFile: File = new File("./local-conf/logback.xml")
   val targetDir = "/app"
   val confDir = "/app-conf"
   val gitDataDir = "/git-data"
@@ -134,6 +136,7 @@ dockerfile in docker := {
     entryPoint(s"$targetDir/bin/${executableScriptName.value}")
     cmd(s"-Dconfig.file=$confDir/application.conf")
     copy(defaultConfFile, s"$confDir/", chown = "daemon:daemon")
+    copy(defaultLogBackFile, s"$confDir/", chown = "daemon:daemon")
     copy(appDir, targetDir, chown = "daemon:daemon")
   }
 }

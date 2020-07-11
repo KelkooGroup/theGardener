@@ -1,8 +1,8 @@
 import {
-    Component,
-    Input,
-    OnDestroy,
-    OnInit,
+  Component, EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit, Output,
 } from '@angular/core';
 import {MenuHierarchy, MenuProjectHierarchy} from '../../../../_models/menu';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -20,6 +20,7 @@ import {FrontendPath, NavigationRoute} from "../../../../_models/route";
 export class NavigateMenuItemComponent implements OnInit, OnDestroy {
 
     @Input() menuItem: MenuHierarchy;
+    @Output() navigationEvent = new EventEmitter<string>();
 
     currentPath: FrontendPath;
     currentNavigationRoute: NavigationRoute;
@@ -28,7 +29,6 @@ export class NavigateMenuItemComponent implements OnInit, OnDestroy {
     expanded: boolean;
     active: boolean;
     disable: boolean;
-    leafSelection: boolean;
     selectedBranch: MenuHierarchy;
 
     private subscription: Subscription;
@@ -40,9 +40,10 @@ export class NavigateMenuItemComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
+      console.log(`INIT MENU ITEM ${JSON.stringify(this.menuItem.label)}`);
         this.subscription = this.activatedRoute.params
             .subscribe(params => {
-
+              console.log(`Activated route params: ${JSON.stringify(params)}`);
                 this.currentPath = this.routeService.navigationParamsToFrontEndPath(params);
                 this.currentNavigationRoute = this.routeService.navigationParamsToNavigationRoute(params);
                 this.active = this.isActive(this.menuItem);
@@ -70,9 +71,14 @@ export class NavigateMenuItemComponent implements OnInit, OnDestroy {
 
     navigateToItem() {
         if (this.menuItem.route?.page !== undefined) {
-            this.router.navigateByUrl(NAVIGATE_PATH + this.routeService.navigationRouteToFrontEndPath(this.menuItem.route).pathFromNodes);
+            const url = NAVIGATE_PATH + this.routeService.navigationRouteToFrontEndPath(this.menuItem.route).pathFromNodes;
+            this.router.navigateByUrl(url);
+            this.navigationEvent.emit(url);
         } else {
             this.expanded = !this.expanded;
+            if (!this.menuItem.children || this.menuItem.children.length === 0) {
+              this.navigationEvent.emit(undefined);
+            }
         }
     }
 
@@ -82,7 +88,6 @@ export class NavigateMenuItemComponent implements OnInit, OnDestroy {
     }
 
     isActive(menuItem: MenuHierarchy): boolean {
-
         const menuItemNodesPath = this.routeService.navigationRouteToFrontEndPath(menuItem.route).nodesPath;
         let active = false ;
         if (menuItem.type == "Node") {
@@ -117,4 +122,7 @@ export class NavigateMenuItemComponent implements OnInit, OnDestroy {
         return branch1.name === branch2.name;
     }
 
+    onChildNavigationEvent(url: string) {
+      this.navigationEvent.emit(url);
+    }
 }

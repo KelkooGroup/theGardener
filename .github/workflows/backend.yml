@@ -2,6 +2,8 @@ name: Backend CI
 
 on:
   push:
+    branches:
+      - master
     paths:
     - '.github/workflows/backend.yml'
     - 'app/*'
@@ -14,7 +16,19 @@ on:
     - 'scalastyle-config.xml'
     - 'sonar-project.properties'
     - 'version.sbt'
-
+  pull_request:
+    paths:
+    - '.github/workflows/backend.yml'
+    - 'app/*'
+    - 'conf/*'
+    - 'local-conf/*'
+    - 'project/*'
+    - 'public/*'
+    - 'test/*'
+    - 'build.sbt'
+    - 'scalastyle-config.xml'
+    - 'sonar-project.properties'
+    - 'version.sbt'
 
 jobs:
   build:

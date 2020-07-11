@@ -32,7 +32,6 @@ Compute the menu from the database and put it in the cache
 {
   "openApiPath" : 
      {
-        "openApiUrl": "https://thegardener.kelkoogroup.com/api/docs/swagger.json",
         "refStartsWith": [
          "/api/admin/menu"
         ],
@@ -54,7 +53,6 @@ Compute the menu from the database and put it in the cache
 {
   "openApiPath" : 
      {
-        "openApiUrl": "https://thegardener.kelkoogroup.com/api/docs/swagger.json",
         "refStartsWith": [
          "/api/admin/projects/{id}/refreshFromDatabase"
         ],
@@ -77,7 +75,6 @@ Compute the menu from the database and put it in the cache
 {
   "openApiPath" : 
      {
-        "openApiUrl": "https://thegardener.kelkoogroup.com/api/docs/swagger.json",
         "refStartsWith": [
          "/api/admin/projects/{id}/refreshFromDisk"
         ],
@@ -100,7 +97,6 @@ Compute the menu from the database and put it in the cache
 {
   "openApiPath" : 
      {
-        "openApiUrl": "https://thegardener.kelkoogroup.com/api/docs/swagger.json",
         "refStartsWith": [
          "/api/admin/projects/{id}/synchronizeFromRemoteGitRepository"
         ],
@@ -124,7 +120,6 @@ Compute the menu from the database and put it in the cache
 {
   "openApiPath" : 
      {
-        "openApiUrl": "https://thegardener.kelkoogroup.com/api/docs/swagger.json",
         "refStartsWith": [
          "/api/admin/projects/{id}/refreshFromRemoteGitRepository"
         ],

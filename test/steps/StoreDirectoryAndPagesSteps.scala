@@ -2,7 +2,7 @@ package steps
 
 import java.util
 
-import cucumber.api.scala._
+import io.cucumber.scala._
 import models._
 import org.scalatestplus.mockito._
 import org.mockito.Mockito.{times, _}

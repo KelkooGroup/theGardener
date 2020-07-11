@@ -107,11 +107,20 @@ export class RouteService {
 
             return  `${NAVIGATE_PATH}${navigationParams.nodes}/${navigationParams.project}/${navigationParams.branch}/${targetDirectoriesPath}/${page}`;
        } else {
-           let page = relativePath;
+           let relativePathWithChildren = relativePath;
            if (relativePath.startsWith('./')) {
-               page = relativePath.substr(2, relativePath.length);
+               relativePathWithChildren = relativePath.substr(2, relativePath.length);
            }
-           return `${NAVIGATE_PATH}${navigationParams.nodes}/${navigationParams.project}/${navigationParams.branch}/${navigationParams.directories}/${page}`;
+           const subDirectoriesAndPage = relativePathWithChildren.split('/');
+           let targetDirectoriesPath;
+           let page = subDirectoriesAndPage[subDirectoriesAndPage.length-1];
+           if (subDirectoriesAndPage.length==1){
+               targetDirectoriesPath = navigationParams.directories;
+           }else{
+               const subDirectories = subDirectoriesAndPage.slice(0, subDirectoriesAndPage.length - 1);
+               targetDirectoriesPath = navigationParams.directories + EMPTY_CHAR + subDirectories.join(EMPTY_CHAR);
+           }
+           return  `${NAVIGATE_PATH}${navigationParams.nodes}/${navigationParams.project}/${navigationParams.branch}/${targetDirectoriesPath}/${page}`;
        }
     }
 
