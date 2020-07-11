@@ -11,8 +11,8 @@ import anorm._
 import com.typesafe.config._
 import controllers._
 import controllers.dto._
-import cucumber.api.DataTable
-import cucumber.api.scala._
+import io.cucumber.datatable.DataTable
+import io.cucumber.scala.{EN, JacksonDefaultDataTableEntryTransformer, ScalaDsl}
 import julienrf.json.derived
 import models._
 import models.Feature._
@@ -173,16 +173,16 @@ case class Configuration(path: String, value: String)
 
 case class PageRow(id: Long, name: String, label: String, description: String, order: Int, markdown: String, relativePath: String, path: String, directoryId: Long, dependOnOpenApi: Boolean)
 
-class CommonSteps extends ScalaDsl with EN with MockitoSugar with Logging {
+class CommonSteps extends ScalaDsl with EN with MockitoSugar with Logging with JacksonDefaultDataTableEntryTransformer {
 
   import CommonSteps._
 
-  Before() { _ =>
+  Before {
     app = applicationBuilder.build()
     startServer(app)
   }
 
-  After { _ =>
+  After {
     stopServer()
   }
 
@@ -395,7 +395,7 @@ Scenario: providing several book suggestions
     implicit val documentationFormat = Json.format[DocumentationDTO]
 
     val documentation = Json.parse(contentAsString(response)).as[DocumentationDTO]
-    val expectedScenarios = dataTable.asMaps(classOf[String], classOf[String]).asScala.toSeq
+    val expectedScenarios = dataTable.asMaps[String, String](classOf[String], classOf[String]).asScala.toSeq
 
     expectedScenarios.length mustBe nbRealScenario(documentation)
 

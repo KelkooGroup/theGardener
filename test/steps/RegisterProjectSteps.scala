@@ -3,8 +3,8 @@ package steps
 import java.nio.file._
 import java.util
 
-import cucumber.api.DataTable
-import cucumber.api.scala._
+import io.cucumber.datatable.DataTable
+import io.cucumber.scala._
 import models._
 import org.scalatestplus.mockito._
 import play.api.libs.json.Json
@@ -81,4 +81,9 @@ class RegisterProjectSteps extends ScalaDsl with EN with MockitoSugar {
   Then("""^the projects settings are now$""") { projects: util.List[ProjectTableRow] =>
     checkProjectsInDb(projects.asScala.map(_.toProject().copy(hierarchy = None, branches = None)))
   }
+
+  Then("""the projects settings are now empty""") { () =>
+    checkProjectsInDb(Seq())
+  }
+
 }

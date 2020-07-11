@@ -23,7 +23,7 @@ Feature: Generate a documentation page with OpenApi Module
       | 1  | root | SuggestionsWS | Suggestions WebServices | 0     | /            | suggestionsWS>master>/ | 1        |
     And we have those pages in the database
       | id | name    | label       | description               | order | relativePath | path                          | markdown | directoryId |
-      | 1  | context | The context | Why providing suggestions | 0     | /context     | suggestionsWS>master>/context |          | 1           |
+      | 1  | context | The context | Why providing suggestions | 0     | /context     | suggestionsWS>master>/context | [empty]        | 1           |
     And we have the following swagger.json hosted on "http://theGardener.com/api/docs/swagger.json"
       """
 {

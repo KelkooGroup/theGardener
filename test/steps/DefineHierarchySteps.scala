@@ -1,8 +1,9 @@
 package steps
 
 import anorm._
-import cucumber.api.DataTable
-import cucumber.api.scala.{EN, ScalaDsl}
+import io.cucumber.datatable.DataTable
+import io.cucumber.scala.{EN, ScalaDsl}
+import io.cucumber.scala.Implicits._
 import models._
 import org.scalatestplus.mockito._
 
@@ -12,29 +13,21 @@ class DefineHierarchySteps extends ScalaDsl with EN with MockitoSugar {
 
   import CommonSteps._
 
+  DataTableType { line: Map[String, Option[String]] =>
+    val directoryPath = line.get("directoryPath").flatten
+    val shortcut = line.get("shortcut").flatten
+    HierarchyNode(
+      line("id").get, line("slugName").get, line("name").get, line("childrenLabel").get, line("childLabel").get, directoryPath, shortcut
+    )
+  }
+
   Given("""^no hierarchy nodes is setup in theGardener$""") { () =>
     hierarchyRepository.deleteAll()
   }
 
   Given("""^the hierarchy nodes are$""") {table: DataTable =>
-    val hierarchies = buildHierarchyNodes(table)
+    val hierarchies = table.asScalaRawList[HierarchyNode]
     hierarchyRepository.saveAll(hierarchies)
-  }
-
-  private def buildHierarchyNodes(table: DataTable) = {
-    table.asMaps(classOf[String], classOf[String]).asScala.map(_.asScala).map { f =>
-
-      val directoryPath = if (f.keys.exists(_ == "directoryPath")) {
-        if (f("directoryPath") == "") None else Some(f("directoryPath"))
-      } else None
-      val shortcut = if (f.keys.exists(_ == "shortcut")) {
-        if (f("shortcut") == "") None else Some(f("shortcut"))
-      } else None
-
-      HierarchyNode(
-        f("id"), f("slugName"), f("name"), f("childrenLabel"), f("childLabel"), directoryPath, shortcut
-      )
-    }
   }
 
   Given("""^there is no links from projects to hierarchy nodes$""") { () =>
@@ -45,7 +38,7 @@ class DefineHierarchySteps extends ScalaDsl with EN with MockitoSugar {
   }
 
   Given("""^the links between hierarchy nodes are$""") { table: DataTable =>
-    table.asMaps(classOf[String], classOf[String]).asScala.map(_.asScala).foreach { projectHierarchy =>
+    table.asMaps[String, String](classOf[String], classOf[String]).asScala.map(_.asScala).foreach { projectHierarchy =>
       projectRepository.linkHierarchy(
         projectHierarchy("projectId"),
         projectHierarchy("hierarchyId")
@@ -54,13 +47,13 @@ class DefineHierarchySteps extends ScalaDsl with EN with MockitoSugar {
   }
 
   Then("""^the links between hierarchy nodes are now$""") { table: DataTable =>
-    table.asMaps(classOf[String], classOf[String]).asScala.map(_.asScala).foreach { projectHierarchy =>
+    table.asMaps[String, String](classOf[String], classOf[String]).asScala.map(_.asScala).foreach { projectHierarchy =>
       hierarchyRepository.findAllByProjectId(projectHierarchy("projectId")).map(_.id) must contain(projectHierarchy("hierarchyId"))
     }
   }
 
   Then("""^the hierarchy nodes are now$""") { table: DataTable =>
-    val exceptedHierarchies = buildHierarchyNodes(table)
+    val exceptedHierarchies = table.asScalaRawList[HierarchyNode]
     val actualHierarchies = hierarchyRepository.findAll()
     actualHierarchies must contain theSameElementsAs exceptedHierarchies
   }
