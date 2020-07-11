@@ -2,12 +2,10 @@ package steps
 
 import anorm._
 import io.cucumber.datatable.DataTable
-import io.cucumber.scala.{EN, ScalaDsl}
 import io.cucumber.scala.Implicits._
+import io.cucumber.scala.{EN, ScalaDsl}
 import models._
 import org.scalatestplus.mockito._
-
-import scala.collection.JavaConverters._
 
 class DefineHierarchySteps extends ScalaDsl with EN with MockitoSugar {
 
@@ -38,17 +36,17 @@ class DefineHierarchySteps extends ScalaDsl with EN with MockitoSugar {
   }
 
   Given("""^the links between hierarchy nodes are$""") { table: DataTable =>
-    table.asMaps[String, String](classOf[String], classOf[String]).asScala.map(_.asScala).foreach { projectHierarchy =>
+    table.asScalaMaps.foreach { projectHierarchy =>
       projectRepository.linkHierarchy(
-        projectHierarchy("projectId"),
-        projectHierarchy("hierarchyId")
+        projectHierarchy("projectId").get,
+        projectHierarchy("hierarchyId").get
       )
     }
   }
 
   Then("""^the links between hierarchy nodes are now$""") { table: DataTable =>
-    table.asMaps[String, String](classOf[String], classOf[String]).asScala.map(_.asScala).foreach { projectHierarchy =>
-      hierarchyRepository.findAllByProjectId(projectHierarchy("projectId")).map(_.id) must contain(projectHierarchy("hierarchyId"))
+    table.asScalaMaps.foreach { projectHierarchy =>
+      hierarchyRepository.findAllByProjectId(projectHierarchy("projectId").get).map(_.id) must contain(projectHierarchy("hierarchyId").get)
     }
   }
 
