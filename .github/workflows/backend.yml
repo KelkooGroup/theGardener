@@ -2,6 +2,8 @@ name: Backend CI
 
 on:
   push:
+    branches:
+      - master
     paths:
     - '.github/workflows/backend.yml'
     - 'app/*'
