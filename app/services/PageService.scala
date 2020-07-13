@@ -87,10 +87,10 @@ class PageServiceCache @Inject()(cache: SyncCacheApi) extends Logging {
 
 }
 
+// scalastyle:off number.of.methods
 @Singleton
 class PageService @Inject()(config: Configuration, projectRepository: ProjectRepository, directoryRepository: DirectoryRepository, pageRepository: PageRepository,
-                            gherkinRepository: GherkinRepository, openApiClient: OpenApiClient, cache: PageServiceCache)(implicit ec: ExecutionContext) extends Logging {
-
+                            gherkinRepository: GherkinRepository, openApiClient: OpenApiClient, cache: PageServiceCache, hierarchyRepository: HierarchyRepository)(implicit ec: ExecutionContext) extends Logging {
 
   implicit val pageMetaFormat = Json.format[PageMeta]
   implicit val directoryMetaFormat = Json.format[DirectoryMeta]
@@ -257,6 +257,7 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
     pageJoinProjectOpt match {
       case Some(pageJoinProject) =>
         luceneSearchIndex.doc().fields(description(pageJoinProject.page.description), label(pageJoinProject.page.label), this.path(pageJoinProject.page.path), branch(pageJoinProject.branch.name), pageContent(pageJoinProject.page.markdown.getOrElse(""))).index()
+        System.out.println(getHierarchyPath(pageJoinProject))
         val key = computePageCacheKey(path)
         if (cache.get(key).isEmpty || forceRefresh || pageJoinProject.page.dependOnOpenApi) {
           logger.debug(s"Page computed: $path")
@@ -281,6 +282,19 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
           Future.successful(None)
         }
       case _ => Future.successful(None)
+    }
+  }
+
+  def getHierarchyPath(pageJoinProject: PageJoinProject): String = {
+    System.out.println(pageJoinProject.project.id)
+    System.out.println(hierarchyRepository.findAllByProjectId("publisherSystems"))
+    val projectHierarchies = hierarchyRepository.findAllByProjectId(pageJoinProject.project.id)
+    if (projectHierarchies.nonEmpty) {
+      val projectHierarchyId = projectHierarchies.head.id
+      val splittedProjectHierachyId = projectHierarchyId.split(".")
+      splittedProjectHierachyId.reduceRight((id, result) => result + "/" + hierarchyRepository.findById("." + id + "."))
+    } else {
+      pageJoinProject.page.path
     }
   }
 
@@ -335,7 +349,6 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
     }
   }
 
-
   def splitMarkdown(markdown: String, path: String = ""): Seq[PageFragmentUnderProcessing] = {
     markdown.split('\n').foldLeft((Seq[PageFragmentUnderProcessing](), PageFragmentUnderProcessing())) { (fragmentsAndCurrent, line) =>
       fragmentsAndCurrent match {
@@ -365,7 +378,6 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
     }
     // scalastyle:on cyclomatic.complexity
   }
-
 
   private def processPageFragmentModule(line: String, path: String, fragments: Seq[PageFragmentUnderProcessing], currentFragment: PageFragmentUnderProcessing, currentFragmentWithNewLine: PageFragmentUnderProcessing) = {
     if (line.trim.startsWith(MarkdownCodeStart)) {
@@ -474,7 +486,6 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
     )
   }
 
-
   def replaceVariableInString(texte: String, variables: IndexedSeq[Variable], index: Int): Option[String] = {
     if (index != variables.length) {
       replaceVariableInString(texte.replace(variables(index).name, variables(index).value), variables, index + 1)
@@ -489,6 +500,6 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
 
   def searchForPage(keywords: String): Seq[Option[Page]] = {
     val results = luceneSearchIndex.query().sort(Sort.Score).filter(parse("label:" + keywords + "*^100 | pageContent:" + keywords + "*^30 | description:" + keywords + "*^50 | branch:" + keywords + "*^30")).highlight().search()
-    results.results.map( result => pageRepository.findByPath(result(path)))
+    results.results.map(result => pageRepository.findByPath(result(path)))
   }
 }
