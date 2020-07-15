@@ -40,11 +40,10 @@ import repositories._
 import resource._
 import services._
 import services.clients.{OpenApiClient, ReplicaClient}
-import steps.CommonSteps.include
 import steps.Injector._
 import utils.CustomConfigSystemReader.overrideSystemGitConfig
 import utils._
-
+import scala.concurrent.duration._
 import scala.collection.JavaConverters._
 import scala.concurrent._
 import scala.io.Source
@@ -106,7 +105,8 @@ object CommonSteps extends MockitoSugar with MustMatchers {
   val cache = new DefaultSyncCacheApi(asyncCache)
   val pageServiceCache = new PageServiceCache(cache)
   val spyPageServiceCache = spy(pageServiceCache)
-  val pageService = new PageService(conf, projectRepository, directoryRepository, pageRepository, gherkinRepository, fakeOpenApiClient, pageServiceCache, hierarchyRepository)
+  val pageIndex = new PageIndex
+  val pageService = new PageService(conf, projectRepository, directoryRepository, pageRepository, gherkinRepository, fakeOpenApiClient, pageServiceCache, pageIndex)
   val spyPageService = spy(pageService)
   val menuService = new MenuService(hierarchyRepository, projectRepository, branchRepository, featureRepository, directoryRepository, pageRepository, cache)
   val spyMenuService = spy(menuService)
@@ -297,8 +297,16 @@ Scenario: providing several book suggestions
     pageRepository.saveAll(pages.asScala.map(p => Page(p.id, p.name, p.label, p.description, p.order, Option(p.markdown), p.relativePath, p.path, p.directoryId)))
   }
 
-  Given("""^we have the following document in the lucene index$""") {docs: util.List[LuceneDoc] =>
-    docs.asScala.map( doc => pageService.luceneSearchIndex.doc().fields(pageService.hierarchy(doc.hierarchy),pageService.path(doc.path),pageService.branch(doc.branch),pageService.label(doc.label),pageService.description(doc.description),pageService.pageContent(doc.pageContent)))
+  Given("""^we have the following document in the lucene index$""") { docs: util.List[LuceneDoc] =>
+    docs.asScala.map(doc =>
+      pageIndex.addDocument(PageIndexDocument(doc.hierarchy, doc.path, doc.branch, doc.label, doc.description, doc.pageContent))
+    )
+  }
+
+  Given("""^the lucene index is loaded from the database$""") { () =>
+    pageIndex.reset()
+    response = route(app, FakeRequest("POST", "/api/admin/projects/refreshFromDatabase")).get
+    Await.result(response, 30.seconds)
   }
 
   Given("""^we have the following markdown for the page "([^"]*)"$""") { (path: String, markdown: String) =>

@@ -22,7 +22,7 @@ Feature: search through pages by name
       | 1  | master                                       | true     | suggestionsWS |
       | 2  | feature/654-simple-full-text-search-on-pages | false    | suggestionsWS |
 
-  @level_2_technical_details @nominal_case @ongoing
+  @level_2_technical_details @nominal_case @valid
   Scenario: get result of a search by name
     Given we have those directories in the database
       | id | name        | label         | description             | order | relativePath  | path                               | branchId |
@@ -35,12 +35,7 @@ Feature: search through pages by name
       | 2  | suggestion | The suggestions | The suggestions...        | 0     | /suggestions/suggestion | suggestionsWS>master>/suggestions/suggestion | **What's a suggestion ?**             | 2           |
       | 3  | examples   | examples        | Some examples             | 1     | /suggestions/examples   | suggestionsWS>master>/suggestions/examples   | **Some suggestion examples**          | 2           |
       | 4  | admin      | admin           | admin                     | 0     | /admin/admin            | suggestionsWS>master>/admin/admin            | **Page for the admin users**          | 3           |
-    And we have the following document in the lucene index
-      | hierarchy | path                                         | branch | label           | description               | pageContent                           |
-      | projet    | suggestionsWS>master>/context                | master | The context     | Why providing suggestions | **Feature**: Provide book suggestions |
-      | project   | suggestionsWS>master>/suggestions/suggestion | master | The suggestions | The suggestions...        | **What's a suggestion ?**             |
-      | project   | suggestionsWS>master>/suggestions/examples   | master | examples        | Some examples             | **Some suggestion examples**          |
-      | project   | suggestionsWS>master>/admin/admin            | master | admin           | admin                     | **Page for the admin users**          |
+    And the lucene index is loaded from the database
     And I perform a "GET" on following URL "/api/pages/search?keywords=context"
     Then I get the following json response body
     """
@@ -60,7 +55,7 @@ Feature: search through pages by name
 ]
 """
 
-  @level_2_technical_details @ongoing
+  @level_2_technical_details @nominal_case @valid
   Scenario: get result of a search by name with multiple results
     Given we have those directories in the database
       | id | name        | label         | description             | order | relativePath  | path                               | branchId |
@@ -75,7 +70,7 @@ Feature: search through pages by name
       | 3  | examples   | examples        | Some examples             | 1     | /suggestions/examples   | suggestionsWS>master>/suggestions/examples                          | **Some suggestion examples**                  | 2           |
       | 4  | admin      | admin           | admin                     | 0     | /admin/admin            | suggestionsWS>master>/admin/admin                                   | **Page for the admin users**                  | 3           |
       | 5  | context    | The context     | Why providing suggestions | 0     | /context                | suggestionsWS>feature/654-simple-full-text-search-on-pages>/context | **Feature**: Provide book suggestions context | 4           |
-
+    And the lucene index is loaded from the database
     When I perform a "GET" on following URL "/api/pages/search?keywords=context"
     Then I get the following json response body
     """
@@ -107,7 +102,7 @@ Feature: search through pages by name
 ]
 """
 
-  @level_2_technical_details @ongoing
+  @level_2_technical_details @nominal_case @valid
   Scenario: get result of a search by markdown
     Given we have those directories in the database
       | id | name        | label         | description             | order | relativePath  | path                               | branchId |
@@ -120,30 +115,46 @@ Feature: search through pages by name
       | 2  | suggestion | The suggestions | The suggestions...        | 0     | /suggestions/suggestion | suggestionsWS>master>/suggestions/suggestion | **What's a suggestion ?**             | 2           |
       | 3  | examples   | examples        | Some examples             | 1     | /suggestions/examples   | suggestionsWS>master>/suggestions/examples   | **Some suggestion examples**          | 2           |
       | 4  | admin      | admin           | admin                     | 0     | /admin/admin            | suggestionsWS>master>/admin/admin            | **Page for the admin users**          | 3           |
+    And the lucene index is loaded from the database
     When I perform a "GET" on following URL "/api/pages/search?keywords=suggestion"
     Then I get the following json response body
     """
 [
   {
-    "path": "suggestionsWS>master>/context",
-    "relativePath": "/context",
-    "name": "context",
-    "label": "The context",
-    "description": "Why providing suggestions"
-  },
-  {
-    "path": "suggestionsWS>master>/suggestions/suggestion ",
-    "relativePath": "/suggestions/suggestion ",
+    "id": 2,
     "name": "suggestion",
     "label": "The suggestions",
-    "description": "The suggestions..."
+    "description": "The suggestions...",
+    "order": 0,
+    "markdown": "**What's a suggestion ?**",
+    "relativePath": "/suggestions/suggestion",
+    "path": "suggestionsWS>master>/suggestions/suggestion",
+    "directoryId": 2,
+    "dependOnOpenApi": false
   },
   {
-    "path": "suggestionsWS>master>/suggestions/examples ",
-    "relativePath": "/suggestions/examples ",
+    "id": 1,
+    "name": "context",
+    "label": "The context",
+    "description": "Why providing suggestions",
+    "order": 0,
+    "markdown": "**Feature**: Provide book suggestions",
+    "relativePath": "/context",
+    "path": "suggestionsWS>master>/context",
+    "directoryId": 1,
+    "dependOnOpenApi": false
+  },
+  {
+    "id": 3,
     "name": "examples",
     "label": "examples",
-    "description": "Some examples"
+    "description": "Some examples",
+    "order": 1,
+    "markdown": "**Some suggestion examples**",
+    "relativePath": "/suggestions/examples",
+    "path": "suggestionsWS>master>/suggestions/examples",
+    "directoryId": 2,
+    "dependOnOpenApi": false
   }
 ]
 """
