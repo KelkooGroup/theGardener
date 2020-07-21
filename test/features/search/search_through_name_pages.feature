@@ -22,8 +22,8 @@ Feature: search through pages by name
       | 1  | master                                       | true     | suggestionsWS |
       | 2  | feature/654-simple-full-text-search-on-pages | false    | suggestionsWS |
 
-  @level_2_technical_details @nominal_case @valid
-  Scenario: get result of a search by name
+  @level_2_technical_details @nominal_case @ongoing
+  Scenario: get result of a search
     Given we have those directories in the database
       | id | name        | label         | description             | order | relativePath  | path                               | branchId |
       | 1  | root        | SuggestionsWS | Suggestions WebServices | 0     | /             | suggestionsWS>master>/             | 1        |
@@ -41,22 +41,19 @@ Feature: search through pages by name
     """
 [
   {
-    "id": 1,
-    "name": "context",
-    "label": "The context",
-    "description": "Why providing suggestions",
-    "order": 0,
-    "markdown": "**Feature**: Provide book suggestions",
-    "relativePath": "/context",
-    "path": "suggestionsWS>master>/context",
-    "directoryId": 1,
-    "dependOnOpenApi": false
-  }
+    "hierarchy":"/Suggestion system/master/context",
+    "path":"suggestionsWS>master>/context",
+    "branch":"master",
+    "label":"The context",
+    "description":"Why providing suggestions",
+    "pageContent":"**Feature**: Provide book suggestions"
+   }
 ]
-"""
 
-  @level_2_technical_details @nominal_case @valid
-  Scenario: get result of a search by name with multiple results
+    """
+
+  @level_2_technical_details @nominal_case @ongoing
+  Scenario: get result of a search with multiple results
     Given we have those directories in the database
       | id | name        | label         | description             | order | relativePath  | path                               | branchId |
       | 1  | root        | SuggestionsWS | Suggestions WebServices | 0     | /             | suggestionsWS>master>/             | 1        |
@@ -76,34 +73,26 @@ Feature: search through pages by name
     """
 [
   {
-    "id": 5,
-    "name": "context",
-    "label": "The context",
-    "description": "Why providing suggestions",
-    "order": 0,
-    "markdown": "**Feature**: Provide book suggestions context",
-    "relativePath": "/context",
-    "path": "suggestionsWS>feature/654-simple-full-text-search-on-pages>/context",
-    "directoryId": 4,
-    "dependOnOpenApi": false
+    "hierarchy":"/Suggestion system/feature/654-simple-full-text-search-on-pages/context",
+    "path":"suggestionsWS>feature/654-simple-full-text-search-on-pages>/context",
+    "branch":"feature/654-simple-full-text-search-on-pages",
+    "label":"The context",
+    "description":"Why providing suggestions",
+    "pageContent":"**Feature**: Provide book suggestions context"
   },
   {
-    "id": 1,
-    "name": "context",
-    "label": "The context",
-    "description": "Why providing suggestions",
-    "order": 0,
-    "markdown": "**Feature**: Provide book suggestions",
-    "relativePath": "/context",
-    "path": "suggestionsWS>master>/context",
-    "directoryId": 1,
-    "dependOnOpenApi": false
-  }
+    "hierarchy":"/Suggestion system/master/context",
+    "path":"suggestionsWS>master>/context",
+    "branch":"master",
+    "label":"The context",
+    "description":"Why providing suggestions",
+    "pageContent":"**Feature**: Provide book suggestions"
+   }
 ]
 """
 
-  @level_2_technical_details @nominal_case @valid
-  Scenario: get result of a search by markdown
+  @level_2_technical_details @nominal_case @ongoing
+  Scenario: get result of a search with multiple results
     Given we have those directories in the database
       | id | name        | label         | description             | order | relativePath  | path                               | branchId |
       | 1  | root        | SuggestionsWS | Suggestions WebServices | 0     | /             | suggestionsWS>master>/             | 1        |
@@ -121,40 +110,28 @@ Feature: search through pages by name
     """
 [
   {
-    "id": 2,
-    "name": "suggestion",
-    "label": "The suggestions",
-    "description": "The suggestions...",
-    "order": 0,
-    "markdown": "**What's a suggestion ?**",
-    "relativePath": "/suggestions/suggestion",
-    "path": "suggestionsWS>master>/suggestions/suggestion",
-    "directoryId": 2,
-    "dependOnOpenApi": false
+    "hierarchy":"/Suggestion system/master/suggestions/suggestion",
+    "path":"suggestionsWS>master>/suggestions/suggestion",
+    "branch":"master",
+    "label":"The suggestions",
+    "description":"The suggestions...",
+    "pageContent":"**What's a suggestion ?**"
   },
   {
-    "id": 1,
-    "name": "context",
-    "label": "The context",
-    "description": "Why providing suggestions",
-    "order": 0,
-    "markdown": "**Feature**: Provide book suggestions",
-    "relativePath": "/context",
-    "path": "suggestionsWS>master>/context",
-    "directoryId": 1,
-    "dependOnOpenApi": false
+    "hierarchy":"/Suggestion system/master/context",
+    "path":"suggestionsWS>master>/context",
+    "branch":"master",
+    "label":"The context",
+    "description":"Why providing suggestions",
+    "pageContent":"**Feature**: Provide book suggestions"
   },
   {
-    "id": 3,
-    "name": "examples",
-    "label": "examples",
-    "description": "Some examples",
-    "order": 1,
-    "markdown": "**Some suggestion examples**",
-    "relativePath": "/suggestions/examples",
-    "path": "suggestionsWS>master>/suggestions/examples",
-    "directoryId": 2,
-    "dependOnOpenApi": false
+    "hierarchy":"/Suggestion system/master/suggestions/examples",
+    "path":"suggestionsWS>master>/suggestions/examples",
+    "branch":"master",
+    "label":"examples",
+    "description":"Some examples",
+    "pageContent":"**Some suggestion examples**"
   }
 ]
 """

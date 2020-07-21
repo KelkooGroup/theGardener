@@ -17,8 +17,6 @@ import services.clients.OpenApiClient
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
-import com.outr.lucene4s._
-import com.outr.lucene4s.query.{Sort}
 
 case class PageMeta(label: Option[String] = None, description: Option[String] = None)
 
@@ -87,43 +85,11 @@ class PageServiceCache @Inject()(cache: SyncCacheApi) extends Logging {
 
 }
 
-// TODO : Move every thing related to the Index in a separated scala file, the same with the tests
-case class PageIndexDocument(hierarchy: String, path: String, branch: String, label: String, description: String, pageContent: String)
-
-@Singleton
-class PageIndex {
-
-  val luceneSearchIndex = new DirectLucene(uniqueFields = List(), defaultFullTextSearchable = true)
-
-  val hierarchy = luceneSearchIndex.create.field[String]("hierarchy")
-  val path = luceneSearchIndex.create.field[String]("path", fullTextSearchable = false)
-  val branch = luceneSearchIndex.create.field[String]("branch")
-  val label = luceneSearchIndex.create.field[String]("label")
-  val description = luceneSearchIndex.create.field[String]("description")
-  val pageContent = luceneSearchIndex.create.field[String]("pageContent", sortable = false)
-
-  def addDocument(document: PageIndexDocument): Unit = {
-    luceneSearchIndex.doc().fields(hierarchy(document.hierarchy), description(document.description), label(document.label), this.path(document.path), branch(document.branch), pageContent(document.pageContent)).index()
-  }
-
-  def query(keywords: String): Seq[PageIndexDocument] = {
-    val results = luceneSearchIndex.query().sort(Sort.Score).filter(parse("label:" + keywords + "*^100 | pageContent:" + keywords + "*^30 | description:" + keywords + "*^50 | branch:" + keywords + "*^30")).highlight().search()
-    results.results.map {
-      result => PageIndexDocument(result(hierarchy), result(path), result(branch), result(label), result(description), result(pageContent))
-    }
-  }
-
-  def reset(): Unit ={
-    luceneSearchIndex.deleteAll()
-  }
-
-}
-
 
 // scalastyle:off number.of.methods
 @Singleton
 class PageService @Inject()(config: Configuration, projectRepository: ProjectRepository, directoryRepository: DirectoryRepository, pageRepository: PageRepository,
-                            gherkinRepository: GherkinRepository, openApiClient: OpenApiClient, cache: PageServiceCache, hierarchyRepository: HierarchyRepository, pageIndex: PageIndex)(implicit ec: ExecutionContext) extends Logging {
+                            gherkinRepository: GherkinRepository, openApiClient: OpenApiClient, cache: PageServiceCache, searchService: SearchService, pageIndex: PageIndex)(implicit ec: ExecutionContext) extends Logging {
 
   implicit val pageMetaFormat = Json.format[PageMeta]
   implicit val directoryMetaFormat = Json.format[DirectoryMeta]
@@ -279,7 +245,7 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
   def computePageFromPathUsingDatabaseBis(pageJoinProjectOpt: Option[PageJoinProject], path: String, forceRefresh: Boolean = true): Future[Option[PageWithContent]] = {
     pageJoinProjectOpt match {
       case Some(pageJoinProject) =>
-        pageIndex.addDocument(PageIndexDocument("", pageJoinProject.page.path, pageJoinProject.branch.name, pageJoinProject.page.label, pageJoinProject.page.description, pageJoinProject.page.markdown.getOrElse("")))
+        pageIndex.addDocument(PageIndexDocument(searchService.getHierarchyPath(pageJoinProject), pageJoinProject.page.path, pageJoinProject.branch.name, pageJoinProject.page.label, pageJoinProject.page.description, pageJoinProject.page.markdown.getOrElse("")))
         val key = computePageCacheKey(path)
         if (cache.get(key).isEmpty || forceRefresh || pageJoinProject.page.dependOnOpenApi) {
           logger.debug(s"Page computed: $path")
@@ -304,19 +270,6 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
           Future.successful(None)
         }
       case _ => Future.successful(None)
-    }
-  }
-
-  def getHierarchyPath(pageJoinProject: PageJoinProject): String = {
-    System.out.println(pageJoinProject.project.id)
-    System.out.println(hierarchyRepository.findAllByProjectId("publisherSystems"))
-    val projectHierarchies = hierarchyRepository.findAllByProjectId(pageJoinProject.project.id)
-    if (projectHierarchies.nonEmpty) {
-      val projectHierarchyId = projectHierarchies.head.id
-      val splittedProjectHierachyId = projectHierarchyId.split(".")
-      splittedProjectHierachyId.reduceRight((id, result) => result + "/" + hierarchyRepository.findById("." + id + "."))
-    } else {
-      pageJoinProject.page.path
     }
   }
 
@@ -520,11 +473,4 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
     pageRepository.findAllByDirectoryId(directoryId).map(page => page.copy(path = getCorrectedPath(page.path, project)))
   }
 
-  def searchForPage(keywords: String): Seq[Option[Page]] = {
-    val results = pageIndex.query(keywords)
-    results.map {
-      // TODO : Gerald : I don't understand why we need to come back to the database, it should be all in the index ?
-      result => pageRepository.findByPath(result.path)
-    }
-  }
 }
