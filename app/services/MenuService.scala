@@ -15,7 +15,7 @@ class MenuService @Inject()(hierarchyRepository: HierarchyRepository, projectRep
 
   def refreshCache(): Try[Menu] = Try(getMenuTree(true))
 
-  def getMenu(refresh: Boolean = false): Seq[Menu] = {
+  def getMenuListWithShortcut(refresh: Boolean = false): Seq[Menu] = {
     if (refresh) cache.remove(menuListCacheKey)
 
     cache.getOrElseUpdate(menuListCacheKey) {
@@ -63,13 +63,11 @@ class MenuService @Inject()(hierarchyRepository: HierarchyRepository, projectRep
             (for {
               branch <- branchRepository.findById(d.branchId)
               project <- projectRepository.findById(branch.projectId)
-            } yield d.copy(path = getCorrectedPath(d.path, project), pages= pages)).getOrElse(d)
+            } yield d.copy(path = getCorrectedPath(d.path, project), pages = pages)).getOrElse(d)
           }
 
         }
-
-
-        Menu(hierarchyNode.id, Seq(hierarchyNode), projects.sortBy(_.id), Seq(), directory)
+        Menu(hierarchyNode.id, Seq(hierarchyNode), projects.sortBy(_.id), Seq(), directory, hierarchyNode.shortcut)
       }.sortBy(_.id)
     }
   }
@@ -79,11 +77,13 @@ class MenuService @Inject()(hierarchyRepository: HierarchyRepository, projectRep
 
     cache.getOrElseUpdate(menuTreeCacheKey) {
 
-      val menu = getMenu(refresh)
+      val menuWithShortcutsList = getMenuListWithShortcut(refresh)
 
-      menu.headOption
-        .map(c => c.copy(children = buildTree(c, menu.tail)))
+      val menuWithShortcutsTree = menuWithShortcutsList.headOption
+        .map(c => c.copy(children = buildTree(c, menuWithShortcutsList.tail)))
         .getOrElse(Menu("", Seq()))
+
+      resolveShortcutsInMenuTree(menuWithShortcutsTree)
     }
   }
 }
@@ -100,12 +100,42 @@ object MenuService {
     childId.size > parentId.size && (parentId.isEmpty || childId.startsWith(parentId)) && childId.drop(parentId.size).size == 1
   }
 
+
+  def resolveShortcutsInMenuTree(menuTreeRoot: Menu): Menu = {
+
+    def getById(id: String): Option[Menu] = {
+      findMenuSubtree(id)(menuTreeRoot)
+    }
+
+    def internResolveShortcutsInMenuTree(menu: Menu): Unit = {
+      menu.shortcut match {
+        case Some(shortcut) => {
+          getById(shortcut) match {
+            case Some(shortcutTarget) => {
+              menu.projects = shortcutTarget.projects
+              menu.children = shortcutTarget.children
+              menu.directory = shortcutTarget.directory
+            }
+            case _ =>
+          }
+          menu.shortcut = None
+        }
+        case _ =>
+      }
+      menu.children.foreach(child => internResolveShortcutsInMenuTree(child))
+    }
+
+    menuTreeRoot.children.foreach(child => internResolveShortcutsInMenuTree(child))
+    menuTreeRoot
+  }
+
   def buildTree(node: Menu, children: Seq[Menu]): Seq[Menu] = {
     val (taken, left) = children.partition(child => isChild(idSeparator, node.id, child.id))
 
-    taken.map { c =>
-      val menu = c.copy(hierarchy = node.hierarchy ++ c.hierarchy)
-      menu.copy(children = buildTree(menu, left))
+    taken.map {
+      c =>
+        val menu = c.copy(hierarchy = node.hierarchy ++ c.hierarchy)
+        menu.copy(children = buildTree(menu, left))
     }
   }
 

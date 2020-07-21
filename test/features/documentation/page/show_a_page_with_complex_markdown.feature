@@ -58,8 +58,8 @@ Feature: As a user Tim, I want some book suggestions so that I can do some disco
       | 2  | root | suggestionsReports | Suggestions Reports     | 0     | /            | suggestionsReports>master>/ | 2        |
     And we have those pages in the database
       | id | name    | label       | description               | order | relativePath | path                               | markdown | directoryId |
-      | 1  | context | The context | Why providing suggestions | 0     | /context     | suggestionsWS>master>/context      |          | 1           |
-      | 2  | context | The context | Why providing suggestions | 0     | /context     | suggestionsReports>master>/context |          | 2           |
+      | 1  | context | The context | Why providing suggestions | 0     | /context     | suggestionsWS>master>/context      | [empty]  | 1           |
+      | 2  | context | The context | Why providing suggestions | 0     | /context     | suggestionsReports>master>/context | [empty]  | 2           |
 
   @level_2_technical_details @nominal_case @valid
   Scenario: generate a documentation page with all scenarios of a feature

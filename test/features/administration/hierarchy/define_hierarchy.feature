@@ -179,3 +179,94 @@ Feature: Define hierarchy
       | .01.01.02. | user       | User system          | Projects      | Project      |
       | .01.01.03. | search     | Search system        | Projects      | Project      |
       | .01.02.    | other      | Other system group   | Systems       | System       |
+
+
+  @level_2_technical_details @error_case @valid @define_hierarchy
+  Scenario: Add a hierarchy node with wrong id
+    Given no hierarchy nodes is setup in theGardener
+    When I perform a "POST" on following URL "/api/hierarchy" with json body
+        """
+{
+	"id": "wrong",
+	"slugName": "root",
+	"name": "Hierarchy root",
+	"childrenLabel": "Projects",
+	"childLabel": "Project"
+}
+        """
+    Then I get a response with status "400"
+    And the hierarchy nodes are now
+      | id | slugName | name | childrenLabel | childLabel |
+
+
+  @level_2_technical_details @nominal_case @valid @define_hierarchy
+  Scenario: Add a hierarchy node with a shortcut
+    Given the hierarchy nodes are
+      | id         | slugName   | name                 | childrenLabel | childLabel   |
+      | .          | root       | Hierarchy root       | Views         | View         |
+      | .01.       | eng        | Engineering view     | System groups | System group |
+      | .01.01.    | library    | Library system group | Systems       | System       |
+      | .01.01.01. | suggestion | Suggestion system    | Projects      | Project      |
+      | .01.01.02. | user       | User system          | Projects      | Project      |
+      | .01.01.03. | search     | Search system        | Projects      | Project      |
+      | .01.02.    | other      | Other system group   | Systems       | System       |
+      | .01.03.    | another    | Another system group | Systems       | System       |
+    When I perform a "POST" on following URL "/api/hierarchy" with json body
+        """
+{
+	"id": ".01.02.01.",
+	"slugName": "suggestion",
+	"name": "Suggestion shortcut",
+	"childrenLabel": "Projects",
+	"childLabel": "Project",
+	"shortcut": ".01.01.01."
+}
+        """
+    Then I get a response with status "201"
+    And I get the following json response body
+        """
+{
+	"id": ".01.02.01.",
+	"slugName": "suggestion",
+	"name": "Suggestion shortcut",
+	"childrenLabel": "Projects",
+	"childLabel": "Project",
+	"shortcut": ".01.01.01."
+}
+        """
+    And the hierarchy nodes are now
+      | id         | slugName   | name                 | childrenLabel | childLabel   | shortcut   |
+      | .          | root       | Hierarchy root       | Views         | View         |            |
+      | .01.       | eng        | Engineering view     | System groups | System group |            |
+      | .01.01.    | library    | Library system group | Systems       | System       |            |
+      | .01.01.01. | suggestion | Suggestion system    | Projects      | Project      |            |
+      | .01.01.02. | user       | User system          | Projects      | Project      |            |
+      | .01.01.03. | search     | Search system        | Projects      | Project      |            |
+      | .01.02.    | other      | Other system group   | Systems       | System       |            |
+      | .01.03.    | another    | Another system group | Systems       | System       |            |
+      | .01.02.01. | suggestion | Suggestion shortcut  | Projects      | Project      | .01.01.01. |
+
+  @level_2_technical_details @nominal_case @valid @define_hierarchy
+  Scenario: Refuse a hierarchy node with a shortcut that would end up to an infinite loop
+    Given the hierarchy nodes are
+      | id         | slugName   | name                 | childrenLabel | childLabel   |
+      | .          | root       | Hierarchy root       | Views         | View         |
+      | .01.       | eng        | Engineering view     | System groups | System group |
+      | .01.01.    | library    | Library system group | Systems       | System       |
+      | .01.01.01. | suggestion | Suggestion system    | Projects      | Project      |
+      | .01.01.02. | user       | User system          | Projects      | Project      |
+      | .01.01.03. | search     | Search system        | Projects      | Project      |
+      | .01.02.    | other      | Other system group   | Systems       | System       |
+      | .01.03.    | another    | Another system group | Systems       | System       |
+    When I perform a "POST" on following URL "/api/hierarchy" with json body
+        """
+{
+	"id": ".01.02.01.",
+	"slugName": "suggestion",
+	"name": "Suggestion shortcut",
+	"childrenLabel": "Projects",
+	"childLabel": "Project",
+	"shortcut": ".01."
+}
+        """
+    Then I get a response with status "400"

@@ -9,10 +9,10 @@ import java.util
 import akka.stream.Materializer
 import anorm._
 import com.typesafe.config._
-import controllers._
 import controllers.dto._
-import cucumber.api.DataTable
-import cucumber.api.scala._
+import io.cucumber.datatable.DataTable
+import io.cucumber.scala.{EN, JacksonDefaultDataTableEntryTransformer, ScalaDsl}
+import io.cucumber.scala.Implicits._
 import julienrf.json.derived
 import models._
 import models.Feature._
@@ -24,8 +24,6 @@ import org.mockito.Mockito._
 import org.mockito.invocation.InvocationOnMock
 import org.scalatest._
 import org.scalatestplus.mockito._
-import play.api.{Application, Logging, Mode}
-import org.mockito.Mockito._
 import play.api.cache._
 import play.api.db._
 import play.api.inject._
@@ -178,16 +176,16 @@ case class PageRow(id: Long, name: String, label: String, description: String, o
 
 case class LuceneDoc(hierarchy: String, path: String, branch: String, label: String, description: String, pageContent: String)
 
-class CommonSteps extends ScalaDsl with EN with MockitoSugar with Logging {
+class CommonSteps extends ScalaDsl with EN with MockitoSugar with Logging with JacksonDefaultDataTableEntryTransformer {
 
   import CommonSteps._
 
-  Before() { _ =>
+  Before {
     app = applicationBuilder.build()
     startServer(app)
   }
 
-  After { _ =>
+  After {
     stopServer()
   }
 
@@ -400,9 +398,9 @@ Scenario: providing several book suggestions
   }
 
   Then("""^the file system store now the files$""") { files: DataTable =>
-    files.asScala.map { line =>
-      val file = line("file")
-      val content = line("content")
+    files.asScalaMaps.map { line =>
+      val file = line("file").get
+      val content = line("content").get
 
       managed(Source.fromFile(file.fixPathSeparator)).acquireAndGet(_.mkString mustBe content)
     }
@@ -413,16 +411,16 @@ Scenario: providing several book suggestions
     implicit val documentationFormat = Json.format[DocumentationDTO]
 
     val documentation = Json.parse(contentAsString(response)).as[DocumentationDTO]
-    val expectedScenarios = dataTable.asMaps(classOf[String], classOf[String]).asScala.toSeq
+    val expectedScenarios = dataTable.asScalaMaps
 
     expectedScenarios.length mustBe nbRealScenario(documentation)
 
     expectedScenarios.map { columns =>
 
-      val nodeName = columns.get("hierarchy")
-      val projectId = columns.get("project")
-      val featurePath = columns.get("feature").fixPathSeparator
-      val scenarioName = columns.get("scenario")
+      val nodeName = columns("hierarchy").get
+      val projectId = columns("project").get
+      val featurePath = columns("feature").get.fixPathSeparator
+      val scenarioName = columns("scenario").get
 
       val node = getHierarchy(nodeName, documentation)
       node.isDefined mustBe true

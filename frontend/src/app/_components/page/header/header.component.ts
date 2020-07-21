@@ -5,6 +5,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {MenuHierarchy} from "../../../_models/menu";
 import {NAVIGATE_PATH, RouteService} from "../../../_services/route.service";
 import {NavigationParams, NavigationRoute} from "../../../_models/route";
+import {MobileMenuHelperService} from '../../../_services/mobile-menu-helper.service';
 
 @Component({
     selector: 'app-header',
@@ -22,7 +23,8 @@ export class HeaderComponent implements OnInit {
                 private routeService: RouteService,
                 private notificationService: NotificationService,
                 private activatedRoute: ActivatedRoute,
-                private router: Router) {
+                private router: Router,
+                public mobileMenuHelper: MobileMenuHelperService) {
     }
 
     ngOnInit() {
@@ -60,5 +62,4 @@ export class HeaderComponent implements OnInit {
     isItemInActivatedRoute(item: MenuHierarchy) {
         return this.getCurrentRoute().nodes[0] === item.name;
     }
-
 }

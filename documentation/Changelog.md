@@ -8,6 +8,11 @@
 }
 ```
 
+### NEXT
+ 
+Bugs fixed :
+- [705 - Relative links to children directories do not work](https://github.com/KelkooGroup/theGardener/issues/705)
+
 ### [2020-05][1.2.4]  
 
 The main feature is:
