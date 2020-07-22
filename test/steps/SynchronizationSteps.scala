@@ -1,6 +1,6 @@
 package steps
 
-import cucumber.api.scala._
+import io.cucumber.scala._
 import org.mockito.Mockito.{times, _}
 import org.scalatestplus.mockito._
 import services.{PageWithContent}

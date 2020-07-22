@@ -12,7 +12,7 @@
 
 .header-bar {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   margin: 0;
   padding: 3px 5px 0;
   list-style-type: none;
@@ -26,11 +26,9 @@
 
 }
 
-.header-logo-text{
+.header-logo-text {
   color: white;
   font-size: $font-size-text-small;
-  margin-bottom: 3px;
-  height: 40px;
 }
 
 .header-logo {
@@ -48,6 +46,10 @@
   margin-top: 3px;
   text-align: right;
   flex-grow: 0;
+
+  @media screen and (max-width: 600px) {
+    display: none;
+  }
 }
 
 .header-logo-the-gardener div {
@@ -56,10 +58,6 @@
 
 .header-logo-the-gardener img {
   height: 40px;
-}
-
-.header-navigation {
-  display: flex;
 }
 
 .header-navigation-bar {
@@ -72,12 +70,34 @@
 
 }
 
+.navigation-icon {
+  display: none;
+
+  @media screen and (max-width: 600px) {
+    display: block;
+    padding-right: 15px;
+    align-self: center;
+  }
+
+}
+
 .header-navigation a {
   transition: all 0.3s ease; /* Add transition for hover effects */
   text-decoration: none;
   line-height: 18px;
   color: white;
   padding: 0 32px 5px;
+
+  @media screen and (max-width: 600px) {
+    display: none;
+  }
+}
+
+.header-navigation-responsive {
+  list-style: none;
+}
+.header-navigation-responsive a {
+  text-decoration: none;
 }
 
 .item-with-hover:hover {

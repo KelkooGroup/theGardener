@@ -4,12 +4,19 @@ import {HeaderComponent} from './header.component';
 import {RouterTestingModule} from '@angular/router/testing';
 import {MatSnackBarModule, MatTabsModule} from '@angular/material';
 import {MenuService} from '../../../_services/menu.service';
-import {HttpClientModule} from '@angular/common/http';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {of} from 'rxjs';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ActivatedRouteStub} from '../../../_testUtils/activated-route-stub.spec';
 import {MenuHierarchy, MenuType} from "../../../_models/menu";
+import {NavigateMobileMenuComponent} from '../../../output/navigate/navigate-mobile-menu/navigate-mobile-menu.component';
+import {NavigateMenuItemComponent} from '../../../output/navigate/navigate-menu/navigate-menu-item/navigate-menu-item.component';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatSelectModule} from '@angular/material/select';
+import {MatIconModule} from '@angular/material/icon';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {FormsModule} from '@angular/forms';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;
@@ -22,13 +29,21 @@ describe('HeaderComponent', () => {
     TestBed.configureTestingModule({
       declarations: [
         HeaderComponent,
+        NavigateMobileMenuComponent,
+        NavigateMenuItemComponent,
       ],
       imports: [
-        HttpClientModule,
-        RouterTestingModule,
         MatTabsModule,
         MatSnackBarModule,
-        BrowserAnimationsModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatIconModule,
+        MatProgressSpinnerModule,
+        MatSnackBarModule,
+        FormsModule,
+        NoopAnimationsModule,
+        HttpClientTestingModule,
+        RouterTestingModule,
       ],
       providers: [
         MenuService,

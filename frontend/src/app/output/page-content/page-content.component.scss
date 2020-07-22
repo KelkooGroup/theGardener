@@ -43,3 +43,12 @@ h1 {
   padding: 10px 0;
   text-align: center;
 }
+
+.responsive-footer {
+  display: none;
+
+  @media screen and (max-width: 600px) {
+    display: block;
+  }
+
+}

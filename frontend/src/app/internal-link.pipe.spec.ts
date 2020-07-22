@@ -34,6 +34,8 @@ describe('InternalLinkPipe', () => {
     expect(pipe.transform(SIMPLE_HTML_INPUT_RELATIVE_SAME_DIRECTORY)).toBe(SIMPLE_HTML_OUTPUT_RELATIVE_SAME_DIRECTORY);
     expect(pipe.transform(SIMPLE_HTML_INPUT_RELATIVE_SAME_DIRECTORY_2)).toBe(SIMPLE_HTML_OUTPUT_RELATIVE_SAME_DIRECTORY);
     expect(pipe.transform(SIMPLE_HTML_INPUT_RELATIVE_PARENT_DIRECTORY)).toBe(SIMPLE_HTML_OUTPUT_RELATIVE_PARENT_DIRECTORY);
+    expect(pipe.transform(SIMPLE_HTML_INPUT_RELATIVE_CHILDREN_DIRECTORY)).toBe(SIMPLE_HTML_OUTPUT_RELATIVE_CHILDREN_DIRECTORY);
+    expect(pipe.transform(SIMPLE_HTML_INPUT_RELATIVE_PARENT_CHILDREN_DIRECTORY)).toBe(SIMPLE_HTML_OUTPUT_RELATIVE_PARENT_CHILDREN_DIRECTORY);
     expect(pipe.transform(SIMPLE_HTML_INPUT_RELATIVE_SAME_DIRECTORY_WITH_ANCHOR)).toBe(SIMPLE_HTML_OUTPUT_RELATIVE_SAME_DIRECTORY_WITH_ANCHOR);
   });
 
@@ -48,6 +50,15 @@ const SIMPLE_HTML_OUTPUT_RELATIVE_SAME_DIRECTORY = '<p>Note 2: <code><a onclick=
 const SIMPLE_HTML_INPUT_RELATIVE_PARENT_DIRECTORY = '<p>Note 2: <code><a href="../../Changelog.md">link to OpenAPI</a>.</p>';
 
 const SIMPLE_HTML_OUTPUT_RELATIVE_PARENT_DIRECTORY = '<p>Note 2: <code><a onclick=\"navigateTo(\'app/documentation/navigate/Tools/theGardener/master/_/Changelog\')\">link to OpenAPI</a>.</p>';
+
+const SIMPLE_HTML_INPUT_RELATIVE_CHILDREN_DIRECTORY = '<p>Note 2: <code><a href="Guides/Performance/FeedsPerformanceTestsProcess.md">Performance reports</a>.</p>';
+
+const SIMPLE_HTML_OUTPUT_RELATIVE_CHILDREN_DIRECTORY = '<p>Note 2: <code><a onclick=\"navigateTo(\'app/documentation/navigate/Tools/theGardener/master/_Guide_Write_Guides_Performance/FeedsPerformanceTestsProcess\')\">Performance reports</a>.</p>';
+
+const SIMPLE_HTML_INPUT_RELATIVE_PARENT_CHILDREN_DIRECTORY = '<p>Note 2: <code><a href="../../Features/MyFeature/UseCases.md">link to use cases</a>.</p>';
+
+const SIMPLE_HTML_OUTPUT_RELATIVE_PARENT_CHILDREN_DIRECTORY = '<p>Note 2: <code><a onclick=\"navigateTo(\'app/documentation/navigate/Tools/theGardener/master/_Features_MyFeature/UseCases\')\">link to use cases</a>.</p>';
+
 
 const SIMPLE_HTML_INPUT_RELATIVE_SAME_DIRECTORY_WITH_ANCHOR = '<p>Note 2: <code><a href="./OpenApi.md#include-openapi-path">link to OpenAPI</a>.</p>';
 
