@@ -89,7 +89,7 @@ class PageServiceCache @Inject()(cache: SyncCacheApi) extends Logging {
 // scalastyle:off number.of.methods
 @Singleton
 class PageService @Inject()(config: Configuration, projectRepository: ProjectRepository, directoryRepository: DirectoryRepository, pageRepository: PageRepository,
-                            gherkinRepository: GherkinRepository, openApiClient: OpenApiClient, cache: PageServiceCache, searchService: SearchService, pageIndex: PageIndex)(implicit ec: ExecutionContext) extends Logging {
+                            gherkinRepository: GherkinRepository, openApiClient: OpenApiClient, cache: PageServiceCache, indexService: IndexService, hierarchyService: HierarchyService)(implicit ec: ExecutionContext) extends Logging {
 
   implicit val pageMetaFormat = Json.format[PageMeta]
   implicit val directoryMetaFormat = Json.format[DirectoryMeta]
@@ -245,7 +245,7 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
   def computePageFromPathUsingDatabaseBis(pageJoinProjectOpt: Option[PageJoinProject], path: String, forceRefresh: Boolean = true): Future[Option[PageWithContent]] = {
     pageJoinProjectOpt match {
       case Some(pageJoinProject) =>
-        pageIndex.addDocument(PageIndexDocument(searchService.getHierarchyPath(pageJoinProject), pageJoinProject.page.path, pageJoinProject.branch.name, pageJoinProject.page.label, pageJoinProject.page.description, pageJoinProject.page.markdown.getOrElse("")))
+        indexService.addDocument(PageIndexDocument(hierarchyService.getHierarchyPath(pageJoinProject), pageJoinProject.page.path, pageJoinProject.branch.name, pageJoinProject.page.label, pageJoinProject.page.description, pageJoinProject.page.markdown.getOrElse("")))
         val key = computePageCacheKey(path)
         if (cache.get(key).isEmpty || forceRefresh || pageJoinProject.page.dependOnOpenApi) {
           logger.debug(s"Page computed: $path")

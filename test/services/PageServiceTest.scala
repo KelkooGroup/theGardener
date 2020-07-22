@@ -28,13 +28,14 @@ class PageServiceTest extends WordSpec with MustMatchers with BeforeAndAfter wit
   val openApiClient = mock[OpenApiClient]
   val hierarchyRepository = mock[HierarchyRepository]
   val searchService = mock[SearchService]
+  val hierarchyService = mock[HierarchyService]
   implicit val ec = mock[ExecutionContext]
 
 
   when(config.getOptional[String]("application.baseUrl")).thenReturn(None)
 
-  val pageIndex = new PageIndex()
-  val pageService = new PageService(config, projectRepository, directoryRepository, pageRepository, gherkinRepository, openApiClient, cache, searchService, pageIndex)
+  val pageIndex = new IndexService()
+  val pageService = new PageService(config, projectRepository, directoryRepository, pageRepository, gherkinRepository, openApiClient, cache, pageIndex, hierarchyService)
 
 
   val variables = Seq(Variable(s"$${name1}", "value"), Variable(s"$${name2}", "value2"))

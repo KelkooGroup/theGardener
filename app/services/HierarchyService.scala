@@ -24,6 +24,25 @@ class HierarchyService @Inject()(hierarchyRepository: HierarchyRepository) {
     case Some(shortcut) => !hierarchy.id.startsWith(shortcut)
   }
 
+  def getHierarchyPath(pageJoinProject: PageJoinProject): String = {
+    val projectHierarchies = hierarchyRepository.findAllByProjectId(pageJoinProject.project.id)
+    if (projectHierarchies.nonEmpty) {
+      val hierarchyId = projectHierarchies.headOption.map(_.id).getOrElse("")
+      val splitedId = hierarchyId.split('.')
+      var hierarchyPath = ""
+      var currentHierarchyId = "."
+      for (id <- splitedId) {
+        if (id.nonEmpty) {
+          currentHierarchyId += id + "."
+          hierarchyPath += "/" + hierarchyRepository.findById(currentHierarchyId).map(_.name).getOrElse("Not Found")
+        }
+      }
+      hierarchyPath + "/" + pageJoinProject.branch.name + pageJoinProject.page.relativePath
+    } else {
+      pageJoinProject.page.path
+    }
+  }
+
 }
 
 

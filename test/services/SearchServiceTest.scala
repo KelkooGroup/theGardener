@@ -1,9 +1,6 @@
 package services
 
-import controllers.dto.{PageFragment, PageFragmentContent}
-import models.{Page, Variable}
 import org.mockito.Mockito
-import org.mockito.Mockito.when
 import org.scalatest.{BeforeAndAfter, MustMatchers, WordSpec}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
@@ -14,21 +11,15 @@ class SearchServiceTest extends WordSpec with MustMatchers with BeforeAndAfter w
   val pageRepository = mock[PageRepository]
   val hierarchyRepository = mock[HierarchyRepository]
 
-  val pageIndex = new PageIndex()
-  val searchService = new SearchService(pageIndex, hierarchyRepository)
+  val pageIndex = new IndexService()
+  val searchService = new SearchService(pageIndex)
 
-
-  val variables = Seq(Variable(s"$${name1}", "value"), Variable(s"$${name2}", "value2"))
-  val contentWithMarkdown = Seq(PageFragment("markdown", PageFragmentContent(Some(s"$${name1}"))))
-  val contentWithExternalPage = Seq(PageFragment("includeExternalPage", PageFragmentContent(None, None, Some(s"$${name1}"))))
-  val contentWithTwoFragment = contentWithMarkdown ++ contentWithExternalPage
-
-  val page1 = Page(1, "page", "label", "description", 0, Option("markdown"), "relativePath", "path", 1)
-  val page2 = Page(2, "page", "label", "description", 0, Option("markdown"), "relativePath", "path", 1)
-  val page3 = Page(3, "page", "label", "description", 0, Option("markdown"), "relativePath", "path", 1)
-  val page4 = Page(4, "page", "label", "description", 0, Option("markdown"), "relativePath", "path", 1)
-  val page5 = Page(5, "page", "label", "description", 0, Option("markdown"), "relativePath", "path", 1)
-  val page6 = Page(6, "page", "label", "description", 0, Option("markdown"), "relativePath", "path", 1)
+  val pageIndex1 = PageIndexDocument("hierarchy1", "path1", "branch1", "Doeco", "this is a test for markdown", "")
+  val pageIndex2 = PageIndexDocument("hierarchy2", "path2", "branch2", "Superstore", "", "")
+  val pageIndex3 = PageIndexDocument("hierarchy3", "path3", "branch3", "Doe co", "this is a text for markdown doe", "")
+  val pageIndex4 = PageIndexDocument("hierarchy4", "path4", "branch4", "co", "doe", "")
+  val pageIndex5 = PageIndexDocument("hierarchy5", "path5", "branch5", "Buymore", "this is a test for markdown this is a text for markdown", "")
+  val pageIndex6 = PageIndexDocument("hierarchy6", "path6", "branch6", "Do-Lots-Co", "", "")
 
   before {
     Mockito.reset(pageRepository)
@@ -44,16 +35,10 @@ class SearchServiceTest extends WordSpec with MustMatchers with BeforeAndAfter w
   "PageService" should {
 
     "search in lucene" in {
-      when(pageRepository.findByPath("path1")) thenReturn Option(page1)
-      when(pageRepository.findByPath("path2")) thenReturn Option(page2)
-      when(pageRepository.findByPath("path3")) thenReturn Option(page3)
-      when(pageRepository.findByPath("path4")) thenReturn Option(page4)
-      when(pageRepository.findByPath("path5")) thenReturn Option(page5)
-      when(pageRepository.findByPath("path6")) thenReturn Option(page6)
-      searchService.searchForPage("branch test") must contain theSameElementsAs Seq(Option(page1), Option(page5))
-      searchService.searchForPage("branch1") must contain theSameElementsAs Seq(Option(page1))
-      searchService.searchForPage(" text") must contain theSameElementsAs Seq(Option(page3), Option(page5))
-      searchService.searchForPage("doe") must contain theSameElementsAs Seq(Option(page3), Option(page1), Option(page4))
+      searchService.searchForPage("branch test") must contain theSameElementsAs Seq(pageIndex1, pageIndex5)
+      searchService.searchForPage("branch1") must contain theSameElementsAs Seq(pageIndex1)
+      searchService.searchForPage(" text") must contain theSameElementsAs Seq(pageIndex3, pageIndex5)
+      searchService.searchForPage("doe") must contain theSameElementsAs Seq(pageIndex3, pageIndex1, pageIndex4)
     }
 
 
