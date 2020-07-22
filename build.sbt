@@ -94,6 +94,7 @@ libraryDependencies ++= Seq(
   "com.h2database" % "h2" % "1.4.199",
   "com.jsuereth" %% "scala-arm" % "2.0",
   "commons-io" % "commons-io" % "2.6",
+  "com.outr" %% "lucene4s" % "1.9.0",
   "net.ruippeixotog" %% "scala-scraper" % "2.2.0" % Test,
   "io.cucumber" %% "cucumber-scala" % "6.2.2" % Test,
   "io.cucumber" % "cucumber-junit" % "6.2.2" % Test,
