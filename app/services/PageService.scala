@@ -85,10 +85,11 @@ class PageServiceCache @Inject()(cache: SyncCacheApi) extends Logging {
 
 }
 
+
+// scalastyle:off number.of.methods
 @Singleton
 class PageService @Inject()(config: Configuration, projectRepository: ProjectRepository, directoryRepository: DirectoryRepository, pageRepository: PageRepository,
-                            gherkinRepository: GherkinRepository, openApiClient: OpenApiClient, cache: PageServiceCache)(implicit ec: ExecutionContext) extends Logging {
-
+                            gherkinRepository: GherkinRepository, openApiClient: OpenApiClient, cache: PageServiceCache, indexService: IndexService, hierarchyService: HierarchyService)(implicit ec: ExecutionContext) extends Logging {
 
   implicit val pageMetaFormat = Json.format[PageMeta]
   implicit val directoryMetaFormat = Json.format[DirectoryMeta]
@@ -118,6 +119,7 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
   val EndVar = "}"
   val SourceTemplateBranchToken = s"${StartVar}branch${EndVar}"
   val SourceTemplatePathToken = s"${StartVar}path${EndVar}"
+
 
   def getLocalRepository(projectId: String, branch: String): String = s"$projectsRootDirectory$projectId/$branch/".fixPathSeparator
 
@@ -243,6 +245,7 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
   def computePageFromPathUsingDatabaseBis(pageJoinProjectOpt: Option[PageJoinProject], path: String, forceRefresh: Boolean = true): Future[Option[PageWithContent]] = {
     pageJoinProjectOpt match {
       case Some(pageJoinProject) =>
+        indexService.addDocument(PageIndexDocument(hierarchyService.getHierarchyPath(pageJoinProject), pageJoinProject.page.path, pageJoinProject.branch.name, pageJoinProject.page.label, pageJoinProject.page.description, pageJoinProject.page.markdown.getOrElse("")))
         val key = computePageCacheKey(path)
         if (cache.get(key).isEmpty || forceRefresh || pageJoinProject.page.dependOnOpenApi) {
           logger.debug(s"Page computed: $path")
@@ -321,7 +324,6 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
     }
   }
 
-
   def splitMarkdown(markdown: String, path: String = ""): Seq[PageFragmentUnderProcessing] = {
     markdown.split('\n').foldLeft((Seq[PageFragmentUnderProcessing](), PageFragmentUnderProcessing())) { (fragmentsAndCurrent, line) =>
       fragmentsAndCurrent match {
@@ -351,7 +353,6 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
     }
     // scalastyle:on cyclomatic.complexity
   }
-
 
   private def processPageFragmentModule(line: String, path: String, fragments: Seq[PageFragmentUnderProcessing], currentFragment: PageFragmentUnderProcessing, currentFragmentWithNewLine: PageFragmentUnderProcessing) = {
     if (line.trim.startsWith(MarkdownCodeStart)) {
@@ -460,7 +461,6 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
     )
   }
 
-
   def replaceVariableInString(texte: String, variables: IndexedSeq[Variable], index: Int): Option[String] = {
     if (index != variables.length) {
       replaceVariableInString(texte.replace(variables(index).name, variables(index).value), variables, index + 1)
@@ -472,4 +472,5 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
   def getAllPagePaths(project: Project, directoryId: Long): Seq[Page] = {
     pageRepository.findAllByDirectoryId(directoryId).map(page => page.copy(path = getCorrectedPath(page.path, project)))
   }
+
 }

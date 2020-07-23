@@ -6,7 +6,7 @@ import java.nio.file._
 import java.util
 
 import anorm._
-import cucumber.api.scala.{EN, ScalaDsl}
+import io.cucumber.scala.{EN, ScalaDsl}
 import models.Feature._
 import models._
 import org.eclipse.jgit.api._

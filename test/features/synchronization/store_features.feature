@@ -35,10 +35,10 @@ Scenario: providing several book suggestions
       | 1  | master | true     | suggestionsWS |
     And we have now those features in the database
       | id | path                                           | name                                                                        | description | branchId |
-      | 1  | test/features/provide_book_suggestions.feature | As a user Tim, I want some book suggestions so that I can do some discovery |             | 1        |
+      | 1  | test/features/provide_book_suggestions.feature | As a user Tim, I want some book suggestions so that I can do some discovery | [empty]     | 1        |
     And we have now those scenario in the database
       | id | name                               | keyword  | workflowStep               | caseType               | abstractionLevel               | description |
-      | 1  | providing several book suggestions | Scenario | <considered_workflow_step> | <considered_case_type> | <considered_abstraction_level> |             |
+      | 1  | providing several book suggestions | Scenario | <considered_workflow_step> | <considered_case_type> | <considered_abstraction_level> | [empty]     |
 
     # TODO Add featureId in the scenario table
 
@@ -86,10 +86,10 @@ Scenario: providing several book suggestions
       | 1  | master | true     | suggestionsWS |
     And we have now those features in the database
       | id | path                                           | name                                                                        | description | branchId |
-      | 1  | test/features/provide_book_suggestions.feature | As a user Tim, I want some book suggestions so that I can do some discovery |             | 1        |
+      | 1  | test/features/provide_book_suggestions.feature | As a user Tim, I want some book suggestions so that I can do some discovery | [empty]     | 1        |
     And we have now those scenario in the database
       | id | name                               | keyword  | workflowStep               | caseType               | abstractionLevel               | description |
-      | 1  | providing several book suggestions | Scenario | <considered_workflow_step> | <considered_case_type> | <considered_abstraction_level> |             |
+      | 1  | providing several book suggestions | Scenario | <considered_workflow_step> | <considered_case_type> | <considered_abstraction_level> | [empty]     |
 
     Examples:
       | annotation1        | considered_abstraction_level | considered_case_type | considered_workflow_step |
@@ -142,10 +142,10 @@ Feature: As a user Tim, I want some book suggestions so that I can do some disco
       | 1  | master | true     | suggestionsWS |
     And we have now those features in the database
       | id | path                                           | name                                                                        | description | branchId |
-      | 1  | test/features/provide_book_suggestions.feature | As a user Tim, I want some book suggestions so that I can do some discovery |             | 1        |
+      | 1  | test/features/provide_book_suggestions.feature | As a user Tim, I want some book suggestions so that I can do some discovery | [empty]     | 1        |
     And we have now those scenario in the database
       | id | name                               | keyword  | workflowStep | caseType     | abstractionLevel   | description |
-      | 1  | providing several book suggestions | Scenario | draft        | nominal_case | level_0_high_level |             |
+      | 1  | providing several book suggestions | Scenario | draft        | nominal_case | level_0_high_level | [empty]     |
     And we have now those stepsAsJSon for the scenario "1" in the database
 """
 [
@@ -196,10 +196,10 @@ Feature: As a user Tim, I want some book suggestions so that I can do some disco
       | 1  | master | true     | suggestionsWS |
     And we have now those features in the database
       | id | path                                           | name                                                                        | description | branchId |
-      | 1  | test/features/provide_book_suggestions.feature | As a user Tim, I want some book suggestions so that I can do some discovery |             | 1        |
+      | 1  | test/features/provide_book_suggestions.feature | As a user Tim, I want some book suggestions so that I can do some discovery | [empty]     | 1        |
     And we have now those scenario in the database
       | id | name                                                          | keyword  | workflowStep | caseType   | abstractionLevel      | description |
-      | 1  | one service on which the suggestion system depends on is down | Scenario | valid        | error_case | level_1_specification |             |
+      | 1  | one service on which the suggestion system depends on is down | Scenario | valid        | error_case | level_1_specification | [empty]     |
     And we have now those stepsAsJSon for the scenario "1" in the database
 """
 [
@@ -262,12 +262,12 @@ Feature: As a user Tim, I want some book suggestions so that I can do some disco
       | 1  | master | true     | suggestionsWS |
     And we have now those features in the database
       | id | path                                           | name                                                                        | description | branchId |
-      | 1  | test/features/provide_book_suggestions.feature | As a user Tim, I want some book suggestions so that I can do some discovery |             | 1        |
+      | 1  | test/features/provide_book_suggestions.feature | As a user Tim, I want some book suggestions so that I can do some discovery | [empty]     | 1        |
 
 #     TODO The Feature name should be "Provide book suggestions"  based on the name of the file provide_book_suggestions.feature
     And we have now those scenario in the database
       | id | name                                                                      | keyword  | workflowStep | caseType     | abstractionLevel      | description |
-      | 1  | suggestions of popular and available books adapted to the age of the user | Scenario | valid        | nominal_case | level_1_specification |             |
+      | 1  | suggestions of popular and available books adapted to the age of the user | Scenario | valid        | nominal_case | level_1_specification | [empty]     |
     And we have now those stepsAsJSon for the scenario "1" in the database
 """
 [
@@ -353,10 +353,10 @@ Feature: As a user Tim, I want some book suggestions so that I can do some disco
       | 1  | master | true     | suggestionsWS |
     And we have now those features in the database
       | id | path                                           | name                                                                        | description | branchId |
-      | 1  | test/features/provide_book_suggestions.feature | As a user Tim, I want some book suggestions so that I can do some discovery |             | 1        |
+      | 1  | test/features/provide_book_suggestions.feature | As a user Tim, I want some book suggestions so that I can do some discovery | [empty]     | 1        |
     And we have now those scenario outline in the database
       | id | name                        | keyword          | workflowStep | caseType   | abstractionLevel      | description |
-      | 1  | unknown user, no suggestion | Scenario Outline | valid        | error_case | level_1_specification |             |
+      | 1  | unknown user, no suggestion | Scenario Outline | valid        | error_case | level_1_specification | [empty]     |
     And we have now those stepsAsJSon for the scenario "1" in the database
 """
 [
@@ -449,10 +449,10 @@ Scenario: providing several book suggestions
       | 1  | master | true     | suggestionsWS |
     And we have now those features in the database
       | id | path                                           | name                                                                        | description | branchId |
-      | 1  | test/features/provide_book_suggestions.feature | As a user Tim, I want some book suggestions so that I can do some discovery |             | 1        |
+      | 1  | test/features/provide_book_suggestions.feature | As a user Tim, I want some book suggestions so that I can do some discovery | [empty]     | 1        |
     And we have now those scenario in the database
       | id | name                               | description | keyword  | workflowStep | caseType     | abstractionLevel   |
-      | 1  | providing several book suggestions |             | Scenario | ready        | nominal_case | level_0_high_level |
+      | 1  | providing several book suggestions | [empty]     | Scenario | ready        | nominal_case | level_0_high_level |
     And we have now those stepsAsJSon for the scenario "1" in the database
 """
 [
@@ -519,10 +519,10 @@ Scenario: providing several book suggestions
       | 1  | master | true     | suggestionsWS |
     And we have those features in the database
       | id | path                                           | name                                                                        | description | branchId | keyword  |
-      | 1  | test/features/provide_book_suggestions.feature | As a user Tim, I want some book suggestions so that I can do some discovery |             | 1        | Scenario |
+      | 1  | test/features/provide_book_suggestions.feature | As a user Tim, I want some book suggestions so that I can do some discovery | [empty]     | 1        | Scenario |
     And we have those scenario for the feature "1" in the database
       | id | name                               | description | keyword  | workflowStep | caseType     | abstractionLevel   |
-      | 1  | providing several book suggestions |             | Scenario | ready        | nominal_case | level_0_high_level |
+      | 1  | providing several book suggestions | [empty]     | Scenario | ready        | nominal_case | level_0_high_level |
     And we have those stepsAsJSon for the scenario "1" in the database
 """
 [
@@ -580,10 +580,10 @@ Scenario: providing several book suggestions
       | 1  | master | true     | suggestionsWS |
     And we have now those features in the database
       | id | path                                           | name                                                                        | description | branchId | keyword  |
-      | 2  | test/features/provide_book_suggestions.feature | As a user Tim, I want some book suggestions so that I can do some discovery |             | 1        | Scenario |
+      | 2  | test/features/provide_book_suggestions.feature | As a user Tim, I want some book suggestions so that I can do some discovery | [empty]     | 1        | Scenario |
     And we have now those scenario in the database
       | id | name                               | description | keyword  | workflowStep | caseType     | abstractionLevel   |
-      | 2  | providing several book suggestions |             | Scenario | ongoing      | nominal_case | level_0_high_level |
+      | 2  | providing several book suggestions | [empty]     | Scenario | ongoing      | nominal_case | level_0_high_level |
     And we have now those stepsAsJSon for the scenario "2" in the database
 """
 [
