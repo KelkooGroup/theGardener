@@ -133,6 +133,18 @@ Manage projects with the following endpoints:
 
 A given project can be put on any node. It can be put on several nodes if it make sense.
 
+```thegardener
+{
+  "openApi" : 
+     {
+        "openApiType": "model",
+        "ref": "#/definitions/HierarchyNode",
+        "deep": 1
+     }
+}
+```
+
+
 Manage relation between projects and hierarchy with the following endpoints:
 
 ```thegardener

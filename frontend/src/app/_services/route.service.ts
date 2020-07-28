@@ -30,8 +30,8 @@ export class RouteService {
         }
         const legacyUrl = pathPart.split('=')[1];
         let doubleChevronSplit = legacyUrl.split('>>');
-        if (doubleChevronSplit.length === 1 ) {
-           doubleChevronSplit = legacyUrl.split('%3E%3E');
+        if (doubleChevronSplit.length === 1) {
+            doubleChevronSplit = legacyUrl.split('%3E%3E');
         }
 
         let project = '';
@@ -43,7 +43,7 @@ export class RouteService {
             directoriesAndPage = doubleChevronSplit[1];
         } else {
             let chevronSplit = legacyUrl.split('>');
-            if (chevronSplit.length === 1 ) {
+            if (chevronSplit.length === 1) {
                 chevronSplit = legacyUrl.split('%3E');
             }
             if (chevronSplit.length === 3) {
@@ -69,18 +69,18 @@ export class RouteService {
 
 
     relativeUrlToFullFrontEndUrl(relativePath: string, navigationParams: NavigationParams): string {
-       if ( relativePath === undefined ) {
-           return undefined;
-       }
-        if ( relativePath.startsWith('http') ) {
+        if (relativePath === undefined) {
+            return undefined;
+        }
+        if (relativePath.startsWith('http')) {
             return relativePath;
         }
 
-       if (relativePath.startsWith('../')) {
+        if (relativePath.startsWith('../')) {
             const directories = navigationParams.directories.split(EMPTY_CHAR);
             let t = relativePath;
             let nbParents = 0;
-            while ( t.startsWith('../') ) {
+            while (t.startsWith('../')) {
                 t = t.substr(3, t.length);
                 nbParents++;
             }
@@ -94,34 +94,39 @@ export class RouteService {
             }
 
             const directoriesAndPage = relativePath.substr(3 * nbParents, relativePath.length);
-            let page ;
-            if ( directoriesAndPage.indexOf('/') === -1 ) {
+            let page;
+            if (directoriesAndPage.indexOf('/') === -1) {
                 page = directoriesAndPage;
             } else {
-                const directoriesAndPageArray = directoriesAndPage.split('/') ;
+                const directoriesAndPageArray = directoriesAndPage.split('/');
                 page = directoriesAndPageArray.pop();
-                const directoryNavigationForward =  directoriesAndPageArray.join(EMPTY_CHAR);
+                let directoryNavigationForward
+                if (directoriesAndPageArray.length == 1) {
+                    directoryNavigationForward = EMPTY_CHAR + directoriesAndPageArray.pop();
+                } else {
+                    directoryNavigationForward = directoriesAndPageArray.join(EMPTY_CHAR);
+                }
                 targetDirectoriesPath += directoryNavigationForward;
             }
 
 
-            return  `${NAVIGATE_PATH}${navigationParams.nodes}/${navigationParams.project}/${navigationParams.branch}/${targetDirectoriesPath}/${page}`;
-       } else {
-           let relativePathWithChildren = relativePath;
-           if (relativePath.startsWith('./')) {
-               relativePathWithChildren = relativePath.substr(2, relativePath.length);
-           }
-           const subDirectoriesAndPage = relativePathWithChildren.split('/');
-           let targetDirectoriesPath;
-           let page = subDirectoriesAndPage[subDirectoriesAndPage.length-1];
-           if (subDirectoriesAndPage.length==1){
-               targetDirectoriesPath = navigationParams.directories;
-           }else{
-               const subDirectories = subDirectoriesAndPage.slice(0, subDirectoriesAndPage.length - 1);
-               targetDirectoriesPath = navigationParams.directories + EMPTY_CHAR + subDirectories.join(EMPTY_CHAR);
-           }
-           return  `${NAVIGATE_PATH}${navigationParams.nodes}/${navigationParams.project}/${navigationParams.branch}/${targetDirectoriesPath}/${page}`;
-       }
+            return `${NAVIGATE_PATH}${navigationParams.nodes}/${navigationParams.project}/${navigationParams.branch}/${targetDirectoriesPath}/${page}`;
+        } else {
+            let relativePathWithChildren = relativePath;
+            if (relativePath.startsWith('./')) {
+                relativePathWithChildren = relativePath.substr(2, relativePath.length);
+            }
+            const subDirectoriesAndPage = relativePathWithChildren.split('/');
+            let targetDirectoriesPath;
+            let page = subDirectoriesAndPage[subDirectoriesAndPage.length - 1];
+            if (subDirectoriesAndPage.length == 1) {
+                targetDirectoriesPath = navigationParams.directories;
+            } else {
+                const subDirectories = subDirectoriesAndPage.slice(0, subDirectoriesAndPage.length - 1);
+                targetDirectoriesPath = navigationParams.directories + EMPTY_CHAR + subDirectories.join(EMPTY_CHAR);
+            }
+            return `${NAVIGATE_PATH}${navigationParams.nodes}/${navigationParams.project}/${navigationParams.branch}/${targetDirectoriesPath}/${page}`;
+        }
     }
 
     splitParamPathInArray(param: string): Array<string> {

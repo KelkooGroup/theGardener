@@ -22,7 +22,7 @@ Feature: search through pages by name
       | 1  | master                                       | true     | suggestionsWS |
       | 2  | feature/654-simple-full-text-search-on-pages | false    | suggestionsWS |
 
-  @level_2_technical_details @nominal_case @ongoing
+  @level_2_technical_details @nominal_case @valid
   Scenario: get result of a search
     Given we have those directories in the database
       | id | name        | label         | description             | order | relativePath  | path                               | branchId |
@@ -52,7 +52,7 @@ Feature: search through pages by name
 
     """
 
-  @level_2_technical_details @nominal_case @ongoing
+  @level_2_technical_details @nominal_case @valid
   Scenario: get result of a search with multiple results
     Given we have those directories in the database
       | id | name        | label         | description             | order | relativePath  | path                               | branchId |
@@ -91,7 +91,7 @@ Feature: search through pages by name
 ]
 """
 
-  @level_2_technical_details @nominal_case @ongoing
+  @level_2_technical_details @nominal_case @valid
   Scenario: get result of a search with multiple results
     Given we have those directories in the database
       | id | name        | label         | description             | order | relativePath  | path                               | branchId |
