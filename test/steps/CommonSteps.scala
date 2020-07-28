@@ -41,7 +41,7 @@ import services.clients.{OpenApiClient, ReplicaClient}
 import steps.Injector._
 import utils.CustomConfigSystemReader.overrideSystemGitConfig
 import utils._
-
+import scala.concurrent.duration._
 import scala.collection.JavaConverters._
 import scala.concurrent._
 import scala.io.Source
@@ -99,11 +99,15 @@ object CommonSteps extends MockitoSugar with MustMatchers {
   val conf = inject[play.api.Configuration]
   val environment = inject[play.api.Environment]
   val actorSystem = inject[akka.actor.ActorSystem]
+  val hierarchyService = inject[HierarchyService]
   val asyncCache = inject[AsyncCacheApi]
   val cache = new DefaultSyncCacheApi(asyncCache)
   val pageServiceCache = new PageServiceCache(cache)
   val spyPageServiceCache = spy(pageServiceCache)
-  val pageService = new PageService(conf, projectRepository, directoryRepository, pageRepository, gherkinRepository, fakeOpenApiClient, pageServiceCache)
+  val pageIndex = new IndexService
+  val searchService = new SearchService(pageIndex)
+  val spySearchService = spy(searchService)
+  val pageService = new PageService(conf, projectRepository, directoryRepository, pageRepository, gherkinRepository, fakeOpenApiClient, pageServiceCache, pageIndex, hierarchyService)
   val spyPageService = spy(pageService)
   val menuService = new MenuService(hierarchyRepository, projectRepository, branchRepository, featureRepository, directoryRepository, pageRepository, cache)
   val spyMenuService = spy(menuService)
@@ -121,7 +125,8 @@ object CommonSteps extends MockitoSugar with MustMatchers {
     bind[PageService].toInstance(spyPageService),
     bind[MenuService].toInstance(spyMenuService),
     bind[ProjectService].toInstance(spyProjectService),
-    bind[ReplicaClient].toInstance(spyReplicaService)).in(Mode.Test)
+    bind[ReplicaClient].toInstance(spyReplicaService),
+    bind[SearchService].toInstance(spySearchService)).in(Mode.Test)
 
   var app: Application = _
 
@@ -169,6 +174,8 @@ object CommonSteps extends MockitoSugar with MustMatchers {
 case class Configuration(path: String, value: String)
 
 case class PageRow(id: Long, name: String, label: String, description: String, order: Int, markdown: String, relativePath: String, path: String, directoryId: Long, dependOnOpenApi: Boolean)
+
+case class LuceneDoc(hierarchy: String, path: String, branch: String, label: String, description: String, pageContent: String)
 
 class CommonSteps extends ScalaDsl with EN with MockitoSugar with Logging with JacksonDefaultDataTableEntryTransformer {
 
@@ -292,6 +299,18 @@ Scenario: providing several book suggestions
     pageRepository.saveAll(pages.asScala.map(p => Page(p.id, p.name, p.label, p.description, p.order, Option(p.markdown), p.relativePath, p.path, p.directoryId)))
   }
 
+  Given("""^we have the following document in the lucene index$""") { docs: util.List[LuceneDoc] =>
+    docs.asScala.map(doc =>
+      pageIndex.addDocument(PageIndexDocument(doc.hierarchy, doc.path, doc.branch, doc.label, doc.description, doc.pageContent))
+    )
+  }
+
+  Given("""^the lucene index is loaded from the database$""") { () =>
+    pageIndex.reset()
+    response = route(app, FakeRequest("POST", "/api/admin/projects/refreshFromDatabase")).get
+    Await.result(response, 30.seconds)
+  }
+
   Given("""^we have the following markdown for the page "([^"]*)"$""") { (path: String, markdown: String) =>
     pageRepository.findByPath(path).map { page =>
       pageRepository.save(page.copy(markdown = Some(markdown)))
@@ -309,17 +328,18 @@ Scenario: providing several book suggestions
     await(asyncCache.removeAll())
   }
 
+
   Given("""^we have the following swagger.json hosted on "([^"]*)"$""") { (_: String, swaggerJson: String) =>
     mockOpenApiClient(swaggerJson)
   }
 
-  When("""^the swagger.json hosted on "([^"]*)" is now$"""){ (_: String, swaggerJson: String) =>
+  When("""^the swagger.json hosted on "([^"]*)" is now$""") { (_: String, swaggerJson: String) =>
     mockOpenApiClient(swaggerJson)
   }
 
-  Given("""^swagger\.json cannot be requested$"""){ () =>
+  Given("""^swagger\.json cannot be requested$""") { () =>
     reset(fakeOpenApiClient)
-    when(fakeOpenApiClient.getOpenApiDescriptor(any[OpenApiModelModule](), any[PageJoinProject]())).thenReturn(Future.successful(OpenApiModel("",Option(Seq()),Seq(),Seq(),Seq("ERROR HTTP"))))
+    when(fakeOpenApiClient.getOpenApiDescriptor(any[OpenApiModelModule](), any[PageJoinProject]())).thenReturn(Future.successful(OpenApiModel("", Option(Seq()), Seq(), Seq(), Seq("ERROR HTTP"))))
   }
 
   private def mockOpenApiClient(swaggerJson: String) = {
@@ -375,7 +395,7 @@ Scenario: providing several book suggestions
   }
 
   Then("""^the file system do not store now the file "([^"]*)"$""") { (file: String) =>
-    Files.exists(Paths.get(file.fixPathSeparator)) mustBe( false)
+    Files.exists(Paths.get(file.fixPathSeparator)) mustBe (false)
   }
 
   Then("""^the file system store now the files$""") { files: DataTable =>
