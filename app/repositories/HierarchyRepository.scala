@@ -69,7 +69,7 @@ class HierarchyRepository @Inject()(db: Database) {
 
   def findAllByProjectId(projectId: String): Seq[HierarchyNode] = {
     db.withConnection { implicit connection =>
-      SQL"SELECT * FROM project_hierarchyNode LEFT OUTER JOIN hierarchyNode on (hierarchyId = id) WHERE projectId = $projectId".as(parser.*)
+      SQL"SELECT * FROM project_hierarchyNode INNER JOIN hierarchyNode on (id = hierarchyId) WHERE projectId = $projectId".as(parser.*)
     }
   }
 }
