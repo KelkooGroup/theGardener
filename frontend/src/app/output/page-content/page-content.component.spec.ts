@@ -22,6 +22,7 @@ import {RouterTestingModule} from '@angular/router/testing';
 import {AnchorPipe} from '../../anchor.pipe';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {OpenApiEndPointsComponent} from './open-api-end-points/open-api-end-points.component';
+import {FooterComponent} from '../../_components/page/footer/footer.component';
 
 
 describe('PageContentComponent', () => {
@@ -43,7 +44,8 @@ describe('PageContentComponent', () => {
         SafePipe,
         InternalLinkPipe,
         AnchorPipe,
-        RemoveHtmlSanitizerPipe
+        RemoveHtmlSanitizerPipe,
+        FooterComponent
       ],
       imports: [
         HttpClientTestingModule,

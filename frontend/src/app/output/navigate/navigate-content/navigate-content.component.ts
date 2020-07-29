@@ -1,4 +1,5 @@
 import {Component} from '@angular/core';
+import {MobileMenuHelperService} from '../../../_services/mobile-menu-helper.service';
 
 @Component({
   selector: 'app-navigate-content',
@@ -7,5 +8,6 @@ import {Component} from '@angular/core';
 })
 export class NavigateContentComponent  {
 
-
+  constructor(public mobileMenuService: MobileMenuHelperService) {
+  }
 }

@@ -27,7 +27,7 @@ class GherkinController @Inject()(gherkinRepository: GherkinRepository, menuServ
   def generateGherkin(): Action[AnyContent] = Action { request =>
     try {
       val menu = menuService.getMenuTree()
-      val menuItemMap = menuService.getMenu().map(c => c.id -> MenuService.findMenuSubtree(c.id)(menu)).toMap
+      val menuItemMap = menuService.getMenuListWithShortcut().map(c => c.id -> MenuService.findMenuSubtree(c.id)(menu)).toMap
 
       val projectGherkins = request.queryString.getOrElse("project", Seq()).flatMap { projectParam =>
         val params = projectParam.split(">")

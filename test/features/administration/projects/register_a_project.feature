@@ -203,7 +203,6 @@ Feature: Register a project
       | suggestionsWS | Suggestions WebServices | git@gitlab.corp.kelkoo.net:library/suggestionsWS.git | master       | test/features    |
     When I perform a "DELETE" on following URL "/api/projects/suggestionsWS"
     Then I get a response with status "200"
-    And  the projects settings are now
-      | id | name | repositoryUrl | stableBranch | featuresRootPath |
+    And  the projects settings are now empty
 
 

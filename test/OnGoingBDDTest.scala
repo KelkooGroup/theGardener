@@ -1,5 +1,4 @@
-import cucumber.api._
-import cucumber.api.junit._
+import io.cucumber.junit.{Cucumber, CucumberOptions}
 import org.junit._
 import org.junit.runner._
 
@@ -8,7 +7,9 @@ import org.junit.runner._
 @CucumberOptions(
   features = Array("test/features"),
   glue = Array("steps"),
-  tags = Array("@ongoing"),
+  tags = "@ongoing",
   plugin = Array("pretty", "html:target/cucumber-report", "json:target/cucumber-bdd.json")
 )
 class OnGoingBDDTest
+
+

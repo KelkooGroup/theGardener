@@ -48,6 +48,7 @@ import {RemoveHtmlSanitizerPipe} from './removehtmlsanitizer.pipe';
 import {AnchorPipe} from './anchor.pipe';
 import {OpenApiModelComponent} from './output/page-content/open-api-model/open-api-model.component';
 import { OpenApiEndPointsComponent } from './output/page-content/open-api-end-points/open-api-end-points.component';
+import { NavigateMobileMenuComponent } from './output/navigate/navigate-mobile-menu/navigate-mobile-menu.component';
 
 const nonProductionProviders = [{
   provide: HTTP_INTERCEPTORS,
@@ -76,6 +77,7 @@ const nonProductionProviders = [{
     AnchorPipe,
     OpenApiModelComponent,
     OpenApiEndPointsComponent,
+    NavigateMobileMenuComponent,
   ],
   imports: [
     HttpClientModule,
