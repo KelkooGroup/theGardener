@@ -147,7 +147,10 @@ describe('RouteService', () => {
         expect(RouteService.legacyFullFrontEndUrlToFullFrontEndUrl("app/documentation/navigate/_publisher/publisherSystems/_/_/Services")).toEqual("app/documentation/navigate/_publisher/publisherSystems/_/_/Services");
     });
 
-    it('relativeUrlToFullFrontEndUrl ', () => {
+    fit('relativeUrlToFullFrontEndUrl ', () => {
+
+        expect(service.relativeUrlToFullFrontEndUrl('../OfferSearch/Feature',{nodes: '_platform_publisher_systems_public',project: 'shoppingAPIPublic',branch: 'feature_PUB-4629-review-doc',directories: '_Features_OfferFeeds',page: 'Feature'} ))
+            .toEqual("app/documentation/navigate/_platform_publisher_systems_public/shoppingAPIPublic/feature_PUB-4629-review-doc/_Features_OfferSearch/Feature");
 
         expect(service.relativeUrlToFullFrontEndUrl('https://thegardener.kelkoogroup.com',{nodes: 'Tools',project: 'theGardener',branch: 'master',directories: '_Guide_Write',page: 'Basics'} ))
             .toEqual("https://thegardener.kelkoogroup.com");
