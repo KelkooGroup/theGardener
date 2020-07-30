@@ -8,10 +8,17 @@
 }
 ```
 
-### NEXT
+### [2020-07][1.3.0] 
+ 
+The main features is:
+- [0359 - Responsive to be mobile compatible](https://github.com/KelkooGroup/theGardener/issues/359) 
+ 
+The improvements are:
+- [0706 - Add shortcut in the hierarchy](https://github.com/KelkooGroup/theGardener/issues/706)
+- [0663 - Synchronize projects with the same git repository](https://github.com/KelkooGroup/theGardener/issues/663) 
  
 Bugs fixed :
-- [705 - Relative links to children directories do not work](https://github.com/KelkooGroup/theGardener/issues/705)
+- [0705 - Relative links to children directories do not work](https://github.com/KelkooGroup/theGardener/issues/705)
 
 ### [2020-05][1.2.4]  
 
