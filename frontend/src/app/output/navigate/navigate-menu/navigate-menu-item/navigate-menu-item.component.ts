@@ -43,10 +43,8 @@ export class NavigateMenuItemComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        console.log(`INIT MENU ITEM ${JSON.stringify(this.menuItem.label)}`);
         this.subscription = this.activatedRoute.params
             .subscribe(params => {
-                console.log(`Activated route params: ${JSON.stringify(params)}`);
                 this.currentPath = this.routeService.navigationParamsToFrontEndPath(params);
                 this.currentNavigationRoute = this.routeService.navigationParamsToNavigationRoute(params);
                 this.active = this.isActive(this.menuItem);
@@ -60,13 +58,10 @@ export class NavigateMenuItemComponent implements OnInit, OnDestroy {
                     if (this.active) {
                         this.selectedBranch = project.children.find(b => b.name === branchToSelect);
                         this.expanded = true;
+                        this.scrollToElement();
                     } else {
                         this.selectedBranch = project.children.find(b => b.name === project.stableBranch);
                     }
-                }
-
-                if (this.active && this.menuItem.children.length == 0){
-                    this.scrollToElement();
                 }
 
             }, error => {
@@ -116,6 +111,7 @@ export class NavigateMenuItemComponent implements OnInit, OnDestroy {
     scrollToElement(): void {
         if (this.element.nativeElement) {
             this.element.nativeElement.scrollIntoView();
+            console.log(`Scroll to  ${this.menuItem.label}`);
         }
     }
 
