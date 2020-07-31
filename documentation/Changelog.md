@@ -8,7 +8,7 @@
 }
 ```
 
-### [2020-07][1.3.0] 
+### [2020-07][1.3.2] 
  
 The main features is:
 - [0359 - Responsive to be mobile compatible](https://github.com/KelkooGroup/theGardener/issues/359) 

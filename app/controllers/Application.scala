@@ -12,11 +12,6 @@ class Application @Inject()(assets: Assets) extends InjectedController {
     Redirect("/app/")
   }
 
-  def isAlive = Action {
-    Ok("OK ISALIVE")
-  }
-
-
   @silent("never used")
   def app(path: String): Action[AnyContent] = assets.at("dist/index.html")
 

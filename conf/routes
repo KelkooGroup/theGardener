@@ -64,7 +64,5 @@ GET          /api/proxy                                      controllers.OpenApi
 PUT          /api/proxy                                      controllers.OpenApiController.swaggerPutMethod(url: String, body: String)
 POST         /api/proxy                                      controllers.OpenApiController.swaggerPostMethod(url: String, body: String)
 DELETE       /api/proxy                                      controllers.OpenApiController.swaggerDeleteMethod(url: String)
-#IsAlive
-GET           /HealthCheck/isAlive                            controllers.Application.isAlive
 
 
