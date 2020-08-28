@@ -30,11 +30,10 @@ class PageController @Inject()(pageService: PageService, searchService: SearchSe
     }
   }
 
-  @ApiOperation(value = "Search pages through keywords", response = classOf[PageIndexDocument], responseContainer = "list")
+  @ApiOperation(value = "Search pages through a keyword", response = classOf[SearchResult])
   @ApiResponses(Array(new ApiResponse(code = 404, message = "Page not found")))
-  def searchPage(keywords: String): Action[AnyContent] = Action {
-    implicit val itemsFormat = Json.format[PageIndexDocument]
-    Ok(Json.toJson(searchService.searchForPage(keywords)))
+  def searchPage(keyword: String): Action[AnyContent] = Action {
+    Ok(Json.toJson(searchService.searchForPage(keyword)))
   }
 
 }

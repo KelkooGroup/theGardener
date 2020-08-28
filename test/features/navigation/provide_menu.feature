@@ -807,7 +807,7 @@ Feature: Provide menu
 }
 """
 
-  @level_2_technical_details @nominal_case @valid @ongoing
+  @level_2_technical_details @nominal_case @valid
   Scenario: provide sub menu with shortcuts
     Given the hierarchy nodes are
       | id      | slugName | name                         | childrenLabel | childLabel   | directoryPath       | shortcut |

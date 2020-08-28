@@ -1,9 +1,7 @@
 import io.cucumber.junit.{Cucumber, CucumberOptions}
-import org.junit._
 import org.junit.runner._
 
 @RunWith(classOf[Cucumber])
-@Ignore
 @CucumberOptions(
   features = Array("test/features"),
   glue = Array("steps"),

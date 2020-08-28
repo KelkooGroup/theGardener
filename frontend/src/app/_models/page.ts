@@ -1,6 +1,7 @@
 import {Scenario} from './gherkin';
 import {OpenApiModel, OpenApiPath} from './open-api';
 
+
 export interface Page {
   title: string;
   path: string;

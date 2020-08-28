@@ -175,7 +175,7 @@ case class Configuration(path: String, value: String)
 
 case class PageRow(id: Long, name: String, label: String, description: String, order: Int, markdown: String, relativePath: String, path: String, directoryId: Long, dependOnOpenApi: Boolean)
 
-case class LuceneDoc(hierarchy: String, path: String, branch: String, label: String, description: String, pageContent: String)
+case class LuceneDoc(id: String, hierarchy: String, path: String, breadcrumb: String, project: String, branch: String, label: String, description: String, pageContent: String)
 
 class CommonSteps extends ScalaDsl with EN with MockitoSugar with Logging with JacksonDefaultDataTableEntryTransformer {
 
@@ -301,7 +301,7 @@ Scenario: providing several book suggestions
 
   Given("""^we have the following document in the lucene index$""") { docs: util.List[LuceneDoc] =>
     docs.asScala.map(doc =>
-      pageIndex.addDocument(PageIndexDocument(doc.hierarchy, doc.path, doc.branch, doc.label, doc.description, doc.pageContent))
+      pageIndex.insertOrUpdateDocument(PageIndexDocument(doc.id, doc.hierarchy, doc.path, doc.breadcrumb, doc.project, doc.branch, doc.label, doc.description, doc.pageContent))
     )
   }
 

@@ -5,6 +5,7 @@ import {MenuHierarchy} from '../_models/menu';
 export const EMPTY_CHAR = '_';
 export const EMPTY_CHAR_REGEX = /_/g;
 export const NAVIGATE_PATH = 'app/documentation/navigate/';
+export const SEARCH_PATH = 'app/documentation/search';
 
 @Injectable({
     providedIn: 'root'
@@ -239,14 +240,24 @@ export class RouteService {
         }
         let directoriesAsString = backEndPathElements[2];
         let directories = [] as Array<string>;
-        if (directoriesAsString.length > 1 && directoriesAsString[0] === '/' && directoriesAsString[directoriesAsString.length - 1] === '/') {
-            directoriesAsString = directoriesAsString.substr(1, directoriesAsString.length - 2);
-            directories = directoriesAsString.split('/');
+        let page = undefined;
+
+        if (directoriesAsString.length == 1) {
+
+        } else {
+            if (directoriesAsString.length > 1 && directoriesAsString[directoriesAsString.length - 1] === '/') {
+                directoriesAsString = directoriesAsString.substr(1, directoriesAsString.length - 2);
+                directories = directoriesAsString.split('/');
+            } else {
+                directories = directoriesAsString.split('/');
+                page = directories.pop()
+            }
         }
         return {
             project: projectId,
             branch,
-            directories
+            directories,
+            page
         };
     }
 
@@ -299,5 +310,22 @@ export class RouteService {
             && currentNavigationRoute.project === menuItemNavigationRoute.project
             && currentNavigationRoute.directories?.join(EMPTY_CHAR) === menuItemNavigationRoute.directories?.join(EMPTY_CHAR)
             && currentNavigationRoute.page === menuItemNavigationRoute.page;
+    }
+
+    isNavigationUrl(relativeUrl: string): Boolean {
+        return relativeUrl != undefined && relativeUrl.startsWith("app/documentation/navigate");
+    }
+
+    backEndHierarchyAndPathToFrontEndPath(hierarchy: string, path: string) {
+
+        let navigationRoute = this.backEndPathToNavigationRoute(path);
+        let hierarchyFrontEndPath = hierarchy.replace(/\//g, EMPTY_CHAR);
+        let directories;
+        if (navigationRoute.directories.length > 1) {
+            directories = navigationRoute.directories.join(EMPTY_CHAR)
+        } else {
+            directories = EMPTY_CHAR
+        }
+        return hierarchyFrontEndPath + '/' + navigationRoute.project + '/' + navigationRoute.branch + '/' + directories + '/' + navigationRoute.page;
     }
 }

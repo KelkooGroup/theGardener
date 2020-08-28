@@ -18,6 +18,7 @@ export class HeaderComponent implements OnInit {
     @Input() appTitle?: string;
 
     items: Array<MenuHierarchy>;
+    url: string;
 
     constructor(private menuService: MenuService,
                 private routeService: RouteService,
@@ -33,9 +34,10 @@ export class HeaderComponent implements OnInit {
                 this.items = result;
                 if (this.items.length > 0) {
                     const currentRoute = this.getCurrentRoute();
-
-                    if ( !currentRoute.nodes || currentRoute.nodes?.length === 0 || currentRoute.page === undefined) {
-                        this.navigateTo(this.items[0]);
+                    if ( this.url== "" || this.url== undefined || this.routeService.isNavigationUrl(this.url)) {
+                        if (!currentRoute.nodes || currentRoute.nodes?.length === 0 || currentRoute.page === undefined) {
+                            this.navigateTo(this.items[0]);
+                        }
                     }
                 }
             }, error => {
@@ -47,9 +49,15 @@ export class HeaderComponent implements OnInit {
         let params : NavigationParams;
         if (this.activatedRoute.firstChild && this.activatedRoute.firstChild.snapshot){
             params = this.activatedRoute.firstChild.snapshot.params;
+            if (this.activatedRoute.firstChild.snapshot.url){
+            this.url = this.activatedRoute.firstChild.snapshot.url.join('/');
+            }
         }
         if (!params && this.activatedRoute && this.activatedRoute.snapshot){
             params = this.activatedRoute.snapshot.params;
+            if (this.activatedRoute.firstChild.snapshot.url){
+            this.url = this.activatedRoute.firstChild.snapshot.url.join('/');
+            }
         }
         return this.routeService.navigationParamsToNavigationRoute(params);
     }
@@ -60,6 +68,6 @@ export class HeaderComponent implements OnInit {
     }
 
     isItemInActivatedRoute(item: MenuHierarchy) {
-        return this.getCurrentRoute().nodes[0] === item.name;
+        return  this.getCurrentRoute().nodes[0] === item.name;
     }
 }

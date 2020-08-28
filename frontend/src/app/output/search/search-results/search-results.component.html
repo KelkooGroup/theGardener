@@ -1,0 +1,10 @@
+
+<div  *ngIf="searchResult.items.length>0 ; else noResults" >
+    <div *ngFor="let page of searchResult.items; let i = index">
+        <app-search-result-item [item]="page"  [index]="i"></app-search-result-item>
+    </div>
+</div>
+
+<ng-template #noResults>
+    No results
+</ng-template>

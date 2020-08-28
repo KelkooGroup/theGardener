@@ -245,7 +245,9 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
   def computePageFromPathUsingDatabaseBis(pageJoinProjectOpt: Option[PageJoinProject], path: String, forceRefresh: Boolean = true): Future[Option[PageWithContent]] = {
     pageJoinProjectOpt match {
       case Some(pageJoinProject) =>
-        indexService.addDocument(PageIndexDocument(hierarchyService.getHierarchyPath(pageJoinProject), pageJoinProject.page.path, pageJoinProject.branch.name, pageJoinProject.page.label, pageJoinProject.page.description, pageJoinProject.page.markdown.getOrElse("")))
+        if (pageJoinProject.branch.isStable) {
+          insertOrUpdateIndex(pageJoinProject)
+        }
         val key = computePageCacheKey(path)
         if (cache.get(key).isEmpty || forceRefresh || pageJoinProject.page.dependOnOpenApi) {
           logger.debug(s"Page computed: $path")
@@ -271,6 +273,23 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
         }
       case _ => Future.successful(None)
     }
+  }
+
+  private def insertOrUpdateIndex(pageJoinProject: PageJoinProject) = {
+
+    hierarchyService.getHierarchyPath(pageJoinProject).map{ hierarchy =>
+      val document = PageIndexDocument(id = hierarchy + "/" + pageJoinProject.page.path,
+        hierarchy = hierarchy,
+        path = pageJoinProject.page.path,
+        breadcrumb = hierarchyService.getBreadcrumb(pageJoinProject),
+        project = pageJoinProject.project.name,
+        branch = pageJoinProject.branch.name,
+        label = pageJoinProject.page.label,
+        description = pageJoinProject.page.description,
+        pageContent = pageJoinProject.page.markdown.getOrElse(""))
+      indexService.insertOrUpdateDocument(document)
+    }
+
   }
 
   def processPage(currentDirectory: Directory, localDirectoryPath: String, name: String, order: Int): Option[Page] = {
