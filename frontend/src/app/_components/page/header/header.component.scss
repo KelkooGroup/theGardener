@@ -19,7 +19,7 @@
   flex-wrap: wrap;
 }
 
-.header-logo, .header-navigation, .header-logo-the-gardener {
+.header-logo, .header-navigation, .header-search, .header-logo-the-gardener {
   flex: 1;
   margin-top: 0;
   margin-bottom: 0;
@@ -81,6 +81,10 @@
 
 }
 
+.header-navigation{
+  padding-bottom: 8px;
+}
+
 .header-navigation a {
   transition: all 0.3s ease; /* Add transition for hover effects */
   text-decoration: none;
@@ -91,6 +95,10 @@
   @media screen and (max-width: 600px) {
     display: none;
   }
+}
+
+.header-search{
+  padding-right: 8px;
 }
 
 .header-navigation-responsive {

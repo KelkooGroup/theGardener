@@ -17,6 +17,7 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {FormsModule} from '@angular/forms';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {SearchQueryComponent} from "../../../output/search/search-query/search-query.component";
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;
@@ -31,6 +32,7 @@ describe('HeaderComponent', () => {
         HeaderComponent,
         NavigateMobileMenuComponent,
         NavigateMenuItemComponent,
+        SearchQueryComponent
       ],
       imports: [
         MatTabsModule,

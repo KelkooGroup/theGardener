@@ -1,0 +1,16 @@
+@import "../../../../stylesheets/backoffice";
+
+.searchContainer {
+    display: inline-flex;
+    flex: 1 1 300px;
+    position: relative;
+    border: 1px solid $color-border-lighter;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.searchIcon {
+    padding: 0.5rem;
+}
+
+

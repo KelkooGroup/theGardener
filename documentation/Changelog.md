@@ -8,6 +8,11 @@
 }
 ```
 
+### [2020-09][1.4.0] 
+
+The main features is:
+- [0655 - Search](https://github.com/KelkooGroup/theGardener/issues/655) 
+
 ### [2020-07][1.3.2] 
  
 The main features is:

@@ -67,6 +67,12 @@ class HierarchyRepository @Inject()(db: Database) {
     }
   }
 
+  def findByDirectoryPath(directoryPath: String): Option[HierarchyNode] = {
+    db.withConnection { implicit connection =>
+      SQL"SELECT * FROM hierarchyNode WHERE directoryPath = $directoryPath".as(parser.*).headOption
+    }
+  }
+
   def findAllByProjectId(projectId: String): Seq[HierarchyNode] = {
     db.withConnection { implicit connection =>
       SQL"SELECT * FROM project_hierarchyNode INNER JOIN hierarchyNode on (id = hierarchyId) WHERE projectId = $projectId".as(parser.*)

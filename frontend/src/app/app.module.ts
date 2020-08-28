@@ -49,6 +49,10 @@ import {AnchorPipe} from './anchor.pipe';
 import {OpenApiModelComponent} from './output/page-content/open-api-model/open-api-model.component';
 import { OpenApiEndPointsComponent } from './output/page-content/open-api-end-points/open-api-end-points.component';
 import { NavigateMobileMenuComponent } from './output/navigate/navigate-mobile-menu/navigate-mobile-menu.component';
+import { SearchPageComponent } from './output/search/search-page/search-page.component';
+import { SearchResultsComponent } from './output/search/search-results/search-results.component';
+import { SearchResultItemComponent } from './output/search/search-result-item/search-result-item.component';
+import { SearchQueryComponent } from './output/search/search-query/search-query.component';
 
 const nonProductionProviders = [{
   provide: HTTP_INTERCEPTORS,
@@ -78,6 +82,10 @@ const nonProductionProviders = [{
     OpenApiModelComponent,
     OpenApiEndPointsComponent,
     NavigateMobileMenuComponent,
+    SearchPageComponent,
+    SearchResultsComponent,
+    SearchResultItemComponent,
+    SearchQueryComponent,
   ],
   imports: [
     HttpClientModule,
