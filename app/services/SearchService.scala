@@ -46,30 +46,19 @@ class IndexService {
   private val pageContent = luceneSearchIndex.create.field[String]("pageContent", sortable = false)
 
   def insertOrUpdateDocument(document: PageIndexDocument): Unit = {
-
-    var i = 0
-    while (exists(document) && i < 10) {
-      luceneSearchIndex.delete(new TermSearchTerm(Some(id), document.id))
-      luceneSearchIndex.commit()
-      i = i + 1
-    }
-
-    luceneSearchIndex.doc().fields(id(document.id),
-      hierarchy(document.hierarchy),
-      path(document.path),
-      breadcrumb(document.breadcrumb),
-      project(document.project),
-      branch(document.branch),
-      label(document.label),
-      description(document.description),
-      pageContent(document.pageContent)
+    luceneSearchIndex.delete(new TermSearchTerm(Some(id), document.id))
+    luceneSearchIndex.commit()
+    luceneSearchIndex.doc().fields(id(document.id.trim),
+      hierarchy(document.hierarchy.trim),
+      path(document.path.trim),
+      breadcrumb(document.breadcrumb.trim),
+      project(document.project.trim),
+      branch(document.branch.trim),
+      label(document.label.trim),
+      description(document.description.trim),
+      pageContent(document.pageContent.trim)
     ).index()
     luceneSearchIndex.commit()
-    ()
-  }
-
-  private def exists(document: PageIndexDocument) = {
-    luceneSearchIndex.query().filter(new TermSearchTerm(Some(id), document.id)).search().results.nonEmpty
   }
 
   def query(keywords: String): SearchResult = {
@@ -81,13 +70,13 @@ class IndexService {
       + "description:" + keywords + "*^100 " + " | "
       + "pageContent:" + keywords + "*^30"
     )).highlight().limit(50).search()
-    SearchResult(results.results.map {
-      result =>
-        val highlighting = result.highlighting(breadcrumb).map(frg => HighlightedFragment(frg.fragment, frg.word)) +:
-          result.highlighting(label).map(frg => HighlightedFragment(frg.fragment, frg.word)) +:
-          result.highlighting(description).map(frg => HighlightedFragment(frg.fragment, frg.word)) +:
-          result.highlighting(pageContent).map(frg => HighlightedFragment(frg.fragment, frg.word)) +: Nil
-        SearchResultItem(PageIndexDocument(result(id), result(hierarchy), result(path), result(breadcrumb), result(project), result(branch), result(label), result(description), result(pageContent)), highlighting.flatten)
+
+    SearchResult(results.results.map { result =>
+      val highlighting = result.highlighting(breadcrumb).map(frg => HighlightedFragment(frg.fragment, frg.word)) +:
+        result.highlighting(label).map(frg => HighlightedFragment(frg.fragment, frg.word)) +:
+        result.highlighting(description).map(frg => HighlightedFragment(frg.fragment, frg.word)) +:
+        result.highlighting(pageContent).map(frg => HighlightedFragment(frg.fragment, frg.word)) +: Nil
+      SearchResultItem(PageIndexDocument(result(id), result(hierarchy), result(path), result(breadcrumb), result(project), result(branch), result(label), result(description), result(pageContent)), highlighting.flatten)
     })
   }
 

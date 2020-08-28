@@ -11,7 +11,7 @@ import {Router} from "@angular/router";
 export class SearchResultItemComponent implements OnInit {
 
   @Input()  item: SearchResultItem;
-  @Input()  index: number;
+  @Input()  index: Number;
 
 
   constructor(private routeService: RouteService,private router: Router) { }
@@ -23,9 +23,4 @@ export class SearchResultItemComponent implements OnInit {
     let path = this.routeService.backEndHierarchyAndPathToFrontEndPath(page.hierarchy,page.path);
     this.router.navigateByUrl(  NAVIGATE_PATH + path);
   }
-
-  showIndex(): string {
-    return (this.index + 1).toString()
-  }
-
 }

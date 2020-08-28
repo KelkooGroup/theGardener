@@ -38,21 +38,21 @@ class SearchServiceTest extends WordSpec with MustMatchers with BeforeAndAfter w
     "search in lucene" in {
       var items = searchService.searchForPage("branch test").items
       items.length must equal(2)
-      items.head.page.id must equal("id1")
+      items(0).page.id must equal("id1")
       items(1).page.id must equal("id5")
 
       items = searchService.searchForPage("branch1").items
       items.length must equal(1)
-      items.head.page.id must equal("id1")
+      items(0).page.id must equal("id1")
 
       items = searchService.searchForPage(" text").items
       items.length must equal(2)
-      items.head.page.id must equal("id3")
+      items(0).page.id must equal("id3")
       items(1).page.id must equal("id5")
 
       items = searchService.searchForPage("doe").items
       items.length must equal(3)
-      items.head.page.id must equal("id3")
+      items(0).page.id must equal("id3")
       items(1).page.id must equal("id1")
       items(2).page.id must equal("id4")
     }
@@ -67,7 +67,7 @@ class SearchServiceTest extends WordSpec with MustMatchers with BeforeAndAfter w
 
 
       for(pageNumber <- 1 to 10){
-        pageIndex.insertOrUpdateDocument(PageIndexDocument("id2", "hierarchy2", "path2", "breadcrum2", "branch2", "project2", "Superstore", s"page $pageNumber", ""))
+        pageIndex.insertOrUpdateDocument(PageIndexDocument("id2", "hierarchy2", "path2", "breadcrum2", "branch2", "project2", "Superstore", s"page ${pageNumber}", ""))
       }
 
       result = searchService.searchForPage("Superstore").items

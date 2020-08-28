@@ -14,21 +14,28 @@ export class SearchPageComponent implements OnInit {
   @Input() keyword: string;
   searchResult: SearchResult;
 
-  constructor( private activatedRoute: ActivatedRoute, private notificationService: NotificationService, private pageService: PageService) { }
+  constructor(private activatedRoute: ActivatedRoute, private notificationService: NotificationService, private pageService: PageService) { }
 
   ngOnInit(): void {
-    this.activatedRoute.queryParams.subscribe(queryParams => {
-      this.keyword = queryParams.keyword
-      this.search();
-    });
-  }
-
-  private search() {
-    this.pageService.searchPages(this.keyword).subscribe(
+    this.getKeyword();
+    this.pageService.searchPages(this.keyword) .subscribe(
         result => {
           this.searchResult = result;
         }, error => {
           this.notificationService.showError('Error while searching in the page index', error);
         });
   }
+
+  getKeyword() {
+    if (this.activatedRoute.firstChild && this.activatedRoute.firstChild.snapshot) {
+      this.keyword = this.activatedRoute.firstChild.snapshot.queryParamMap.get("keyword");
+    }
+    if (!this.keyword && this.activatedRoute && this.activatedRoute.snapshot) {
+      this.keyword = this.activatedRoute.snapshot.queryParamMap.get("keyword");
+    }
+  }
+
+
+
+
 }

@@ -4,7 +4,7 @@ import {NotificationService} from '../../../_services/notification.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {MenuHierarchy} from "../../../_models/menu";
 import {NAVIGATE_PATH, RouteService} from "../../../_services/route.service";
-import {NavigationParams, NavigationRoute} from "../../../_models/route";
+import {NavigationParams} from "../../../_models/route";
 import {MobileMenuHelperService} from '../../../_services/mobile-menu-helper.service';
 
 @Component({
@@ -18,6 +18,7 @@ export class HeaderComponent implements OnInit {
     @Input() appTitle?: string;
 
     items: Array<MenuHierarchy>;
+    params: NavigationParams;
     url: string;
 
     constructor(private menuService: MenuService,
@@ -29,12 +30,13 @@ export class HeaderComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.initAttributes();
         this.menuService.getMenuHeader().subscribe(
             result => {
                 this.items = result;
                 if (this.items.length > 0) {
-                    const currentRoute = this.getCurrentRoute();
-                    if ( this.url== "" || this.url== undefined || this.routeService.isNavigationUrl(this.url)) {
+                    const currentRoute = this.routeService.navigationParamsToNavigationRoute(this.params);
+                    if ( this.url== undefined || this.routeService.isNavigationUrl(this.url)) {
                         if (!currentRoute.nodes || currentRoute.nodes?.length === 0 || currentRoute.page === undefined) {
                             this.navigateTo(this.items[0]);
                         }
@@ -45,21 +47,15 @@ export class HeaderComponent implements OnInit {
             });
     }
 
-    getCurrentRoute(): NavigationRoute {
-        let params: NavigationParams;
+    initAttributes() {
         if (this.activatedRoute.firstChild && this.activatedRoute.firstChild.snapshot) {
-            params = this.activatedRoute.firstChild.snapshot.params;
-            if (this.activatedRoute.firstChild.snapshot.url) {
-                this.url = this.activatedRoute.firstChild.snapshot.url.join('/');
-            }
+            this.params = this.activatedRoute.firstChild.snapshot.params;
+            this.url = this.activatedRoute.firstChild.snapshot.url?.join('/');
         }
-        if (!params && this.activatedRoute && this.activatedRoute.snapshot) {
-            params = this.activatedRoute.snapshot.params;
-            if (this.activatedRoute.snapshot.url) {
-                this.url = this.activatedRoute.snapshot.url.join('/');
-            }
+        if (!this.params && this.activatedRoute && this.activatedRoute.snapshot) {
+            this.params = this.activatedRoute.snapshot.params;
+            this.url = this.activatedRoute.snapshot.url?.join('/');
         }
-        return this.routeService.navigationParamsToNavigationRoute(params);
     }
 
     navigateTo(item: MenuHierarchy) {
@@ -68,6 +64,6 @@ export class HeaderComponent implements OnInit {
     }
 
     isItemInActivatedRoute(item: MenuHierarchy) {
-        return  this.getCurrentRoute().nodes[0] === item.name;
+        return this.url && this.routeService.isNavigationUrl(this.url) && this.routeService.navigationParamsToNavigationRoute(this.params).nodes[0] === item.name;
     }
 }
