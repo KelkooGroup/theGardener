@@ -7,6 +7,7 @@ import {
   PAGE_SERVICE_RESPONSE,
   PAGE_WITH_EXTERNAL_LINK_SERVICE_RESPONSE,
   PAGE_WITH_SCENARIO,
+  SEARCH_RESULTS
 } from '../_testUtils/test-data.spec';
 import {IncludeExternalPagePart, MarkdownPart} from '../_models/page';
 
@@ -53,6 +54,21 @@ describe('PageService', () => {
       mockRequest.method === 'GET' && mockRequest.url === 'api/directories' && mockRequest.params.get('path') === 'publisherManagementWS>qa>/constraints/');
     req.flush([DIRECTORIES_SERVICE_RESPONSE]);
   }));
+
+  xit('should search pages for keyword', async(() => {
+        pageService.searchPages('suggestions')
+            .subscribe(result => {
+                expect(result.items).toBeDefined();
+                expect(result.items.length).toBe(1);
+                expect(result.items[0].page.label).toBe("The context");
+            });
+
+
+        const req = httpMock.expectOne(mockRequest =>
+            mockRequest.method === 'GET' && mockRequest.url === 'api/pages/search' && mockRequest.params.get('keyword') === 'suggestions');
+        req.flush([SEARCH_RESULTS]);
+    }));
+
 
   it('should get page for path', async(() => {
     pageService.getPage('publisherManagementWS>qa>_constraints_overview')

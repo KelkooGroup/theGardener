@@ -41,7 +41,7 @@ GET        /api/config                                     controllers.ConfigCon
 GET        /api/directories                                controllers.DirectoryController.getDirectoryFromPath(path: String)
 
 GET        /api/pages                                      controllers.PageController.getPageFromPath(path: String)
-GET        /api/pages/search                               controllers.PageController.searchPage(keywords: String)
+GET        /api/pages/search                               controllers.PageController.searchPage(keyword: String)
 
 POST       /api/admin/menu/refreshFromDatabase                               controllers.AdminController.refreshMenu()
 POST       /api/admin/projects/refreshFromDatabase                           controllers.AdminController.refreshAllProjectsFromDatabase()

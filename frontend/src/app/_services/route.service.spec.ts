@@ -11,6 +11,12 @@ describe('RouteService', () => {
         service = TestBed.get(RouteService);
     });
 
+    it('isNavigationUrl ', () => {
+        expect(service.isNavigationUrl("app/documentation/search")).toEqual(false);
+        expect(service.isNavigationUrl("app/documentation/navigate")).toEqual(true);
+
+    });
+
     it('navigationParamsToNavigationRoute focus on nodes', () => {
         expect(service.navigationParamsToNavigationRoute({nodes: "_publisher"}).nodes).toEqual(["publisher"]);
         expect(service.navigationParamsToNavigationRoute({nodes: "publisher"}).nodes).toEqual(["publisher"]);
@@ -84,8 +90,13 @@ describe('RouteService', () => {
     });
 
     it('backEndPathToNavigationRoute focus on directory', () => {
-        expect(service.backEndPathToNavigationRoute("publisherSystems>>/")).toEqual({ project: "publisherSystems", branch: "_", directories: []  });
-        expect(service.backEndPathToNavigationRoute("publisherData>>/Public/")).toEqual({ project: "publisherData", branch: "_", directories: ["Public"]  });
+        expect(service.backEndPathToNavigationRoute("publisherSystems>>/")).toEqual({ project: "publisherSystems", branch: "_", directories: [], page:undefined  });
+        expect(service.backEndPathToNavigationRoute("publisherData>>/Public/")).toEqual({ project: "publisherData", branch: "_", directories: ["Public"], page:undefined  });
+    });
+
+    it('backEndHierarchyAndPathToFrontEndPath ', () => {
+        expect(service.backEndHierarchyAndPathToFrontEndPath("/platform/publisher/systems/mgt","pmws>qa>/Features/Events/Constraints")).toEqual("_platform_publisher_systems_mgt/pmws/qa/_Features_Events/Constraints");
+        expect(service.backEndHierarchyAndPathToFrontEndPath("/platform/publisher/systems/mgt","pmbo>qa>/Meta")).toEqual("_platform_publisher_systems_mgt/pmbo/qa/_/Meta");
     });
 
     it('menuHierarchyToFrontEndPath focus on node without a directory ', () => {
@@ -147,7 +158,7 @@ describe('RouteService', () => {
         expect(RouteService.legacyFullFrontEndUrlToFullFrontEndUrl("app/documentation/navigate/_publisher/publisherSystems/_/_/Services")).toEqual("app/documentation/navigate/_publisher/publisherSystems/_/_/Services");
     });
 
-    fit('relativeUrlToFullFrontEndUrl ', () => {
+    it('relativeUrlToFullFrontEndUrl ', () => {
 
         expect(service.relativeUrlToFullFrontEndUrl('../OfferSearch/Feature',{nodes: '_platform_publisher_systems_public',project: 'shoppingAPIPublic',branch: 'feature_PUB-4629-review-doc',directories: '_Features_OfferFeeds',page: 'Feature'} ))
             .toEqual("app/documentation/navigate/_platform_publisher_systems_public/shoppingAPIPublic/feature_PUB-4629-review-doc/_Features_OfferSearch/Feature");

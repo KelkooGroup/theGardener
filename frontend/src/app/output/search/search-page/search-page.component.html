@@ -1,0 +1,9 @@
+<div class="page">
+    <div class="title">
+        <h2>Search results for </h2>
+        <h2>'{{keyword}}'</h2>
+    </div>
+    <div *ngIf="searchResult" class="content">
+        <app-search-results [searchResult]="searchResult"></app-search-results>
+    </div>
+</div>
