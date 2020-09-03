@@ -38,10 +38,11 @@ class ProjectServiceTest extends WordSpec with MustMatchers with BeforeAndAfter 
   val featureService = mock[FeatureService]
   val menuService = mock[MenuService]
   val pageService = mock[PageService]
+  val indexService = mock[IndexService]
   val environment = mock[Environment]
 
 
-  val projectService = new ProjectService(projectRepository, gitService, featureService, featureRepository, branchRepository, directoryRepository, pageRepository, menuService, pageService, Configuration.load(Environment.simple()), environment, ActorSystem())
+  val projectService = new ProjectService(projectRepository, gitService, featureService, featureRepository, branchRepository, directoryRepository, pageRepository, menuService, pageService, indexService, Configuration.load(Environment.simple()), environment, ActorSystem())
 
   val project = Project("suggestionsWS", "Suggestions WebServices", "git@github.com:library/suggestionsWS.git", Some("http://github.com:library/suggestionsWS/blob/${branch}/${path}"), "master", Some("^(^master$)|(^feature\\/.*$)"), Some("test/features"))
   val masterDirectory = projectService.getLocalRepository(project.id, project.stableBranch)

@@ -113,7 +113,7 @@ object CommonSteps extends MockitoSugar with MustMatchers {
   val spyMenuService = spy(menuService)
   val replicaService = new ReplicaClient(conf, wsClient)
   val spyReplicaService = spy(replicaService)
-  val projectService = new ProjectService(projectRepository, gitService, featureService, featureRepository, branchRepository, directoryRepository, pageRepository, menuService, pageService, conf, environment, actorSystem)
+  val projectService = new ProjectService(projectRepository, gitService, featureService, featureRepository, branchRepository, directoryRepository, pageRepository, menuService, pageService, pageIndex, conf, environment, actorSystem)
   val spyProjectService = spy(projectService)
 
 
