@@ -33,7 +33,7 @@ object SearchResult {
 @Singleton
 class IndexService {
 
-  val luceneSearchIndex = new DirectLucene(uniqueFields = List("id"), defaultFullTextSearchable = true, appendIfExists = false, autoCommit = true)
+  val luceneSearchIndex = new DirectLucene(uniqueFields = List("id"), defaultFullTextSearchable = true, appendIfExists = false, autoCommit = false)
 
   private val id = luceneSearchIndex.create.field[String]("id")
   private val hierarchy = luceneSearchIndex.create.field[String]("hierarchy")
@@ -65,6 +65,7 @@ class IndexService {
       pageContent(document.pageContent)
     ).index()
     luceneSearchIndex.commit()
+    ()
   }
 
   private def exists(document: PageIndexDocument) = {

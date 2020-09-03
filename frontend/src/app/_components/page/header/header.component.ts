@@ -45,18 +45,18 @@ export class HeaderComponent implements OnInit {
             });
     }
 
-    getCurrentRoute(): NavigationRoute{
-        let params : NavigationParams;
-        if (this.activatedRoute.firstChild && this.activatedRoute.firstChild.snapshot){
+    getCurrentRoute(): NavigationRoute {
+        let params: NavigationParams;
+        if (this.activatedRoute.firstChild && this.activatedRoute.firstChild.snapshot) {
             params = this.activatedRoute.firstChild.snapshot.params;
-            if (this.activatedRoute.firstChild.snapshot.url){
-            this.url = this.activatedRoute.firstChild.snapshot.url.join('/');
+            if (this.activatedRoute.firstChild.snapshot.url) {
+                this.url = this.activatedRoute.firstChild.snapshot.url.join('/');
             }
         }
-        if (!params && this.activatedRoute && this.activatedRoute.snapshot){
+        if (!params && this.activatedRoute && this.activatedRoute.snapshot) {
             params = this.activatedRoute.snapshot.params;
-            if (this.activatedRoute.firstChild.snapshot.url){
-            this.url = this.activatedRoute.firstChild.snapshot.url.join('/');
+            if (this.activatedRoute.snapshot.url) {
+                this.url = this.activatedRoute.snapshot.url.join('/');
             }
         }
         return this.routeService.navigationParamsToNavigationRoute(params);
