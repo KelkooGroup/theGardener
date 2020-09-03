@@ -277,7 +277,7 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
 
   private def insertOrUpdateIndex(pageJoinProject: PageJoinProject) = {
 
-    hierarchyService.getHierarchyPath(pageJoinProject).map{ hierarchy =>
+    hierarchyService.getHierarchyPath(pageJoinProject).map { hierarchy =>
       val document = PageIndexDocument(id = hierarchy + "/" + pageJoinProject.page.path,
         hierarchy = hierarchy,
         path = pageJoinProject.page.path,
