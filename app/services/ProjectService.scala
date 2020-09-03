@@ -17,7 +17,7 @@ import scala.concurrent.duration._
 @Singleton
 class ProjectService @Inject()(projectRepository: ProjectRepository, gitService: GitService, featureService: FeatureService,
                                featureRepository: FeatureRepository, branchRepository: BranchRepository, directoryRepository: DirectoryRepository,
-                               pageRepository: PageRepository, menuService: MenuService, pageService: PageService,
+                               pageRepository: PageRepository, menuService: MenuService, pageService: PageService, indexService: IndexService,
                                config: Configuration, environment: Environment, actorSystem: ActorSystem)(implicit ec: ExecutionContext) extends Logging {
   val projectsRootDirectory = config.get[String]("projects.root.directory")
   val synchronizeInterval = config.get[Int]("projects.synchronize.interval")
@@ -288,6 +288,7 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
   def refreshAllPagesFromAllProjects(): Unit = {
     val startTime = System.currentTimeMillis()
     logger.info("Start refreshing pages not in cache")
+    indexService.reset()
     projectRepository.findAll().foreach(p => refreshAllPages(p, forceRefresh = false))
     val endTime = System.currentTimeMillis()
     val duration = DurationUtil.durationFromMillisToHumanReadable( endTime-startTime   )
