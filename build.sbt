@@ -89,7 +89,7 @@ libraryDependencies ++= Seq(
   "io.cucumber" % "gherkin" % "5.2.0",
   "com.typesafe.play" %% "anorm" % "2.5.3",
   "mysql" % "mysql-connector-java" % "8.0.20",
-  "org.eclipse.jgit" % "org.eclipse.jgit" % "5.6.1.202002131546-r",
+  "org.eclipse.jgit" % "org.eclipse.jgit" % "5.9.0.202009080501-r",
   "io.swagger" %% "swagger-play2" % "1.7.1",
   "com.h2database" % "h2" % "1.4.199",
   "com.jsuereth" %% "scala-arm" % "2.0",
