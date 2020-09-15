@@ -159,10 +159,12 @@ describe('RouteService', () => {
     });
 
     it('relativeUrlToFullFrontEndUrl ', () => {
-
+        expect(service.relativeUrlToFullFrontEndUrl('Public/Features/OfferFeeds/Feature',{nodes: '_publisher_systems_services_shopping',project: 'shoppingAPI',branch: 'qa',directories: '_',page: 'Why'} ))
+            .toEqual("app/documentation/navigate/_publisher_systems_services_shopping/shoppingAPI/qa/_Public_Features_OfferFeeds/Feature");
+        expect(service.relativeUrlToFullFrontEndUrl('../../Guides/Feeds/UseCases',{nodes: '_publisher_systems_services_shopping',project: 'shoppingAPI',branch: 'qa',directories: '_Public_Features_OfferFeeds',page: 'Feature'} ))
+            .toEqual("app/documentation/navigate/_publisher_systems_services_shopping/shoppingAPI/qa/_Public_Guides_Feeds/UseCases");
         expect(service.relativeUrlToFullFrontEndUrl('../OfferSearch/Feature',{nodes: '_platform_publisher_systems_public',project: 'shoppingAPIPublic',branch: 'feature_PUB-4629-review-doc',directories: '_Features_OfferFeeds',page: 'Feature'} ))
             .toEqual("app/documentation/navigate/_platform_publisher_systems_public/shoppingAPIPublic/feature_PUB-4629-review-doc/_Features_OfferSearch/Feature");
-
         expect(service.relativeUrlToFullFrontEndUrl('https://thegardener.kelkoogroup.com',{nodes: 'Tools',project: 'theGardener',branch: 'master',directories: '_Guide_Write',page: 'Basics'} ))
             .toEqual("https://thegardener.kelkoogroup.com");
         expect(service.relativeUrlToFullFrontEndUrl('OpenApi',{nodes: 'Tools',project: 'theGardener',branch: 'master',directories: '_Guide_Write',page: 'Basics'} ))
@@ -198,7 +200,6 @@ describe('RouteService', () => {
         expect(service.directoryPathSimilar(navigationRoute, { nodes: ["publisher"], project: "ecs",  branch: "master",  directories: [] as  Array<string>,  page: "Meta"  })).toBeTrue();
     });
 
-
     it('pagePathSimilar ', () => {
         const navigationRoute = { nodes: ["publisher"], project: "ecs",  branch: "_",  directories: [] as  Array<string>,  page: "Meta"  };
 
@@ -218,4 +219,10 @@ describe('RouteService', () => {
         expect(service.urlToRelativePath('_features_foo_bar')).toEqual('/features/foo/bar');
         expect(service.urlToRelativePath('_features_foo.foo_bar')).toEqual('/features/foo_foo/bar');
     });
+
+    it('extractKeyword ', () => {
+        expect(service.extractKeyword({ nodes: ["publisher","services","shopping"], project: "shoppingAPI",  branch: "_",  directories: ["Public","Guides"],  page: "AuthenticationWithSignedUrlGuide"  }))
+               .toEqual('publisher services shopping shopping A P I Authentication With Signed Url Guide');
+    });
+
 });

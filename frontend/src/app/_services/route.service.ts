@@ -107,7 +107,8 @@ export class RouteService {
                 } else {
                     directoryNavigationForward = directoriesAndPageArray.join(EMPTY_CHAR);
                 }
-                targetDirectoriesPath += directoryNavigationForward;
+                targetDirectoriesPath += EMPTY_CHAR + directoryNavigationForward;
+                targetDirectoriesPath = targetDirectoriesPath.replace('__','_')
             }
 
 
@@ -125,6 +126,7 @@ export class RouteService {
             } else {
                 const subDirectories = subDirectoriesAndPage.slice(0, subDirectoriesAndPage.length - 1);
                 targetDirectoriesPath = navigationParams.directories + EMPTY_CHAR + subDirectories.join(EMPTY_CHAR);
+                targetDirectoriesPath = targetDirectoriesPath.replace('__','_')
             }
             return `${NAVIGATE_PATH}${navigationParams.nodes}/${navigationParams.project}/${navigationParams.branch}/${targetDirectoriesPath}/${page}`;
         }
@@ -327,5 +329,10 @@ export class RouteService {
             directories = EMPTY_CHAR
         }
         return hierarchyFrontEndPath + '/' + navigationRoute.project + '/' + navigationRoute.branch + '/' + directories + '/' + navigationRoute.page;
+    }
+
+    extractKeyword(targetedRoute: NavigationRoute) {
+        const join = targetedRoute.nodes.join(" ")+ " " + targetedRoute.project+ " " + targetedRoute.page;
+        return join.replace(/([a-zA-Z])(?=[A-Z])/g, '$1 ');
     }
 }
