@@ -8,10 +8,13 @@
 }
 ```
 
-### [2020-09][1.4.0] 
+### [2020-09][1.4.2] 
 
 The main features is:
 - [0655 - Search](https://github.com/KelkooGroup/theGardener/issues/655) 
+
+The improvements are:
+- [0764 - Redirect broken link to search result](https://github.com/KelkooGroup/theGardener/issues/764) 
 
 ### [2020-07][1.3.2] 
  
