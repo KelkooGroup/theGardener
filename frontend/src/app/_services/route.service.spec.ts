@@ -200,7 +200,6 @@ describe('RouteService', () => {
         expect(service.directoryPathSimilar(navigationRoute, { nodes: ["publisher"], project: "ecs",  branch: "master",  directories: [] as  Array<string>,  page: "Meta"  })).toBeTrue();
     });
 
-
     it('pagePathSimilar ', () => {
         const navigationRoute = { nodes: ["publisher"], project: "ecs",  branch: "_",  directories: [] as  Array<string>,  page: "Meta"  };
 
@@ -220,4 +219,10 @@ describe('RouteService', () => {
         expect(service.urlToRelativePath('_features_foo_bar')).toEqual('/features/foo/bar');
         expect(service.urlToRelativePath('_features_foo.foo_bar')).toEqual('/features/foo_foo/bar');
     });
+
+    it('extractKeyword ', () => {
+        expect(service.extractKeyword({ nodes: ["publisher","services","shopping"], project: "shoppingAPI",  branch: "_",  directories: ["Public","Guides"],  page: "AuthenticationWithSignedUrlGuide"  }))
+               .toEqual('publisher services shopping shopping A P I Authentication With Signed Url Guide');
+    });
+
 });

@@ -330,4 +330,9 @@ export class RouteService {
         }
         return hierarchyFrontEndPath + '/' + navigationRoute.project + '/' + navigationRoute.branch + '/' + directories + '/' + navigationRoute.page;
     }
+
+    extractKeyword(targetedRoute: NavigationRoute) {
+        const join = targetedRoute.nodes.join(" ")+ " " + targetedRoute.project+ " " + targetedRoute.page;
+        return join.replace(/([a-zA-Z])(?=[A-Z])/g, '$1 ');
+    }
 }
