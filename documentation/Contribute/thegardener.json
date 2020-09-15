@@ -6,8 +6,7 @@
     "pages": [
       "Overview",
       "Develop",
-      "BuildDockerImage",
-      "SearchDevelop"
+      "BuildDockerImage"
     ],
     "children": [
     ]
