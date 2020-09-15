@@ -12,8 +12,8 @@ import {
   PagePart,
   ScenarioPart
 } from '../../_models/page';
-import {NotificationService} from '../../_services/notification.service';
-import {RouteService} from "../../_services/route.service";
+import {RouteService, SEARCH_PATH} from "../../_services/route.service";
+import {NavigationRoute} from "../../_models/route";
 
 
 @Component({
@@ -28,11 +28,11 @@ export class PageContentComponent implements OnInit, OnDestroy, AfterViewChecked
   private routerSubscription: Subscription;
   private fragment: string;
   private canScroll: boolean = true;
+  private targetedRoute: NavigationRoute;
 
   constructor(private activatedRoute: ActivatedRoute,
               private pageService: PageService,
               private routeService: RouteService,
-              private notificationService: NotificationService,
               private router: Router,
               private ngZone: NgZone) {
   }
@@ -62,16 +62,17 @@ export class PageContentComponent implements OnInit, OnDestroy, AfterViewChecked
         return params;
       }),
       switchMap(params => {
-        const navigationRoute = this.routeService.navigationParamsToNavigationRoute(params);
-        if ( navigationRoute.page == undefined ){
+        this.targetedRoute = this.routeService.navigationParamsToNavigationRoute(params);
+        if ( this.targetedRoute.page == undefined ){
           return of<Page>();
         }else{
-          const backEndPath = this.routeService.navigationRouteToBackEndPath(navigationRoute);
+          const backEndPath = this.routeService.navigationRouteToBackEndPath(this.targetedRoute);
           return this.pageService.getPage(backEndPath.pathFromProject);
         }
       }),
       catchError(err => {
-        this.notificationService.showError(`Error while loading page`, err);
+        const keyword =   this.routeService.extractKeyword(this.targetedRoute);
+        this.router.navigateByUrl(SEARCH_PATH + `?keyword=${keyword.trim()}`);
         return of<Page>();
       })
     ).subscribe(page => {
