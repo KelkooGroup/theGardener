@@ -43,7 +43,7 @@
     "rxjs-compat": "6.5.5",
     "swagger-ui-dist": "3.25.5",
     "ts-option": "2.1.0",
-    "tslib": "1.10.0",
+    "tslib": "1.14.1",
     "zone.js": "0.10.2"
   },
   "devDependencies": {
