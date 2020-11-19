@@ -25,7 +25,7 @@
     "@angular/platform-browser-dynamic": "9.1.0",
     "@angular/platform-server": "9.1.0",
     "@angular/router": "9.1.0",
-    "@types/lodash": "4.14.161",
+    "@types/lodash": "4.14.165",
     "angular-super-validator": "2.0.0",
     "core-js": "3.6.5",
     "cucumber-pretty": "1.5.2",
