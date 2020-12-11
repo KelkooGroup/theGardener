@@ -1,9 +1,12 @@
-<mat-table class="book-table" [dataSource]="tableRows">
-  <ng-container [matColumnDef]="header" *ngFor="let header of tableHeader; index as index">
-    <mat-header-cell class="book-header-cell" *matHeaderCellDef> {{ header }}</mat-header-cell>
-    <mat-cell class="book-cell" mat-cell *matCellDef="let row"> {{ row[index] }}</mat-cell>
-  </ng-container>
-
-  <mat-header-row class="book-header-row" *matHeaderRowDef="tableHeader"></mat-header-row>
-  <mat-row class="book-row" *matRowDef="let row; columns: tableHeader"></mat-row>
-</mat-table>
+<table>
+    <thead>
+    <tr>
+        <th *ngFor="let header of tableHeader; index as index">{{ header }}</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let row of tableRows; index as index">
+        <td *ngFor="let header of tableHeader; index as indexHeader">{{ row[indexHeader] }}</td>
+    </tr>
+    </tbody>
+</table>
