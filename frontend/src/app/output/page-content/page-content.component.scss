@@ -21,7 +21,9 @@
 
 ::ng-deep table {
   border-collapse: collapse;
-  width: 100%;
+  min-width: 40%;
+  width: unset;
+  table-layout: auto;
   box-shadow: 2px 0 8px 1px rgba(0, 0, 0, .12);
 }
 
