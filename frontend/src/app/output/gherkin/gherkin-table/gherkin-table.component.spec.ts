@@ -2,6 +2,14 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {GherkinTableComponent} from './gherkin-table.component';
 import {MatTableModule} from '@angular/material';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {MarkdownModule} from "ngx-markdown";
+import {HttpClientTestingModule} from "@angular/common/http/testing";
+import {NgxJsonViewerModule} from "ngx-json-viewer";
+import {RouterTestingModule} from "@angular/router/testing";
+import {SafePipe} from "../../../safe.pipe";
+import {InternalLinkPipe} from "../../../internal-link.pipe";
+import {AnchorPipe} from "../../../anchor.pipe";
+import {RemoveHtmlSanitizerPipe} from "../../../removehtmlsanitizer.pipe";
 
 describe('GherkinTableComponent', () => {
   let component: GherkinTableComponent;
@@ -12,9 +20,17 @@ describe('GherkinTableComponent', () => {
     TestBed.configureTestingModule({
       declarations: [
         GherkinTableComponent,
+        SafePipe,
+        InternalLinkPipe,
+        AnchorPipe,
+        RemoveHtmlSanitizerPipe,
       ], imports: [
         MatTableModule,
+        HttpClientTestingModule,
         NoopAnimationsModule,
+        MarkdownModule.forRoot(),
+        NgxJsonViewerModule,
+        RouterTestingModule,
       ]
     })
       .compileComponents();
@@ -66,20 +82,20 @@ class Page {
   constructor(private fixture: ComponentFixture<GherkinTableComponent>) {}
 
   get table(): HTMLElement {
-    return  this.fixture.nativeElement.querySelector('.mat-table');
+    return  this.fixture.nativeElement.querySelector('.gherkinTable');
   }
 
   get tableHeader(): Array<string> {
     const res: Array<string> = [];
     this.fixture.nativeElement
-      .querySelectorAll('.mat-header-cell')
+      .querySelectorAll('.gherkinCellHeaderTable')
       .forEach((h: HTMLElement) => res.push(h.textContent.trim()));
     return res;
   }
 
   get tableRows(): Array<HTMLElement> {
     return this.fixture.nativeElement
-      .querySelectorAll('.mat-row');
+      .querySelectorAll('.gherkinRowTable');
   }
 
   getTableRow(index: number): Array<string> {
@@ -87,7 +103,7 @@ class Page {
     expect(rows.length > index);
     const res: Array<string> = [];
     rows[index]
-      .querySelectorAll('.mat-cell')
+      .querySelectorAll('.gherkinCellTable')
       .forEach(element => res.push(element.textContent.trim()));
     return res;
   }

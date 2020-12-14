@@ -8,6 +8,13 @@ import {NgxJsonViewerModule} from 'ngx-json-viewer';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {GherkinStep} from '../../../_models/gherkin';
 import {By} from '@angular/platform-browser';
+import {SafePipe} from "../../../safe.pipe";
+import {InternalLinkPipe} from "../../../internal-link.pipe";
+import {AnchorPipe} from "../../../anchor.pipe";
+import {RemoveHtmlSanitizerPipe} from "../../../removehtmlsanitizer.pipe";
+import {MarkdownModule} from "ngx-markdown";
+import {HttpClientTestingModule} from "@angular/common/http/testing";
+import {RouterTestingModule} from "@angular/router/testing";
 
 
 describe('GherkinStepComponent', () => {
@@ -21,12 +28,19 @@ describe('GherkinStepComponent', () => {
         GherkinStepComponent,
         GherkinTableComponent,
         GherkinLongTextComponent,
+        SafePipe,
+        InternalLinkPipe,
+        AnchorPipe,
+        RemoveHtmlSanitizerPipe,
       ], imports: [
         MatExpansionModule,
         MatTableModule,
         MatTabsModule,
         NgxJsonViewerModule,
         NoopAnimationsModule,
+        MarkdownModule.forRoot(),
+        HttpClientTestingModule,
+        RouterTestingModule,
       ]
     })
       .compileComponents();
