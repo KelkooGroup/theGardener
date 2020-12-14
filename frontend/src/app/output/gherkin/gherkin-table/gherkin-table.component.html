@@ -6,7 +6,9 @@
     </thead>
     <tbody>
     <tr *ngFor="let row of tableRows; index as index">
-        <td *ngFor="let header of tableHeader; index as indexHeader">{{ row[indexHeader] }}</td>
+        <td *ngFor="let header of tableHeader; index as indexHeader" [innerHTML]="row[indexHeader] | markdown | internalLink | anchor | removehtmlsanitizer " >
+        </td>
+
     </tr>
     </tbody>
 </table>
