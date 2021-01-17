@@ -88,7 +88,7 @@ libraryDependencies ++= Seq(
   "org.julienrf" %% "play-json-derived-codecs" % "6.0.0",
   "io.cucumber" % "gherkin" % "5.2.0",
   "com.typesafe.play" %% "anorm" % "2.5.3",
-  "mysql" % "mysql-connector-java" % "8.0.20",
+  "mysql" % "mysql-connector-java" % "8.0.23",
   "org.eclipse.jgit" % "org.eclipse.jgit" % "5.6.1.202002131546-r",
   "io.swagger" %% "swagger-play2" % "1.7.1",
   "com.h2database" % "h2" % "1.4.199",
