@@ -62,13 +62,13 @@ scalacOptions ++= Seq(
 javaOptions += "-Dscala.control.noTraceSuppression=true"
 
 // add directory for test configuration files
-unmanagedClasspath in Test += baseDirectory.value / "local-conf"
-unmanagedClasspath in Runtime += baseDirectory.value / "local-conf"
+Test / unmanagedClasspath += baseDirectory.value / "local-conf"
+Runtime / unmanagedClasspath+= baseDirectory.value / "local-conf"
 
 //*** dist packaging
 // do not generage API documentation when using dist task
-sources in(Compile, doc) := Seq.empty
-publishArtifact in(Compile, packageDoc) := false
+Compile / doc / sources := Seq.empty
+Compile / packageDoc / publishArtifact := false
 
 
 //Removing the top level directory
@@ -107,13 +107,12 @@ libraryDependencies ++= Seq(
   "com.github.ghik" % "silencer-lib" % silencerVersion % Provided cross CrossVersion.full
 )
 
-scapegoatVersion in ThisBuild := "1.3.8"
-scapegoatMaxErrors := 10000
+ThisBuild / scapegoatVersion := "1.3.8"
 scapegoatDisabledInspections := Seq("FinalModifierOnCaseClass", "PreferSeqEmpty", "PreferSetEmpty", "CatchException")
 scapegoatIgnoredFiles := Seq(".*/*Routes.scala")
 scalacOptions in Scapegoat += "-P:scapegoat:overrideLevels:TraversableHead=Warning:OptionGet=Warning"
 
-evictionWarningOptions in update := EvictionWarningOptions.empty
+ThisBuild / evictionErrorLevel := Level.Info
 
 routesGenerator := InjectedRoutesGenerator
 
