@@ -9,6 +9,6 @@ addSbtPlugin("com.sksamuel.scapegoat" %% "sbt-scapegoat" % "1.1.0")
 addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.9.2")
 addSbtPlugin("org.jmotor.sbt" % "sbt-dependency-updates" % "1.2.2")
 
-addSbtPlugin("se.marcuslonnberg" % "sbt-docker" % "1.5.0")
+addSbtPlugin("se.marcuslonnberg" % "sbt-docker" % "1.8.2")
 
-evictionWarningOptions in update := EvictionWarningOptions.empty
+ThisBuild / evictionErrorLevel := Level.Info
