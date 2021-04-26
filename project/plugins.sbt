@@ -11,6 +11,4 @@ addSbtPlugin("org.jmotor.sbt" % "sbt-dependency-updates" % "1.2.2")
 
 addSbtPlugin("se.marcuslonnberg" % "sbt-docker" % "1.5.0")
 
-addSbtPlugin("com.kelkoo.common.sbt" % "sbt-angular-cli" % "0.1.6")
-
 evictionWarningOptions in update := EvictionWarningOptions.empty

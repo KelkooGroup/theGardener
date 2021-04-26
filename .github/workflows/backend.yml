@@ -48,7 +48,13 @@ jobs:
       uses: actions/cache@v1
       with:
         path: /home/runner/.ivy2
-        key: ${{ runner.os }}-sbt-ivy-cache-${{ hashFiles('**/build.sbt')}}-${{ hashFiles('**/project/plugins.sbt')}}
+        key: ${{ runner.os }}-ivy-cache-${{ hashFiles('**/build.sbt')}}-${{ hashFiles('**/project/plugins.sbt')}}
+
+    - name: Coursier build cache
+      uses: actions/cache@v1
+      with:
+        path: /home/runner/.cache/coursier/v1
+        key: ${{ runner.os }}-coursier-cache-${{ hashFiles('**/build.sbt')}}-${{ hashFiles('**/project/plugins.sbt')}}
 
     - name: Run tests
       run: sbt clean coverage test coverageReport scalastyle scapegoat
