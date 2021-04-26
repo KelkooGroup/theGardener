@@ -326,12 +326,52 @@ See [the current page](https://github.com/KelkooGroup/theGardener/blob/master/do
             "description": "",
             "scenarios": [
               {
+                "keyword": "Scenario",
+                "name": "providing several book suggestions",
+                "abstractionLevel": "level_0_high_level",
+                "id": 1,
+                "workflowStep": "draft",
+                "description": "",
+                "tags": [
+                  "draft",
+                  "level_0_high_level",
+                  "nominal_case"
+                ],
+                "caseType": "nominal_case",
+                "steps": [
+                  {
+                    "id": 0,
+                    "keyword": "Given",
+                    "text": "a user",
+                    "argument": []
+                  },
+                  {
+                    "id": 1,
+                    "keyword": "When",
+                    "text": "we ask for suggestions",
+                    "argument": []
+                  },
+                  {
+                    "id": 2,
+                    "keyword": "Then",
+                    "text": "the suggestions are popular and available books adapted to the age of the user",
+                    "argument": []
+                  }
+                ]
+              },
+              {
+                "keyword": "Scenario",
                 "name": "suggestions of popular and available books adapted to the age of the user",
+                "abstractionLevel": "level_1_specification",
+                "id": 3,
                 "workflowStep": "valid",
                 "description": "",
-                "id": 3,
-                "keyword": "Scenario",
-                "abstractionLevel": "level_1_specification",
+                "tags": [
+                  "level_1_specification",
+                  "nominal_case",
+                  "valid"
+                ],
+                "caseType": "nominal_case",
                 "steps": [
                   {
                     "id": 0,
@@ -380,47 +420,7 @@ See [the current page](https://github.com/KelkooGroup/theGardener/blob/master/do
                     "text": "the suggestions are popular and available books adapted to the age of the user",
                     "argument": []
                   }
-                ],
-                "tags": [
-                  "level_1_specification",
-                  "nominal_case",
-                  "valid"
-                ],
-                "caseType": "nominal_case"
-              },
-              {
-                "name": "providing several book suggestions",
-                "workflowStep": "draft",
-                "description": "",
-                "id": 1,
-                "keyword": "Scenario",
-                "abstractionLevel": "level_0_high_level",
-                "steps": [
-                  {
-                    "id": 0,
-                    "keyword": "Given",
-                    "text": "a user",
-                    "argument": []
-                  },
-                  {
-                    "id": 1,
-                    "keyword": "When",
-                    "text": "we ask for suggestions",
-                    "argument": []
-                  },
-                  {
-                    "id": 2,
-                    "keyword": "Then",
-                    "text": "the suggestions are popular and available books adapted to the age of the user",
-                    "argument": []
-                  }
-                ],
-                "tags": [
-                  "draft",
-                  "level_0_high_level",
-                  "nominal_case"
-                ],
-                "caseType": "nominal_case"
+                ]
               }
             ],
             "comments": []

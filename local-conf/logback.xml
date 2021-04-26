@@ -35,12 +35,12 @@
         <appender-ref ref="STDOUT" />
     </appender>
 
-    <logger name="play" level="INFO" />
-    <logger name="controllers" level="INFO" />
-    <logger name="filters" level="DEBUG" />
-    <logger name="models" level="DEBUG" />
-    <logger name="repositories" level="DEBUG" />
-    <logger name="services" level="DEBUG" />
+    <logger name="play" level="ERROR" />
+    <logger name="controllers" level="ERROR" />
+    <logger name="filters" level="ERROR" />
+    <logger name="models" level="ERROR" />
+    <logger name="repositories" level="ERROR" />
+    <logger name="services" level="ERROR" />
     <logger name="utils" level="DEBUG" />
     <logger name="accesslog" level="INFO" additivity="false">
         <appender-ref ref="ACCESS_LOG_FILE"/>
