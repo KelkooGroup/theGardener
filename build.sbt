@@ -2,7 +2,7 @@ name := "the_gardener"
 maintainer := "florian.fauvarque@gmail.com"
 
 val jdkVersion = "1.8"
-scalaVersion := "2.12.8"
+scalaVersion := "2.12.13"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
