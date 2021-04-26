@@ -110,7 +110,7 @@ libraryDependencies ++= Seq(
 ThisBuild / scapegoatVersion := "1.3.8"
 scapegoatDisabledInspections := Seq("FinalModifierOnCaseClass", "PreferSeqEmpty", "PreferSetEmpty", "CatchException")
 scapegoatIgnoredFiles := Seq(".*/*Routes.scala")
-scalacOptions in Scapegoat += "-P:scapegoat:overrideLevels:TraversableHead=Warning:OptionGet=Warning"
+Scapegoat / scalacOptions += "-P:scapegoat:overrideLevels:TraversableHead=Warning:OptionGet=Warning"
 
 ThisBuild / evictionErrorLevel := Level.Info
 
@@ -120,7 +120,7 @@ routesGenerator := InjectedRoutesGenerator
 enablePlugins(sbtdocker.DockerPlugin, JavaAppPackaging)
 
 // Dockerfile definition
-dockerfile in docker := {
+docker / dockerfile := {
   val appDir: File = stage.value
   val defaultConfFile: File = new File("./docker/application.conf")
   val defaultLogBackFile: File = new File("./local-conf/logback.xml")
@@ -144,7 +144,7 @@ dockerfile in docker := {
 // Images definitions to build and push
 val dockerOrganization = "kelkoogroup"
 val dockerImage = "thegardener"
-imageNames in docker := Seq(
+docker / imageNames := Seq(
   ImageName(s"$dockerOrganization/$dockerImage:latest"),
   ImageName(s"$dockerOrganization/$dockerImage:${version.value}")
 )
