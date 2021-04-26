@@ -68,205 +68,205 @@ Feature: As a user Tim, I want some book suggestions so that I can do some disco
   @level_2_technical_details @nominal_case @valid
   Scenario: generate a documentation page with all scenarios of a feature
     Given we have the following markdown for the page "suggestionsWS>master>/context"
-"""
-**Feature**: Provide book suggestions
+    """
+    **Feature**: Provide book suggestions
 
 
-```thegardener
-    {
-      "scenarios" :
-         {
-            "feature": "/provide_book_suggestions.feature"
-         }
-    }
-```
+    ```thegardener
+        {
+          "scenarios" :
+             {
+                "feature": "/provide_book_suggestions.feature"
+             }
+        }
+    ```
 
-**Footer**
+    **Footer**
 
-"""
+    """
     When I perform a "GET" on following URL "/api/pages?path=suggestionsWS>master>/context"
     Then I get the following json response body
-"""
-[
-  {
-    "path": "suggestionsWS>master>/context",
-    "relativePath": "/context",
-    "name": "context",
-    "label": "The context",
-    "description": "Why providing suggestions",
-    "order": 0,
-    "content": [
+    """
+    [
       {
-        "type": "markdown",
-        "data": {
-          "markdown": "**Feature**: Provide book suggestions\n\n"
-        }
-      },
-      {
-        "type": "scenarios",
-        "data": {
-          "scenarios": {
-            "id": 1,
-            "branchId": 1,
-            "path": "test/features/provide_book_suggestions.feature",
-            "tags": [],
-            "language": "en",
-            "keyword": "Feature",
-            "name": "As a user Tim, I want some book suggestions so that I can do some discovery",
-            "description": "",
-            "scenarios": [
-              {
-                "name": "suggestions of popular and available books adapted to the age of the user",
-                "workflowStep": "valid",
+        "path": "suggestionsWS>master>/context",
+        "relativePath": "/context",
+        "name": "context",
+        "label": "The context",
+        "description": "Why providing suggestions",
+        "order": 0,
+        "content": [
+          {
+            "type": "markdown",
+            "data": {
+              "markdown": "**Feature**: Provide book suggestions\n\n"
+            }
+          },
+          {
+            "type": "scenarios",
+            "data": {
+              "scenarios": {
+                "id": 1,
+                "branchId": 1,
+                "path": "test/features/provide_book_suggestions.feature",
+                "tags": [],
+                "language": "en",
+                "keyword": "Feature",
+                "name": "As a user Tim, I want some book suggestions so that I can do some discovery",
                 "description": "",
-                "id": 3,
-                "keyword": "Scenario",
-                "abstractionLevel": "level_1_specification",
-                "steps": [
+                "scenarios": [
                   {
-                    "id": 0,
-                    "keyword": "Given",
-                    "text": "the user \"Tim\"",
-                    "argument": []
-                  },
-                  {
+                    "keyword": "Scenario",
+                    "name": "providing several book suggestions",
+                    "abstractionLevel": "level_0_high_level",
                     "id": 1,
-                    "keyword": "And",
-                    "text": "he is \"4\" years old",
-                    "argument": []
-                  },
-                  {
-                    "id": 2,
-                    "keyword": "And",
-                    "text": "the popular categories for this age are",
-                    "argument": [
-                      [
-                        "categoryId",
-                        "categoryName"
-                      ],
-                      [
-                        "cat1",
-                        "Walt Disney"
-                      ],
-                      [
-                        "cat2",
-                        "Picture books"
-                      ],
-                      [
-                        "cat3",
-                        "Bedtime stories"
-                      ]
+                    "workflowStep": "draft",
+                    "description": "",
+                    "tags": [
+                      "draft",
+                      "level_0_high_level",
+                      "nominal_case"
+                    ],
+                    "caseType": "nominal_case",
+                    "steps": [
+                      {
+                        "id": 0,
+                        "keyword": "Given",
+                        "text": "a user",
+                        "argument": []
+                      },
+                      {
+                        "id": 1,
+                        "keyword": "When",
+                        "text": "we ask for suggestions",
+                        "argument": []
+                      },
+                      {
+                        "id": 2,
+                        "keyword": "Then",
+                        "text": "the suggestions are popular and available books adapted to the age of the user",
+                        "argument": []
+                      }
                     ]
                   },
                   {
-                    "id": 3,
-                    "keyword": "When",
-                    "text": "we ask for \"3\" suggestions from \"2\" different categories",
-                    "argument": []
-                  },
-                  {
-                    "id": 4,
-                    "keyword": "Then",
-                    "text": "the suggestions are popular and available books adapted to the age of the user",
-                    "argument": []
-                  }
-                ],
-                "tags": [
-                  "level_1_specification",
-                  "nominal_case",
-                  "valid"
-                ],
-                "caseType": "nominal_case"
-              },
-              {
-                "name": "providing several book suggestions",
-                "workflowStep": "draft",
-                "description": "",
-                "id": 1,
-                "keyword": "Scenario",
-                "abstractionLevel": "level_0_high_level",
-                "steps": [
-                  {
-                    "id": 0,
-                    "keyword": "Given",
-                    "text": "a user",
-                    "argument": []
-                  },
-                  {
-                    "id": 1,
-                    "keyword": "When",
-                    "text": "we ask for suggestions",
-                    "argument": []
-                  },
-                  {
+                    "keyword": "Scenario",
+                    "name": "one service on which the suggestion system depends on is down",
+                    "abstractionLevel": "level_1_specification",
                     "id": 2,
-                    "keyword": "Then",
-                    "text": "the suggestions are popular and available books adapted to the age of the user",
-                    "argument": []
-                  }
-                ],
-                "tags": [
-                  "draft",
-                  "level_0_high_level",
-                  "nominal_case"
-                ],
-                "caseType": "nominal_case"
-              },
-              {
-                "name": "one service on which the suggestion system depends on is down",
-                "workflowStep": "valid",
-                "description": "",
-                "id": 2,
-                "keyword": "Scenario",
-                "abstractionLevel": "level_1_specification",
-                "steps": [
-                  {
-                    "id": 0,
-                    "keyword": "Given",
-                    "text": "the user \"Tim\"",
-                    "argument": []
+                    "workflowStep": "valid",
+                    "description": "",
+                    "tags": [
+                      "error_case",
+                      "level_1_specification",
+                      "valid"
+                    ],
+                    "caseType": "error_case",
+                    "steps": [
+                      {
+                        "id": 0,
+                        "keyword": "Given",
+                        "text": "the user \"Tim\"",
+                        "argument": []
+                      },
+                      {
+                        "id": 1,
+                        "keyword": "And",
+                        "text": "impossible to get information on the user",
+                        "argument": []
+                      },
+                      {
+                        "id": 2,
+                        "keyword": "When",
+                        "text": "we ask for \"3\" suggestions from \"2\" different categories",
+                        "argument": []
+                      },
+                      {
+                        "id": 3,
+                        "keyword": "Then",
+                        "text": "the system is temporary not available",
+                        "argument": []
+                      }
+                    ]
                   },
                   {
-                    "id": 1,
-                    "keyword": "And",
-                    "text": "impossible to get information on the user",
-                    "argument": []
-                  },
-                  {
-                    "id": 2,
-                    "keyword": "When",
-                    "text": "we ask for \"3\" suggestions from \"2\" different categories",
-                    "argument": []
-                  },
-                  {
+                    "keyword": "Scenario",
+                    "name": "suggestions of popular and available books adapted to the age of the user",
+                    "abstractionLevel": "level_1_specification",
                     "id": 3,
-                    "keyword": "Then",
-                    "text": "the system is temporary not available",
-                    "argument": []
+                    "workflowStep": "valid",
+                    "description": "",
+                    "tags": [
+                      "level_1_specification",
+                      "nominal_case",
+                      "valid"
+                    ],
+                    "caseType": "nominal_case",
+                    "steps": [
+                      {
+                        "id": 0,
+                        "keyword": "Given",
+                        "text": "the user \"Tim\"",
+                        "argument": []
+                      },
+                      {
+                        "id": 1,
+                        "keyword": "And",
+                        "text": "he is \"4\" years old",
+                        "argument": []
+                      },
+                      {
+                        "id": 2,
+                        "keyword": "And",
+                        "text": "the popular categories for this age are",
+                        "argument": [
+                          [
+                            "categoryId",
+                            "categoryName"
+                          ],
+                          [
+                            "cat1",
+                            "Walt Disney"
+                          ],
+                          [
+                            "cat2",
+                            "Picture books"
+                          ],
+                          [
+                            "cat3",
+                            "Bedtime stories"
+                          ]
+                        ]
+                      },
+                      {
+                        "id": 3,
+                        "keyword": "When",
+                        "text": "we ask for \"3\" suggestions from \"2\" different categories",
+                        "argument": []
+                      },
+                      {
+                        "id": 4,
+                        "keyword": "Then",
+                        "text": "the suggestions are popular and available books adapted to the age of the user",
+                        "argument": []
+                      }
+                    ]
                   }
                 ],
-                "tags": [
-                  "error_case",
-                  "level_1_specification",
-                  "valid"
-                ],
-                "caseType": "error_case"
+                "comments": []
               }
-            ],
-            "comments": []
+            }
+          },
+          {
+            "type": "markdown",
+            "data": {
+              "markdown": "\n**Footer**\n"
+            }
           }
-        }
-      },
-      {
-        "type": "markdown",
-        "data": {
-          "markdown": "\n**Footer**\n"
-        }
+        ]
       }
     ]
-  }
-]
-"""
+    """
 
   @level_2_technical_details @nominal_case @valid
   Scenario: generate a documentation page with scenarios filtered on tags

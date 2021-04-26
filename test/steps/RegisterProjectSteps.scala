@@ -15,7 +15,7 @@ import play.api.test._
 import resource._
 import utils._
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 
 class RegisterProjectSteps extends ScalaDsl with EN with MockitoSugar {
@@ -80,7 +80,7 @@ class RegisterProjectSteps extends ScalaDsl with EN with MockitoSugar {
   }
 
   Then("""^the projects settings are now$""") { projects: util.List[ProjectTableRow] =>
-    checkProjectsInDb(projects.asScala.map(_.toProject().copy(hierarchy = None, branches = None)))
+    checkProjectsInDb(projects.asScala.toSeq.map(_.toProject().copy(hierarchy = None, branches = None)))
   }
 
   Then("""the projects settings are now empty""") { () =>

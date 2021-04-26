@@ -24,7 +24,7 @@ class FeatureRepository @Inject()(db: Database, tagRepository: TagRepository, sc
     comments <- str("comments")
   } yield Feature(id, branchId, path.fixPathSeparator, backgroundAsJson.map(Json.parse(_).as[Background]),
     tagRepository.findAllByFeatureId(id), language, keyword, name, description,
-    scenarioRepository.findAllByFeatureId(id), comments.split("\n").filterNot(_.isEmpty))
+    scenarioRepository.findAllByFeatureId(id), comments.split("\n").toSeq.filterNot(_.isEmpty))
 
   val parserFeaturePath = for {
     branchId <- long("branchId")

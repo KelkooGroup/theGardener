@@ -18,20 +18,20 @@ object DurationUtil {
 
     val sb = new scala.collection.mutable.StringBuilder()
 
-    if (megaannums > 0) sb.append(megaannums + " megaannums ")
-    if (millenniums > 0) sb.append(millenniums + " millenniums ")
-    if (centuries > 0) sb.append(centuries + " centuries ")
-    if (decades > 0) sb.append(decades + " decades ")
-    if (years > 0) sb.append(years + " years ")
-    if (months > 0) sb.append(months + " months ")
-    if (weeks > 0) sb.append(weeks + " weeks ")
-    if (days > 0) sb.append(days + " days ")
-    if (hours > 0) sb.append(hours + " hours ")
-    if (minutes > 0) sb.append(minutes + " minutes ")
-    if (seconds > 0) sb.append(seconds + " seconds ")
+    if (megaannums > 0) sb.append(s"$megaannums megaannums ")
+    if (millenniums > 0) sb.append(s"$millenniums millenniums ")
+    if (centuries > 0) sb.append(s"$centuries centuries ")
+    if (decades > 0) sb.append(s"$decades decades ")
+    if (years > 0) sb.append(s"$years years ")
+    if (months > 0) sb.append(s"$months months ")
+    if (weeks > 0) sb.append(s"$weeks weeks ")
+    if (days > 0) sb.append(s"$days days ")
+    if (hours > 0) sb.append(s"$hours hours ")
+    if (minutes > 0) sb.append(s"$minutes minutes ")
+    if (seconds > 0) sb.append(s"$seconds seconds ")
     if (minutes < 1 && hours < 1 && days < 1) {
       if (sb.nonEmpty) sb.append(" ")
-      sb.append(milliseconds + " milliseconds")
+      sb.append(s"$milliseconds milliseconds")
     }
     sb.toString().trim
   }

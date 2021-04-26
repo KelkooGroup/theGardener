@@ -1,10 +1,7 @@
 package models
 
-import com.github.ghik.silencer.silent
 import io.swagger.annotations.ApiModelProperty
 
-@silent("Interpolated")
-@silent("missing interpolator")
 case class HierarchyNode(
                           @ApiModelProperty(value = "id of the node, define the hierarchy by it's structure, should match the pattern (\\.[0-9]+)*\\.).", example = ".01.02.01.", required = true) id: String,
                           @ApiModelProperty(value = "name of the node used in the url", example = "tools", required = true) slugName: String,

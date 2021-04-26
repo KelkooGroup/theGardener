@@ -15,6 +15,7 @@ object CustomConfigSystemReader {
   }
 }
 
+//noinspection ScalaStyle
 class CustomConfigSystemReader(userGitConfig: File) extends SystemReader {
   val proxy = SystemReader.getInstance()
 

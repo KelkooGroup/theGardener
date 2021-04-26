@@ -3,7 +3,7 @@ package steps
 import io.cucumber.scala._
 import org.mockito.Mockito.{times, _}
 import org.scalatestplus.mockito._
-import services.{PageWithContent}
+import services.PageWithContent
 
 
 class SynchronizationSteps extends ScalaDsl with EN with MockitoSugar {
@@ -40,8 +40,8 @@ class SynchronizationSteps extends ScalaDsl with EN with MockitoSugar {
   Then("""^the cache store "([^"]*)" with the value$""") { (key: String, expectedValue: String) =>
 
     cache.get[PageWithContent](key) match {
-      case None => fail(s"${key} do not exists")
-      case Some(actualValue) => expectedValue mustEqual (actualValue.toString)
+      case None => fail(s"$key do not exists")
+      case Some(actualValue) => expectedValue mustEqual actualValue.toString
     }
 
   }

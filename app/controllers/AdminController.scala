@@ -26,10 +26,9 @@ class AdminController @Inject()(menuService: MenuService, projectService: Projec
   def refreshProjectFromDatabase(projectId: String): Action[AnyContent] = Action {
     logger.info(s"Starting refreshing project $projectId from the database")
     projectService.reloadFromDatabase(projectId) match {
-      case Some(branches) => {
+      case Some(branches) =>
         menuService.refreshCache()
         returnOkAndLogMessage(s"Branches refreshed from the database linked to project $projectId are", Some(branches))
-      }
       case None => returnNotFoundAndLogMessage(s"$projectId not found while refreshing from the disk")
     }
   }
@@ -50,10 +49,9 @@ class AdminController @Inject()(menuService: MenuService, projectService: Projec
   def refreshProjectFromDisk(projectId: String): Action[AnyContent] = Action {
     logger.info(s"Starting refreshing project $projectId from the disk")
     projectService.reloadFromDisk(projectId) match {
-      case Some(branches) => {
+      case Some(branches) =>
         menuService.refreshCache()
         returnOkAndLogMessage(s"Branches refreshed from the disk linked to project $projectId are", Some(branches))
-      }
       case None => returnNotFoundAndLogMessage(s"$projectId not found while refreshing from the disk")
     }
   }
@@ -109,12 +107,11 @@ class AdminController @Inject()(menuService: MenuService, projectService: Projec
     } else {
       logger.info(s"Starting refreshing project $projectId from the remote git repository")
       projectService.reloadFromRemote(projectId) match {
-        case Some(project) => {
+        case Some(project) =>
           project.map { branches =>
             menuService.refreshCache()
             returnOkAndLogMessage(s"Branches refreshed from the remote git repository linked to project $projectId are", Some(branches))
           }
-        }
         case None => Future.successful(returnNotFoundAndLogMessage(s"$projectId not found while refreshing from the remote git repository"))
       }
     }

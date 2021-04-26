@@ -57,7 +57,7 @@ jobs:
         key: ${{ runner.os }}-coursier-cache-${{ hashFiles('**/build.sbt')}}-${{ hashFiles('**/project/plugins.sbt')}}
 
     - name: Run tests
-      run: sbt clean coverage test coverageReport scalastyle scapegoat
+      run: sbt clean test scalastyle scapegoat
 
     - name: SonarCloud Scan
       uses: sonarsource/sonarcloud-github-action@master

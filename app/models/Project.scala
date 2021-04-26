@@ -1,13 +1,12 @@
 package models
 
-import com.github.ghik.silencer.silent
+import scala.annotation.nowarn
 import io.swagger.annotations.ApiModelProperty
 
 
 case class Variable(name: String, value: String)
 
-@silent("Interpolated")
-@silent("missing interpolator")
+@nowarn("msg=missing interpolator")
 case class Project(
                     @ApiModelProperty(value = "id of the project", example = "theGardener", required = true) id: String,
                     @ApiModelProperty(value = "name of the project", example = "theGardener", required = true) name: String,

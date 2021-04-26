@@ -11,7 +11,7 @@ import play.api.Logging
 import resource._
 import utils._
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 import scala.collection.mutable.ListBuffer
 import scala.concurrent._
 import scala.util.Try
@@ -67,7 +67,7 @@ class GitService @Inject()(implicit ec: ExecutionContext) extends Logging {
         val newTreeIter = new CanonicalTreeParser()
         newTreeIter.reset(reader, head)
 
-        val diffs = git.diff.setNewTree(newTreeIter).setOldTree(oldTreeIter).call().asScala
+        val diffs = git.diff.setNewTree(newTreeIter).setOldTree(oldTreeIter).call().asScala.toSeq
 
         val created = diffs.filter(diff => diff.getChangeType == ChangeType.ADD || diff.getChangeType == ChangeType.RENAME || diff.getChangeType == ChangeType.COPY).map(_.getNewPath)
         val updated = diffs.filter(_.getChangeType == ChangeType.MODIFY).map(_.getOldPath)

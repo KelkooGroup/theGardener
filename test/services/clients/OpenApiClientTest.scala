@@ -1,6 +1,6 @@
 package services.clients
 
-import com.github.ghik.silencer.silent
+import scala.annotation.nowarn
 import models.{Branch, Directory, OpenApiModel, OpenApiPath, OpenApiRow, Page, PageJoinProject, Project, Variable}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{MustMatchers, WordSpec}
@@ -16,8 +16,7 @@ import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 
-@silent("Interpolated")
-@silent("missing interpolator")
+@nowarn("msg=missing interpolator")
 class OpenApiClientTest extends WordSpec with MustMatchers with MockitoSugar with ScalaFutures {
 
   val openApiModuleBasic = OpenApiModelModule(Option("/api/docs/swagger.json"), Option("model"), Option("#/definitions/Project"), Option(1))

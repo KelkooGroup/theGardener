@@ -151,8 +151,3 @@ Feature: Provide some tools to operate the application when something is not wor
       | id | name    | label   | description | order | relativePath | path                          | markdown                                     | directoryId |
       | 2  | context | context | context     | 0     | /context     | suggestionsWS>master>/context | **Feature**: Provide book suggestions PUBLIC | 2           |
       | 3  | context | context | context     | 0     | /context     | suggestionsWS>master>/context | **Feature**: Provide book suggestions        | 3           |
-
-  @level_2_technical_details @nominal_case @valid @get_swagger.json
-  Scenario: get the swagger.json
-    When I perform a "GET" on following URL "/api/docs/swagger.json"
-    Then I get a response with status "200"

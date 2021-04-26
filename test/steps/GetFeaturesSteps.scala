@@ -17,7 +17,7 @@ import play.api.test._
 import resource._
 import utils._
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 import scala.concurrent._
 import scala.concurrent.duration._
 import scala.io.Source
@@ -98,11 +98,11 @@ class GetFeaturesSteps extends ScalaDsl with EN with MockitoSugar {
   }
 
   Given("""^we have those features in the database$""") { features: util.List[Feature] =>
-    featureRepository.saveAll(features.asScala.map(_.copy(background = None, tags = Seq(), language = None, scenarios = Seq(), comments = Seq())))
+    featureRepository.saveAll(features.asScala.toSeq.map(_.copy(background = None, tags = Seq(), language = None, scenarios = Seq(), comments = Seq())))
   }
 
   Given("""^we have those scenario for the feature "([^"]*)" in the database$""") { (featureId: Long, scenarios: util.List[Scenario]) =>
-    scenarioRepository.saveAll(featureId, scenarios.asScala.map(_.copy(tags = Seq(), steps = Seq())))
+    scenarioRepository.saveAll(featureId, scenarios.asScala.toSeq.map(_.copy(tags = Seq(), steps = Seq())))
   }
 
   Given("""^we have those stepsAsJSon for the scenario "([^"]*)" in the database$""") { (scenarioId: Long, stepsAsJson: String) =>
@@ -112,7 +112,7 @@ class GetFeaturesSteps extends ScalaDsl with EN with MockitoSugar {
   }
 
   Given("""^we have those tags for the scenario "([^"]*)" in the database$""") { (scenarioId: Long, tags: util.List[String]) =>
-    tagRepository.saveAllByScenarioId(scenarioId, tags.asScala)
+    tagRepository.saveAllByScenarioId(scenarioId, tags.asScala.toSeq)
   }
 
   When("""^the synchronization action is triggered for all projects$""") { () =>
@@ -130,25 +130,25 @@ class GetFeaturesSteps extends ScalaDsl with EN with MockitoSugar {
   }
 
   Then("""^we have now those branches in the database$""") { branches: util.List[Branch] =>
-    val expectedBranches = branches.asScala.map(b => Branch(b.id, b.name, b.isStable, b.projectId, List()))
+    val expectedBranches = branches.asScala.toSeq.map(b => Branch(b.id, b.name, b.isStable, b.projectId, List()))
     val actualBranches = branchRepository.findAll()
     actualBranches must contain theSameElementsAs expectedBranches
   }
 
   Then("""^we have now those features in the database$""") { features: util.List[Feature] =>
-    val expectedFeatures = features.asScala.toList.map(f => f.copy(path = f.path.fixPathSeparator, background = None, tags = Seq(), language = None, scenarios = Seq(), comments = Seq(), keyword = "Feature"))
+    val expectedFeatures = features.asScala.toSeq.map(f => f.copy(path = f.path.fixPathSeparator, background = None, tags = Seq(), language = None, scenarios = Seq(), comments = Seq(), keyword = "Feature"))
     val actualFeatures = featureRepository.findAll().map(_.copy(background = None, tags = Seq(), language = None, scenarios = Seq(), comments = Seq()))
     actualFeatures must contain theSameElementsAs expectedFeatures
   }
 
   Then("""^we have now those scenario in the database$""") { scenario: util.List[Scenario] =>
-    val expectedScenarios = scenario.asScala.toList.map(_.copy(tags = Seq(), steps = Seq()))
+    val expectedScenarios = scenario.asScala.toSeq.map(_.copy(tags = Seq(), steps = Seq()))
     val actualScenarios = scenarioRepository.findAll().map(_.asInstanceOf[Scenario].copy(tags = Seq(), steps = Seq()))
     actualScenarios must contain theSameElementsAs expectedScenarios
   }
 
   Then("""^we have now those scenario outline in the database$""") { scenario: util.List[ScenarioOutline] =>
-    val expectedScenarios = scenario.asScala.toList.map(_.copy(tags = Seq(), steps = Seq(), examples = Seq()))
+    val expectedScenarios = scenario.asScala.toSeq.map(_.copy(tags = Seq(), steps = Seq(), examples = Seq()))
     val actualScenarios = scenarioRepository.findAll().map(_.asInstanceOf[ScenarioOutline].copy(tags = Seq(), steps = Seq(), examples = Seq()))
     actualScenarios must contain theSameElementsAs expectedScenarios
   }
@@ -164,7 +164,7 @@ class GetFeaturesSteps extends ScalaDsl with EN with MockitoSugar {
   }
 
   Then("""^we have now those tags for the scenario "([^"]*)" in the database$""") { (scenarioId: Long, tags: util.List[String]) =>
-    val expectedTags = tags.asScala.toList
+    val expectedTags = tags.asScala.toSeq
     val actualTags = tagRepository.findAllByScenarioId(scenarioId)
     actualTags must contain theSameElementsAs expectedTags
   }

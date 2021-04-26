@@ -69,7 +69,7 @@ class IndexService {
   }
 
   private def exists(document: PageIndexDocument) = {
-    luceneSearchIndex.query().filter(new TermSearchTerm(Some(id), document.id)).search().results.length > 0
+    luceneSearchIndex.query().filter(new TermSearchTerm(Some(id), document.id)).search().results.nonEmpty
   }
 
   def query(keywords: String): SearchResult = {

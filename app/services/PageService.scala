@@ -2,7 +2,7 @@ package services
 
 import java.io.{File, FileInputStream}
 
-import com.github.ghik.silencer.silent
+import scala.annotation.nowarn
 import controllers.dto.{PageDTO, PageFragment, PageFragmentContent}
 import javax.inject._
 import models.{PageJoinProject, _}
@@ -117,8 +117,8 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
 
   val StartVar = "${"
   val EndVar = "}"
-  val SourceTemplateBranchToken = s"${StartVar}branch${EndVar}"
-  val SourceTemplatePathToken = s"${StartVar}path${EndVar}"
+  val SourceTemplateBranchToken = s"${StartVar}branch$EndVar"
+  val SourceTemplatePathToken = s"${StartVar}path$EndVar"
 
 
   def getLocalRepository(projectId: String, branch: String): String = s"$projectsRootDirectory$projectId/$branch/".fixPathSeparator
@@ -188,7 +188,7 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
 
   private def completePathWithBranchIfNeeded(path: String, stableBranch: String): String = {
     if (path.contains(">>")) {
-      path.replace(">>", s">${stableBranch}>")
+      path.replace(">>", s">$stableBranch>")
     } else {
       path
     }
@@ -209,8 +209,7 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
     }
   }
 
-  @silent("Interpolated")
-  @silent("missing interpolator")
+  @nowarn("msg=missing interpolator")
   private def getVariables(pageJoinProjectOpt: Option[PageJoinProject]): Option[Seq[Variable]] = {
     pageJoinProjectOpt.map { pageJoinProject =>
       val project = pageJoinProject.project
@@ -220,7 +219,6 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
     }
   }
 
-  @silent("missing interpolator")
   private def getSourceUrl(pageJoinProjectOpt: Option[PageJoinProject]): Option[String] = {
     for {
       pageJoinProject <- pageJoinProjectOpt

@@ -42,7 +42,7 @@ import steps.Injector._
 import utils.CustomConfigSystemReader.overrideSystemGitConfig
 import utils._
 import scala.concurrent.duration._
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 import scala.concurrent._
 import scala.io.Source
 import scala.reflect._
@@ -193,7 +193,7 @@ class CommonSteps extends ScalaDsl with EN with MockitoSugar with Logging with J
   Given("""^we have the following configuration$""") { configs: util.List[Configuration] =>
     stopServer()
 
-    val newConfig = configs.asScala.foldLeft(config)((acc: Config, conf: Configuration) => acc.withValue(conf.path, ConfigValueFactory.fromAnyRef(conf.value)))
+    val newConfig = configs.asScala.toSeq.foldLeft(config)((acc: Config, conf: Configuration) => acc.withValue(conf.path, ConfigValueFactory.fromAnyRef(conf.value)))
 
     val newApp = applicationBuilder.overrides(bind[Config].toInstance(newConfig)).build()
 
@@ -273,7 +273,7 @@ Scenario: providing several book suggestions
   }
 
   Given("""^we have the following projects$""") { projects: util.List[ProjectTableRow] =>
-    val projectsWithAbsoluteUrl = projects.asScala.map { project =>
+    val projectsWithAbsoluteUrl = projects.asScala.toSeq.map { project =>
       if (project.repositoryUrl.contains("target/")) project.copy(
         repositoryUrl = Paths.get(project.repositoryUrl).toUri.toString,
         featuresRootPath = if (project.featuresRootPath != null) project.featuresRootPath.fixPathSeparator else project.featuresRootPath,
@@ -288,19 +288,19 @@ Scenario: providing several book suggestions
   }
 
   Given("""^we have those branches in the database$""") { branches: util.List[Branch] =>
-    branchRepository.saveAll(branches.asScala)
+    branchRepository.saveAll(branches.asScala.toSeq)
   }
 
   Given("""^we have those directories in the database$""") { directories: util.List[Directory] =>
-    directoryRepository.saveAll(directories.asScala)
+    directoryRepository.saveAll(directories.asScala.toSeq)
   }
 
   Given("""^we have those pages in the database$""") { pages: util.List[PageRow] =>
-    pageRepository.saveAll(pages.asScala.map(p => Page(p.id, p.name, p.label, p.description, p.order, Option(p.markdown), p.relativePath, p.path, p.directoryId)))
+    pageRepository.saveAll(pages.asScala.toSeq.map(p => Page(p.id, p.name, p.label, p.description, p.order, Option(p.markdown), p.relativePath, p.path, p.directoryId)))
   }
 
   Given("""^we have the following document in the lucene index$""") { docs: util.List[LuceneDoc] =>
-    docs.asScala.map(doc =>
+    docs.asScala.toSeq.map(doc =>
       pageIndex.insertOrUpdateDocument(PageIndexDocument(doc.id, doc.hierarchy, doc.path, doc.breadcrumb, doc.project, doc.branch, doc.label, doc.description, doc.pageContent))
     )
   }
@@ -395,7 +395,7 @@ Scenario: providing several book suggestions
   }
 
   Then("""^the file system do not store now the file "([^"]*)"$""") { (file: String) =>
-    Files.exists(Paths.get(file.fixPathSeparator)) mustBe (false)
+    Files.exists(Paths.get(file.fixPathSeparator)) mustBe false
   }
 
   Then("""^the file system store now the files$""") { files: DataTable =>

@@ -1,4 +1,3 @@
-@ongoing
 Feature: Full text search pages
 
   Background:
@@ -238,7 +237,7 @@ Feature: Full text search pages
 }
 """
 
-  @level_2_technical_details @nominal_case @valid @ongoing
+  @level_2_technical_details @nominal_case @valid
   Scenario: get result of a search with pages only attached to the hierarchy by the node.directoryPath
     Given we have those directories in the database
       | id | name        | label         | description                        | order | relativePath  | path                               | branchId |

@@ -109,17 +109,15 @@ object MenuService {
 
     def internResolveShortcutsInMenuTree(menu: Menu): Unit = {
       menu.shortcut match {
-        case Some(shortcut) => {
+        case Some(shortcut) =>
           getById(shortcut) match {
-            case Some(shortcutTarget) => {
+            case Some(shortcutTarget) =>
               menu.projects = shortcutTarget.projects
               menu.children = shortcutTarget.children
               menu.directory = shortcutTarget.directory
-            }
             case _ =>
           }
           menu.shortcut = None
-        }
         case _ =>
       }
       menu.children.foreach(child => internResolveShortcutsInMenuTree(child))

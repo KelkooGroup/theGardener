@@ -163,9 +163,9 @@ class GherkinRepository @Inject()(db: Database) {
         val featureTags = mapFeatureTags.getOrElse(featureId, Set())
         Feature(featureId, featureRow.branchId, featureRow.featurePath,
           featureRow.featureBackgroundAsJson.map(Json.parse(_).as[Background]), featureTags.toSeq, featureRow.featureLanguage, featureRow.featureKeyword,
-          featureRow.featureName, featureRow.featureDescription, scenarios) :: features
+          featureRow.featureName, featureRow.featureDescription, scenarios.sortBy(_.id)) :: features
       }
-      Seq(BranchDocumentationDTO(branch, features))
+      Seq(BranchDocumentationDTO(branch, features.sortBy(_.id)))
 
     } else Seq()
 

@@ -29,7 +29,7 @@ class FeatureRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with In
     db.withConnection { implicit connection =>
       features.foreach { feature =>
         SQL"""INSERT INTO feature(branchId, path, backgroundAsJson, language, keyword, name, description, comments)
-          VALUES(${feature.branchId}, ${feature.path}, ${Json.toJson(feature.background).toString()}, ${feature.language.map(_.toString)}, ${feature.keyword},  ${feature.name}, ${feature.description}, ${feature.comments.mkString("\n")})"""
+          VALUES(${feature.branchId}, ${feature.path}, ${Json.toJson(feature.background).toString()}, ${feature.language.map(identity)}, ${feature.keyword},  ${feature.name}, ${feature.description}, ${feature.comments.mkString("\n")})"""
           .executeInsert()
         feature.tags.foreach { tag =>
           SQL"REPLACE INTO tag(name) VALUES ($tag)".executeUpdate()
