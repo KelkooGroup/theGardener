@@ -373,7 +373,7 @@ Scenario: providing several book suggestions
   Then("""^I get the following json response body$""") { expected: String =>
     contentType(response) mustBe Some(JSON)
     val actualJson = contentAsJson(response)
-    val expectedJson = Json.parse(expected.lines.map(l => if (separator == "\\" && (l.contains(""""path":""") || l.contains(""""features":"""))) l.replace("/", """\\""") else l).mkString("\n"))
+    val expectedJson = Json.parse(expected.linesIterator.map(l => if (separator == "\\" && (l.contains(""""path":""") || l.contains(""""features":"""))) l.replace("/", """\\""") else l).mkString("\n"))
 
     Files.write(Paths.get("test/actual.json".fixPathSeparator), Json.prettyPrint(actualJson).getBytes())
     Files.write(Paths.get("test/expected.json".fixPathSeparator), Json.prettyPrint(expectedJson).getBytes())
