@@ -5,9 +5,9 @@
 target
 logs
 public/dist/
-local-conf/kkg.sql
+src/
 .scannerwork/
-local-conf/application-dev.conf
+local-conf/application.dev.conf
 local-conf/application.pp.conf
 local-conf/application.local.conf
 local-data/
