@@ -4,7 +4,9 @@ maintainer := "florian.fauvarque@gmail.com"
 val jdkVersion = "1.8"
 scalaVersion := "2.12.8"
 
-lazy val root = (project in file(".")).enablePlugins(PlayScala)
+lazy val root = (project in file(".")).enablePlugins(PlayScala).settings(
+  swaggerPlayValidate := false
+)
 
 
 // specify the source and target jdk for Java compiler
@@ -75,6 +77,8 @@ Compile / packageDoc / publishArtifact := false
 topLevelDirectory := None
 
 val silencerVersion = "1.5.0"
+val cucumberVersion = "6.10.3"
+
 libraryDependencies ++= Seq(
   ws,
   filters,
@@ -84,21 +88,26 @@ libraryDependencies ++= Seq(
   caffeine,
   "ch.qos.logback" % "logback-access" % "1.2.3",
   "net.logstash.logback" % "logstash-logback-encoder" % "6.2",
-  "com.typesafe.play" %% "play-json" % "2.7.4",
+  "com.typesafe.play" %% "play-json" % "2.9.2",
   "org.julienrf" %% "play-json-derived-codecs" % "6.0.0",
   "io.cucumber" % "gherkin" % "5.2.0",
   "com.typesafe.play" %% "anorm" % "2.5.3",
   "mysql" % "mysql-connector-java" % "8.0.20",
   "org.eclipse.jgit" % "org.eclipse.jgit" % "5.6.1.202002131546-r",
-  "io.swagger" %% "swagger-play2" % "1.7.1",
+  // Swagger
+  "io.swagger" % "swagger-annotations" % "1.6.2", // do not upgrade beyond 1.x because of sbt-swagger-play compatibility
+
   "com.h2database" % "h2" % "1.4.199",
   "com.jsuereth" %% "scala-arm" % "2.0",
   "commons-io" % "commons-io" % "2.6",
   "com.outr" %% "lucene4s" % "1.9.0",
   "net.ruippeixotog" %% "scala-scraper" % "2.2.0" % Test,
-  "io.cucumber" %% "cucumber-scala" % "6.2.2" % Test,
-  "io.cucumber" % "cucumber-junit" % "6.2.2" % Test,
-  "io.cucumber" % "cucumber-picocontainer" % "6.2.2" % Test,
+
+  // Cucumber
+  "io.cucumber" %% "cucumber-scala" % cucumberVersion % Test,
+  "io.cucumber" % "cucumber-junit" % cucumberVersion % Test,
+  "io.cucumber" % "cucumber-picocontainer" % cucumberVersion % Test,
+
   "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.9.10" % Test,
   "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.3" % Test,
   "org.mockito" % "mockito-all" % "1.10.19" % Test,

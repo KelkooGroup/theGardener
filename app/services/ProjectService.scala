@@ -20,14 +20,14 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
                                pageRepository: PageRepository, menuService: MenuService, pageService: PageService, indexService: IndexService,
                                config: Configuration, environment: Environment, actorSystem: ActorSystem)(implicit ec: ExecutionContext) extends Logging {
   val projectsRootDirectory = config.get[String]("projects.root.directory")
-  val synchronizeInterval = config.get[Int]("projects.synchronize.interval")
-  val synchronizeInitialDelay = config.get[Int]("projects.synchronize.initial.delay")
+  val synchronizeInterval = config.get[Int]("projects.synchronize.interval").seconds
+  val synchronizeInitialDelay = config.get[Int]("projects.synchronize.initial.delay").seconds
   val documentationMetaFile = config.get[String]("documentation.meta.file")
   val synchronizeFromRemoteEnabled = config.get[Boolean]("projects.synchronize.from.remote.enabled")
 
 
   if (environment.mode != Mode.Test) {
-    val synchronizeJob = actorSystem.scheduler.schedule(initialDelay = synchronizeInitialDelay.seconds, interval = synchronizeInterval.seconds) {
+    val synchronizeJob = actorSystem.scheduler.scheduleWithFixedDelay(synchronizeInitialDelay, synchronizeInterval) { () =>
       synchronizeAll().onComplete { _ =>
         refreshAllPagesFromAllProjects()
       }
