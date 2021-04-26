@@ -52,6 +52,7 @@ import { NavigateMobileMenuComponent } from './output/navigate/navigate-mobile-m
 import { SearchPageComponent } from './output/search/search-page/search-page.component';
 import { SearchResultsComponent } from './output/search/search-results/search-results.component';
 import { SearchResultItemComponent } from './output/search/search-result-item/search-result-item.component';
+import { SearchQueryComponent } from './output/search/search-query/search-query.component';
 
 const nonProductionProviders = [{
   provide: HTTP_INTERCEPTORS,
@@ -84,6 +85,7 @@ const nonProductionProviders = [{
     SearchPageComponent,
     SearchResultsComponent,
     SearchResultItemComponent,
+    SearchQueryComponent,
   ],
   imports: [
     HttpClientModule,

@@ -46,9 +46,15 @@ class IndexService {
   private val pageContent = luceneSearchIndex.create.field[String]("pageContent", sortable = false)
 
   def insertOrUpdateDocument(document: PageIndexDocument): Unit = {
-    luceneSearchIndex.delete(new TermSearchTerm(Some(id), document.id))
-    luceneSearchIndex.commit()
-    luceneSearchIndex.doc().fields(id(document.id.trim),
+
+    var i = 0
+    while (exists(document) && i < 10) {
+      luceneSearchIndex.delete(new TermSearchTerm(Some(id), document.id))
+      luceneSearchIndex.commit()
+      i = i + 1
+    }
+
+    luceneSearchIndex.doc().fields(id(document.id),
       hierarchy(document.hierarchy.trim),
       path(document.path.trim),
       breadcrumb(document.breadcrumb.trim),
@@ -59,6 +65,11 @@ class IndexService {
       pageContent(document.pageContent.trim)
     ).index()
     luceneSearchIndex.commit()
+    ()
+  }
+
+  private def exists(document: PageIndexDocument) = {
+    luceneSearchIndex.query().filter(new TermSearchTerm(Some(id), document.id)).search().results.nonEmpty
   }
 
   def query(keywords: String): SearchResult = {

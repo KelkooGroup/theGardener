@@ -1,4 +1,4 @@
-{{ index+1 }} -  <a (click)="navigateTo(item.page)">{{ item.page.breadcrumb }}</a>
+{{ showIndex() }} -  <a (click)="navigateTo(item.page)">{{ item.page.breadcrumb }}</a>
 <p>
     "<span *ngFor="let highlight of item.highlights">...<span class="highlight"  [innerHTML]="highlight.fragment"></span> </span>..."
 </p>
