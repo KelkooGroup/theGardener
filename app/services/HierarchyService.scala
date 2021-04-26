@@ -25,40 +25,46 @@ class HierarchyService @Inject()(hierarchyRepository: HierarchyRepository) {
   }
 
   def getHierarchyPath(pageJoinProject: PageJoinProject): Option[String] = {
-    val projectHierarchies = hierarchyRepository.findAllByProjectId(pageJoinProject.project.id)
-    if (projectHierarchies.nonEmpty) {
-      val hierarchyId = projectHierarchies.headOption.map(_.id).getOrElse("")
-      val splitedId = hierarchyId.split('.')
+    val projectHierarchy = hierarchyRepository.findAllByProjectId(pageJoinProject.project.id).headOption match {
+      case Some(h) => Some(h)
+      case None => hierarchyRepository.findByDirectoryPath(pageJoinProject.directory.path)
+    }
+    projectHierarchy match {
+      case Some(h) =>
+        val hierarchyId = h.id
+        val spitedId = hierarchyId.split('.')
       var hierarchyPath = ""
       var currentHierarchyId = "."
-      for (id <- splitedId) {
+        for (id <- spitedId) {
         if (id.nonEmpty) {
           currentHierarchyId += id + "."
           hierarchyPath += "/" + hierarchyRepository.findById(currentHierarchyId).map(_.slugName).getOrElse("Not Found")
         }
       }
       Some(hierarchyPath)
-    } else {
-      None
+      case None => None
     }
   }
 
   def getBreadcrumb(pageJoinProject: PageJoinProject): String = {
-    val projectHierarchies = hierarchyRepository.findAllByProjectId(pageJoinProject.project.id)
-    if (projectHierarchies.nonEmpty) {
-      val hierarchyId = projectHierarchies.headOption.map(_.id).getOrElse("")
-      val splitedId = hierarchyId.split('.')
+    val projectHierarchy = hierarchyRepository.findAllByProjectId(pageJoinProject.project.id).headOption match {
+      case Some(h) => Some(h)
+      case None => hierarchyRepository.findByDirectoryPath(pageJoinProject.directory.path)
+    }
+    projectHierarchy match {
+      case Some(h) =>
+        val hierarchyId = h.id
+        val spitedId = hierarchyId.split('.')
       var hierarchyPath = ""
       var currentHierarchyId = "."
-      for (id <- splitedId) {
+        for (id <- spitedId) {
         if (id.nonEmpty) {
           currentHierarchyId += id + "."
           hierarchyPath += " / " + hierarchyRepository.findById(currentHierarchyId).map(_.name).getOrElse("Not Found")
         }
       }
       hierarchyPath.replaceFirst("/", "") + " / " + pageJoinProject.project.name + pageJoinProject.directory.relativePath.replaceAll("/", " / ") + pageJoinProject.page.label
-    } else {
-      pageJoinProject.page.path
+      case None => ""
     }
   }
 

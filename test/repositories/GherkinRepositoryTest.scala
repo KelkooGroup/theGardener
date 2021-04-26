@@ -64,33 +64,28 @@ class GherkinRepositoryTest extends PlaySpec with GuiceOneServerPerSuite with In
       documentation.branches.head.id mustBe branch1.id
       documentation.branches.head.name mustBe branch1.name
       documentation.branches.head.isStable mustBe branch1.isStable
+      documentation.branches.head.features.size mustBe 2
 
-      val features = documentation.branches.head.features.sortBy(_.id)
+      documentation.branches.head.features.head.id mustBe feature1.id
+      documentation.branches.head.features.head.path mustBe feature1.path
+      documentation.branches.head.features.head.scenarios.size mustBe 2
+      documentation.branches.head.features.head.scenarios.head.id mustBe scenario1.id
+      documentation.branches.head.features.head.scenarios(1).id mustBe scenario2.id
+      documentation.branches.head.features.head.scenarios.head.name mustBe scenario1.name
+      documentation.branches.head.features.head.scenarios(1).name mustBe scenario2.name
 
-      features.size mustBe 2
-
-      features.head.id mustBe feature1.id
-      features.head.path mustBe feature1.path
-      val actualScenarios1 = features.head.scenarios.sortBy(_.id)
-      actualScenarios1.size mustBe 2
-      actualScenarios1.head.id mustBe scenario1.id
-      actualScenarios1(1).id mustBe scenario2.id
-      actualScenarios1.head.name mustBe scenario1.name
-      actualScenarios1(1).name mustBe scenario2.name
-
-      features(1).id mustBe feature2.id
-      features(1).path mustBe feature2.path
-      val actualScenarios2 = features(1).scenarios.sortBy(_.id)
-      actualScenarios2.size mustBe 1
-      actualScenarios2.head.id mustBe scenario3.id
-      actualScenarios2.head.name mustBe scenario3.name
+      documentation.branches.head.features(1).id mustBe feature2.id
+      documentation.branches.head.features(1).path mustBe feature2.path
+      documentation.branches.head.features(1).scenarios.size mustBe 1
+      documentation.branches.head.features(1).scenarios.head.id mustBe scenario3.id
+      documentation.branches.head.features(1).scenarios.head.name mustBe scenario3.name
 
 
-      features.head.tags mustBe Seq()
-      features(1).tags mustBe Seq()
-      actualScenarios1.head.asInstanceOf[Scenario].tags mustBe Seq("s_tag1", "s_tag2")
-      actualScenarios1(1).asInstanceOf[Scenario].tags mustBe Seq("s_tag2", "s_tag3")
-      actualScenarios2.head.asInstanceOf[Scenario].tags mustBe Seq("s_tag1", "s_tag3")
+      documentation.branches.head.features.head.tags mustBe Seq()
+      documentation.branches.head.features(1).tags mustBe Seq()
+      documentation.branches.head.features.head.scenarios.head.asInstanceOf[Scenario].tags mustBe Seq("s_tag1", "s_tag2")
+      documentation.branches.head.features.head.scenarios(1).asInstanceOf[Scenario].tags mustBe Seq("s_tag2", "s_tag3")
+      documentation.branches.head.features(1).scenarios.head.asInstanceOf[Scenario].tags mustBe Seq("s_tag1", "s_tag3")
     }
   }
 }
