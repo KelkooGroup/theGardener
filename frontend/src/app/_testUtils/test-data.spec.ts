@@ -449,7 +449,14 @@ export const MENU_SERVICE_RESPONSE: HierarchyNodeApi = {
                                                 description: 'Suggestions WebServices',
                                                 order: 0,
                                                 pages: [
-                                                    'context'
+                                                  {
+                                                    "path": "suggestionsWS>master>/context",
+                                                    "relativePath": "/context",
+                                                    "name": "context",
+                                                    "label": "The context",
+                                                    "description": "Why providing suggestions",
+                                                    "order": 0
+                                                  }
                                                 ],
                                                 children: [
                                                     {
@@ -460,8 +467,22 @@ export const MENU_SERVICE_RESPONSE: HierarchyNodeApi = {
                                                         description: 'Suggestions...',
                                                         order: 0,
                                                         pages: [
-                                                            'suggestionsWS>master>/suggestions/suggestion',
-                                                            'suggestionsWS>master>/suggestions/examples'
+                                                          {
+                                                            "path": "suggestionsWS>master>/suggestions/suggestion",
+                                                            "relativePath": "/suggestion",
+                                                            "name": "suggestion",
+                                                            "label": "The suggestions",
+                                                            "description": "The suggestions...",
+                                                            "order": 0
+                                                          },
+                                                          {
+                                                            "path": "suggestionsWS>master>/suggestions/examples",
+                                                            "relativePath": "/examples",
+                                                            "name": "examples",
+                                                            "label": "examples",
+                                                            "description": "Some examples",
+                                                            "order": 1
+                                                          }
                                                         ],
                                                         children: []
                                                     },
@@ -473,7 +494,14 @@ export const MENU_SERVICE_RESPONSE: HierarchyNodeApi = {
                                                         description: 'Administration...',
                                                         order: 1,
                                                         pages: [
-                                                            'suggestionsWS>master>/admin/admin'
+                                                          {
+                                                            "path": "suggestionsWS>master>/admin/admin",
+                                                            "relativePath": "/admin",
+                                                            "name": "admin",
+                                                            "label": "admin",
+                                                            "description": "admin",
+                                                            "order": 0
+                                                          }
                                                         ],
                                                         children: []
                                                     }
