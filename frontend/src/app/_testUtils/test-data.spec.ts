@@ -202,7 +202,7 @@ export const PAGE_SERVICE_RESPONSE: PageApi = {
     label: 'overview',
     description: 'overview',
     order: 0,
-    // tslint:disable-next-line:max-line-length
+    // eslint-disable-next-line max-len
     content: [
         {
             type: 'markdown',
@@ -256,7 +256,7 @@ export const PAGE_WITH_EXTERNAL_LINK_SERVICE_RESPONSE: PageApi = {
     label: 'overview',
     description: 'overview',
     order: 0,
-    // tslint:disable-next-line:max-line-length
+    // eslint-disable-next-line max-len
     content: [{
         type: 'includeExternalPage',
         data: {
