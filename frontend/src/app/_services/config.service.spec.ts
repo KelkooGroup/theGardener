@@ -1,5 +1,5 @@
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
-import {async, TestBed} from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 
 import {ConfigService} from './config.service';
 import {Config} from '../_models/config';
@@ -8,7 +8,7 @@ describe('ConfigService', () => {
   let httpMock: HttpTestingController;
   let configService: ConfigService;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [ConfigService]
@@ -30,7 +30,7 @@ describe('ConfigService', () => {
     httpMock.expectOne('api/config');
   });
 
-  it('should parse service response', async(() => {
+  it('should parse service response', waitForAsync(() => {
     configService.getConfigs().subscribe(h => {
       expect(h.windowTitle).toBe('theGardener');
       expect(h.title).toBe('In our documentation we trust.');

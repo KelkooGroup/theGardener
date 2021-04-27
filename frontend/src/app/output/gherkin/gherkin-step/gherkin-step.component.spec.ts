@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import {GherkinStepComponent} from './gherkin-step.component';
 import {GherkinTableComponent} from '../gherkin-table/gherkin-table.component';
@@ -24,7 +24,7 @@ describe('GherkinStepComponent', () => {
   let fixture: ComponentFixture<GherkinStepComponent>;
   let page: Page;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [
         GherkinStepComponent,

@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import {GherkinTableComponent} from './gherkin-table.component';
 import { MatTableModule } from '@angular/material/table';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
@@ -16,7 +16,7 @@ describe('GherkinTableComponent', () => {
   let fixture: ComponentFixture<GherkinTableComponent>;
   let page: Page;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [
         GherkinTableComponent,

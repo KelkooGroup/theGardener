@@ -1,4 +1,4 @@
-import {async, TestBed} from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {MenuService} from './menu.service';
 import {
@@ -12,7 +12,7 @@ describe('MenuService', () => {
     let httpMock: HttpTestingController;
     let menuService: MenuService;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [HttpClientTestingModule],
             providers: [
@@ -31,7 +31,7 @@ describe('MenuService', () => {
         httpMock.verify();
     });
 
-    it('should return a hierarchy node', async(() => {
+    it('should return a hierarchy node', waitForAsync(() => {
         menuService.hierarchy().subscribe(h => {
             expect(h.name).toBe('Hierarchy root');
             expect(h.projects.length).toBe(0);
@@ -43,7 +43,7 @@ describe('MenuService', () => {
 
     }));
 
-    it('should provide menu header', async(() => {
+    it('should provide menu header', waitForAsync(() => {
         menuService.getMenuHeader().subscribe(menuItems => {
             expect(menuItems.length).toBe(2);
             expect(menuItems[0].label).toBe('publisher');
@@ -54,7 +54,7 @@ describe('MenuService', () => {
         req.flush(MENU_HEADER_SERVICE_RESPONSE);
     }));
 
-    it('should provide submenu for selected node', async(() => {
+    it('should provide submenu for selected node', waitForAsync(() => {
       menuService.getSubMenuForNode('_eng').subscribe(submenu => {
         expect(submenu).toEqual(EXPECTED_MENU_FOR_ENGINEERING_VIEW);
       });
@@ -63,7 +63,7 @@ describe('MenuService', () => {
       req.flush(MENU_SUBMENU_SERVICE_RESPONSE);
     }));
 
-    it('should return the partial hierarchy for the selected node', async(() => {
+    it('should return the partial hierarchy for the selected node', waitForAsync(() => {
       menuService.getMenuHierarchyForSelectedNode('_eng').subscribe(h => {
         expect(h.length).toBe(1);
         expect(h[0].label).toBe('Library system group');

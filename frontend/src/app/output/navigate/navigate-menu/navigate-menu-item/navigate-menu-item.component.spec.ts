@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import {NavigateMenuItemComponent} from './navigate-menu-item.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -19,7 +19,7 @@ describe('NavigateMenuItemComponent', () => {
   let page: Page;
   let activatedRoute: ActivatedRouteStub;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [NavigateMenuItemComponent],
       imports: [
@@ -149,7 +149,7 @@ describe('NavigateMenuItemComponent', () => {
     expect(router.navigateByUrl).toHaveBeenCalledWith('app/documentation/navigate/_publisher/ecs/_/_/Meta');
   });
 
-  it('should show branches in a select if node is a project', async(() => {
+  it('should show branches in a select if node is a project', waitForAsync(() => {
     activatedRoute.testParams = {nodes: '_eng', project: 'suggestionWS'};
     const projectItem: MenuProjectHierarchy = {
       name: 'suggestionWS',

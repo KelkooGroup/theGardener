@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import {OpenApiModelComponent} from './open-api-model.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
@@ -10,7 +10,7 @@ describe('OpenApiModelComponent', () => {
   let component: OpenApiModelComponent;
   let fixture: ComponentFixture<OpenApiModelComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [OpenApiModelComponent],
       imports: [

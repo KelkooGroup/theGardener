@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { NavigateMobileMenuComponent } from './navigate-mobile-menu.component';
 import {NavigateMenuItemComponent} from '../navigate-menu/navigate-menu-item/navigate-menu-item.component';
@@ -18,7 +18,7 @@ describe('NavigateMobileMenuComponent', () => {
   let component: NavigateMobileMenuComponent;
   let fixture: ComponentFixture<NavigateMobileMenuComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [
         NavigateMobileMenuComponent,

@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import {HeaderComponent} from './header.component';
 import {RouterTestingModule} from '@angular/router/testing';
@@ -27,7 +27,7 @@ describe('HeaderComponent', () => {
   let router: Router;
   let activatedRoute: ActivatedRouteStub;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [
         HeaderComponent,
@@ -76,7 +76,7 @@ describe('HeaderComponent', () => {
   /*
     In this test, we need to rely on ng-reflect-router-link as href value is `/` or `localhost:9876` when using fake ActivatedRoute
    */
-  it('should show the first level of hierarchy as elements of menu with navigation', async(() => {
+  it('should show the first level of hierarchy as elements of menu with navigation', waitForAsync(() => {
     fixture.detectChanges();
     expect(component).toBeTruthy();
     expect(page.navigationItems.length).toBe(2);
@@ -85,7 +85,7 @@ describe('HeaderComponent', () => {
     expect(page.navigationItems[1].textContent).toBe('Tools');
   }));
 
-  it('should navigate to first element if no route is set', async(() => {
+  it('should navigate to first element if no route is set', waitForAsync(() => {
     activatedRoute.testParams = {};
     fixture.detectChanges();
 

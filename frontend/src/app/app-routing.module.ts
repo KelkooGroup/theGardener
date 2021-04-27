@@ -52,10 +52,12 @@ const routes: Routes = [
     exports: [RouterModule],
     imports: [
         RouterModule.forRoot(routes, {
-            scrollPositionRestoration: 'enabled',
-            anchorScrolling: 'enabled',
-            scrollOffset: [0, 0] // [x, y]
-        })
+    scrollPositionRestoration: 'enabled',
+    anchorScrolling: 'enabled',
+    scrollOffset: [0, 0] // [x, y]
+    ,
+    relativeLinkResolution: 'legacy'
+})
     ]
 })
 export class AppRoutingModule {

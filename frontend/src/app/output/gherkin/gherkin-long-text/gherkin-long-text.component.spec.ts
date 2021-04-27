@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import {GherkinLongTextComponent} from './gherkin-long-text.component';
 import {NgxJsonViewerModule} from 'ngx-json-viewer';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
@@ -10,7 +10,7 @@ describe('GherkinLongTextComponent', () => {
   let fixture: ComponentFixture<GherkinLongTextComponent>;
   let page: Page;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [
         GherkinLongTextComponent,

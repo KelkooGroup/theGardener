@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import {PageContentComponent, PageContentComponentTools} from './page-content.component';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -34,7 +34,7 @@ describe('PageContentComponent', () => {
   let page: PageObject;
   let activatedRoute: ActivatedRouteStub;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [
         PageContentComponent,
@@ -81,7 +81,7 @@ describe('PageContentComponent', () => {
     activatedRoute.fragment = of('');
   });
 
-  it('should get page content from backend and show markdown', async(() => {
+  it('should get page content from backend and show markdown', waitForAsync(() => {
     const pageService: PageService = TestBed.get(PageService);
     spyOn(pageService, 'getPage').and.returnValue(of(PAGE_SERVICE_RESPONSE));
 
@@ -95,7 +95,7 @@ describe('PageContentComponent', () => {
       .toBeTruthy();
   }));
 
-  it('should get page content from backend and show markdown', async(() => {
+  it('should get page content from backend and show markdown', waitForAsync(() => {
     const pageService: PageService = TestBed.get(PageService);
     spyOn(pageService, 'getPage').and.returnValue(of(PAGE_WITH_INTERNAL_LINK_SERVICE_RESPONSE));
 
@@ -106,7 +106,7 @@ describe('PageContentComponent', () => {
 
   }));
 
-  it('should show an iframe if page is an external link', async(() => {
+  it('should show an iframe if page is an external link', waitForAsync(() => {
     const pageService: PageService = TestBed.get(PageService);
     spyOn(pageService, 'getPage').and.returnValue(of(PAGE_WITH_EXTERNAL_LINK_RESPONSE));
 
@@ -117,7 +117,7 @@ describe('PageContentComponent', () => {
     expect(page.iframe.src).toEqual('http://publisher.corp.kelkoo.net/docs/#/Contact%20Management/getContact');
   }));
 
-  it('should show scenario settings if page contains a scenario', async(() => {
+  it('should show scenario settings if page contains a scenario', waitForAsync(() => {
     const pageService: PageService = TestBed.get(PageService);
     spyOn(pageService, 'getPage').and.returnValue(of(PAGE_WITH_SCENARIO));
 
@@ -128,7 +128,7 @@ describe('PageContentComponent', () => {
     expect(page.scenario).toBeTruthy();
   }));
 
-  it('should not crash when bad path in internal link', async(() => {
+  it('should not crash when bad path in internal link', waitForAsync(() => {
     const path: string = null;
     const path2 = '';
     const path3 = ' ';
@@ -149,7 +149,7 @@ describe('PageContentComponent', () => {
     expect(router.navigate).not.toHaveBeenCalled();
   }));
 
-  it('should show a link to view source if provided', async(() => {
+  it('should show a link to view source if provided', waitForAsync(() => {
     const pageService: PageService = TestBed.get(PageService);
     spyOn(pageService, 'getPage').and.returnValue(of(PAGE_WITH_SOURCE_URL));
 
@@ -159,7 +159,7 @@ describe('PageContentComponent', () => {
     expect(page.viewSource).toBeTruthy();
   }));
 
-  it('should not show a link to view source if not provided', async(() => {
+  it('should not show a link to view source if not provided', waitForAsync(() => {
     const pageService: PageService = TestBed.get(PageService);
     spyOn(pageService, 'getPage').and.returnValue(of(PAGE_SERVICE_RESPONSE));
 

@@ -1,4 +1,4 @@
-import {async, TestBed} from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 
 import {PageService} from './page.service';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
@@ -15,7 +15,7 @@ describe('PageService', () => {
   let httpMock: HttpTestingController;
   let pageService: PageService;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [
@@ -34,7 +34,7 @@ describe('PageService', () => {
     httpMock.verify();
   });
 
-  it('should get list of pages for path', async(() => {
+  it('should get list of pages for path', waitForAsync(() => {
     pageService.getRootDirectoryForPath('publisherManagementWS>qa>_constraints_')
       .subscribe(directory => {
         expect(directory).toBeDefined();
@@ -55,7 +55,7 @@ describe('PageService', () => {
     req.flush([DIRECTORIES_SERVICE_RESPONSE]);
   }));
 
-  xit('should search pages for keyword', async(() => {
+  xit('should search pages for keyword', waitForAsync(() => {
         pageService.searchPages('suggestions')
             .subscribe(result => {
                 expect(result.items).toBeDefined();
@@ -70,7 +70,7 @@ describe('PageService', () => {
     }));
 
 
-  it('should get page for path', async(() => {
+  it('should get page for path', waitForAsync(() => {
     pageService.getPage('publisherManagementWS>qa>_constraints_overview')
       .subscribe(page => {
         expect(page).toBeDefined();
@@ -88,7 +88,7 @@ describe('PageService', () => {
     req.flush([PAGE_SERVICE_RESPONSE]);
   }));
 
-  it('should parse markdown to find external link', async( () => {
+  it('should parse markdown to find external link', waitForAsync( () => {
     pageService.getPage('publisherManagementWS>qa>_constraints_overview')
       .subscribe(page => {
         expect(page).toBeDefined();
@@ -104,7 +104,7 @@ describe('PageService', () => {
     req.flush([PAGE_WITH_EXTERNAL_LINK_SERVICE_RESPONSE]);
   }));
 
-  it('should parse page containing scenarios', async( () => {
+  it('should parse page containing scenarios', waitForAsync( () => {
     pageService.getPage('path')
       .subscribe(page => {
         expect(page).toBeDefined();

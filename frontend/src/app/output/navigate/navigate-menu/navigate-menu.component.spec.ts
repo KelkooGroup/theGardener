@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import {NavigateMenuComponent} from './navigate-menu.component';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {ActivatedRoute} from '@angular/router';
@@ -17,7 +17,7 @@ describe('NavigateMenuComponent', () => {
   let component: NavigateMenuComponent;
   let fixture: ComponentFixture<NavigateMenuComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [
         NavigateMenuComponent,

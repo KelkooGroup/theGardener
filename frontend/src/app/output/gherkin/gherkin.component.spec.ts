@@ -1,5 +1,5 @@
 import {GherkinComponent} from './gherkin.component';
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
@@ -20,7 +20,7 @@ describe('GherkinComponent', () => {
   let fixture: ComponentFixture<GherkinComponent>;
   let page: Page;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [
         GherkinComponent,
