@@ -1,23 +1,24 @@
 package services.clients
 
-import scala.annotation.nowarn
-import models.{Branch, Directory, OpenApiModel, OpenApiPath, OpenApiRow, Page, PageJoinProject, Project, Variable}
+import models._
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito.MockitoSugar
+import play.api.libs.json._
 import play.api.mvc.Results._
 import play.api.routing.sird._
 import play.api.test.WsTestClient
 import play.core.server.Server
-import play.api.libs.json._
 import services.{OpenApiModelModule, OpenApiPathModule}
 
+import scala.annotation.nowarn
 import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 
 @nowarn("msg=missing interpolator")
-class OpenApiClientTest extends WordSpec with MustMatchers with MockitoSugar with ScalaFutures {
+class OpenApiClientTest extends AnyWordSpec with Matchers with MockitoSugar with ScalaFutures {
 
   val openApiModuleBasic = OpenApiModelModule(Option("/api/docs/swagger.json"), Option("model"), Option("#/definitions/Project"), Option(1))
 

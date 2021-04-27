@@ -46,6 +46,7 @@ import scala.jdk.CollectionConverters._
 import scala.concurrent._
 import scala.io.Source
 import scala.reflect._
+import org.scalatest.matchers.must.Matchers
 
 object Injector {
   val builder = new GuiceApplicationBuilder
@@ -62,7 +63,7 @@ case class ProjectTableRow(id: String, name: String, repositoryUrl: String, sour
 }
 
 
-object CommonSteps extends MockitoSugar with MustMatchers {
+object CommonSteps extends MockitoSugar with Matchers {
 
   implicit val pageFormat = Json.format[Page]
   implicit val directoryFormat = Json.format[Directory]

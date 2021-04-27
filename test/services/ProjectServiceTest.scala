@@ -1,7 +1,5 @@
 package services
 
-import java.io._
-
 import akka.actor.ActorSystem
 import models._
 import org.apache.commons.io.FileUtils._
@@ -10,17 +8,20 @@ import org.mockito.Mockito._
 import org.mockito._
 import org.scalatest._
 import org.scalatest.concurrent._
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito._
 import play.api.{Configuration, Environment, Mode}
 import repositories._
 import utils._
 
+import java.io._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent._
 import scala.concurrent.duration._
 import scala.util.Success
 
-class ProjectServiceTest extends WordSpec with MustMatchers with BeforeAndAfter with MockitoSugar with ScalaFutures {
+class ProjectServiceTest extends AnyWordSpec with Matchers with BeforeAndAfter with MockitoSugar with ScalaFutures {
   override implicit val patienceConfig = PatienceConfig(timeout = scaled(30.seconds))
 
   val encoding = "UTF-8"

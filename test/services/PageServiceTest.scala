@@ -7,15 +7,17 @@ import org.mockito.Mockito.when
 import org.mockito._
 import org.scalatest._
 import org.scalatest.concurrent._
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito._
-import repositories._
 import play.api.Configuration
 import play.api.cache.SyncCacheApi
+import repositories._
 import services.clients.OpenApiClient
 
 import scala.concurrent.ExecutionContext
 
-class PageServiceTest extends WordSpec with MustMatchers with BeforeAndAfter with MockitoSugar with ScalaFutures {
+class PageServiceTest extends AnyWordSpec with Matchers with BeforeAndAfter with MockitoSugar with ScalaFutures {
 
 
   val projectRepository = mock[ProjectRepository]
