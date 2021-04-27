@@ -1,6 +1,7 @@
 import {GherkinComponent} from './gherkin.component';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {MatTableModule, MatTabsModule} from '@angular/material';
+import { MatTableModule } from '@angular/material/table';
+import { MatTabsModule } from '@angular/material/tabs';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {GherkinStepComponent} from './gherkin-step/gherkin-step.component';
 import {GherkinTableComponent} from './gherkin-table/gherkin-table.component';

@@ -2,7 +2,8 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {HeaderComponent} from './header.component';
 import {RouterTestingModule} from '@angular/router/testing';
-import {MatSnackBarModule, MatTabsModule} from '@angular/material';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTabsModule } from '@angular/material/tabs';
 import {MenuService} from '../../../_services/menu.service';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {of} from 'rxjs';

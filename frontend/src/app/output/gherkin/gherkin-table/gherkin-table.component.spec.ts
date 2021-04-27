@@ -1,6 +1,6 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {GherkinTableComponent} from './gherkin-table.component';
-import {MatTableModule} from '@angular/material';
+import { MatTableModule } from '@angular/material/table';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {MarkdownModule} from "ngx-markdown";
 import {HttpClientTestingModule} from "@angular/common/http/testing";

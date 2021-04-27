@@ -26,7 +26,7 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatCardModule} from '@angular/material/card';
-import {MatSnackBarModule} from '@angular/material';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import {MenuService} from './_services/menu.service';
 import {GherkinComponent} from './output/gherkin/gherkin.component';
 import {GherkinTableComponent} from './output/gherkin/gherkin-table/gherkin-table.component';

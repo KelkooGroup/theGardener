@@ -1,7 +1,8 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {OpenApiModelComponent} from './open-api-model.component';
-import {MatTableModule, MatSnackBarModule} from '@angular/material';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTableModule } from '@angular/material/table';
 import {OpenApiModel} from '../../../_models/open-api';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 
