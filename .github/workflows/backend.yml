@@ -39,19 +39,19 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Sbt build cache
-      uses: actions/cache@v1
+      uses: actions/cache@v2
       with:
         path: /home/runner/.sbt
         key: ${{ runner.os }}-sbt-${{ hashFiles('**/project/build.properties')}}
 
     - name: Yvy build cache
-      uses: actions/cache@v1
+      uses: actions/cache@v2
       with:
         path: /home/runner/.ivy2
         key: ${{ runner.os }}-ivy-cache-${{ hashFiles('**/build.sbt')}}-${{ hashFiles('**/project/plugins.sbt')}}
 
     - name: Coursier build cache
-      uses: actions/cache@v1
+      uses: actions/cache@v2
       with:
         path: /home/runner/.cache/coursier/v1
         key: ${{ runner.os }}-coursier-cache-${{ hashFiles('**/build.sbt')}}-${{ hashFiles('**/project/plugins.sbt')}}

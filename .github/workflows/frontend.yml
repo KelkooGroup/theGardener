@@ -26,13 +26,13 @@ jobs:
         node-version: '10.x'
 
     - name: node modules cache
-      uses: actions/cache@v1
+      uses: actions/cache@v2
       with:
         path: frontend/node_modules
         key: ${{ runner.os }}-node-modules-${{ hashFiles('**/frontend/package-lock.json')}}
 
     - name: npm cache
-      uses: actions/cache@v1
+      uses: actions/cache@v2
       with:
         path: ~/.npm
         key: ${{ runner.os }}-node-${{ hashFiles('**/frontend/package-lock.json') }}
