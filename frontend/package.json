@@ -80,7 +80,7 @@
     "webdriver": "5.18.7",
     "eslint": "^7.6.0",
     "eslint-plugin-import": "2.22.1",
-    "eslint-plugin-jsdoc": "30.7.6",
+    "eslint-plugin-jsdoc": "30.7.13",
     "eslint-plugin-prefer-arrow": "1.2.2",
     "@angular-eslint/builder": "^4.0.0",
     "@angular-eslint/eslint-plugin": "^4.0.0",
