@@ -68,7 +68,7 @@
     "karma-jasmine": "4.0.1",
     "karma-jasmine-html-reporter": "1.5.4",
     "karma-phantomjs-launcher": "1.0.4",
-    "sass": "1.32.11",
+    "sass": "1.32.12",
     "phantomjs-prebuilt": "2.1.16",
     "protractor": "7.0.0",
     "protractor-cucumber-framework": "6.2.1",
