@@ -7,4 +7,6 @@ export interface Config {
   baseUrl: string;
   colorDark: string;
   colorLight: string;
+  translateTo?: string;
+  translateTemplate?: string;
 }

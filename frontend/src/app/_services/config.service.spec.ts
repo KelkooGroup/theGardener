@@ -16,8 +16,8 @@ describe('ConfigService', () => {
   }));
 
   beforeEach(() => {
-    httpMock = TestBed.get(HttpTestingController);
-    configService = TestBed.get(ConfigService);
+    httpMock = TestBed.inject(HttpTestingController);
+    configService = TestBed.inject(ConfigService);
   });
 
   afterEach(() => {
@@ -25,7 +25,7 @@ describe('ConfigService', () => {
   });
 
   it('should be created', () => {
-    const service: ConfigService = TestBed.get(ConfigService);
+    const service: ConfigService = TestBed.inject(ConfigService);
     expect(service).toBeTruthy();
     httpMock.expectOne('api/config');
   });
@@ -39,6 +39,8 @@ describe('ConfigService', () => {
       expect(h.colorMain).toBe('#1F7079');
       expect(h.colorDark).toBe('#0f3438');
       expect(h.colorLight).toBe('#b4ced1');
+      expect(h.translateTo).toBe('fr,de,es');
+      expect(h.translateTemplate).toBe('https://translate.google.com/translate?hl=en&sl=auto&tl={{to}}&u={{encoded_url}}');
     });
     const req = httpMock.match('api/config')[0];
     expect(req.request.method).toBe('GET');
@@ -54,5 +56,7 @@ const SERVER_RESPONSE: Config = {
   baseUrl:"http://localhost:9000",
   colorMain:"#1F7079",
   colorDark:"#0f3438",
-  colorLight:"#b4ced1"
+  colorLight:"#b4ced1",
+  translateTo: "fr,de,es",
+  translateTemplate: "https://translate.google.com/translate?hl=en&sl=auto&tl={{to}}&u={{encoded_url}}"
 };
