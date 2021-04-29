@@ -72,7 +72,7 @@
     "phantomjs-prebuilt": "2.1.16",
     "protractor": "7.0.0",
     "protractor-cucumber-framework": "8.0.3",
-    "puppeteer": "2.1.1",
+    "puppeteer": "9.0.0",
     "rxjs-tslint": "0.1.8",
     "ts-node": "9.1.1",
     "typescript": "4.0.7",
