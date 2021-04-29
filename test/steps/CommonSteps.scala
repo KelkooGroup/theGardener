@@ -22,7 +22,7 @@ import org.eclipse.jgit.api._
 import org.mockito.Matchers.any
 import org.mockito.Mockito._
 import org.mockito.invocation.InvocationOnMock
-import org.scalatest._
+import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.mockito._
 import play.api.cache._
 import play.api.db._
@@ -62,7 +62,7 @@ case class ProjectTableRow(id: String, name: String, repositoryUrl: String, sour
 }
 
 
-object CommonSteps extends MockitoSugar with MustMatchers {
+object CommonSteps extends MockitoSugar with Matchers {
 
   implicit val pageFormat = Json.format[Page]
   implicit val directoryFormat = Json.format[Directory]

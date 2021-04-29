@@ -1,20 +1,20 @@
 package services
 
-import java.io.File
-import java.io.File.separator
-
-
-import utils.CustomConfigSystemReader._
 import org.apache.commons.io.FileUtils._
 import org.eclipse.jgit.api._
 import org.scalatest._
 import org.scalatest.concurrent._
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
+import utils.CustomConfigSystemReader._
+
+import java.io.File
+import java.io.File.separator
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 
-import scala.concurrent.ExecutionContext.Implicits.global
 
-
-class GitServiceTest extends WordSpec with MustMatchers with BeforeAndAfter with ScalaFutures {
+class GitServiceTest extends AnyWordSpec with Matchers with BeforeAndAfter with ScalaFutures {
   override implicit val patienceConfig = PatienceConfig(timeout = scaled(30.seconds))
 
   val encoding = "UTF-8"

@@ -1,12 +1,14 @@
 package services
 
 import org.mockito.Mockito
-import org.scalatest.{BeforeAndAfter, MustMatchers, WordSpec}
+import org.scalatest.BeforeAndAfter
 import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito.MockitoSugar
 import repositories.{HierarchyRepository, PageRepository}
 
-class SearchServiceTest extends WordSpec with MustMatchers with BeforeAndAfter with MockitoSugar with ScalaFutures {
+class SearchServiceTest extends AnyWordSpec with Matchers with BeforeAndAfter with MockitoSugar with ScalaFutures {
 
   val pageRepository = mock[PageRepository]
   val hierarchyRepository = mock[HierarchyRepository]

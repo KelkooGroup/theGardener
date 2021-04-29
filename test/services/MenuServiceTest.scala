@@ -1,13 +1,13 @@
 package services
 
 import models.{HierarchyNode, Menu}
-import org.scalatest.Matchers._
-import org.scalatest._
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito._
 import repositories.FeatureRepository
 import services.MenuService._
 
-class MenuServiceTest extends WordSpec with MustMatchers with MockitoSugar {
+class MenuServiceTest extends AnyWordSpec with Matchers with MockitoSugar {
 
   val featureRepository = mock[FeatureRepository]
 

@@ -4,11 +4,12 @@ import com.typesafe.config.ConfigFactory
 import models.Branch
 import org.mockito.Matchers._
 import org.mockito.Mockito._
-import org.scalatest._
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito._
 import repositories.FeatureRepository
 
-class FeatureServiceTest extends WordSpec with MustMatchers with MockitoSugar {
+class FeatureServiceTest extends AnyWordSpec with Matchers with MockitoSugar {
 
   val featureRepository = mock[FeatureRepository]
 
