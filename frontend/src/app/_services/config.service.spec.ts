@@ -53,10 +53,10 @@ const SERVER_RESPONSE: Config = {
   title: 'In our documentation we trust.',
   logoSrc: 'assets/images/logo-white.png',
   faviconSrc: 'assets/images/favicon.png',
-  baseUrl:"http://localhost:9000",
-  colorMain:"#1F7079",
-  colorDark:"#0f3438",
-  colorLight:"#b4ced1",
-  translateTo: "fr,de,es",
-  translateTemplate: "https://translate.google.com/translate?hl=en&sl=auto&tl={{to}}&u={{encoded_url}}"
+  baseUrl:'http://localhost:9000',
+  colorMain:'#1F7079',
+  colorDark:'#0f3438',
+  colorLight:'#b4ced1',
+  translateTo: 'fr,de,es',
+  translateTemplate: 'https://translate.google.com/translate?hl=en&sl=auto&tl={{to}}&u={{encoded_url}}'
 };
