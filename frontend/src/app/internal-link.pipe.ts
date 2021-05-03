@@ -1,16 +1,17 @@
 import {Pipe, PipeTransform} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {RouteService} from "./_services/route.service";
+import {RouteService} from './_services/route.service';
 
 @Pipe({
   name: 'internalLink'
 })
+/* eslint-disable prefer-arrow/prefer-arrow-functions */
 export class InternalLinkPipe implements PipeTransform {
 
-  nodes : string;
-  project : string;
-  branch : string;
-  directories : string;
+  nodes: string;
+  project: string;
+  branch: string;
+  directories: string;
 
 
   constructor(private activatedRoute: ActivatedRoute, private routeService: RouteService) {
@@ -58,7 +59,7 @@ export class InternalLinkPipe implements PipeTransform {
     const routeService = this.routeService;
 
     function replacer(p1: string, p2: string, relativePath: string,anchor: string) {
-      let relativePathWithAnchor = `${relativePath}#${anchor}`
+      const relativePathWithAnchor = `${relativePath}#${anchor}`;
       const targetUrl = routeService.relativeUrlToFullFrontEndUrl(relativePathWithAnchor, {nodes,project,branch,directories});
       return `onclick="navigateTo('${targetUrl}')"`;
     }

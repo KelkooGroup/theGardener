@@ -1,6 +1,6 @@
 import {InternalLinkPipe} from './internal-link.pipe';
 import {ActivatedRouteStub} from './_testUtils/activated-route-stub.spec';
-import {RouteService} from "./_services/route.service";
+import {RouteService} from './_services/route.service';
 
 describe('InternalLinkPipe', () => {
   let pipe: InternalLinkPipe;
@@ -9,7 +9,7 @@ describe('InternalLinkPipe', () => {
 
   beforeEach(() => {
     activatedRoute = new ActivatedRouteStub() as any;
-    let routeService =  new RouteService();
+    const routeService =  new RouteService();
     activatedRoute.testParams = {nodes: 'Tools',project: 'theGardener',branch: 'master',directories: '_Guide_Write',page: 'Basics'};
     pipe = new InternalLinkPipe(activatedRoute,routeService);
   });
@@ -83,6 +83,7 @@ const LEGACY_SIMPLE_HTML_OUTPUT_WITH_HIERARCHY = '<p>Note 2: <code>merchantUrl</
 
 const LEGACY_COMPLEX_HTML_INPUT = '<p>Note 2: <code>merchantUrl <a href="thegardener://path=theGardener>master>_features_/administration">internal link1</a> </code> parameter must be encoded using <a href="thegardener://navigate/_publisher;path=publisherSystems>master>_Public_/publisherServices">internal link2</a>.</p>';
 
+// eslint-disable-next-line max-len
 const LEGACY_COMPLEX_HTML_OUTPUT = '<p>Note 2: <code>merchantUrl <a onclick=\"navigateTo(\'app/documentation/navigate/Tools/theGardener/master/_features/administration\')\">internal link1</a> </code> parameter must be encoded using <a onclick=\"navigateTo(\'app/documentation/navigate/_publisher/publisherSystems/master/_Public/publisherServices\')\">internal link2</a>.</p>';
 
 const LEGACY_HTML_INPUT_WITH_OTHER_LINK = '<p>Note 2: <code>merchantUrl <a href="/app/documentation/navigate/_publisher;path=shoppingAPI%3Eqa%3E_Tools_/requestBuilder">link</a></code> parameter must be encoded using <a href="thegardener://path=theGardener>master>_features_/administration">URL encoding</a>.</p>';

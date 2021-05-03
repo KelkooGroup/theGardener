@@ -32,4 +32,5 @@ const HTML_OUTPUT_WITHOUT_SPACE_IN_TITLE = '<h1 id="requirement">Requirement <a 
 
 const COMPLEX_HTML_INPUT = '<h2 id="service-specification">Service specification</h2> <a href="link"></a> <h1 id="requirement">Requirement</h1> <h3 id="development-on-back">Development on Back</h3>';
 
+/* eslint-disable max-len */
 const COMPLEX_HTML_OUTPUT = '<h2 id="service-specification">Service specification <a class="linkToAnchorForTitleAndSubTitle" onclick="navigateTo(\'app/documentation/navigate/_Tools/theGardener/master/_Guide_Write/Basics#service-specification\')"> <i class="fas fa-link"></i> </a> </h2> <a href="link"></a> <h1 id="requirement">Requirement <a class="linkToAnchorForTitleAndSubTitle" onclick="navigateTo(\'app/documentation/navigate/_Tools/theGardener/master/_Guide_Write/Basics#requirement\')"> <i class="fas fa-link"></i> </a> </h1> <h3 id="development-on-back">Development on Back <a class="linkToAnchorForTitleAndSubTitle" onclick="navigateTo(\'app/documentation/navigate/_Tools/theGardener/master/_Guide_Write/Basics#development-on-back\')"> <i class="fas fa-link"></i> </a> </h3>';

@@ -12,8 +12,8 @@ import {
   PagePart,
   ScenarioPart
 } from '../../_models/page';
-import {RouteService, SEARCH_PATH} from "../../_services/route.service";
-import {NavigationRoute} from "../../_models/route";
+import {RouteService, SEARCH_PATH} from '../../_services/route.service';
+import {NavigationRoute} from '../../_models/route';
 
 
 @Component({
@@ -27,7 +27,7 @@ export class PageContentComponent implements OnInit, OnDestroy, AfterViewChecked
   private fragmentSubscription: Subscription;
   private routerSubscription: Subscription;
   private fragment: string;
-  private canScroll: boolean = true;
+  private canScroll = true;
   private targetedRoute: NavigationRoute;
 
   constructor(private activatedRoute: ActivatedRoute,
@@ -45,7 +45,7 @@ export class PageContentComponent implements OnInit, OnDestroy, AfterViewChecked
       this.fragment = fragment;
       this.canScroll = true;
     });
-    this.routerSubscription = this.router.events.subscribe((evt) => {
+    this.routerSubscription = this.router.events.subscribe(evt => {
       if (evt instanceof NavigationEnd) {
         if (!this.fragment) {
           const cmp = document.getElementById('top-page');
@@ -58,20 +58,18 @@ export class PageContentComponent implements OnInit, OnDestroy, AfterViewChecked
     this.subscription = combineLatest([
       this.activatedRoute.params
     ]).pipe(
-      map(([params]) => {
-        return params;
-      }),
+      map(([params]) => params),
       switchMap(params => {
         this.targetedRoute = this.routeService.navigationParamsToNavigationRoute(params);
-        if ( this.targetedRoute.page == undefined ){
+        if (this.targetedRoute.page === undefined) {
           return of<Page>();
-        }else{
+        } else {
           const backEndPath = this.routeService.navigationRouteToBackEndPath(this.targetedRoute);
           return this.pageService.getPage(backEndPath.pathFromProject);
         }
       }),
       catchError(err => {
-        const keyword =   this.routeService.extractKeyword(this.targetedRoute);
+        const keyword = this.routeService.extractKeyword(this.targetedRoute);
         this.router.navigateByUrl(SEARCH_PATH + `?keyword=${keyword.trim()}`);
         return of<Page>();
       })
@@ -125,7 +123,7 @@ export class PageContentComponent implements OnInit, OnDestroy, AfterViewChecked
   }
 
   getPosition(part: PagePart) {
-    return this.page.parts.indexOf(part)
+    return this.page.parts.indexOf(part);
   }
 }
 
@@ -138,9 +136,9 @@ const navigateTo = (router: Router, ngZone: NgZone) => (path: string) => {
 export class PageContentComponentTools {
 
   static navigate(router: Router, path: string) {
-    if(path != undefined) {
+    if (!!path) {
 
-      const targetUrl =  RouteService.legacyFullFrontEndUrlToFullFrontEndUrl(path);
+      const targetUrl = RouteService.legacyFullFrontEndUrlToFullFrontEndUrl(path);
       router.navigateByUrl(targetUrl);
     }
   }

@@ -6,7 +6,7 @@ import {
     MENU_SERVICE_RESPONSE,
     MENU_SUBMENU_SERVICE_RESPONSE
 } from '../_testUtils/test-data.spec';
-import {MenuHierarchy, MenuType} from "../_models/menu";
+import {MenuHierarchy, MenuType} from '../_models/menu';
 
 describe('MenuService', () => {
     let httpMock: HttpTestingController;
@@ -95,7 +95,7 @@ const EXPECTED_MENU_FOR_ENGINEERING_VIEW: Array<MenuHierarchy> = [
         type: 'Node' as MenuType,
         depth: 0,
         route: {
-            nodes: ["eng", "library"],
+            nodes: ['eng', 'library'],
             directories: [] as Array<string>
         },
         children: [
@@ -105,7 +105,7 @@ const EXPECTED_MENU_FOR_ENGINEERING_VIEW: Array<MenuHierarchy> = [
                 type: 'Node' as MenuType,
                 depth: 1,
                 route: {
-                    nodes: ["eng", "library", "suggestion"],
+                    nodes: ['eng', 'library', 'suggestion'],
                     directories: [] as Array<string>
                 },
                 children: [
@@ -115,8 +115,8 @@ const EXPECTED_MENU_FOR_ENGINEERING_VIEW: Array<MenuHierarchy> = [
                         type: 'Project' as MenuType,
                         depth: 2,
                         route: {
-                            nodes: ["eng", "library", "suggestion"],
-                            project: "suggestionsReports",
+                            nodes: ['eng', 'library', 'suggestion'],
+                            project: 'suggestionsReports',
                             directories: [] as Array<string>
                         },
                         stableBranch: 'master',
@@ -127,9 +127,9 @@ const EXPECTED_MENU_FOR_ENGINEERING_VIEW: Array<MenuHierarchy> = [
                                 type: 'Branch'as MenuType,
                                 depth: 2,
                                 route: {
-                                    nodes: ["eng", "library", "suggestion"],
-                                    project: "suggestionsReports",
-                                    branch: "_",
+                                    nodes: ['eng', 'library', 'suggestion'],
+                                    project: 'suggestionsReports',
+                                    branch: '_',
                                     directories: [] as Array<string>
                                 },
                                 children: [] as Array<MenuHierarchy>,
@@ -142,8 +142,8 @@ const EXPECTED_MENU_FOR_ENGINEERING_VIEW: Array<MenuHierarchy> = [
                         type: 'Project' as MenuType,
                         depth: 2,
                         route: {
-                            nodes: ["eng", "library", "suggestion"],
-                            project: "suggestionsWS",
+                            nodes: ['eng', 'library', 'suggestion'],
+                            project: 'suggestionsWS',
                             directories: [] as Array<string>
                         },
                         stableBranch: 'master',
@@ -154,9 +154,9 @@ const EXPECTED_MENU_FOR_ENGINEERING_VIEW: Array<MenuHierarchy> = [
                                 type: 'Branch' as MenuType,
                                 depth: 2,
                                 route: {
-                                    nodes: ["eng", "library", "suggestion"],
-                                    project: "suggestionsWS",
-                                    branch: "master",
+                                    nodes: ['eng', 'library', 'suggestion'],
+                                    project: 'suggestionsWS',
+                                    branch: 'master',
                                     directories: [] as Array<string>
                                 },
                                 children: [
@@ -168,10 +168,10 @@ const EXPECTED_MENU_FOR_ENGINEERING_VIEW: Array<MenuHierarchy> = [
                                         depth: 3,
                                         order: 0,
                                         route: {
-                                            nodes: ["eng", "library", "suggestion"],
-                                            project: "suggestionsWS",
-                                            branch: "master",
-                                            directories: ["suggestions"]
+                                            nodes: ['eng', 'library', 'suggestion'],
+                                            project: 'suggestionsWS',
+                                            branch: 'master',
+                                            directories: ['suggestions']
                                         },
                                         children: [] as Array<MenuHierarchy>
                                     },
@@ -183,10 +183,10 @@ const EXPECTED_MENU_FOR_ENGINEERING_VIEW: Array<MenuHierarchy> = [
                                         depth: 3,
                                         order: 1,
                                         route: {
-                                            nodes: ["eng", "library", "suggestion"],
-                                            project: "suggestionsWS",
-                                            branch: "master",
-                                            directories: ["admin"]
+                                            nodes: ['eng', 'library', 'suggestion'],
+                                            project: 'suggestionsWS',
+                                            branch: 'master',
+                                            directories: ['admin']
                                         },
                                         children: [] as Array<MenuHierarchy>
                                     },
@@ -198,9 +198,9 @@ const EXPECTED_MENU_FOR_ENGINEERING_VIEW: Array<MenuHierarchy> = [
                                 type: 'Branch'as MenuType,
                                 depth: 2,
                                 route: {
-                                    nodes: ["eng", "library", "suggestion"],
-                                    project: "suggestionsWS",
-                                    branch: "bugfix/351",
+                                    nodes: ['eng', 'library', 'suggestion'],
+                                    project: 'suggestionsWS',
+                                    branch: 'bugfix/351',
                                     directories: [] as Array<string>
                                 },
                                 children: [] as Array<MenuHierarchy>,
@@ -216,7 +216,7 @@ const EXPECTED_MENU_FOR_ENGINEERING_VIEW: Array<MenuHierarchy> = [
                 type: 'Node' as MenuType,
                 depth: 1,
                 route: {
-                    nodes: ["eng","library", "user"],
+                    nodes: ['eng','library', 'user'],
                     directories: [] as Array<string>
                 },
                 children: [
@@ -226,8 +226,8 @@ const EXPECTED_MENU_FOR_ENGINEERING_VIEW: Array<MenuHierarchy> = [
                         type: 'Project' as MenuType,
                         depth: 2,
                         route:  {
-                            nodes: ["eng","library", "user"],
-                            project: "usersWS",
+                            nodes: ['eng','library', 'user'],
+                            project: 'usersWS',
                             directories: [] as Array<string>
                         },
                         stableBranch: 'master',
@@ -238,9 +238,9 @@ const EXPECTED_MENU_FOR_ENGINEERING_VIEW: Array<MenuHierarchy> = [
                                 type: 'Branch'as MenuType,
                                 depth: 2,
                                 route: {
-                                    nodes: ["eng","library", "user"],
-                                    project: "usersWS",
-                                    branch: "_",
+                                    nodes: ['eng','library', 'user'],
+                                    project: 'usersWS',
+                                    branch: '_',
                                     directories: [] as Array<string>
                                 },
                                 children: [],
@@ -255,7 +255,7 @@ const EXPECTED_MENU_FOR_ENGINEERING_VIEW: Array<MenuHierarchy> = [
                 type: 'Node' as MenuType,
                 depth: 1,
                 route: {
-                    nodes: ["eng", "library" , "search"],
+                    nodes: ['eng', 'library' , 'search'],
                     directories: [] as Array<string>
                 },
                 children: []

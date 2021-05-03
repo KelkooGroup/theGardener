@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {PageIndexDocument, SearchResultItem} from "../../../_models/search";
-import {NAVIGATE_PATH, RouteService} from "../../../_services/route.service";
-import {Router} from "@angular/router";
+import {PageIndexDocument, SearchResultItem} from '../../../_models/search';
+import {NAVIGATE_PATH, RouteService} from '../../../_services/route.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-search-result-item',
@@ -20,12 +20,12 @@ export class SearchResultItemComponent implements OnInit {
   }
 
   navigateTo(page: PageIndexDocument){
-    let path = this.routeService.backEndHierarchyAndPathToFrontEndPath(page.hierarchy,page.path);
+    const path = this.routeService.backEndHierarchyAndPathToFrontEndPath(page.hierarchy,page.path);
     this.router.navigateByUrl(  NAVIGATE_PATH + path);
   }
 
   showIndex(): string {
-    return (this.index + 1).toString()
+    return (this.index + 1).toString();
   }
 
 }

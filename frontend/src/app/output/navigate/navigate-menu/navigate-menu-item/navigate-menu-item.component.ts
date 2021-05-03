@@ -8,8 +8,8 @@ import {MenuHierarchy, MenuProjectHierarchy} from '../../../../_models/menu';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {NotificationService} from '../../../../_services/notification.service';
-import {NAVIGATE_PATH, RouteService} from "../../../../_services/route.service";
-import {FrontendPath, NavigationRoute} from "../../../../_models/route";
+import {NAVIGATE_PATH, RouteService} from '../../../../_services/route.service';
+import {FrontendPath, NavigationRoute} from '../../../../_models/route';
 
 
 @Component({
@@ -48,13 +48,13 @@ export class NavigateMenuItemComponent implements OnInit, OnDestroy {
                 this.currentPath = this.routeService.navigationParamsToFrontEndPath(params);
                 this.currentNavigationRoute = this.routeService.navigationParamsToNavigationRoute(params);
                 this.active = this.isActive(this.menuItem);
-                this.expanded = this.menuItem.depth == 0 || this.active;
+                this.expanded = this.menuItem.depth === 0 || this.active;
 
                 if (this.menuItem.type === 'Project') {
                     const project = this.menuItem as MenuProjectHierarchy;
                     const branchToSelect = this.routeService.selectBranchFromNavigationRoute(this.currentNavigationRoute, project.stableBranch);
 
-                    this.active = this.currentNavigationRoute.project == project.name;
+                    this.active = this.currentNavigationRoute.project === project.name;
                     if (this.active) {
                         this.selectedBranch = project.children.find(b => b.name === branchToSelect);
                         this.expanded = true;
@@ -92,16 +92,16 @@ export class NavigateMenuItemComponent implements OnInit, OnDestroy {
     isActive(menuItem: MenuHierarchy): boolean {
         const menuItemNodesPath = this.routeService.navigationRouteToFrontEndPath(menuItem.route).nodesPath;
         let active = false;
-        if (menuItem.type == "Node") {
+        if (menuItem.type === 'Node') {
             active = this.currentPath.pathFromNodes?.startsWith(menuItemNodesPath) === true;
         }
-        if (menuItem.type == "Project") {
-            active = this.currentPath.nodesPath == menuItemNodesPath && this.currentNavigationRoute.project == menuItem.route.project;
+        if (menuItem.type === 'Project') {
+            active = this.currentPath.nodesPath === menuItemNodesPath && this.currentNavigationRoute.project === menuItem.route.project;
         }
-        if (menuItem.type == "Directory") {
+        if (menuItem.type === 'Directory') {
             active = this.routeService.directoryPathSimilar(this.currentNavigationRoute, menuItem.route);
         }
-        if (menuItem.type == "Page") {
+        if (menuItem.type === 'Page') {
             active = this.routeService.pagePathSimilar(this.currentNavigationRoute, menuItem.route);
         }
 

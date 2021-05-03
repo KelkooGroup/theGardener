@@ -1,6 +1,6 @@
 import {DirectoryApi, HierarchyNodeApi, PageApi} from '../_models/hierarchy';
 import {MenuHierarchy, MenuType} from '../_models/menu';
-import {SearchResult} from "../_models/search";
+import {SearchResult} from '../_models/search';
 
 export const MENU_HEADER_SERVICE_RESPONSE: MenuHierarchy =
     {
@@ -450,12 +450,12 @@ export const MENU_SERVICE_RESPONSE: HierarchyNodeApi = {
                                                 order: 0,
                                                 pages: [
                                                   {
-                                                    "path": "suggestionsWS>master>/context",
-                                                    "relativePath": "/context",
-                                                    "name": "context",
-                                                    "label": "The context",
-                                                    "description": "Why providing suggestions",
-                                                    "order": 0
+                                                    path: 'suggestionsWS>master>/context',
+                                                    relativePath: '/context',
+                                                    name: 'context',
+                                                    label: 'The context',
+                                                    description: 'Why providing suggestions',
+                                                    order: 0
                                                   }
                                                 ],
                                                 children: [
@@ -468,20 +468,20 @@ export const MENU_SERVICE_RESPONSE: HierarchyNodeApi = {
                                                         order: 0,
                                                         pages: [
                                                           {
-                                                            "path": "suggestionsWS>master>/suggestions/suggestion",
-                                                            "relativePath": "/suggestion",
-                                                            "name": "suggestion",
-                                                            "label": "The suggestions",
-                                                            "description": "The suggestions...",
-                                                            "order": 0
+                                                            path: 'suggestionsWS>master>/suggestions/suggestion',
+                                                            relativePath: '/suggestion',
+                                                            name: 'suggestion',
+                                                            label: 'The suggestions',
+                                                            description: 'The suggestions...',
+                                                            order: 0
                                                           },
                                                           {
-                                                            "path": "suggestionsWS>master>/suggestions/examples",
-                                                            "relativePath": "/examples",
-                                                            "name": "examples",
-                                                            "label": "examples",
-                                                            "description": "Some examples",
-                                                            "order": 1
+                                                            path: 'suggestionsWS>master>/suggestions/examples',
+                                                            relativePath: '/examples',
+                                                            name: 'examples',
+                                                            label: 'examples',
+                                                            description: 'Some examples',
+                                                            order: 1
                                                           }
                                                         ],
                                                         children: []
@@ -495,12 +495,12 @@ export const MENU_SERVICE_RESPONSE: HierarchyNodeApi = {
                                                         order: 1,
                                                         pages: [
                                                           {
-                                                            "path": "suggestionsWS>master>/admin/admin",
-                                                            "relativePath": "/admin",
-                                                            "name": "admin",
-                                                            "label": "admin",
-                                                            "description": "admin",
-                                                            "order": 0
+                                                            path: 'suggestionsWS>master>/admin/admin',
+                                                            relativePath: '/admin',
+                                                            name: 'admin',
+                                                            label: 'admin',
+                                                            description: 'admin',
+                                                            order: 0
                                                           }
                                                         ],
                                                         children: []
@@ -613,27 +613,27 @@ export const MARKDOWN_WITH_ESCAPED_MARKDOWN: PageApi = {
 };
 
 export const SEARCH_RESULTS: SearchResult ={
-    "items": [
+    items: [
         {
-            "page": {
-                "id": "/suggestion/suggestionsWS>master>/context",
-                "hierarchy": "/suggestion",
-                "path": "suggestionsWS>master>/context",
-                "breadcrumb": "  Suggestion system / Suggestions WebServices / The context",
-                "project": "Suggestions WebServices",
-                "branch": "master",
-                "label": "The context",
-                "description": "Why providing suggestions",
-                "pageContent": "**Feature**: Provide book suggestions"
+            page: {
+                id: '/suggestion/suggestionsWS>master>/context',
+                hierarchy: '/suggestion',
+                path: 'suggestionsWS>master>/context',
+                breadcrumb: '  Suggestion system / Suggestions WebServices / The context',
+                project: 'Suggestions WebServices',
+                branch: 'master',
+                label: 'The context',
+                description: 'Why providing suggestions',
+                pageContent: '**Feature**: Provide book suggestions'
             },
-            "highlights": [
+            highlights: [
                 {
-                    "fragment": "  Suggestion system / Suggestions WebServices / The <em>context</em>",
-                    "word": "context"
+                    fragment: '  Suggestion system / Suggestions WebServices / The <em>context</em>',
+                    word: 'context'
                 },
                 {
-                    "fragment": "The <em>context</em>",
-                    "word": "context"
+                    fragment: 'The <em>context</em>',
+                    word: 'context'
                 }
             ]
         }

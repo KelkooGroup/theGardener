@@ -1,8 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
-import {PageService} from "../../../_services/page.service";
-import {SearchResult} from "../../../_models/search";
-import {NotificationService} from "../../../_services/notification.service";
+import {ActivatedRoute} from '@angular/router';
+import {PageService} from '../../../_services/page.service';
+import {SearchResult} from '../../../_models/search';
+import {NotificationService} from '../../../_services/notification.service';
 
 @Component({
   selector: 'app-search-page',
@@ -18,7 +18,7 @@ export class SearchPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.activatedRoute.queryParams.subscribe(queryParams => {
-      this.keyword = queryParams.keyword
+      this.keyword = queryParams.keyword;
       this.search();
     });
   }

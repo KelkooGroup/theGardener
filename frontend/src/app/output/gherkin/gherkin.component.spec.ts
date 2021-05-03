@@ -8,11 +8,11 @@ import {GherkinTableComponent} from './gherkin-table/gherkin-table.component';
 import {GherkinLongTextComponent} from './gherkin-long-text/gherkin-long-text.component';
 import {NgxJsonViewerModule} from 'ngx-json-viewer';
 import {GherkinScenario, Scenario} from '../../_models/gherkin';
-import {SafePipe} from "../../safe.pipe";
-import {InternalLinkPipe} from "../../internal-link.pipe";
-import {AnchorPipe} from "../../anchor.pipe";
-import {RemoveHtmlSanitizerPipe} from "../../removehtmlsanitizer.pipe";
-import {MarkdownModule} from "ngx-markdown";
+import {SafePipe} from '../../safe.pipe';
+import {InternalLinkPipe} from '../../internal-link.pipe';
+import {AnchorPipe} from '../../anchor.pipe';
+import {RemoveHtmlSanitizerPipe} from '../../removehtmlsanitizer.pipe';
+import {MarkdownModule} from 'ngx-markdown';
 
 
 describe('GherkinComponent', () => {

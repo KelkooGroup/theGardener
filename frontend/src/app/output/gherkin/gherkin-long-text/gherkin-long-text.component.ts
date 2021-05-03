@@ -11,7 +11,10 @@ export class GherkinLongTextComponent implements OnInit {
   @Input() longTextType: string | undefined;
 
   isJson: boolean;
+
+  /* eslint-disable-next-line @typescript-eslint/ban-types */
   json: object;
+
   rawJson: string;
 
   constructor() {

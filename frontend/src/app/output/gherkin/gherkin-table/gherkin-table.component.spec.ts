@@ -2,14 +2,14 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import {GherkinTableComponent} from './gherkin-table.component';
 import { MatTableModule } from '@angular/material/table';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
-import {MarkdownModule} from "ngx-markdown";
-import {HttpClientTestingModule} from "@angular/common/http/testing";
-import {NgxJsonViewerModule} from "ngx-json-viewer";
-import {RouterTestingModule} from "@angular/router/testing";
-import {SafePipe} from "../../../safe.pipe";
-import {InternalLinkPipe} from "../../../internal-link.pipe";
-import {AnchorPipe} from "../../../anchor.pipe";
-import {RemoveHtmlSanitizerPipe} from "../../../removehtmlsanitizer.pipe";
+import {MarkdownModule} from 'ngx-markdown';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {NgxJsonViewerModule} from 'ngx-json-viewer';
+import {RouterTestingModule} from '@angular/router/testing';
+import {SafePipe} from '../../../safe.pipe';
+import {InternalLinkPipe} from '../../../internal-link.pipe';
+import {AnchorPipe} from '../../../anchor.pipe';
+import {RemoveHtmlSanitizerPipe} from '../../../removehtmlsanitizer.pipe';
 
 describe('GherkinTableComponent', () => {
   let component: GherkinTableComponent;
@@ -117,14 +117,14 @@ const TABLE: Array<Array<string>> = [
 ];
 
 const EXAMPLES = [{
-  id: "",
-  tags: [""],
-  keyword: "",
-  description: "",
-  tableHeader: ["categoryId", "categoryName"],
+  id: '',
+  tags: [''],
+  keyword: '',
+  description: '',
+  tableHeader: ['categoryId', 'categoryName'],
   tableBody: [
-    ["cat1", "Walt Disney"],
-    ["cat2", "Picture books"],
-    ["cat3", "Bedtime stories"]
+    ['cat1', 'Walt Disney'],
+    ['cat2', 'Picture books'],
+    ['cat3', 'Bedtime stories']
   ]
 }];

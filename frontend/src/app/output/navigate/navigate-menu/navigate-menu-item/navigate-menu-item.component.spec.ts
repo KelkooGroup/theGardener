@@ -11,7 +11,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {ActivatedRouteStub} from '../../../../_testUtils/activated-route-stub.spec';
 import {FormsModule} from '@angular/forms';
 import {MatSelectHelper} from '../../../../_testUtils/mat-select-helper.spec';
-import {MenuProjectHierarchy, MenuType} from "../../../../_models/menu";
+import {MenuProjectHierarchy, MenuType} from '../../../../_models/menu';
 
 describe('NavigateMenuItemComponent', () => {
   let component: NavigateMenuItemComponent;
@@ -49,7 +49,7 @@ describe('NavigateMenuItemComponent', () => {
   });
 
   it('should create without chevron when no children', () => {
-    activatedRoute.testParams = { nodes:"_publisher"  };
+    activatedRoute.testParams = { nodes:'_publisher'  };
     component.menuItem = {
       name: 'publisher',
       label: 'Publishers',
@@ -57,11 +57,11 @@ describe('NavigateMenuItemComponent', () => {
       depth: 1,
       children: [],
       route:  {
-        nodes: ["publisher", "systems", "services"],
-        project: "ecs",
-        branch: "_",
-        directories: ["Features", "Categories"],
-        page: "Model"
+        nodes: ['publisher', 'systems', 'services'],
+        project: 'ecs',
+        branch: '_',
+        directories: ['Features', 'Categories'],
+        page: 'Model'
       }
     };
     fixture.detectChanges();
@@ -71,16 +71,16 @@ describe('NavigateMenuItemComponent', () => {
   });
 
   it('should expand / collapse hierarchy nodes', () => {
-    activatedRoute.testParams = {nodes:"_publisher"};
+    activatedRoute.testParams = {nodes:'_publisher'};
     component.menuItem = {
       name: 'publisher',
       label: 'Publishers',
       type: 'Node' as MenuType,
       depth: 1,
       route:  {
-        nodes: ["publisher"],
+        nodes: ['publisher'],
         project: undefined,
-        branch: "_",
+        branch: '_',
         directories: [] as  Array<string>,
         page: undefined
       },
@@ -92,9 +92,9 @@ describe('NavigateMenuItemComponent', () => {
           depth: 2,
           children: [],
           route:  {
-            nodes: ["publisher", "child1"],
+            nodes: ['publisher', 'child1'],
             project: undefined,
-            branch: "_",
+            branch: '_',
             directories: [] as  Array<string>,
             page: undefined
           }
@@ -106,9 +106,9 @@ describe('NavigateMenuItemComponent', () => {
           depth: 2,
           children: [],
           route:  {
-            nodes: ["publisher", "child2"],
+            nodes: ['publisher', 'child2'],
             project: undefined,
-            branch: "_",
+            branch: '_',
             directories: [] as  Array<string>,
             page: undefined
           }
@@ -131,11 +131,11 @@ describe('NavigateMenuItemComponent', () => {
       type: 'Node' as MenuType,
       depth: 1,
       route:  {
-        nodes: ["publisher"],
-        project: "ecs",
-        branch: "_",
+        nodes: ['publisher'],
+        project: 'ecs',
+        branch: '_',
         directories: [] as  Array<string>,
-        page: "Meta"
+        page: 'Meta'
       },
       children: [
       ]
@@ -224,7 +224,7 @@ describe('NavigateMenuItemComponent', () => {
   });
 
   it('should select branch specified in URL', () => {
-    activatedRoute.testParams = {nodes: '_eng', project: 'suggestionWS', branch: "branch1"};
+    activatedRoute.testParams = {nodes: '_eng', project: 'suggestionWS', branch: 'branch1'};
     const projectItem: MenuProjectHierarchy = {
       name: 'suggestionWS',
       label: 'Suggestion Webservice',
@@ -258,7 +258,7 @@ describe('NavigateMenuItemComponent', () => {
   });
 
    it('should not show branches select if only one branch', () => {
-    activatedRoute.testParams = {nodes: '_eng', project: 'suggestionWS', branch: "branch1"};
+    activatedRoute.testParams = {nodes: '_eng', project: 'suggestionWS', branch: 'branch1'};
     const projectItem: MenuProjectHierarchy = {
       name: 'suggestionWS',
       label: 'Suggestion Webservice',
