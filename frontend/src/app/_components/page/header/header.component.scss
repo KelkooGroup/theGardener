@@ -97,10 +97,6 @@
   }
 }
 
-.header-search{
-  padding-right: 8px;
-}
-
 .header-navigation-responsive {
   list-style: none;
 }
@@ -120,4 +116,23 @@
 
 .align-left {
   text-align: left;
+}
+
+.mat-select-panel {
+  background: white;
+}
+
+.mat-form-field {
+  margin-bottom: -1.25em;
+}
+
+.mat-select {
+  font-size: $font-size-text-small;
+  text-align: center;
+}
+
+.header-translate {
+  margin-right: 20px;
+  align-self: flex-end;
+  background-color: white;
 }
