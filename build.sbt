@@ -93,7 +93,7 @@ libraryDependencies ++= Seq(
   // Swagger
   "io.swagger" % "swagger-annotations" % "1.6.2", // do not upgrade beyond 1.x because of sbt-swagger-play compatibility
 
-  "com.h2database" % "h2" % "1.4.200",
+  "com.h2database" % "h2" % "1.4.199",
   "commons-io" % "commons-io" % "2.6",
   "com.outr" %% "lucene4s" % "1.11.0",
   "net.ruippeixotog" %% "scala-scraper" % "2.2.0" % Test,
