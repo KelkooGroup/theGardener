@@ -7,7 +7,7 @@ describe('RemovehtmlsanitizerPipe', () => {
   let removeSanitizerPipe: RemoveHtmlSanitizerPipe;
 
   beforeEach(() => {
-    sanitizer = TestBed.get(DomSanitizer);
+    sanitizer = TestBed.inject(DomSanitizer);
     removeSanitizerPipe = new RemoveHtmlSanitizerPipe(sanitizer);
   });
 

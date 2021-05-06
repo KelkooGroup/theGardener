@@ -244,9 +244,7 @@ export class RouteService {
         let directories = [] as Array<string>;
         let page;
 
-        if (directoriesAsString.length === 1) {
-
-        } else {
+        if (directoriesAsString.length !== 1) {
             if (directoriesAsString.length > 1 && directoriesAsString[directoriesAsString.length - 1] === '/') {
                 directoriesAsString = directoriesAsString.substr(1, directoriesAsString.length - 2);
                 directories = directoriesAsString.split('/');

@@ -8,7 +8,7 @@ describe('RouteService', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({});
-        service = TestBed.get(RouteService);
+        service = TestBed.inject(RouteService);
     });
 
     it('isNavigationUrl ', () => {

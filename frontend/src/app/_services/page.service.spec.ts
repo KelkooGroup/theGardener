@@ -25,8 +25,8 @@ describe('PageService', () => {
   }));
 
   beforeEach(() => {
-    httpMock = TestBed.get(HttpTestingController);
-    pageService = TestBed.get(PageService);
+    httpMock = TestBed.inject(HttpTestingController);
+    pageService = TestBed.inject(PageService);
     expect(pageService).toBeTruthy();
   });
 

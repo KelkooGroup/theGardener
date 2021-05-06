@@ -64,12 +64,12 @@ describe('HeaderComponent', () => {
     component = fixture.componentInstance;
     page = new Page(fixture);
 
-    const fakeMenuService: MenuService = TestBed.get(MenuService);
+    const fakeMenuService: MenuService = TestBed.inject(MenuService);
     spyOn(fakeMenuService, 'getMenuHeader').and.returnValue(of(MENU_HEADER_SERVICE_RESPONSE));
 
     activatedRoute = fixture.debugElement.injector.get(ActivatedRoute) as any;
     activatedRoute.testUrl = [];
-    router = TestBed.get(Router);
+    router = TestBed.inject(Router);
     spyOn(router, 'navigateByUrl').and.returnValue(Promise.resolve(true));
   });
 

@@ -68,7 +68,7 @@ export class PageContentComponent implements OnInit, OnDestroy, AfterViewChecked
           return this.pageService.getPage(backEndPath.pathFromProject);
         }
       }),
-      catchError(err => {
+      catchError(() => {
         const keyword = this.routeService.extractKeyword(this.targetedRoute);
         this.router.navigateByUrl(SEARCH_PATH + `?keyword=${keyword.trim()}`);
         return of<Page>();
@@ -92,9 +92,9 @@ export class PageContentComponent implements OnInit, OnDestroy, AfterViewChecked
   }
 
   ngOnDestroy(): void {
-    this.fragmentSubscription.unsubscribe();
-    this.subscription.unsubscribe();
-    this.routerSubscription.unsubscribe();
+    if (this.fragmentSubscription) this.fragmentSubscription.unsubscribe();
+    if (this.subscription) this.subscription.unsubscribe();
+    if(this.routerSubscription) this.routerSubscription.unsubscribe();
     window.removeEventListener('scroll', this.scroll, true);
   }
 

@@ -1,10 +1,10 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
 import {NavigateMenuItemComponent} from './navigate-menu-item.component';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatSelectModule } from '@angular/material/select';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatIconModule} from '@angular/material/icon';
+import {MatSelectModule} from '@angular/material/select';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {RouterTestingModule} from '@angular/router/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -142,7 +142,7 @@ describe('NavigateMenuItemComponent', () => {
     };
     fixture.detectChanges();
 
-    const router: Router = TestBed.get(Router);
+    const router: Router = TestBed.inject(Router);
     spyOn(router, 'navigateByUrl').and.returnValue(Promise.resolve(true));
 
     page.clickOnItem();
@@ -225,11 +225,10 @@ describe('NavigateMenuItemComponent', () => {
 
   it('should select branch specified in URL', () => {
     activatedRoute.testParams = {nodes: '_eng', project: 'suggestionWS', branch: 'branch1'};
-    const projectItem: MenuProjectHierarchy = {
+    component.menuItem = {
       name: 'suggestionWS',
       label: 'Suggestion Webservice',
       type: 'Project' as MenuType,
-      stableBranch: 'qa',
       depth: 2,
       route: {},
       children: [
@@ -251,7 +250,6 @@ describe('NavigateMenuItemComponent', () => {
         },
       ]
     };
-    component.menuItem = projectItem;
     fixture.detectChanges();
 
     expect(component.selectedBranch.name).toEqual('branch1');
@@ -259,11 +257,10 @@ describe('NavigateMenuItemComponent', () => {
 
    it('should not show branches select if only one branch', () => {
     activatedRoute.testParams = {nodes: '_eng', project: 'suggestionWS', branch: 'branch1'};
-    const projectItem: MenuProjectHierarchy = {
+     component.menuItem = {
       name: 'suggestionWS',
       label: 'Suggestion Webservice',
       type: 'Project' as MenuType,
-      stableBranch: 'qa',
       depth: 2,
       route: {},
       children: [
@@ -277,7 +274,6 @@ describe('NavigateMenuItemComponent', () => {
         }
       ]
     };
-    component.menuItem = projectItem;
     fixture.detectChanges();
 
     expect(page.branchSelect).toBeFalsy();

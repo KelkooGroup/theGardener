@@ -5,7 +5,7 @@ import {DomSanitizer} from '@angular/platform-browser';
 describe('SafePipe', () => {
 
   it('create an instance', () => {
-    const sanitizer: DomSanitizer = TestBed.get(DomSanitizer);
+    const sanitizer: DomSanitizer = TestBed.inject(DomSanitizer);
     const pipe = new SafePipe(sanitizer);
     expect(pipe).toBeTruthy();
   });

@@ -85,10 +85,10 @@ describe('NavigateContentComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(NavigateContentComponent);
         component = fixture.componentInstance;
-        const pageService: PageService = TestBed.get(PageService);
+        const pageService: PageService = TestBed.inject(PageService);
         spyOn(pageService, 'getRootDirectoryForPath').and.returnValue(of(DIRECTORIES_SERVICE_RESPONSE));
 
-        router = TestBed.get(Router);
+        router = TestBed.inject(Router);
         spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
 
     });

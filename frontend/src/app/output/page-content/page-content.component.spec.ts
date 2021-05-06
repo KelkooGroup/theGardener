@@ -82,7 +82,7 @@ describe('PageContentComponent', () => {
   });
 
   it('should get page content from backend and show markdown', waitForAsync(() => {
-    const pageService: PageService = TestBed.get(PageService);
+    const pageService: PageService = TestBed.inject(PageService);
     spyOn(pageService, 'getPage').and.returnValue(of(PAGE_SERVICE_RESPONSE));
 
     fixture.detectChanges();
@@ -96,7 +96,7 @@ describe('PageContentComponent', () => {
   }));
 
   it('should get page content from backend and show markdown', waitForAsync(() => {
-    const pageService: PageService = TestBed.get(PageService);
+    const pageService: PageService = TestBed.inject(PageService);
     spyOn(pageService, 'getPage').and.returnValue(of(PAGE_WITH_INTERNAL_LINK_SERVICE_RESPONSE));
 
     fixture.detectChanges();
@@ -107,7 +107,7 @@ describe('PageContentComponent', () => {
   }));
 
   it('should show an iframe if page is an external link', waitForAsync(() => {
-    const pageService: PageService = TestBed.get(PageService);
+    const pageService: PageService = TestBed.inject(PageService);
     spyOn(pageService, 'getPage').and.returnValue(of(PAGE_WITH_EXTERNAL_LINK_RESPONSE));
 
     fixture.detectChanges();
@@ -118,7 +118,7 @@ describe('PageContentComponent', () => {
   }));
 
   it('should show scenario settings if page contains a scenario', waitForAsync(() => {
-    const pageService: PageService = TestBed.get(PageService);
+    const pageService: PageService = TestBed.inject(PageService);
     spyOn(pageService, 'getPage').and.returnValue(of(PAGE_WITH_SCENARIO));
 
     fixture.detectChanges();
@@ -133,7 +133,7 @@ describe('PageContentComponent', () => {
     const path2 = '';
     const path3 = ' ';
     const path4 = ';';
-    const router: Router = TestBed.get(Router);
+    const router: Router = TestBed.inject(Router);
     spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
 
     PageContentComponentTools.navigate(router, path);
@@ -150,7 +150,7 @@ describe('PageContentComponent', () => {
   }));
 
   it('should show a link to view source if provided', waitForAsync(() => {
-    const pageService: PageService = TestBed.get(PageService);
+    const pageService: PageService = TestBed.inject(PageService);
     spyOn(pageService, 'getPage').and.returnValue(of(PAGE_WITH_SOURCE_URL));
 
     fixture.detectChanges();
@@ -160,7 +160,7 @@ describe('PageContentComponent', () => {
   }));
 
   it('should not show a link to view source if not provided', waitForAsync(() => {
-    const pageService: PageService = TestBed.get(PageService);
+    const pageService: PageService = TestBed.inject(PageService);
     spyOn(pageService, 'getPage').and.returnValue(of(PAGE_SERVICE_RESPONSE));
 
     fixture.detectChanges();

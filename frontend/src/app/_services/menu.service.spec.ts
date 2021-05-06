@@ -22,8 +22,8 @@ describe('MenuService', () => {
     }));
 
     beforeEach(() => {
-        httpMock = TestBed.get(HttpTestingController);
-        menuService = TestBed.get(MenuService);
+        httpMock = TestBed.inject(HttpTestingController);
+        menuService = TestBed.inject(MenuService);
         expect(menuService).toBeTruthy();
     });
 

@@ -31,14 +31,13 @@ export class PageService {
             .pipe(
                 map(res => res[0]),
                 map(page => {
-                    const res: Page = {
-                        title: this.getPageTitle(page),
-                        path: page.path,
-                        order: page.order,
-                        parts: page.content,
-                        sourceUrl: page.sourceUrl
+                    return {
+                      title: PageService.getPageTitle(page),
+                      path: page.path,
+                      order: page.order,
+                      parts: page.content,
+                      sourceUrl: page.sourceUrl
                     };
-                    return res;
                 })
             );
     }
@@ -52,7 +51,7 @@ export class PageService {
             );
     }
 
-    private getPageTitle(page: PageApi): string {
+    private static getPageTitle(page: PageApi): string {
         if (page.content && page.content.length === 1 && page.content[0].type === 'includeExternalPage') {
             return undefined;
         } else {
