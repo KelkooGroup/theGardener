@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import {SearchResult} from "../../../_models/search";
+import {SearchResult} from '../../../_models/search';
 
 @Component({
     selector: 'app-search-results',

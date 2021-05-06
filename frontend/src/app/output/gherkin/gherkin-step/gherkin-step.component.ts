@@ -34,12 +34,10 @@ export class GherkinStepComponent implements OnInit {
     const split = stepText.split(TEXT_WITH_ARGUMENTS_REGEX).filter(t => t);
     const match = stepText.match(TEXT_WITH_ARGUMENTS_REGEX);
 
-    return split.map(f => {
-      return {
+    return split.map(f => ({
         text: f,
         isParameter: match ? match.includes('"' + f + '"') : false,
-      };
-    });
+      }));
   }
 }
 

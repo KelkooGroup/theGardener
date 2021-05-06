@@ -4,8 +4,8 @@ import {Observable} from 'rxjs';
 import {DirectoryApi, PageApi} from '../_models/hierarchy';
 import {map} from 'rxjs/operators';
 import {Page} from '../_models/page';
-import {RouteService} from "./route.service";
-import {SearchResult} from "../_models/search";
+import {RouteService} from './route.service';
+import {SearchResult} from '../_models/search';
 
 @Injectable({
     providedIn: 'root'

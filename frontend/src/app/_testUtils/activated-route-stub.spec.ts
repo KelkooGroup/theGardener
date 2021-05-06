@@ -7,7 +7,7 @@ import {Injectable} from '@angular/core';
  * Use the `setParamMap()` method to add the next `paramMap` value.
  */
 @Injectable()
-/* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
+/* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match, @typescript-eslint/member-ordering, @typescript-eslint/ban-types */
 export class ActivatedRouteStub {
   // Observable that contains a map of the parameters
   private subjectParamMap = new BehaviorSubject(convertToParamMap(this.testParamMap));
@@ -155,7 +155,7 @@ export class ActivatedRouteStub {
 
   private _fragment: object = {};
   get fragment() {
-    return this._fragment
+    return this._fragment;
   }
 
   set fragment(params) {

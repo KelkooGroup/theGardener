@@ -2,7 +2,7 @@ import {AfterViewInit, Component, Input, OnInit} from '@angular/core';
 import {OpenApiPath} from '../../../_models/open-api';
 import {ConfigService} from '../../../_services/config.service';
 
-declare const SwaggerUIBundle: any;
+declare const swaggerUIBundle: any;
 
 @Component({
   selector: 'app-open-api-end-points',
@@ -30,12 +30,13 @@ export class OpenApiEndPointsComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     const jsonSpec = this.openApiPathJson.openApiSpec;
     const domId = '#' + this.id;
-    SwaggerUIBundle({
+    swaggerUIBundle({
+      /* eslint-disable-next-line @typescript-eslint/naming-convention */
       dom_id: domId,
       layout: 'BaseLayout',
       presets: [
-        SwaggerUIBundle.presets.apis,
-        SwaggerUIBundle.SwaggerUIStandalonePreset
+        swaggerUIBundle.presets.apis,
+        swaggerUIBundle.SwaggerUIStandalonePreset
       ],
       spec: jsonSpec,
       docExpansion: 'list',
@@ -45,7 +46,7 @@ export class OpenApiEndPointsComponent implements OnInit, AfterViewInit {
       showMutatedRequest: false,
       requestInterceptor: (request: any) => {
         request.url = this.proxyUrl + '?url=' + request.url.replace('http', this.openApiPathJson.protocol).replace(/&/g, 'amp') + '&body=' + request.body;
-        return request
+        return request;
       }
     });
   }

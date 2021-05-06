@@ -11,11 +11,11 @@ import {Router} from '@angular/router';
 })
 export class NavigateMobileMenuComponent implements OnInit {
 
+  @Output() navigationEvent = new EventEmitter<string>();
+
   fullMenuForMobile: Array<MenuHierarchy>;
 
   expandedItem: MenuHierarchy;
-
-  @Output() navigationEvent = new EventEmitter<string>();
 
   constructor(private menuService: MenuService,
               private routeService: RouteService,
@@ -25,7 +25,7 @@ export class NavigateMobileMenuComponent implements OnInit {
     this.menuService.getMenu()
       .subscribe(menu => {
         this.fullMenuForMobile = menu;
-      })
+      });
   }
 
   expand(item: MenuHierarchy) {

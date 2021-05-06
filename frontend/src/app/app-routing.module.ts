@@ -1,7 +1,7 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {NavigatePageComponent} from './output/navigate/navigate-page.component';
-import {SearchPageComponent} from "./output/search/search-page/search-page.component";
+import {SearchPageComponent} from './output/search/search-page/search-page.component';
 
 const routes: Routes = [
     {

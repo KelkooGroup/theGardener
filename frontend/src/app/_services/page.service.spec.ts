@@ -60,7 +60,7 @@ describe('PageService', () => {
             .subscribe(result => {
                 expect(result.items).toBeDefined();
                 expect(result.items.length).toBe(1);
-                expect(result.items[0].page.label).toBe("The context");
+                expect(result.items[0].page.label).toBe('The context');
             });
 
 

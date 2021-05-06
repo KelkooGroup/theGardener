@@ -12,6 +12,8 @@ export class GherkinTableComponent implements OnInit {
   @Input() examples: Array<GherkinExamples>;
 
   tableHeader: Array<string>;
+
+  /* eslint-disable-next-line @typescript-eslint/ban-types */
   tableRows: Array<object> = [];
 
   constructor() {

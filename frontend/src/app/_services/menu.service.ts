@@ -62,9 +62,7 @@ export class MenuService {
   private getMenuForSelectedRootNode(nodeName: string): Observable<HierarchyNodeApi> {
     return this.hierarchy()
       .pipe(
-        map((hierarchyNode: HierarchyNodeApi) => {
-          return hierarchyNode.children.find(node => node.hierarchy === nodeName);
-        })
+        map((hierarchyNode: HierarchyNodeApi) => hierarchyNode.children.find(node => node.hierarchy === nodeName))
       );
   }
 

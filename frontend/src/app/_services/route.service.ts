@@ -101,14 +101,14 @@ export class RouteService {
             } else {
                 const directoriesAndPageArray = directoriesAndPage.split('/');
                 page = directoriesAndPageArray.pop();
-                let directoryNavigationForward
-                if (directoriesAndPageArray.length == 1) {
+                let directoryNavigationForward;
+                if (directoriesAndPageArray.length === 1) {
                     directoryNavigationForward = EMPTY_CHAR + directoriesAndPageArray.pop();
                 } else {
                     directoryNavigationForward = directoriesAndPageArray.join(EMPTY_CHAR);
                 }
                 targetDirectoriesPath += EMPTY_CHAR + directoryNavigationForward;
-                targetDirectoriesPath = targetDirectoriesPath.replace('__','_')
+                targetDirectoriesPath = targetDirectoriesPath.replace('__','_');
             }
 
 
@@ -120,13 +120,13 @@ export class RouteService {
             }
             const subDirectoriesAndPage = relativePathWithChildren.split('/');
             let targetDirectoriesPath;
-            let page = subDirectoriesAndPage[subDirectoriesAndPage.length - 1];
-            if (subDirectoriesAndPage.length == 1) {
+            const page = subDirectoriesAndPage[subDirectoriesAndPage.length - 1];
+            if (subDirectoriesAndPage.length === 1) {
                 targetDirectoriesPath = navigationParams.directories;
             } else {
                 const subDirectories = subDirectoriesAndPage.slice(0, subDirectoriesAndPage.length - 1);
                 targetDirectoriesPath = navigationParams.directories + EMPTY_CHAR + subDirectories.join(EMPTY_CHAR);
-                targetDirectoriesPath = targetDirectoriesPath.replace('__','_')
+                targetDirectoriesPath = targetDirectoriesPath.replace('__','_');
             }
             return `${NAVIGATE_PATH}${navigationParams.nodes}/${navigationParams.project}/${navigationParams.branch}/${targetDirectoriesPath}/${page}`;
         }
@@ -242,9 +242,9 @@ export class RouteService {
         }
         let directoriesAsString = backEndPathElements[2];
         let directories = [] as Array<string>;
-        let page = undefined;
+        let page;
 
-        if (directoriesAsString.length == 1) {
+        if (directoriesAsString.length === 1) {
 
         } else {
             if (directoriesAsString.length > 1 && directoriesAsString[directoriesAsString.length - 1] === '/') {
@@ -252,7 +252,7 @@ export class RouteService {
                 directories = directoriesAsString.split('/');
             } else {
                 directories = directoriesAsString.split('/');
-                page = directories.pop()
+                page = directories.pop();
             }
         }
         return {
@@ -314,25 +314,25 @@ export class RouteService {
             && currentNavigationRoute.page === menuItemNavigationRoute.page;
     }
 
-    isNavigationUrl(relativeUrl: string): Boolean {
-        return relativeUrl != undefined && relativeUrl.startsWith("app/documentation/navigate");
+    isNavigationUrl(relativeUrl: string): boolean {
+        return relativeUrl !== undefined && relativeUrl.startsWith('app/documentation/navigate');
     }
 
     backEndHierarchyAndPathToFrontEndPath(hierarchy: string, path: string) {
 
-        let navigationRoute = this.backEndPathToNavigationRoute(path);
-        let hierarchyFrontEndPath = hierarchy.replace(/\//g, EMPTY_CHAR);
+        const navigationRoute = this.backEndPathToNavigationRoute(path);
+        const hierarchyFrontEndPath = hierarchy.replace(/\//g, EMPTY_CHAR);
         let directories;
         if (navigationRoute.directories.length > 1) {
-            directories = navigationRoute.directories.join(EMPTY_CHAR)
+            directories = navigationRoute.directories.join(EMPTY_CHAR);
         } else {
-            directories = EMPTY_CHAR
+            directories = EMPTY_CHAR;
         }
         return hierarchyFrontEndPath + '/' + navigationRoute.project + '/' + navigationRoute.branch + '/' + directories + '/' + navigationRoute.page;
     }
 
     extractKeyword(targetedRoute: NavigationRoute) {
-        const join = targetedRoute.nodes.join(" ")+ " " + targetedRoute.project+ " " + targetedRoute.page;
+        const join = targetedRoute.nodes.join(' ')+ ' ' + targetedRoute.project+ ' ' + targetedRoute.page;
         return join.replace(/([a-zA-Z])(?=[A-Z])/g, '$1 ');
     }
 }
