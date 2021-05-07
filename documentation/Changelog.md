@@ -7,10 +7,18 @@
      }
 }
 ```
+### [2021-05][1.5.0] 
+
+The main features are:
+- [0793 - Translate content](https://github.com/KelkooGroup/theGardener/issues/793) 
+
+The improvements are:
+- [0796 - Activate LaTex rendering](https://github.com/KelkooGroup/theGardener/issues/796) 
+
 
 ### [2020-09][1.4.2] 
 
-The main features is:
+The main features are:
 - [0655 - Search](https://github.com/KelkooGroup/theGardener/issues/655) 
 
 The improvements are:
@@ -18,7 +26,7 @@ The improvements are:
 
 ### [2020-07][1.3.2] 
  
-The main features is:
+The main features are:
 - [0359 - Responsive to be mobile compatible](https://github.com/KelkooGroup/theGardener/issues/359) 
  
 The improvements are:
