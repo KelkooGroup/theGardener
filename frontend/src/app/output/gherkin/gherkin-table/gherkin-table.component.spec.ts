@@ -10,6 +10,7 @@ import {SafePipe} from '../../../safe.pipe';
 import {InternalLinkPipe} from '../../../internal-link.pipe';
 import {AnchorPipe} from '../../../anchor.pipe';
 import {RemoveHtmlSanitizerPipe} from '../../../removehtmlsanitizer.pipe';
+import {SecurityContext} from '@angular/core';
 
 describe('GherkinTableComponent', () => {
   let component: GherkinTableComponent;
@@ -28,7 +29,9 @@ describe('GherkinTableComponent', () => {
         MatTableModule,
         HttpClientTestingModule,
         NoopAnimationsModule,
-        MarkdownModule.forRoot(),
+        MarkdownModule.forRoot({
+          sanitize: SecurityContext.NONE
+        }),
         NgxJsonViewerModule,
         RouterTestingModule,
       ]

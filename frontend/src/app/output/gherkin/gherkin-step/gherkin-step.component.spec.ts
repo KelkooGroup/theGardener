@@ -17,6 +17,7 @@ import {RemoveHtmlSanitizerPipe} from '../../../removehtmlsanitizer.pipe';
 import {MarkdownModule} from 'ngx-markdown';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {RouterTestingModule} from '@angular/router/testing';
+import {SecurityContext} from '@angular/core';
 
 
 describe('GherkinStepComponent', () => {
@@ -40,7 +41,9 @@ describe('GherkinStepComponent', () => {
         MatTabsModule,
         NgxJsonViewerModule,
         NoopAnimationsModule,
-        MarkdownModule.forRoot(),
+        MarkdownModule.forRoot({
+          sanitize: SecurityContext.NONE
+        }),
         HttpClientTestingModule,
         RouterTestingModule,
       ]

@@ -13,6 +13,7 @@ import {InternalLinkPipe} from '../../internal-link.pipe';
 import {AnchorPipe} from '../../anchor.pipe';
 import {RemoveHtmlSanitizerPipe} from '../../removehtmlsanitizer.pipe';
 import {MarkdownModule} from 'ngx-markdown';
+import {SecurityContext} from '@angular/core';
 
 
 describe('GherkinComponent', () => {
@@ -36,7 +37,9 @@ describe('GherkinComponent', () => {
         NoopAnimationsModule,
         NgxJsonViewerModule,
         MatTabsModule,
-        MarkdownModule.forRoot(),
+        MarkdownModule.forRoot({
+          sanitize: SecurityContext.NONE
+        }),
       ]
     })
       .compileComponents();

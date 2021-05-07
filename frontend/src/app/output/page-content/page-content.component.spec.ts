@@ -26,6 +26,7 @@ import {AnchorPipe} from '../../anchor.pipe';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {OpenApiEndPointsComponent} from './open-api-end-points/open-api-end-points.component';
 import {FooterComponent} from '../../_components/page/footer/footer.component';
+import {SecurityContext} from '@angular/core';
 
 
 describe('PageContentComponent', () => {
@@ -57,7 +58,9 @@ describe('PageContentComponent', () => {
         MatTableModule,
         MatTabsModule,
         NoopAnimationsModule,
-        MarkdownModule.forRoot(),
+        MarkdownModule.forRoot({
+          sanitize: SecurityContext.NONE
+        }),
         NgxJsonViewerModule,
         RouterTestingModule,
       ],

@@ -30,6 +30,7 @@ import {NavigateMobileMenuComponent} from '../navigate-mobile-menu/navigate-mobi
 import {NavigateMenuItemComponent} from '../navigate-menu/navigate-menu-item/navigate-menu-item.component';
 import {MatSelectModule} from '@angular/material/select';
 import {FormsModule} from '@angular/forms';
+import {SecurityContext} from '@angular/core';
 
 
 describe('NavigateContentComponent', () => {
@@ -61,7 +62,9 @@ describe('NavigateContentComponent', () => {
                 MatSnackBarModule,
                 MatTabsModule,
                 NoopAnimationsModule,
-                MarkdownModule.forRoot(),
+                MarkdownModule.forRoot({
+                  sanitize: SecurityContext.NONE
+                }),
                 NgxJsonViewerModule,
                 MatTableModule,
                 RouterTestingModule,
