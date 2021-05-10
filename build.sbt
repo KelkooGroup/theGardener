@@ -88,7 +88,7 @@ libraryDependencies ++= Seq(
   "org.julienrf" %% "play-json-derived-codecs" % "9.0.0",
   "io.cucumber" % "gherkin" % "5.2.0",
   "org.playframework.anorm" %% "anorm" % "2.6.10",
-  "mysql" % "mysql-connector-java" % "8.0.24",
+  "mysql" % "mysql-connector-java" % "8.0.25",
   "org.eclipse.jgit" % "org.eclipse.jgit" % "5.11.0.202103091610-r",
   // Swagger
   "io.swagger" % "swagger-annotations" % "1.6.2", // do not upgrade beyond 1.x because of sbt-swagger-play compatibility
