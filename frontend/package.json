@@ -70,7 +70,7 @@
     "cucumber": "6.0.5",
     "eslint": "7.26.0",
     "eslint-plugin-import": "2.22.1",
-    "eslint-plugin-jsdoc": "33.2.0",
+    "eslint-plugin-jsdoc": "33.3.0",
     "eslint-plugin-prefer-arrow": "1.2.3",
     "eslint-plugin-unicorn": "31.0.0",
     "jasmine-core": "3.7.1",
