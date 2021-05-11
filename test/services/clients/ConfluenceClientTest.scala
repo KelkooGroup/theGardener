@@ -4,7 +4,7 @@ import akka.actor.ActorSystem
 import org.scalatestplus.play.PlaySpec
 
 import scala.io.Source
-//import play.api.{Configuration, Environment}
+import play.api.{Configuration, Environment}
 import play.api.test.WsTestClient
 
 import scala.concurrent.Await
@@ -24,8 +24,8 @@ class ConfluenceClientTest extends PlaySpec {
 
     "get page content - Integration test" in {
       WsTestClient.withClient { client =>
-        //        val configuration = Configuration.load(Environment.simple())
-        val confluenceClient = new ConfluenceClient(client)
+        val configuration = Configuration.load(Environment.simple())
+        val confluenceClient = new ConfluenceClient(configuration,client)
 
         val content = Await.result(confluenceClient.getPageContent(130912373), 10.seconds)
 
@@ -43,8 +43,8 @@ class ConfluenceClientTest extends PlaySpec {
 
     "update page content - Integration test" in {
       WsTestClient.withClient { client =>
-        //        val configuration = Configuration.load(Environment.simple())
-        val confluenceClient = new ConfluenceClient(client)
+        val configuration = Configuration.load(Environment.simple())
+        val confluenceClient = new ConfluenceClient(configuration,client)
 
         val status = Await.result(confluenceClient.updatePageContent(130912107, "TEST REST API from scala", ConfluenceMarkdownContent(ConfluenceClientTest.markDownFromFile)), 10.seconds)
 
@@ -54,12 +54,6 @@ class ConfluenceClientTest extends PlaySpec {
 
         assert(status.isRight)
       }
-    }
-
-    "create content" in {
-
-      assert("""  `sfsq`  """.replaceAll("`", """\\"""") == """  \"sfsq\"  """)
-
     }
   }
 }
@@ -77,6 +71,6 @@ object ConfluenceClientTest {
                          |      - Decide with the team if it make sense to add it or not and where.
                          |""".stripMargin
 
-  def markDownFromFile : String = Source.fromFile("documentation/Contribute/Develop.md").mkString
+  def markDownFromFile : String = Source.fromFile("documentation/Meta.md").mkString
 
 }

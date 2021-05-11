@@ -1,6 +1,6 @@
 package services.clients
 
-import play.api.Logging
+import play.api.{Configuration, Logging}
 import play.api.libs.json.Json
 import play.api.libs.ws.{WSAuthScheme, WSClient}
 import services.clients.ConfluenceClient.parsePage
@@ -31,16 +31,17 @@ object ConfluencePage {
 }
 
 
-class ConfluenceClient @Inject()(wsClient: WSClient)(implicit ec: ExecutionContext) extends Logging {
+class ConfluenceClient @Inject()(config: Configuration, wsClient: WSClient)(implicit ec: ExecutionContext) extends Logging {
 
-  val user = "cop-doc-publisher"
-  val password = "!Cop2021!"
-  val confluenceUrl = "http://confluence.corp.kelkoo.net:8090/rest/api/content"
+  val user = config.get[String]("confluence.user")
+  val password = config.get[String]("confluence.password")
+  val confluenceRestUrl = config.get[String]("confluence.restApiUrl")
+
   val pageWithMarkdownTemplate =
-    """<p class="auto-cursor-target"><br /></p><table class="wysiwyg-macro" data-macro-name="markdown" data-macro-id="27a98bc4-0ea3-4461-b991-89a1fd294410" data-macro-parameters="allowHtml=true|atlassian-macro-output-type=INLINE|id=THE_GARDENER_MD" data-macro-schema-version="1" style="background-image: url(http://confluence.corp.kelkoo.net:8090/plugins/servlet/confluence/placeholder/macro-heading?definition=e21hcmtkb3duOmFsbG93SHRtbD10cnVlfGlkPVRIRV9HQVJERU5FUl9NRHxhdGxhc3NpYW4tbWFjcm8tb3V0cHV0LXR5cGU9SU5MSU5FfQ&amp;locale=en_GB&amp;version=2); background-repeat: no-repeat;" data-macro-body-type="PLAIN_TEXT"><tr><td class="wysiwyg-macro-body"><pre>CONTENT_MD</pre></td></tr></table><p><br /></p>""".stripMargin
+    """<p class="auto-cursor-target"><br /></p><table class="wysiwyg-macro" data-macro-name="markdown" data-macro-parameters="allowHtml=true|atlassian-macro-output-type=INLINE|id=THE_GARDENER_MD" data-macro-schema-version="1" data-macro-body-type="PLAIN_TEXT"><tr><td class="wysiwyg-macro-body"><pre>CONTENT_MD</pre></td></tr></table><p><br /></p>""".stripMargin
 
   def getPageContentAsString(pageId: Int): Future[String] = {
-    val url = s"$confluenceUrl/$pageId?expand=body.editor,version"
+    val url = s"$confluenceRestUrl/content/$pageId?expand=body.editor,version"
     wsClient.url(url).withAuth(user, password, WSAuthScheme.BASIC).withRequestTimeout(3.second).get().map { response =>
       if (response.status == 200) {
         response.body
@@ -79,12 +80,10 @@ class ConfluenceClient @Inject()(wsClient: WSClient)(implicit ec: ExecutionConte
   }
 
   def updatePageContent(originalPage: ConfluencePage, newTitle: String, newBody: String): Future[Either[ConfluenceError, Unit]] = {
-    val url = s"$confluenceUrl/${originalPage.id}"
+    val url = s"$confluenceRestUrl/content/${originalPage.id}"
     val newPageVersion = originalPage.version.copy(number = originalPage.version.number + 1)
     val newPage = ConfluencePage(id = originalPage.id, title = newTitle, version = newPageVersion, body = ConfluencePageBody(editor = ConfluencePageBodyEditor(newBody)))
     val data = Json.stringify(Json.toJson(newPage))
-
-    System.out.println(data)
     wsClient.url(url).withAuth(user, password, WSAuthScheme.BASIC)
       .withHttpHeaders(("Content-Type", "application/json"))
       .withRequestTimeout(3.second)
@@ -95,10 +94,7 @@ class ConfluenceClient @Inject()(wsClient: WSClient)(implicit ec: ExecutionConte
       }
     }
   }
-
-
 }
-
 
 object ConfluenceClient {
   def parsePage(content: String): ConfluencePage = {
