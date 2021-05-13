@@ -55,7 +55,7 @@ jobs:
       working-directory: frontend
 
     - name: ng build --prod
-      run: ng build --no-progress --prod --output-path ../public/dist
+      run: ng build --no-progress --output-path ../public/dist
       working-directory: frontend
 
     - name: SonarCloud Scan
