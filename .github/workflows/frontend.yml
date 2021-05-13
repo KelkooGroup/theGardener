@@ -54,7 +54,7 @@ jobs:
         ng test --watch=false --progress=false --code-coverage
       working-directory: frontend
 
-    - name: ng build --prod
+    - name: ng build
       run: ng build --no-progress --output-path ../public/dist
       working-directory: frontend
 
