@@ -85,7 +85,7 @@ libraryDependencies ++= Seq(
   "ch.qos.logback" % "logback-access" % "1.2.3",
   "net.logstash.logback" % "logstash-logback-encoder" % "6.2",
   "com.typesafe.play" %% "play-json" % "2.9.2",
-  "org.julienrf" %% "play-json-derived-codecs" % "9.0.0",
+  "org.julienrf" %% "play-json-derived-codecs" % "10.0.1",
   "io.cucumber" % "gherkin" % "5.2.0",
   "org.playframework.anorm" %% "anorm" % "2.6.10",
   "mysql" % "mysql-connector-java" % "8.0.25",
