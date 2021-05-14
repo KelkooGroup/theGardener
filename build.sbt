@@ -73,7 +73,7 @@ Compile / packageDoc / publishArtifact := false
 topLevelDirectory := None
 
 val silencerVersion = "1.5.0"
-val cucumberVersion = "6.10.3"
+val cucumberVersion = "6.10.4"
 
 libraryDependencies ++= Seq(
   ws,
