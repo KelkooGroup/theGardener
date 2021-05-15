@@ -69,7 +69,7 @@
     "chai-as-promised": "7.1.1",
     "cucumber": "6.0.5",
     "eslint": "7.26.0",
-    "eslint-plugin-import": "2.23.1",
+    "eslint-plugin-import": "2.23.2",
     "eslint-plugin-jsdoc": "34.2.2",
     "eslint-plugin-prefer-arrow": "1.2.3",
     "eslint-plugin-unicorn": "31.0.0",
