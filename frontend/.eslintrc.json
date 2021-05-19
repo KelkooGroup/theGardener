@@ -48,12 +48,7 @@
           "error",
           "as-needed"
         ],
-        "import/no-extraneous-dependencies": [
-          "error",
-          {
-            "devDependencies": false
-          }
-        ],
+        "import/no-extraneous-dependencies": "off",
         "import/no-unassigned-import": "error",
         "import/order": "off",
         "max-len": [
