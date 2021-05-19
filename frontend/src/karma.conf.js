@@ -13,16 +13,28 @@ module.exports = function (config) {
       require('karma-chrome-launcher'),
       require('karma-phantomjs-launcher'),
       require('karma-jasmine-html-reporter'),
-      require('karma-coverage-istanbul-reporter'),
+      require('karma-coverage'),
       require('@angular-devkit/build-angular/plugins/karma')
     ],
     client: {
+      jasmine: {
+        // you can add configuration options for Jasmine here
+        // the possible options are listed at https://jasmine.github.io/api/edge/Configuration.html
+        // for example, you can disable the random execution with `random: false`
+        // or set a specific seed with `seed: 4321`
+      },
       clearContext: false // leave Jasmine Spec Runner output visible in browser
     },
-    coverageIstanbulReporter: {
+    jasmineHtmlReporter: {
+      suppressAll: true // removes the duplicated traces
+    },
+    coverageReporter: {
       dir: require('path').join(__dirname, '../coverage'),
-      reports: ['html', 'lcovonly'],
-      fixWebpackSourcePaths: true
+      subdir: '.',
+      reporters: [
+        { type: 'html' },
+        { type: 'lcovonly' }
+      ]
     },
 
     reporters: ['progress', 'kjhtml'],
@@ -37,6 +49,7 @@ module.exports = function (config) {
         flags: ["--no-sandbox"] // required for Travis CI
       }
     },
-    singleRun: false
+    singleRun: false,
+    restartOnFileChange: true
   });
 };
