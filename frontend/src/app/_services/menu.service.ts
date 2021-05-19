@@ -188,8 +188,7 @@ export class MenuService {
 
     const directoryRoute = this.routeService.backEndPathToNavigationRoute(directory.path);
 
-    return pages.map(p => {
-      return {
+    return pages.map(p => ({
         name: p.name,
         label: p.label,
         type: 'Page' as MenuType,
@@ -204,16 +203,14 @@ export class MenuService {
           page: p.name
         },
         children: []
-      };
-    });
+      }));
   }
 
   private buildMenuHierarchyForPages(parentRoute: NavigationRoute, pages: Array<PageApi>, depth: number): Array<MenuPageHierarchy> {
     if (pages === undefined) {
       return [] as Array<MenuPageHierarchy>;
     }
-    return pages.map(p => {
-      return {
+    return pages.map(p => ({
         name: p.name,
         label: p.label,
         type: 'Page' as MenuType,
@@ -228,8 +225,7 @@ export class MenuService {
           page: p.name
         },
         children: []
-      };
-    });
+      }));
   }
 
 

@@ -14,7 +14,7 @@
  * Learn more in https://angular.io/guide/browser-support
  */
 
-/* eslint-disable-next-line import/no-unassigned-import */
+/* eslint-disable import/no-unassigned-import */
 
 /***************************************************************************************************
  * BROWSER POLYFILLS
