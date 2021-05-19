@@ -47,15 +47,19 @@ jobs:
         npm run pree2e
       working-directory: frontend
 
-    - name: npm test
-      run:  |
-        export CI=true
-        npx ng lint --format json --force --silent frontend > report.json
-        ng test --watch=false --progress=false --code-coverage
+    - name: ng build
+      run: ng build --no-progress --output-path ../public/dist
       working-directory: frontend
 
-    - name: ng build --prod
-      run: ng build --no-progress --prod --output-path ../public/dist
+    - name: ng test && ng e2e
+      run:  |
+        export CI=true
+        ng test --watch=false --progress=false --code-coverage
+        ng e2e
+      working-directory: frontend
+
+    - name: ng lint
+      run: npx ng lint --format json --force --silent frontend > report.json
       working-directory: frontend
 
     - name: SonarCloud Scan

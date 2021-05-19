@@ -57,7 +57,14 @@
               "node_modules/swagger-ui-dist/swagger-ui-bundle.js",
               "node_modules/swagger-ui-dist/swagger-ui-standalone-preset.js",
               "node_modules/katex/dist/katex.min.js"
-            ]
+            ],
+            "aot": false,
+            "vendorChunk": true,
+            "extractLicenses": false,
+            "buildOptimizer": false,
+            "sourceMap": true,
+            "optimization": false,
+            "namedChunks": true
           },
           "configurations": {
             "production": {
@@ -81,19 +88,24 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true
-            }
-          }
+            },
+            "development": {}
+          },
+          "defaultConfiguration": "production"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "frontend:build"
           },
           "configurations": {
             "production": {
               "browserTarget": "frontend:build:production"
+            },
+            "development": {
+              "browserTarget": "frontend:build:development"
             }
-          }
+          },
+          "defaultConfiguration": "development"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
@@ -151,7 +163,8 @@
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
             "devServerTarget": "frontend:serve"
-          }
+          },
+          "configurations": {}
         },
         "lint": {
           "builder": "@angular-eslint/builder:lint",

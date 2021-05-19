@@ -14,7 +14,7 @@
  * Learn more in https://angular.io/guide/browser-support
  */
 
-/* eslint-disable-next-line import/no-unassigned-import */
+/* eslint-disable import/no-unassigned-import */
 
 /***************************************************************************************************
  * BROWSER POLYFILLS
@@ -60,8 +60,7 @@ import 'core-js';
 /***************************************************************************************************
  * Zone JS is required by default for Angular itself.
  */
-import 'zone.js/dist/zone';  // Included with Angular CLI.
-import 'zone.js';
+import 'zone.js';  // Included with Angular CLI.
 
 if (!Element.prototype.matches) {
   Element.prototype.matches = Element.prototype.webkitMatchesSelector;

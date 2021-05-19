@@ -8,55 +8,52 @@ import {RouteService} from './route.service';
 import {SearchResult} from '../_models/search';
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
 export class PageService {
-    constructor(private http: HttpClient,
-                private routeService: RouteService) {
-    }
+  constructor(private http: HttpClient,
+              private routeService: RouteService) {
+  }
 
-    getRootDirectoryForPath(path: string): Observable<DirectoryApi> {
-        const url = `api/directories`;
-        const params = new HttpParams().set('path', this.routeService.urlToRelativePath(path));
-        return this.http.get<Array<DirectoryApi>>(url, {params})
-            .pipe(
-                map(res => res[0])
-            );
+  private static getPageTitle(page: PageApi): string {
+    if (page.content && page.content.length === 1 && page.content[0].type === 'includeExternalPage') {
+      return undefined;
+    } else {
+      return page.description;
     }
+  }
 
-    getPage(path: string): Observable<Page> {
-        const url = `api/pages`;
-        const params = new HttpParams().set('path', this.routeService.urlToRelativePath(path));
-        return this.http.get<Array<PageApi>>(url, {params})
-            .pipe(
-                map(res => res[0]),
-                map(page => {
-                    return {
-                      title: PageService.getPageTitle(page),
-                      path: page.path,
-                      order: page.order,
-                      parts: page.content,
-                      sourceUrl: page.sourceUrl
-                    };
-                })
-            );
-    }
+  getRootDirectoryForPath(path: string): Observable<DirectoryApi> {
+    const url = `api/directories`;
+    const params = new HttpParams().set('path', this.routeService.urlToRelativePath(path));
+    return this.http.get<Array<DirectoryApi>>(url, {params})
+      .pipe(
+        map(res => res[0])
+      );
+  }
 
-    searchPages(keyword: string): Observable<SearchResult> {
-        const url = `api/pages/search`;
-        const params = new HttpParams().set('keyword', keyword);
-        return this.http.get<SearchResult>(url, {params})
-            .pipe(
-                map(res => res)
-            );
-    }
+  getPage(path: string): Observable<Page> {
+    const url = `api/pages`;
+    const params = new HttpParams().set('path', this.routeService.urlToRelativePath(path));
+    return this.http.get<Array<PageApi>>(url, {params})
+      .pipe(
+        map(res => res[0]),
+        map(page => ({
+          title: PageService.getPageTitle(page),
+          path: page.path,
+          order: page.order,
+          parts: page.content,
+          sourceUrl: page.sourceUrl
+        }))
+      );
+  }
 
-    private static getPageTitle(page: PageApi): string {
-        if (page.content && page.content.length === 1 && page.content[0].type === 'includeExternalPage') {
-            return undefined;
-        } else {
-            return page.description;
-        }
-    }
-
+  searchPages(keyword: string): Observable<SearchResult> {
+    const url = `api/pages/search`;
+    const params = new HttpParams().set('keyword', keyword);
+    return this.http.get<SearchResult>(url, {params})
+      .pipe(
+        map(res => res)
+      );
+  }
 }

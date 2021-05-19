@@ -92,9 +92,9 @@ export class PageContentComponent implements OnInit, OnDestroy, AfterViewChecked
   }
 
   ngOnDestroy(): void {
-    if (this.fragmentSubscription) this.fragmentSubscription.unsubscribe();
-    if (this.subscription) this.subscription.unsubscribe();
-    if(this.routerSubscription) this.routerSubscription.unsubscribe();
+    if (this.fragmentSubscription) {this.fragmentSubscription.unsubscribe();}
+    if (this.subscription) {this.subscription.unsubscribe();}
+    if(this.routerSubscription) {this.routerSubscription.unsubscribe();}
     window.removeEventListener('scroll', this.scroll, true);
   }
 
