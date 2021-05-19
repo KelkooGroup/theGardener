@@ -1,8 +1,8 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
-import {MenuHierarchy} from '../../../_models/menu';
-import {MenuService} from '../../../_services/menu.service';
-import {NAVIGATE_PATH, RouteService} from '../../../_services/route.service';
-import {Router} from '@angular/router';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { MenuHierarchy } from '../../../_models/menu';
+import { MenuService } from '../../../_services/menu.service';
+import { NAVIGATE_PATH, RouteService } from '../../../_services/route.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-navigate-mobile-menu',
@@ -10,22 +10,18 @@ import {Router} from '@angular/router';
   styleUrls: ['./navigate-mobile-menu.component.scss']
 })
 export class NavigateMobileMenuComponent implements OnInit {
-
   @Output() navigationEvent = new EventEmitter<string>();
 
   fullMenuForMobile: Array<MenuHierarchy>;
 
   expandedItem: MenuHierarchy;
 
-  constructor(private menuService: MenuService,
-              private routeService: RouteService,
-              private router: Router) { }
+  constructor(private menuService: MenuService, private routeService: RouteService, private router: Router) {}
 
   ngOnInit(): void {
-    this.menuService.getMenu()
-      .subscribe(menu => {
-        this.fullMenuForMobile = menu;
-      });
+    this.menuService.getMenu().subscribe(menu => {
+      this.fullMenuForMobile = menu;
+    });
   }
 
   expand(item: MenuHierarchy) {

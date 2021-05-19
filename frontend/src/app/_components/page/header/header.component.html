@@ -1,39 +1,37 @@
 <div class="header">
+  <ul class="header-bar" role="navigation">
+    <li class="header-logo">
+      <img *ngIf="logoSrc" [src]="logoSrc" alt="Organisation logo" />
+      <div *ngIf="appTitle" class="header-logo-text">{{ appTitle }}</div>
+    </li>
 
-    <ul class="header-bar" role="navigation">
-        <li class="header-logo">
-            <img *ngIf="logoSrc" [src]="logoSrc" alt="Organisation logo">
-            <div *ngIf="appTitle" class="header-logo-text">{{ appTitle }}</div>
-        </li>
+    <li class="header-navigation" *ngFor="let item of items">
+      <a (click)="navigateTo(item)" [ngClass]="isItemInActivatedRoute(item) ? 'active' : 'item-with-hover' ">{{ item.label }}</a>
+    </li>
+    <li class="header-search">
+      <app-search-query></app-search-query>
+    </li>
 
-        <li class="header-navigation" *ngFor="let item of items">
-            <a (click)="navigateTo(item)"
-               [ngClass]="isItemInActivatedRoute(item) ? 'active' : 'item-with-hover' "
-            >{{ item.label }}</a>
-        </li>
-        <li class="header-search">
-            <app-search-query></app-search-query>
-        <li>
-        <li *ngIf="translateLanguages.length > 1" class="header-translate">
-            <mat-form-field appearance="fill">
-                <mat-label>translate to</mat-label>
-                <mat-select [(value)]="selectedLanguageCode" (selectionChange)="switchLanguage($event.value)">
-                    <mat-option *ngFor="let language of translateLanguages" [value]="language.code">
-                        {{language.name}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-        <li>
-        <li class="header-logo-the-gardener">
-            <div class="align-left">Powered by</div>
-            <a href="https://thegardener.kelkoogroup.com"><img src="assets/images/logo-white.png" alt="Logo"></a>
-        </li>
+    <li></li>
+    <li *ngIf="translateLanguages.length > 1" class="header-translate">
+      <mat-form-field appearance="fill">
+        <mat-label>translate to</mat-label>
+        <mat-select [(value)]="selectedLanguageCode" (selectionChange)="switchLanguage($event.value)">
+          <mat-option *ngFor="let language of translateLanguages" [value]="language.code"> {{language.name}} </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </li>
 
-        <li class="navigation-icon">
+    <li></li>
+    <li class="header-logo-the-gardener">
+      <div class="align-left">Powered by</div>
+      <a href="https://thegardener.kelkoogroup.com"><img src="assets/images/logo-white.png" alt="Logo" /></a>
+    </li>
+
+    <li class="navigation-icon">
       <span (click)="mobileMenuHelper.toggleMobileMenu()">
         <i class="fa fa-bars"></i>
       </span>
-        </li>
-    </ul>
+    </li>
+  </ul>
 </div>
-

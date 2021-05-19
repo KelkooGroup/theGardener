@@ -1,5 +1,3 @@
-
-
 export interface SearchResult {
   items: Array<SearchResultItem>;
 }

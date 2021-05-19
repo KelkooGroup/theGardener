@@ -1,4 +1,7 @@
 <div class="content">
-  <app-navigate-mobile-menu (navigationEvent)="mobileMenuService.toggleMobileMenu()" *ngIf="mobileMenuService.isMobileMenuDisplayed"></app-navigate-mobile-menu>
+  <app-navigate-mobile-menu
+    (navigationEvent)="mobileMenuService.toggleMobileMenu()"
+    *ngIf="mobileMenuService.isMobileMenuDisplayed"
+  ></app-navigate-mobile-menu>
   <app-page-content></app-page-content>
 </div>

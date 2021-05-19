@@ -1,15 +1,15 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
-import {MenuService} from '../../../_services/menu.service';
-import {catchError, map, switchMap} from 'rxjs/operators';
-import {MenuHierarchy} from '../../../_models/menu';
-import {of, Subscription} from 'rxjs';
-import {NotificationService} from '../../../_services/notification.service';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { MenuService } from '../../../_services/menu.service';
+import { catchError, map, switchMap } from 'rxjs/operators';
+import { MenuHierarchy } from '../../../_models/menu';
+import { of, Subscription } from 'rxjs';
+import { NotificationService } from '../../../_services/notification.service';
 
 @Component({
   selector: 'app-navigate-menu',
   templateUrl: './navigate-menu.component.html',
-  styleUrls: ['./navigate-menu.component.scss'],
+  styleUrls: ['./navigate-menu.component.scss']
 })
 export class NavigateMenuComponent implements OnInit, OnDestroy {
   hierarchy: Array<MenuHierarchy>;
@@ -17,10 +17,7 @@ export class NavigateMenuComponent implements OnInit, OnDestroy {
   expanded: boolean;
   private subscription: Subscription;
 
-  constructor(private activatedRoute: ActivatedRoute,
-              private menuService: MenuService,
-              private notificationService: NotificationService) {
-  }
+  constructor(private activatedRoute: ActivatedRoute, private menuService: MenuService, private notificationService: NotificationService) {}
 
   ngOnInit() {
     this.subscription = this.activatedRoute.params

@@ -1,20 +1,11 @@
-import {Component, NgZone, OnDestroy, OnInit, AfterViewChecked} from '@angular/core';
-import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
-import {catchError, map, switchMap} from 'rxjs/operators';
-import {combineLatest, of, Subscription} from 'rxjs';
-import {PageService} from '../../_services/page.service';
-import {
-  IncludeExternalPagePart,
-  MarkdownPart,
-  OpenApiPart,
-  OpenApiPathPart,
-  Page,
-  PagePart,
-  ScenarioPart
-} from '../../_models/page';
-import {RouteService, SEARCH_PATH} from '../../_services/route.service';
-import {NavigationRoute} from '../../_models/route';
-
+import { Component, NgZone, OnDestroy, OnInit, AfterViewChecked } from '@angular/core';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { catchError, map, switchMap } from 'rxjs/operators';
+import { combineLatest, of, Subscription } from 'rxjs';
+import { PageService } from '../../_services/page.service';
+import { IncludeExternalPagePart, MarkdownPart, OpenApiPart, OpenApiPathPart, Page, PagePart, ScenarioPart } from '../../_models/page';
+import { RouteService, SEARCH_PATH } from '../../_services/route.service';
+import { NavigationRoute } from '../../_models/route';
 
 @Component({
   selector: 'app-page-content',
@@ -30,17 +21,17 @@ export class PageContentComponent implements OnInit, OnDestroy, AfterViewChecked
   private canScroll = true;
   private targetedRoute: NavigationRoute;
 
-  constructor(private activatedRoute: ActivatedRoute,
-              private pageService: PageService,
-              private routeService: RouteService,
-              private router: Router,
-              private ngZone: NgZone) {
-  }
+  constructor(
+    private activatedRoute: ActivatedRoute,
+    private pageService: PageService,
+    private routeService: RouteService,
+    private router: Router,
+    private ngZone: NgZone
+  ) {}
 
   ngOnInit() {
-    // @ts-ignore
-    window.navigateTo = navigateTo(this.router, this.ngZone);
-    window.addEventListener('scroll', this.scroll, {capture: true});
+    window['navigateTo'] = navigateTo(this.router, this.ngZone);
+    window.addEventListener('scroll', this.scroll, { capture: true });
     this.fragmentSubscription = this.activatedRoute.fragment.subscribe(fragment => {
       this.fragment = fragment;
       this.canScroll = true;
@@ -55,27 +46,27 @@ export class PageContentComponent implements OnInit, OnDestroy, AfterViewChecked
         }
       }
     });
-    this.subscription = combineLatest([
-      this.activatedRoute.params
-    ]).pipe(
-      map(([params]) => params),
-      switchMap(params => {
-        this.targetedRoute = this.routeService.navigationParamsToNavigationRoute(params);
-        if (this.targetedRoute.page === undefined) {
+    this.subscription = combineLatest([this.activatedRoute.params])
+      .pipe(
+        map(([params]) => params),
+        switchMap(params => {
+          this.targetedRoute = this.routeService.navigationParamsToNavigationRoute(params);
+          if (this.targetedRoute.page === undefined) {
+            return of<Page>();
+          } else {
+            const backEndPath = this.routeService.navigationRouteToBackEndPath(this.targetedRoute);
+            return this.pageService.getPage(backEndPath.pathFromProject);
+          }
+        }),
+        catchError(() => {
+          const keyword = this.routeService.extractKeyword(this.targetedRoute);
+          this.router.navigateByUrl(SEARCH_PATH + `?keyword=${keyword.trim()}`);
           return of<Page>();
-        } else {
-          const backEndPath = this.routeService.navigationRouteToBackEndPath(this.targetedRoute);
-          return this.pageService.getPage(backEndPath.pathFromProject);
-        }
-      }),
-      catchError(() => {
-        const keyword = this.routeService.extractKeyword(this.targetedRoute);
-        this.router.navigateByUrl(SEARCH_PATH + `?keyword=${keyword.trim()}`);
-        return of<Page>();
-      })
-    ).subscribe(page => {
-      this.page = page;
-    });
+        })
+      )
+      .subscribe(page => {
+        this.page = page;
+      });
   }
 
   ngAfterViewChecked(): void {
@@ -87,14 +78,18 @@ export class PageContentComponent implements OnInit, OnDestroy, AfterViewChecked
         }
       }
     }
-
-
   }
 
   ngOnDestroy(): void {
-    if (this.fragmentSubscription) {this.fragmentSubscription.unsubscribe();}
-    if (this.subscription) {this.subscription.unsubscribe();}
-    if(this.routerSubscription) {this.routerSubscription.unsubscribe();}
+    if (this.fragmentSubscription) {
+      this.fragmentSubscription.unsubscribe();
+    }
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
+    }
     window.removeEventListener('scroll', this.scroll, true);
   }
 
@@ -134,13 +129,10 @@ const navigateTo = (router: Router, ngZone: NgZone) => (path: string) => {
 };
 
 export class PageContentComponentTools {
-
   static navigate(router: Router, path: string) {
-    if (!!path) {
-
+    if (path) {
       const targetUrl = RouteService.legacyFullFrontEndUrlToFullFrontEndUrl(path);
       router.navigateByUrl(targetUrl);
     }
   }
-
 }

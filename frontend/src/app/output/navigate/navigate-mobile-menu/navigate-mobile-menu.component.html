@@ -1,4 +1,3 @@
 <div *ngFor="let item of fullMenuForMobile; trackBy: trackItem; let last=last">
   <app-navigate-menu-item [menuItem]="item" (navigationEvent)="onNavigationEvent($event)"></app-navigate-menu-item>
 </div>
-

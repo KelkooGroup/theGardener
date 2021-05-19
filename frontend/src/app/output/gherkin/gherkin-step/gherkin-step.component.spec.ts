@@ -1,55 +1,56 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
-import {GherkinStepComponent} from './gherkin-step.component';
-import {GherkinTableComponent} from '../gherkin-table/gherkin-table.component';
-import {GherkinLongTextComponent} from '../gherkin-long-text/gherkin-long-text.component';
+import { GherkinStepComponent } from './gherkin-step.component';
+import { GherkinTableComponent } from '../gherkin-table/gherkin-table.component';
+import { GherkinLongTextComponent } from '../gherkin-long-text/gherkin-long-text.component';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
-import {NgxJsonViewerModule} from 'ngx-json-viewer';
-import {NoopAnimationsModule} from '@angular/platform-browser/animations';
-import {GherkinStep} from '../../../_models/gherkin';
-import {By} from '@angular/platform-browser';
-import {SafePipe} from '../../../safe.pipe';
-import {InternalLinkPipe} from '../../../internal-link.pipe';
-import {AnchorPipe} from '../../../anchor.pipe';
-import {RemoveHtmlSanitizerPipe} from '../../../removehtmlsanitizer.pipe';
-import {MarkdownModule} from 'ngx-markdown';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
-import {RouterTestingModule} from '@angular/router/testing';
-import {SecurityContext} from '@angular/core';
-
+import { NgxJsonViewerModule } from 'ngx-json-viewer';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { GherkinStep } from '../../../_models/gherkin';
+import { By } from '@angular/platform-browser';
+import { SafePipe } from '../../../safe.pipe';
+import { InternalLinkPipe } from '../../../internal-link.pipe';
+import { AnchorPipe } from '../../../anchor.pipe';
+import { RemoveHtmlSanitizerPipe } from '../../../removehtmlsanitizer.pipe';
+import { MarkdownModule } from 'ngx-markdown';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { SecurityContext } from '@angular/core';
 
 describe('GherkinStepComponent', () => {
   let component: GherkinStepComponent;
   let fixture: ComponentFixture<GherkinStepComponent>;
   let page: Page;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        GherkinStepComponent,
-        GherkinTableComponent,
-        GherkinLongTextComponent,
-        SafePipe,
-        InternalLinkPipe,
-        AnchorPipe,
-        RemoveHtmlSanitizerPipe,
-      ], imports: [
-        MatExpansionModule,
-        MatTableModule,
-        MatTabsModule,
-        NgxJsonViewerModule,
-        NoopAnimationsModule,
-        MarkdownModule.forRoot({
-          sanitize: SecurityContext.NONE
-        }),
-        HttpClientTestingModule,
-        RouterTestingModule,
-      ]
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [
+          GherkinStepComponent,
+          GherkinTableComponent,
+          GherkinLongTextComponent,
+          SafePipe,
+          InternalLinkPipe,
+          AnchorPipe,
+          RemoveHtmlSanitizerPipe
+        ],
+        imports: [
+          MatExpansionModule,
+          MatTableModule,
+          MatTabsModule,
+          NgxJsonViewerModule,
+          NoopAnimationsModule,
+          MarkdownModule.forRoot({
+            sanitize: SecurityContext.NONE
+          }),
+          HttpClientTestingModule,
+          RouterTestingModule
+        ]
+      }).compileComponents();
     })
-      .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(GherkinStepComponent);
@@ -69,10 +70,12 @@ describe('GherkinStepComponent', () => {
 
     expect(component).toBeTruthy();
     expect(component.longText).toBeFalsy();
-    expect(component.textFragments).toEqual([{
-      text: 'the suggestions are popular and available books adapted to the age of the user',
-      isParameter: false
-    }]);
+    expect(component.textFragments).toEqual([
+      {
+        text: 'the suggestions are popular and available books adapted to the age of the user',
+        isParameter: false
+      }
+    ]);
     expect(component.table).toBeFalsy();
     expect(page.keyword).toEqual('Then');
     expect(page.stepText).toEqual(['the suggestions are popular and available books adapted to the age of the user']);
@@ -92,8 +95,8 @@ describe('GherkinStepComponent', () => {
     expect(component).toBeTruthy();
     expect(component.longText).toBeFalsy();
     expect(component.textFragments).toEqual([
-      {text: 'the user ', isParameter: false},
-      {text: 'Tim', isParameter: true},
+      { text: 'the user ', isParameter: false },
+      { text: 'Tim', isParameter: true }
     ]);
     expect(component.table).toBeFalsy();
     expect(page.keyword).toEqual('Given');
@@ -149,11 +152,7 @@ describe('GherkinStepComponent', () => {
       id: '0',
       keyword: 'Given',
       text: 'a user with description',
-      argument: [
-        [
-          '   I\'m happy to read book from this library.\n   Having suggestions is a good idea.'
-        ]
-      ]
+      argument: [["   I'm happy to read book from this library.\n   Having suggestions is a good idea."]]
     };
     component = fixture.componentInstance;
     component.step = step;
@@ -161,14 +160,12 @@ describe('GherkinStepComponent', () => {
 
     expect(page.keyword).toEqual('Given');
     expect(page.stepText).toEqual(['a user with description']);
-    expect(page.longText.longText).toEqual('   I\'m happy to read book from this library.\n   Having suggestions is a good idea.');
+    expect(page.longText.longText).toEqual("   I'm happy to read book from this library.\n   Having suggestions is a good idea.");
   });
 });
 
 class Page {
-  constructor(private fixture: ComponentFixture<GherkinStepComponent>) {
-
-  }
+  constructor(private fixture: ComponentFixture<GherkinStepComponent>) {}
 
   get keyword(): string {
     const keyword: HTMLElement = this.fixture.nativeElement.querySelector('.stepKeyword');
@@ -182,19 +179,17 @@ class Page {
 
   get stepParameters(): Array<string> {
     const res: Array<string> = [];
-    this.fixture.nativeElement.querySelectorAll('.step-parameter')
-      .forEach((e: HTMLElement) => {
-        res.push(e.textContent.trim());
-      });
+    this.fixture.nativeElement.querySelectorAll('.step-parameter').forEach((e: HTMLElement) => {
+      res.push(e.textContent.trim());
+    });
     return res;
   }
 
   get stepText(): Array<string> {
     const res: Array<string> = [];
-    this.fixture.nativeElement.querySelectorAll('.step-text')
-      .forEach((e: HTMLElement) => {
-        res.push(e.textContent.trim());
-      });
+    this.fixture.nativeElement.querySelectorAll('.step-text').forEach((e: HTMLElement) => {
+      res.push(e.textContent.trim());
+    });
     return res;
   }
 

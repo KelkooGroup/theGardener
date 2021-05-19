@@ -1,6 +1,6 @@
-import {convertToParamMap, ParamMap, UrlSegment} from '@angular/router';
-import {BehaviorSubject} from 'rxjs';
-import {Injectable} from '@angular/core';
+import { convertToParamMap, ParamMap, UrlSegment } from '@angular/router';
+import { BehaviorSubject } from 'rxjs';
+import { Injectable } from '@angular/core';
 
 /**
  * An ActivateRoute test double with a `paramMap` observable.
@@ -91,7 +91,6 @@ export class ActivatedRouteStub {
     this.subjectChildUrl.next(this._testChildUrl);
   }
 
-
   private _testUrl: Array<UrlSegment>;
   get testUrl() {
     return this._testUrl;
@@ -125,7 +124,7 @@ export class ActivatedRouteStub {
       params: this.testParams,
       paramMap: this.testParamMap,
       queryParamMap: this.testQueryParamMap,
-      url: this.testUrl,
+      url: this.testUrl
     };
   }
 
@@ -133,10 +132,10 @@ export class ActivatedRouteStub {
     return {
       snapshot: {
         paramMap: this.testParentParamMap,
-        params: this.testParentParams,
+        params: this.testParentParams
       },
       paramMap: this.subjectParentParamMap.asObservable(),
-      params: this.subjectParentParams.asObservable(),
+      params: this.subjectParentParams.asObservable()
     };
   }
 
@@ -145,11 +144,11 @@ export class ActivatedRouteStub {
       snapshot: {
         paramMap: this.testChildParamMap,
         params: this.testChildParams,
-        url: this.testChildUrl,
+        url: this.testChildUrl
       },
       paramMap: this.subjectChildParamMap.asObservable(),
       params: this.subjectChildParams.asObservable(),
-      url: this.subjectChildUrl.asObservable(),
+      url: this.subjectChildUrl.asObservable()
     };
   }
 
@@ -161,5 +160,4 @@ export class ActivatedRouteStub {
   set fragment(params) {
     this._fragment = params;
   }
-
 }

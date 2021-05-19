@@ -1,8 +1,5 @@
-
-
-
 export interface NavigationParams {
-  nodes?: string ;
+  nodes?: string;
   project?: string;
   branch?: string;
   directories?: string;
@@ -10,14 +7,13 @@ export interface NavigationParams {
 }
 
 export interface NavigationRoute {
-  nodes?: Array<string> ;
+  nodes?: Array<string>;
   project?: string;
   branch?: string;
   stableBranch?: string;
   directories?: Array<string>;
   page?: string;
 }
-
 
 export interface FrontendPath {
   pathFromNodes?: string;

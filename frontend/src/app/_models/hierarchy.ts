@@ -1,4 +1,4 @@
-import {PagePart} from './page';
+import { PagePart } from './page';
 
 export interface HierarchyNodeApi {
   id: string;

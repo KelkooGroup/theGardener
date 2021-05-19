@@ -1,14 +1,16 @@
-<table class="gherkinTable" >
-    <thead>
+<table class="gherkinTable">
+  <thead>
     <tr>
-        <th class="gherkinCellHeaderTable" *ngFor="let header of tableHeader; index as index">{{ header }}</th>
+      <th class="gherkinCellHeaderTable" *ngFor="let header of tableHeader; index as index">{{ header }}</th>
     </tr>
-    </thead>
-    <tbody>
+  </thead>
+  <tbody>
     <tr class="gherkinRowTable" *ngFor="let row of tableRows; index as index">
-        <td class="gherkinCellTable"  *ngFor="let header of tableHeader; index as indexHeader" [innerHTML]="row[indexHeader] | markdown | internalLink | anchor | removehtmlsanitizer  " >
-        </td>
-
+      <td
+        class="gherkinCellTable"
+        *ngFor="let header of tableHeader; index as indexHeader"
+        [innerHTML]="row[indexHeader] | markdown | internalLink | anchor | removehtmlsanitizer  "
+      ></td>
     </tr>
-    </tbody>
+  </tbody>
 </table>

@@ -1,27 +1,22 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import {GherkinLongTextComponent} from './gherkin-long-text.component';
-import {NgxJsonViewerModule} from 'ngx-json-viewer';
-import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+import { GherkinLongTextComponent } from './gherkin-long-text.component';
+import { NgxJsonViewerModule } from 'ngx-json-viewer';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MatTabsModule } from '@angular/material/tabs';
-
 
 describe('GherkinLongTextComponent', () => {
   let component: GherkinLongTextComponent;
   let fixture: ComponentFixture<GherkinLongTextComponent>;
   let page: Page;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        GherkinLongTextComponent,
-      ], imports: [
-        NgxJsonViewerModule,
-        NoopAnimationsModule,
-        MatTabsModule,
-      ]
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [GherkinLongTextComponent],
+        imports: [NgxJsonViewerModule, NoopAnimationsModule, MatTabsModule]
+      }).compileComponents();
     })
-      .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(GherkinLongTextComponent);

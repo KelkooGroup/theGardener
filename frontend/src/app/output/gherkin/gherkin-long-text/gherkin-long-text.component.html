@@ -18,7 +18,5 @@
     <pre><code [ngClass]="'language-' + longTextType">{{ longText }}</code></pre>
   </div>
 
-  <div *ngIf="!isJson && !longTextType" class="long-text">
-    {{ longText }}
-  </div>
+  <div *ngIf="!isJson && !longTextType" class="long-text">{{ longText }}</div>
 </div>

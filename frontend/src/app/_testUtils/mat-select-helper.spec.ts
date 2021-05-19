@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
-import {OverlayContainer} from '@angular/cdk/overlay';
-import {ComponentFixture, inject} from '@angular/core/testing';
+import { OverlayContainer } from '@angular/cdk/overlay';
+import { ComponentFixture, inject } from '@angular/core/testing';
 
 // Source: https://gist.github.com/glendaviesnz/fc8e99b41f0dda8b1c0dc4d397e0d152
 export class MatSelectHelper {
@@ -42,5 +42,4 @@ export class MatSelectHelper {
   cleanup() {
     this._container.ngOnDestroy();
   }
-
 }

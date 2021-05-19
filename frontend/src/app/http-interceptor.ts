@@ -1,7 +1,7 @@
-import {Injectable} from '@angular/core';
-import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
-import {Observable} from 'rxjs/Observable';
-import {environment} from '../environments/environment';
+import { Injectable } from '@angular/core';
+import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
+import { Observable } from 'rxjs/Observable';
+import { environment } from '../environments/environment';
 
 @Injectable()
 export class APIInterceptor implements HttpInterceptor {
@@ -12,7 +12,7 @@ export class APIInterceptor implements HttpInterceptor {
     } else {
       url = `${environment.apiUrl}/${req.url}`;
     }
-    const apiReq = req.clone({url, withCredentials: true});
+    const apiReq = req.clone({ url, withCredentials: true });
     return next.handle(apiReq);
   }
 }

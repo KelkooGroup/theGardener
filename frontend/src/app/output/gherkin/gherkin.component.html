@@ -5,20 +5,15 @@
       <app-gherkin-step [step]="step"></app-gherkin-step>
     </li>
   </ul>
-
 </div>
 
 <div *ngFor="let scenario of scenarios.scenarios; let isLast=last" class="scenario">
   <div class="scenario-title">
-    <i class="scenario-icon far fa-clipboard fa-sm"
-       title="High level of abstraction"></i>
+    <i class="scenario-icon far fa-clipboard fa-sm" title="High level of abstraction"></i>
     {{ scenario.name }}
-    <i *ngIf="scenario.abstractionLevel.startsWith('level_2')" class="tag fas fa-cogs fa-sm"
-       title="Technical details"></i>
-    <i *ngIf="scenario.caseType.startsWith('error')" class="tag fas fa-times-circle fa-sm"
-       title="Error case"></i>
-    <i *ngIf="scenario.caseType.startsWith('limit')" class="tag fas fa-exclamation-triangle fa-sm"
-       title="Limit case"></i>
+    <i *ngIf="scenario.abstractionLevel.startsWith('level_2')" class="tag fas fa-cogs fa-sm" title="Technical details"></i>
+    <i *ngIf="scenario.caseType.startsWith('error')" class="tag fas fa-times-circle fa-sm" title="Error case"></i>
+    <i *ngIf="scenario.caseType.startsWith('limit')" class="tag fas fa-exclamation-triangle fa-sm" title="Limit case"></i>
   </div>
   <ul class="flex-container flex-direction-column flex-align-items-start">
     <li class="steps">
@@ -31,13 +26,11 @@
       </div>
     </li>
     <li *ngIf="scenario.examples" class="examples">
-      <div class="step">
-        <span class="stepKeyword">Examples</span>&nbsp;
-      </div>
+      <div class="step"><span class="stepKeyword">Examples</span>&nbsp;</div>
       <div class="table pull-right">
-        <app-gherkin-table [examples]="scenario.examples" ></app-gherkin-table>
+        <app-gherkin-table [examples]="scenario.examples"></app-gherkin-table>
       </div>
     </li>
   </ul>
-  <hr *ngIf="!isLast"/>
+  <hr *ngIf="!isLast" />
 </div>

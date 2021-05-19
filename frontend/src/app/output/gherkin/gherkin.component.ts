@@ -1,5 +1,5 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {Scenario} from '../../_models/gherkin';
+import { Component, Input, OnInit } from '@angular/core';
+import { Scenario } from '../../_models/gherkin';
 
 @Component({
   selector: 'app-gherkin',
@@ -9,11 +9,7 @@ import {Scenario} from '../../_models/gherkin';
 export class GherkinComponent implements OnInit {
   @Input() scenarios: Scenario;
 
-  constructor() {
-  }
+  constructor() {}
 
-  ngOnInit(): void {
-  }
-
-
+  ngOnInit(): void {}
 }

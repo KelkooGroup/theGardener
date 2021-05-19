@@ -1,6 +1,6 @@
-import {AfterViewInit, Component, Input, OnInit} from '@angular/core';
-import {OpenApiPath} from '../../../_models/open-api';
-import {ConfigService} from '../../../_services/config.service';
+import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
+import { OpenApiPath } from '../../../_models/open-api';
+import { ConfigService } from '../../../_services/config.service';
 
 declare const swaggerUIBundle: any;
 
@@ -10,15 +10,13 @@ declare const swaggerUIBundle: any;
   styleUrls: ['./open-api-end-points.component.scss']
 })
 export class OpenApiEndPointsComponent implements OnInit, AfterViewInit {
-
   @Input() openApiPathJson: OpenApiPath;
   @Input() position: number;
 
   id: string;
   proxyUrl: string;
 
-  constructor(private applicationService: ConfigService) {
-  }
+  constructor(private applicationService: ConfigService) {}
 
   ngOnInit(): void {
     this.applicationService.getConfigs().subscribe(result => {
@@ -34,10 +32,7 @@ export class OpenApiEndPointsComponent implements OnInit, AfterViewInit {
       /* eslint-disable-next-line @typescript-eslint/naming-convention */
       dom_id: domId,
       layout: 'BaseLayout',
-      presets: [
-        swaggerUIBundle.presets.apis,
-        swaggerUIBundle.SwaggerUIStandalonePreset
-      ],
+      presets: [swaggerUIBundle.presets.apis, swaggerUIBundle.SwaggerUIStandalonePreset],
       spec: jsonSpec,
       docExpansion: 'list',
       operationsSorter: 'alpha',
@@ -45,7 +40,12 @@ export class OpenApiEndPointsComponent implements OnInit, AfterViewInit {
       enableCORS: false,
       showMutatedRequest: false,
       requestInterceptor: (request: any) => {
-        request.url = this.proxyUrl + '?url=' + request.url.replace('http', this.openApiPathJson.protocol).replace(/&/g, 'amp') + '&body=' + request.body;
+        request.url =
+          this.proxyUrl +
+          '?url=' +
+          request.url.replace('http', this.openApiPathJson.protocol).replace(/&/g, 'amp') +
+          '&body=' +
+          request.body;
         return request;
       }
     });
@@ -55,4 +55,3 @@ export class OpenApiEndPointsComponent implements OnInit, AfterViewInit {
     return this.openApiPathJson.errors.length !== 0 && this.openApiPathJson.errors[0] !== '';
   }
 }
-

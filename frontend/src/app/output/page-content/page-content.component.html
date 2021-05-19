@@ -3,17 +3,15 @@
 <div id="top-page" class="top">&nbsp;</div>
 
 <div *ngIf="page" class="markdown-container">
-
-  <h1 *ngIf=page.title id="page-title">{{ page.title }}</h1>
+  <h1 *ngIf="page.title" id="page-title">{{ page.title }}</h1>
 
   <div *ngFor="let part of page.parts">
     <div [ngSwitch]="part.type">
-      <div *ngSwitchCase="'markdown'" class="markdown" >
-        <markdown  [innerHTML]="getMarkdown(part) | markdown | internalLink | anchor | removehtmlsanitizer " katex></markdown >
+      <div *ngSwitchCase="'markdown'" class="markdown">
+        <markdown [innerHTML]="getMarkdown(part) | markdown | internalLink | anchor | removehtmlsanitizer " katex></markdown>
       </div>
       <div *ngSwitchCase="'includeExternalPage'">
-        <iframe [src]="getExternalLink(part) | safe" scrolling="yes"
-                title="External Link"></iframe>
+        <iframe [src]="getExternalLink(part) | safe" scrolling="yes" title="External Link"></iframe>
       </div>
       <div *ngSwitchCase="'scenarios'">
         <div class="scenario">
@@ -37,7 +35,6 @@
 <div *ngIf="page && page.sourceUrl" class="view-source">
   <a [href]="page && page.sourceUrl" target="_blank">View source <i class="fas fa-external-link-alt"></i></a>
 </div>
-
 
 <div class="responsive-footer">
   <app-footer></app-footer>

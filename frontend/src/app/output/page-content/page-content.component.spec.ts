@@ -1,33 +1,32 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
-import {PageContentComponent, PageContentComponentTools} from './page-content.component';
-import {ActivatedRoute, Router} from '@angular/router';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
-import {ActivatedRouteStub} from '../../_testUtils/activated-route-stub.spec';
-import {PageService} from '../../_services/page.service';
-import {of} from 'rxjs';
-import {MarkdownModule} from 'ngx-markdown';
-import {Page, PagePart} from '../../_models/page';
+import { PageContentComponent, PageContentComponentTools } from './page-content.component';
+import { ActivatedRoute, Router } from '@angular/router';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { ActivatedRouteStub } from '../../_testUtils/activated-route-stub.spec';
+import { PageService } from '../../_services/page.service';
+import { of } from 'rxjs';
+import { MarkdownModule } from 'ngx-markdown';
+import { Page, PagePart } from '../../_models/page';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
-import {SafePipe} from '../../safe.pipe';
-import {InternalLinkPipe} from '../../internal-link.pipe';
-import {GherkinComponent} from '../gherkin/gherkin.component';
-import {GherkinStepComponent} from '../gherkin/gherkin-step/gherkin-step.component';
-import {GherkinLongTextComponent} from '../gherkin/gherkin-long-text/gherkin-long-text.component';
-import {GherkinTableComponent} from '../gherkin/gherkin-table/gherkin-table.component';
-import {OpenApiModelComponent} from './open-api-model/open-api-model.component';
-import {NgxJsonViewerModule} from 'ngx-json-viewer';
-import {RemoveHtmlSanitizerPipe} from '../../removehtmlsanitizer.pipe';
-import {RouterTestingModule} from '@angular/router/testing';
-import {AnchorPipe} from '../../anchor.pipe';
-import {NoopAnimationsModule} from '@angular/platform-browser/animations';
-import {OpenApiEndPointsComponent} from './open-api-end-points/open-api-end-points.component';
-import {FooterComponent} from '../../_components/page/footer/footer.component';
-import {SecurityContext} from '@angular/core';
-
+import { SafePipe } from '../../safe.pipe';
+import { InternalLinkPipe } from '../../internal-link.pipe';
+import { GherkinComponent } from '../gherkin/gherkin.component';
+import { GherkinStepComponent } from '../gherkin/gherkin-step/gherkin-step.component';
+import { GherkinLongTextComponent } from '../gherkin/gherkin-long-text/gherkin-long-text.component';
+import { GherkinTableComponent } from '../gherkin/gherkin-table/gherkin-table.component';
+import { OpenApiModelComponent } from './open-api-model/open-api-model.component';
+import { NgxJsonViewerModule } from 'ngx-json-viewer';
+import { RemoveHtmlSanitizerPipe } from '../../removehtmlsanitizer.pipe';
+import { RouterTestingModule } from '@angular/router/testing';
+import { AnchorPipe } from '../../anchor.pipe';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { OpenApiEndPointsComponent } from './open-api-end-points/open-api-end-points.component';
+import { FooterComponent } from '../../_components/page/footer/footer.component';
+import { SecurityContext } from '@angular/core';
 
 describe('PageContentComponent', () => {
   let component: PageContentComponent;
@@ -35,43 +34,45 @@ describe('PageContentComponent', () => {
   let page: PageObject;
   let activatedRoute: ActivatedRouteStub;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        PageContentComponent,
-        GherkinComponent,
-        GherkinStepComponent,
-        GherkinLongTextComponent,
-        GherkinTableComponent,
-        OpenApiModelComponent,
-        OpenApiEndPointsComponent,
-        SafePipe,
-        InternalLinkPipe,
-        AnchorPipe,
-        RemoveHtmlSanitizerPipe,
-        FooterComponent
-      ],
-      imports: [
-        HttpClientTestingModule,
-        MatProgressSpinnerModule,
-        MatSnackBarModule,
-        MatTableModule,
-        MatTabsModule,
-        NoopAnimationsModule,
-        MarkdownModule.forRoot({
-          sanitize: SecurityContext.NONE
-        }),
-        NgxJsonViewerModule,
-        RouterTestingModule,
-      ],
-      providers: [
-        {
-          provide: ActivatedRoute,
-          useClass: ActivatedRouteStub,
-        }
-      ]
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [
+          PageContentComponent,
+          GherkinComponent,
+          GherkinStepComponent,
+          GherkinLongTextComponent,
+          GherkinTableComponent,
+          OpenApiModelComponent,
+          OpenApiEndPointsComponent,
+          SafePipe,
+          InternalLinkPipe,
+          AnchorPipe,
+          RemoveHtmlSanitizerPipe,
+          FooterComponent
+        ],
+        imports: [
+          HttpClientTestingModule,
+          MatProgressSpinnerModule,
+          MatSnackBarModule,
+          MatTableModule,
+          MatTabsModule,
+          NoopAnimationsModule,
+          MarkdownModule.forRoot({
+            sanitize: SecurityContext.NONE
+          }),
+          NgxJsonViewerModule,
+          RouterTestingModule
+        ],
+        providers: [
+          {
+            provide: ActivatedRoute,
+            useClass: ActivatedRouteStub
+          }
+        ]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(PageContentComponent);
@@ -79,104 +80,122 @@ describe('PageContentComponent', () => {
     page = new PageObject(fixture);
     activatedRoute = fixture.debugElement.injector.get(ActivatedRoute) as any;
 
-    activatedRoute.testParentParams = {name: '_eng', path: 'suggestionsWS>qa>/overview'};
-    activatedRoute.testParams = { nodes:'_eng', project:'suggestionsWS', branch:'qa', directories: '_', page: 'overview'};
+    activatedRoute.testParentParams = { name: '_eng', path: 'suggestionsWS>qa>/overview' };
+    activatedRoute.testParams = { nodes: '_eng', project: 'suggestionsWS', branch: 'qa', directories: '_', page: 'overview' };
     activatedRoute.fragment = of('');
   });
 
-  it('should get page content from backend and show markdown', waitForAsync(() => {
-    const pageService: PageService = TestBed.inject(PageService);
-    spyOn(pageService, 'getPage').and.returnValue(of(PAGE_SERVICE_RESPONSE));
+  it(
+    'should get page content from backend and show markdown',
+    waitForAsync(() => {
+      const pageService: PageService = TestBed.inject(PageService);
+      spyOn(pageService, 'getPage').and.returnValue(of(PAGE_SERVICE_RESPONSE));
 
-    fixture.detectChanges();
-    expect(component).toBeTruthy();
-    expect(pageService.getPage).toHaveBeenCalledWith('suggestionsWS>qa>/overview');
+      fixture.detectChanges();
+      expect(component).toBeTruthy();
+      expect(pageService.getPage).toHaveBeenCalledWith('suggestionsWS>qa>/overview');
 
-    expect(page.title).toMatch('overview');
-    expect(page.pageContent.startsWith('For various reasons'))
-      .withContext(`Page content should start with "For various reasons" but was ${fixture.nativeElement.textContent}`)
-      .toBeTruthy();
-  }));
+      expect(page.title).toMatch('overview');
+      expect(page.pageContent.startsWith('For various reasons'))
+        .withContext(`Page content should start with "For various reasons" but was ${fixture.nativeElement.textContent}`)
+        .toBeTruthy();
+    })
+  );
 
-  it('should get page content from backend and show markdown', waitForAsync(() => {
-    const pageService: PageService = TestBed.inject(PageService);
-    spyOn(pageService, 'getPage').and.returnValue(of(PAGE_WITH_INTERNAL_LINK_SERVICE_RESPONSE));
+  it(
+    'should get page content from backend and show markdown',
+    waitForAsync(() => {
+      const pageService: PageService = TestBed.inject(PageService);
+      spyOn(pageService, 'getPage').and.returnValue(of(PAGE_WITH_INTERNAL_LINK_SERVICE_RESPONSE));
 
-    fixture.detectChanges();
-    expect(component).toBeTruthy();
+      fixture.detectChanges();
+      expect(component).toBeTruthy();
 
-    expect(pageService.getPage).toHaveBeenCalledWith('suggestionsWS>qa>/overview');
+      expect(pageService.getPage).toHaveBeenCalledWith('suggestionsWS>qa>/overview');
+    })
+  );
 
-  }));
+  it(
+    'should show an iframe if page is an external link',
+    waitForAsync(() => {
+      const pageService: PageService = TestBed.inject(PageService);
+      spyOn(pageService, 'getPage').and.returnValue(of(PAGE_WITH_EXTERNAL_LINK_RESPONSE));
 
-  it('should show an iframe if page is an external link', waitForAsync(() => {
-    const pageService: PageService = TestBed.inject(PageService);
-    spyOn(pageService, 'getPage').and.returnValue(of(PAGE_WITH_EXTERNAL_LINK_RESPONSE));
+      fixture.detectChanges();
 
-    fixture.detectChanges();
+      expect(component).toBeTruthy();
+      expect(page.iframe).toBeTruthy();
+      expect(page.iframe.src).toEqual('http://publisher.corp.kelkoo.net/docs/#/Contact%20Management/getContact');
+    })
+  );
 
-    expect(component).toBeTruthy();
-    expect(page.iframe).toBeTruthy();
-    expect(page.iframe.src).toEqual('http://publisher.corp.kelkoo.net/docs/#/Contact%20Management/getContact');
-  }));
+  it(
+    'should show scenario settings if page contains a scenario',
+    waitForAsync(() => {
+      const pageService: PageService = TestBed.inject(PageService);
+      spyOn(pageService, 'getPage').and.returnValue(of(PAGE_WITH_SCENARIO));
 
-  it('should show scenario settings if page contains a scenario', waitForAsync(() => {
-    const pageService: PageService = TestBed.inject(PageService);
-    spyOn(pageService, 'getPage').and.returnValue(of(PAGE_WITH_SCENARIO));
+      fixture.detectChanges();
 
-    fixture.detectChanges();
+      expect(component).toBeTruthy();
+      expect(page.iframe).toBeFalsy();
+      expect(page.scenario).toBeTruthy();
+    })
+  );
 
-    expect(component).toBeTruthy();
-    expect(page.iframe).toBeFalsy();
-    expect(page.scenario).toBeTruthy();
-  }));
+  it(
+    'should not crash when bad path in internal link',
+    waitForAsync(() => {
+      const path: string = null;
+      const path2 = '';
+      const path3 = ' ';
+      const path4 = ';';
+      const router: Router = TestBed.inject(Router);
+      spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
 
-  it('should not crash when bad path in internal link', waitForAsync(() => {
-    const path: string = null;
-    const path2 = '';
-    const path3 = ' ';
-    const path4 = ';';
-    const router: Router = TestBed.inject(Router);
-    spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+      PageContentComponentTools.navigate(router, path);
+      expect(router.navigate).not.toHaveBeenCalled();
 
-    PageContentComponentTools.navigate(router, path);
-    expect(router.navigate).not.toHaveBeenCalled();
+      PageContentComponentTools.navigate(router, path2);
+      expect(router.navigate).not.toHaveBeenCalled();
 
-    PageContentComponentTools.navigate(router, path2);
-    expect(router.navigate).not.toHaveBeenCalled();
+      PageContentComponentTools.navigate(router, path3);
+      expect(router.navigate).not.toHaveBeenCalled();
 
-    PageContentComponentTools.navigate(router, path3);
-    expect(router.navigate).not.toHaveBeenCalled();
+      PageContentComponentTools.navigate(router, path4);
+      expect(router.navigate).not.toHaveBeenCalled();
+    })
+  );
 
-    PageContentComponentTools.navigate(router, path4);
-    expect(router.navigate).not.toHaveBeenCalled();
-  }));
+  it(
+    'should show a link to view source if provided',
+    waitForAsync(() => {
+      const pageService: PageService = TestBed.inject(PageService);
+      spyOn(pageService, 'getPage').and.returnValue(of(PAGE_WITH_SOURCE_URL));
 
-  it('should show a link to view source if provided', waitForAsync(() => {
-    const pageService: PageService = TestBed.inject(PageService);
-    spyOn(pageService, 'getPage').and.returnValue(of(PAGE_WITH_SOURCE_URL));
+      fixture.detectChanges();
 
-    fixture.detectChanges();
+      expect(component).toBeTruthy();
+      expect(page.viewSource).toBeTruthy();
+    })
+  );
 
-    expect(component).toBeTruthy();
-    expect(page.viewSource).toBeTruthy();
-  }));
+  it(
+    'should not show a link to view source if not provided',
+    waitForAsync(() => {
+      const pageService: PageService = TestBed.inject(PageService);
+      spyOn(pageService, 'getPage').and.returnValue(of(PAGE_SERVICE_RESPONSE));
 
-  it('should not show a link to view source if not provided', waitForAsync(() => {
-    const pageService: PageService = TestBed.inject(PageService);
-    spyOn(pageService, 'getPage').and.returnValue(of(PAGE_SERVICE_RESPONSE));
+      fixture.detectChanges();
 
-    fixture.detectChanges();
-
-    expect(component).toBeTruthy();
-    expect(page.viewSource).toBeFalsy();
-  }));
-
+      expect(component).toBeTruthy();
+      expect(page.viewSource).toBeFalsy();
+    })
+  );
 });
 
 class PageObject {
-  constructor(private fixture: ComponentFixture<PageContentComponent>) {
-  }
+  constructor(private fixture: ComponentFixture<PageContentComponent>) {}
 
   get title(): string {
     const title = this.fixture.nativeElement.querySelector('h1');
@@ -207,7 +226,8 @@ const PAGE_MARKDOWN: PagePart = {
   type: 'markdown',
   data: {
     // eslint-disable-next-line max-len
-    markdown: 'For various reasons, the offers provided to the publishers can be filtered. We don\'t necessary want to provide all the offers to the publishers : ![Overview](../assets/images/constraints_overview.png) This is the constraints objective. The constraints can be defined manually by the **BizDevs** or automatically by the **TrafficOptimizer**. ### Reference and application The constraints are defined and stored in PMWS component. The impact of those constraints is implemented at the client level: - **eCS** and **ShoppingAPI** are filtering the call to Search6 - **FeedService** is filtering the offers provided (offers coming from OfferProcessing) - others systems are also using the constraints to filter offers provided to external clients : example GSA Exporter or COP. The constraints are stored against a profile (which is linked to a contract, which is linked to the publisher itself ([See details](thegardener://${current.project}/${current.branch}/overview))). All trackings of a profile share the same constraints. Clients are most of the time using a tracking as input data to find out what are the constraints to be applied. ### Different sources of constraints There are several ways to define the constraints : - for a publisher, [filter the merchants that can provide offers](thegardener://${current.project}/${current.branch}/constraints/for_a_publisher). - for a merchant, [filter the publishers that can receive offers](thegardener://${current.project}/${current.branch}/constraints/for_a_merchant). - moreover, [offers can be filtered for various reasons](thegardener://${current.project}/${current.branch}/constraints/for_an_offer). ![Sources](../assets/images/constraints_sources_overview.png) All those filters are cumulative : **each offer need to pass through all the filters**. In other words it\'s a AND between each constraint. We can see the impact of [those constraints on the PMBO](thegardener://${current.project}/${current.branch}/constraints/from_pmbo). '
+    markdown:
+      "For various reasons, the offers provided to the publishers can be filtered. We don't necessary want to provide all the offers to the publishers : ![Overview](../assets/images/constraints_overview.png) This is the constraints objective. The constraints can be defined manually by the **BizDevs** or automatically by the **TrafficOptimizer**. ### Reference and application The constraints are defined and stored in PMWS component. The impact of those constraints is implemented at the client level: - **eCS** and **ShoppingAPI** are filtering the call to Search6 - **FeedService** is filtering the offers provided (offers coming from OfferProcessing) - others systems are also using the constraints to filter offers provided to external clients : example GSA Exporter or COP. The constraints are stored against a profile (which is linked to a contract, which is linked to the publisher itself ([See details](thegardener://${current.project}/${current.branch}/overview))). All trackings of a profile share the same constraints. Clients are most of the time using a tracking as input data to find out what are the constraints to be applied. ### Different sources of constraints There are several ways to define the constraints : - for a publisher, [filter the merchants that can provide offers](thegardener://${current.project}/${current.branch}/constraints/for_a_publisher). - for a merchant, [filter the publishers that can receive offers](thegardener://${current.project}/${current.branch}/constraints/for_a_merchant). - moreover, [offers can be filtered for various reasons](thegardener://${current.project}/${current.branch}/constraints/for_an_offer). ![Sources](../assets/images/constraints_sources_overview.png) All those filters are cumulative : **each offer need to pass through all the filters**. In other words it's a AND between each constraint. We can see the impact of [those constraints on the PMBO](thegardener://${current.project}/${current.branch}/constraints/from_pmbo). "
   }
 };
 
@@ -223,18 +243,14 @@ const PAGE_SERVICE_RESPONSE: Page = {
   title: 'overview',
   order: 0,
   path: '',
-  parts: [
-    PAGE_MARKDOWN,
-  ],
+  parts: [PAGE_MARKDOWN]
 };
 
 const PAGE_WITH_INTERNAL_LINK_SERVICE_RESPONSE: Page = {
   title: 'overview',
   order: 0,
   path: '',
-  parts: [
-    PAGE_MARKDOWN_WITH_INTERNAL_LINK,
-  ],
+  parts: [PAGE_MARKDOWN_WITH_INTERNAL_LINK]
 };
 
 const EXTERNAL_LINK_PART: PagePart = {
@@ -248,7 +264,7 @@ const PAGE_WITH_EXTERNAL_LINK_RESPONSE: Page = {
   title: 'overview',
   path: '',
   order: 0,
-  parts: [EXTERNAL_LINK_PART],
+  parts: [EXTERNAL_LINK_PART]
 };
 
 const SCENARIO_PART: PagePart = {
@@ -282,17 +298,14 @@ const SCENARIO_PART: PagePart = {
       language: 'en',
       keyword: 'Feature',
       name: 'Register a project',
-      description: 'As a user,\n  I want to register my project into theGardener\n  So that my project BDD features will be shared with all users',
+      description:
+        'As a user,\n  I want to register my project into theGardener\n  So that my project BDD features will be shared with all users',
       scenarios: [
         {
           keyword: 'Scenario',
           name: 'get a project',
           description: '',
-          tags: [
-            'level_2_technical_details',
-            'nominal_case',
-            'valid'
-          ],
+          tags: ['level_2_technical_details', 'nominal_case', 'valid'],
           abstractionLevel: 'level_2_technical_details',
           id: '4968',
           caseType: 'nominal_case',
@@ -302,13 +315,7 @@ const SCENARIO_PART: PagePart = {
               keyword: 'Given',
               text: 'we have the following projects',
               argument: [
-                [
-                  'id',
-                  'name',
-                  'repositoryUrl',
-                  'stableBranch',
-                  'featuresRootPath'
-                ],
+                ['id', 'name', 'repositoryUrl', 'stableBranch', 'featuresRootPath'],
                 [
                   'suggestionsWS',
                   'Suggestions WebServices',
@@ -321,13 +328,13 @@ const SCENARIO_PART: PagePart = {
             {
               id: '1',
               keyword: 'When',
-              text: 'I perform a \"GET\" on following URL \"/api/projects/suggestionsWS\"',
+              text: 'I perform a "GET" on following URL "/api/projects/suggestionsWS"',
               argument: []
             },
             {
               id: '2',
               keyword: 'Then',
-              text: 'I get a response with status \"200\"',
+              text: 'I get a response with status "200"',
               argument: []
             },
             {
@@ -336,7 +343,7 @@ const SCENARIO_PART: PagePart = {
               text: 'I get the following json response body',
               argument: [
                 [
-                  '{\n  \"id\": \"suggestionsWS\",\n  \"name\": \"Suggestions WebServices\",\n  \"repositoryUrl\": \"git@gitlab.corp.kelkoo.net:library/suggestionsWS.git\",\n  \"stableBranch\": \"master\",\n  \"featuresRootPath\": \"test/features\"\n}'
+                  '{\n  "id": "suggestionsWS",\n  "name": "Suggestions WebServices",\n  "repositoryUrl": "git@gitlab.corp.kelkoo.net:library/suggestionsWS.git",\n  "stableBranch": "master",\n  "featuresRootPath": "test/features"\n}'
                 ]
               ]
             }
@@ -353,16 +360,13 @@ const PAGE_WITH_SCENARIO: Page = {
   title: 'feature',
   path: '',
   order: 0,
-  parts: [PAGE_MARKDOWN, SCENARIO_PART],
+  parts: [PAGE_MARKDOWN, SCENARIO_PART]
 };
-
 
 const PAGE_WITH_SOURCE_URL: Page = {
   title: 'overview',
   order: 0,
   path: '',
-  parts: [
-    PAGE_MARKDOWN,
-  ],
+  parts: [PAGE_MARKDOWN],
   sourceUrl: 'http://github.com/some-link/page.md'
 };

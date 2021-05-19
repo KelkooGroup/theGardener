@@ -1,49 +1,50 @@
-import {GherkinComponent} from './gherkin.component';
+import { GherkinComponent } from './gherkin.component';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
-import {NoopAnimationsModule} from '@angular/platform-browser/animations';
-import {GherkinStepComponent} from './gherkin-step/gherkin-step.component';
-import {GherkinTableComponent} from './gherkin-table/gherkin-table.component';
-import {GherkinLongTextComponent} from './gherkin-long-text/gherkin-long-text.component';
-import {NgxJsonViewerModule} from 'ngx-json-viewer';
-import {GherkinScenario, Scenario} from '../../_models/gherkin';
-import {SafePipe} from '../../safe.pipe';
-import {InternalLinkPipe} from '../../internal-link.pipe';
-import {AnchorPipe} from '../../anchor.pipe';
-import {RemoveHtmlSanitizerPipe} from '../../removehtmlsanitizer.pipe';
-import {MarkdownModule} from 'ngx-markdown';
-import {SecurityContext} from '@angular/core';
-
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { GherkinStepComponent } from './gherkin-step/gherkin-step.component';
+import { GherkinTableComponent } from './gherkin-table/gherkin-table.component';
+import { GherkinLongTextComponent } from './gherkin-long-text/gherkin-long-text.component';
+import { NgxJsonViewerModule } from 'ngx-json-viewer';
+import { GherkinScenario, Scenario } from '../../_models/gherkin';
+import { SafePipe } from '../../safe.pipe';
+import { InternalLinkPipe } from '../../internal-link.pipe';
+import { AnchorPipe } from '../../anchor.pipe';
+import { RemoveHtmlSanitizerPipe } from '../../removehtmlsanitizer.pipe';
+import { MarkdownModule } from 'ngx-markdown';
+import { SecurityContext } from '@angular/core';
 
 describe('GherkinComponent', () => {
   let component: GherkinComponent;
   let fixture: ComponentFixture<GherkinComponent>;
   let page: Page;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        GherkinComponent,
-        GherkinStepComponent,
-        GherkinTableComponent,
-        GherkinLongTextComponent,
-        SafePipe,
-        InternalLinkPipe,
-        AnchorPipe,
-        RemoveHtmlSanitizerPipe,
-      ], imports: [
-        MatTableModule,
-        NoopAnimationsModule,
-        NgxJsonViewerModule,
-        MatTabsModule,
-        MarkdownModule.forRoot({
-          sanitize: SecurityContext.NONE
-        }),
-      ]
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [
+          GherkinComponent,
+          GherkinStepComponent,
+          GherkinTableComponent,
+          GherkinLongTextComponent,
+          SafePipe,
+          InternalLinkPipe,
+          AnchorPipe,
+          RemoveHtmlSanitizerPipe
+        ],
+        imports: [
+          MatTableModule,
+          NoopAnimationsModule,
+          NgxJsonViewerModule,
+          MatTabsModule,
+          MarkdownModule.forRoot({
+            sanitize: SecurityContext.NONE
+          })
+        ]
+      }).compileComponents();
     })
-      .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(GherkinComponent);
@@ -62,14 +63,16 @@ describe('GherkinComponent', () => {
     expect(page.examples.length).toBe(0);
     expect(page.getScenarioIcon(0)).toEqual(['scenario-icon far fa-clipboard fa-sm']);
     expect(page.getScenarioIcon(1)).toEqual(['scenario-icon far fa-clipboard fa-sm', 'tag fas fa-times-circle fa-sm']);
-    expect(page.getScenarioIcon(2)).toEqual(['scenario-icon far fa-clipboard fa-sm', 'tag fas fa-cogs fa-sm', 'tag fas fa-exclamation-triangle fa-sm']);
+    expect(page.getScenarioIcon(2)).toEqual([
+      'scenario-icon far fa-clipboard fa-sm',
+      'tag fas fa-cogs fa-sm',
+      'tag fas fa-exclamation-triangle fa-sm'
+    ]);
   });
 });
 
 class Page {
-  constructor(private fixture: ComponentFixture<GherkinComponent>) {
-
-  }
+  constructor(private fixture: ComponentFixture<GherkinComponent>) {}
 
   get background(): HTMLElement {
     return this.fixture.nativeElement.querySelector('.background');
@@ -86,8 +89,7 @@ class Page {
   getScenarioIcon(index: number) {
     const res: Array<string> = [];
     expect(this.scenarios.length).toBeGreaterThan(index);
-    this.scenarios[index].querySelectorAll('i')
-      .forEach((i: HTMLElement) => res.push(i.getAttribute('class')));
+    this.scenarios[index].querySelectorAll('i').forEach((i: HTMLElement) => res.push(i.getAttribute('class')));
     return res;
   }
 
@@ -140,17 +142,19 @@ const SCENARIOS: Scenario = {
     description: '',
     name: 'Background',
     keyword: 'Given',
-    steps: [{
-      id: '1',
-      keyword: 'Given',
-      text: 'The background step',
-      argument: []
-    }]
+    steps: [
+      {
+        id: '1',
+        keyword: 'Given',
+        text: 'The background step',
+        argument: []
+      }
+    ]
   },
   scenarios: [NOMINAL_LEVEL0_SCENARIO, ERROR_LEVEL1_SCENARIO, LIMIT_LEVEL_2_SCENARIO],
   branchId: 'qa',
   comments: [],
   tags: [],
   keyword: '',
-  language: 'EN',
+  language: 'EN'
 };

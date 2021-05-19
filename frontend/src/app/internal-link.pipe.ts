@@ -1,21 +1,17 @@
-import {Pipe, PipeTransform} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
-import {RouteService} from './_services/route.service';
+import { Pipe, PipeTransform } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { RouteService } from './_services/route.service';
 
 @Pipe({
   name: 'internalLink'
 })
-/* eslint-disable prefer-arrow/prefer-arrow-functions */
 export class InternalLinkPipe implements PipeTransform {
-
   nodes: string;
   project: string;
   branch: string;
   directories: string;
 
-
-  constructor(private activatedRoute: ActivatedRoute, private routeService: RouteService) {
-  }
+  constructor(private activatedRoute: ActivatedRoute, private routeService: RouteService) {}
 
   transform(value: string): string {
     this.nodes = this.activatedRoute.snapshot.params.nodes;
@@ -31,7 +27,7 @@ export class InternalLinkPipe implements PipeTransform {
   }
 
   transformInternalRelativeLinks(value: string): string {
-    const linkRegexString = '(href=)["\'](.*?)[\.]md["\']';
+    const linkRegexString = '(href=)["\'](.*?)[.]md["\']';
     const linkRegex = new RegExp(linkRegexString, 'g');
 
     const nodes = this.nodes;
@@ -41,7 +37,7 @@ export class InternalLinkPipe implements PipeTransform {
     const routeService = this.routeService;
 
     function replacer(p1: string, p2: string, relativePath: string) {
-      const targetUrl = routeService.relativeUrlToFullFrontEndUrl(relativePath, {nodes,project,branch,directories});
+      const targetUrl = routeService.relativeUrlToFullFrontEndUrl(relativePath, { nodes, project, branch, directories });
       return `onclick="navigateTo('${targetUrl}')"`;
     }
 
@@ -49,7 +45,7 @@ export class InternalLinkPipe implements PipeTransform {
   }
 
   transformInternalRelativeLinksWithAnchor(value: string): string {
-    const linkRegexString = '(href=)["\'](.*?)[\.]md#([a-z\-]+)["\']';
+    const linkRegexString = '(href=)["\'](.*?)[.]md#([a-z-]+)["\']';
     const linkRegex = new RegExp(linkRegexString, 'g');
 
     const nodes = this.nodes;
@@ -58,9 +54,9 @@ export class InternalLinkPipe implements PipeTransform {
     const directories = this.directories;
     const routeService = this.routeService;
 
-    function replacer(p1: string, p2: string, relativePath: string,anchor: string) {
+    function replacer(p1: string, p2: string, relativePath: string, anchor: string) {
       const relativePathWithAnchor = `${relativePath}#${anchor}`;
-      const targetUrl = routeService.relativeUrlToFullFrontEndUrl(relativePathWithAnchor, {nodes,project,branch,directories});
+      const targetUrl = routeService.relativeUrlToFullFrontEndUrl(relativePathWithAnchor, { nodes, project, branch, directories });
       return `onclick="navigateTo('${targetUrl}')"`;
     }
 
@@ -92,7 +88,4 @@ export class InternalLinkPipe implements PipeTransform {
 
     return value.replace(linkRegex, replacer);
   }
-
-
 }
-

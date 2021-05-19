@@ -1,5 +1,5 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {GherkinStep, GherkinTextFragment} from '../../../_models/gherkin';
+import { Component, Input, OnInit } from '@angular/core';
+import { GherkinStep, GherkinTextFragment } from '../../../_models/gherkin';
 
 @Component({
   selector: 'app-gherkin-step',
@@ -13,8 +13,7 @@ export class GherkinStepComponent implements OnInit {
   longTextType: string | undefined;
   textFragments: Array<GherkinTextFragment>;
 
-  constructor() {
-  }
+  constructor() {}
 
   ngOnInit(): void {
     if (this.step) {
@@ -35,9 +34,9 @@ export class GherkinStepComponent implements OnInit {
     const match = stepText.match(TEXT_WITH_ARGUMENTS_REGEX);
 
     return split.map(f => ({
-        text: f,
-        isParameter: match ? match.includes('"' + f + '"') : false,
-      }));
+      text: f,
+      isParameter: match ? match.includes('"' + f + '"') : false
+    }));
   }
 }
 

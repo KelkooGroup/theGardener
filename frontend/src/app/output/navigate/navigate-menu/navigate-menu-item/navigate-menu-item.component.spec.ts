@@ -1,17 +1,17 @@
-import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
-import {NavigateMenuItemComponent} from './navigate-menu-item.component';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatIconModule} from '@angular/material/icon';
-import {MatSelectModule} from '@angular/material/select';
-import {MatSnackBarModule} from '@angular/material/snack-bar';
-import {RouterTestingModule} from '@angular/router/testing';
-import {NoopAnimationsModule} from '@angular/platform-browser/animations';
-import {ActivatedRoute, Router} from '@angular/router';
-import {ActivatedRouteStub} from '../../../../_testUtils/activated-route-stub.spec';
-import {FormsModule} from '@angular/forms';
-import {MatSelectHelper} from '../../../../_testUtils/mat-select-helper.spec';
-import {MenuProjectHierarchy, MenuType} from '../../../../_models/menu';
+import { NavigateMenuItemComponent } from './navigate-menu-item.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { RouterTestingModule } from '@angular/router/testing';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRouteStub } from '../../../../_testUtils/activated-route-stub.spec';
+import { FormsModule } from '@angular/forms';
+import { MatSelectHelper } from '../../../../_testUtils/mat-select-helper.spec';
+import { MenuProjectHierarchy, MenuType } from '../../../../_models/menu';
 
 describe('NavigateMenuItemComponent', () => {
   let component: NavigateMenuItemComponent;
@@ -19,27 +19,28 @@ describe('NavigateMenuItemComponent', () => {
   let page: Page;
   let activatedRoute: ActivatedRouteStub;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [NavigateMenuItemComponent],
-      imports: [
-        MatIconModule,
-        MatFormFieldModule,
-        MatSelectModule,
-        MatSnackBarModule,
-        FormsModule,
-        RouterTestingModule,
-        NoopAnimationsModule,
-      ],
-      providers: [
-        {
-          provide: ActivatedRoute,
-          useClass: ActivatedRouteStub
-        }
-      ]
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [NavigateMenuItemComponent],
+        imports: [
+          MatIconModule,
+          MatFormFieldModule,
+          MatSelectModule,
+          MatSnackBarModule,
+          FormsModule,
+          RouterTestingModule,
+          NoopAnimationsModule
+        ],
+        providers: [
+          {
+            provide: ActivatedRoute,
+            useClass: ActivatedRouteStub
+          }
+        ]
+      }).compileComponents();
     })
-        .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(NavigateMenuItemComponent);
@@ -49,14 +50,14 @@ describe('NavigateMenuItemComponent', () => {
   });
 
   it('should create without chevron when no children', () => {
-    activatedRoute.testParams = { nodes:'_publisher'  };
+    activatedRoute.testParams = { nodes: '_publisher' };
     component.menuItem = {
       name: 'publisher',
       label: 'Publishers',
       type: 'Node' as MenuType,
       depth: 1,
       children: [],
-      route:  {
+      route: {
         nodes: ['publisher', 'systems', 'services'],
         project: 'ecs',
         branch: '_',
@@ -71,17 +72,17 @@ describe('NavigateMenuItemComponent', () => {
   });
 
   it('should expand / collapse hierarchy nodes', () => {
-    activatedRoute.testParams = {nodes:'_publisher'};
+    activatedRoute.testParams = { nodes: '_publisher' };
     component.menuItem = {
       name: 'publisher',
       label: 'Publishers',
       type: 'Node' as MenuType,
       depth: 1,
-      route:  {
+      route: {
         nodes: ['publisher'],
         project: undefined,
         branch: '_',
-        directories: [] as  Array<string>,
+        directories: [] as Array<string>,
         page: undefined
       },
       children: [
@@ -91,11 +92,11 @@ describe('NavigateMenuItemComponent', () => {
           type: 'Node' as MenuType,
           depth: 2,
           children: [],
-          route:  {
+          route: {
             nodes: ['publisher', 'child1'],
             project: undefined,
             branch: '_',
-            directories: [] as  Array<string>,
+            directories: [] as Array<string>,
             page: undefined
           }
         },
@@ -105,14 +106,14 @@ describe('NavigateMenuItemComponent', () => {
           type: 'Node' as MenuType,
           depth: 2,
           children: [],
-          route:  {
+          route: {
             nodes: ['publisher', 'child2'],
             project: undefined,
             branch: '_',
-            directories: [] as  Array<string>,
+            directories: [] as Array<string>,
             page: undefined
           }
-        },
+        }
       ]
     };
     fixture.detectChanges();
@@ -124,21 +125,20 @@ describe('NavigateMenuItemComponent', () => {
   });
 
   it('should navigate to item on click', () => {
-    activatedRoute.testParams = {nodes: '_publisher'};
+    activatedRoute.testParams = { nodes: '_publisher' };
     component.menuItem = {
       name: 'publisher',
       label: 'Publishers',
       type: 'Node' as MenuType,
       depth: 1,
-      route:  {
+      route: {
         nodes: ['publisher'],
         project: 'ecs',
         branch: '_',
-        directories: [] as  Array<string>,
+        directories: [] as Array<string>,
         page: 'Meta'
       },
-      children: [
-      ]
+      children: []
     };
     fixture.detectChanges();
 
@@ -149,55 +149,57 @@ describe('NavigateMenuItemComponent', () => {
     expect(router.navigateByUrl).toHaveBeenCalledWith('app/documentation/navigate/_publisher/ecs/_/_/Meta');
   });
 
-  it('should show branches in a select if node is a project', waitForAsync(() => {
-    activatedRoute.testParams = {nodes: '_eng', project: 'suggestionWS'};
-    const projectItem: MenuProjectHierarchy = {
-      name: 'suggestionWS',
-      label: 'Suggestion Webservice',
-      type: 'Project' as MenuType,
-      stableBranch: 'qa',
-      depth: 2,
-      route:  {},
-      children: [
-        {
-          name: 'qa',
-          label: 'qa',
-          type: 'Branch' as MenuType,
-          depth: 3,
-          children: [],
-          route:  {}
-        },
-        {
-          name: 'branch1',
-          label: 'Branch 1',
-          type: 'Branch' as MenuType,
-          depth: 3,
-          children: [],
-          route:  {}
-        },
-      ]
-    };
-    component.menuItem = projectItem;
-    fixture.detectChanges();
+  it(
+    'should show branches in a select if node is a project',
+    waitForAsync(() => {
+      activatedRoute.testParams = { nodes: '_eng', project: 'suggestionWS' };
+      const projectItem: MenuProjectHierarchy = {
+        name: 'suggestionWS',
+        label: 'Suggestion Webservice',
+        type: 'Project' as MenuType,
+        stableBranch: 'qa',
+        depth: 2,
+        route: {},
+        children: [
+          {
+            name: 'qa',
+            label: 'qa',
+            type: 'Branch' as MenuType,
+            depth: 3,
+            children: [],
+            route: {}
+          },
+          {
+            name: 'branch1',
+            label: 'Branch 1',
+            type: 'Branch' as MenuType,
+            depth: 3,
+            children: [],
+            route: {}
+          }
+        ]
+      };
+      component.menuItem = projectItem;
+      fixture.detectChanges();
 
-    expect(component.selectedBranch).toBeTruthy();
-    expect(component.selectedBranch.name).toEqual(projectItem.stableBranch);
-    expect(page.branchSelect).toBeTruthy();
-    expect(page.availableBranches.length).toBe(2);
-    expect(page.availableBranches[0].textContent).toMatch('qa');
-    expect(page.availableBranches[1].textContent).toMatch('branch1');
-  }));
-
+      expect(component.selectedBranch).toBeTruthy();
+      expect(component.selectedBranch.name).toEqual(projectItem.stableBranch);
+      expect(page.branchSelect).toBeTruthy();
+      expect(page.availableBranches.length).toBe(2);
+      expect(page.availableBranches[0].textContent).toMatch('qa');
+      expect(page.availableBranches[1].textContent).toMatch('branch1');
+    })
+  );
 
   it('should select stable branch by default', () => {
-    activatedRoute.testParams = {nodes: '_eng', project: 'suggestionWS'};
+    activatedRoute.testParams = { nodes: '_eng', project: 'suggestionWS' };
     const projectItem: MenuProjectHierarchy = {
       name: 'suggestionWS',
       label: 'Suggestion Webservice',
       type: 'Project' as MenuType,
       stableBranch: 'qa',
       depth: 2,
-      route:  {},
+      route: {},
       children: [
         {
           name: 'branch1',
@@ -205,7 +207,7 @@ describe('NavigateMenuItemComponent', () => {
           type: 'Branch' as MenuType,
           depth: 3,
           children: [],
-          route:  {}
+          route: {}
         },
         {
           name: 'qa',
@@ -213,8 +215,8 @@ describe('NavigateMenuItemComponent', () => {
           type: 'Branch' as MenuType,
           depth: 3,
           children: [],
-          route:  {}
-        },
+          route: {}
+        }
       ]
     };
     component.menuItem = projectItem;
@@ -224,7 +226,7 @@ describe('NavigateMenuItemComponent', () => {
   });
 
   it('should select branch specified in URL', () => {
-    activatedRoute.testParams = {nodes: '_eng', project: 'suggestionWS', branch: 'branch1'};
+    activatedRoute.testParams = { nodes: '_eng', project: 'suggestionWS', branch: 'branch1' };
     component.menuItem = {
       name: 'suggestionWS',
       label: 'Suggestion Webservice',
@@ -238,7 +240,7 @@ describe('NavigateMenuItemComponent', () => {
           type: 'Branch' as MenuType,
           depth: 3,
           children: [],
-          route: {},
+          route: {}
         },
         {
           name: 'branch1',
@@ -246,8 +248,8 @@ describe('NavigateMenuItemComponent', () => {
           type: 'Branch' as MenuType,
           depth: 3,
           children: [],
-          route: {},
-        },
+          route: {}
+        }
       ]
     };
     fixture.detectChanges();
@@ -255,9 +257,9 @@ describe('NavigateMenuItemComponent', () => {
     expect(component.selectedBranch.name).toEqual('branch1');
   });
 
-   it('should not show branches select if only one branch', () => {
-    activatedRoute.testParams = {nodes: '_eng', project: 'suggestionWS', branch: 'branch1'};
-     component.menuItem = {
+  it('should not show branches select if only one branch', () => {
+    activatedRoute.testParams = { nodes: '_eng', project: 'suggestionWS', branch: 'branch1' };
+    component.menuItem = {
       name: 'suggestionWS',
       label: 'Suggestion Webservice',
       type: 'Project' as MenuType,
@@ -270,7 +272,7 @@ describe('NavigateMenuItemComponent', () => {
           type: 'Branch' as MenuType,
           depth: 3,
           children: [],
-          route: {},
+          route: {}
         }
       ]
     };
@@ -278,10 +280,6 @@ describe('NavigateMenuItemComponent', () => {
 
     expect(page.branchSelect).toBeFalsy();
   });
-
-
-
-
 });
 
 class Page {

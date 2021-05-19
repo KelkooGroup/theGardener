@@ -1,4 +1,3 @@
-
 export interface Scenario {
   id: string;
   branchId: string;
@@ -19,7 +18,6 @@ export interface GherkinBackground {
   name: string; // FIXME: do we keep it ?
   description: string; // FIXME: do we keep it ?
   steps: Array<GherkinStep>;
-
 }
 
 export interface GherkinScenario {
@@ -61,4 +59,3 @@ export interface GherkinTextFragment {
   text: string;
   isParameter: boolean;
 }
-

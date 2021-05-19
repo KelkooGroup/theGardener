@@ -4,10 +4,9 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class MobileMenuHelperService {
-
   private menuDisplayed = false;
 
-  constructor() { }
+  constructor() {}
 
   get isMobileMenuDisplayed() {
     return this.menuDisplayed;

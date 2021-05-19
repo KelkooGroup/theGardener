@@ -1,4 +1,3 @@
-
 export interface OpenApiModelRow {
   title: string;
   openApiType: string;
@@ -14,7 +13,6 @@ export interface OpenApiModel {
   childrenModels: Array<OpenApiModel>;
   errors: Array<string>;
 }
-
 
 export interface OpenApiPath {
   openApiSpec: JSON;

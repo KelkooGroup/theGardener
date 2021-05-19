@@ -1,8 +1,4 @@
-<a [ngStyle]="{'padding-left': calculatePadding() + 'px'}"
-   [ngClass]="active ? 'bold' : 'default'"
-   (click)="navigateToItem()"
-   class="item"
->
+<a [ngStyle]="{'padding-left': calculatePadding() + 'px'}" [ngClass]="active ? 'bold' : 'default'" (click)="navigateToItem()" class="item">
   <ul class="menu-link">
     <div id="expandIcon" *ngIf="menuItem.children.length>0">
       <div *ngIf="menuItem.depth === 0; else iconPlus">
@@ -26,13 +22,12 @@
         </ng-template>
       </ng-template>
     </div>
-    <div [ngStyle]="{'padding-left': paddingByDepth + 'px'}"  *ngIf="menuItem.children.length===0"></div>
-    <span class="item-text">{{ menuItem.label  }}</span>
+    <div [ngStyle]="{'padding-left': paddingByDepth + 'px'}" *ngIf="menuItem.children.length===0"></div>
+    <span class="item-text">{{ menuItem.label }}</span>
   </ul>
 </a>
 
 <div *ngIf="expanded">
-
   <div *ngIf="menuItem.type==='Project'; then projectBlock else nodeBlock"></div>
 
   <ng-template #nodeBlock>
@@ -42,23 +37,25 @@
   </ng-template>
 
   <ng-template #projectBlock>
-    <div *ngIf="menuItem.children.length > 1"
-         class="options"
-         [ngStyle]="{'padding-left': calculatePadding() + 'px'}">
+    <div *ngIf="menuItem.children.length > 1" class="options" [ngStyle]="{'padding-left': calculatePadding() + 'px'}">
       <mat-form-field class="branch-select">
-        <mat-select class="branch-mat-select" [(ngModel)]="selectedBranch"
-                    [compareWith]="branchComparator"
-                    id="branchSelect"
-                    (selectionChange)="navigateToSelectedBranch()"
+        <mat-select
+          class="branch-mat-select"
+          [(ngModel)]="selectedBranch"
+          [compareWith]="branchComparator"
+          id="branchSelect"
+          (selectionChange)="navigateToSelectedBranch()"
         >
-          <mat-option *ngFor="let branch of menuItem.children; trackBy: trackMenuItem" [value]="branch">
-            {{ branch.name }}
-          </mat-option>
+          <mat-option *ngFor="let branch of menuItem.children; trackBy: trackMenuItem" [value]="branch"> {{ branch.name }} </mat-option>
         </mat-select>
       </mat-form-field>
     </div>
     <div *ngIf="selectedBranch && selectedBranch.children">
-      <app-navigate-menu-item *ngFor="let child of selectedBranch.children" [menuItem]="child" (navigationEvent)="onChildNavigationEvent($event)"></app-navigate-menu-item>
+      <app-navigate-menu-item
+        *ngFor="let child of selectedBranch.children"
+        [menuItem]="child"
+        (navigationEvent)="onChildNavigationEvent($event)"
+      ></app-navigate-menu-item>
     </div>
   </ng-template>
 </div>
