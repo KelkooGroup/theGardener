@@ -51,15 +51,10 @@ jobs:
       run: ng build --no-progress --output-path ../public/dist
       working-directory: frontend
 
-    - name: ng test
+    - name: ng test && ng e2e
       run:  |
         export CI=true
         ng test --watch=false --progress=false --code-coverage
-      working-directory: frontend
-
-    - name: ng e2e
-      run:  |
-        export CI=true
         ng e2e
       working-directory: frontend
 
