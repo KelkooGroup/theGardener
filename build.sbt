@@ -2,7 +2,7 @@ name := "the_gardener"
 maintainer := "florian.fauvarque@gmail.com"
 
 val jdkVersion = "1.8"
-scalaVersion := "2.13.5"
+scalaVersion := "2.13.6"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala).settings(
   swaggerPlayValidate := false
@@ -73,7 +73,7 @@ Compile / packageDoc / publishArtifact := false
 topLevelDirectory := None
 
 val silencerVersion = "1.5.0"
-val cucumberVersion = "6.10.3"
+val cucumberVersion = "6.10.4"
 
 libraryDependencies ++= Seq(
   ws,
@@ -89,13 +89,13 @@ libraryDependencies ++= Seq(
   "io.cucumber" % "gherkin" % "5.2.0",
   "org.playframework.anorm" %% "anorm" % "2.6.10",
   "mysql" % "mysql-connector-java" % "8.0.25",
-  "org.eclipse.jgit" % "org.eclipse.jgit" % "5.11.0.202103091610-r",
+  "org.eclipse.jgit" % "org.eclipse.jgit" % "5.11.1.202105131744-r",
   // Swagger
   "io.swagger" % "swagger-annotations" % "1.6.2", // do not upgrade beyond 1.x because of sbt-swagger-play compatibility
 
   "com.h2database" % "h2" % "1.4.199",
   "commons-io" % "commons-io" % "2.6",
-  "com.outr" %% "lucene4s" % "1.11.0",
+  "com.outr" %% "lucene4s" % "1.11.1",
   "net.ruippeixotog" %% "scala-scraper" % "2.2.1" % Test,
 
   // Cucumber
@@ -105,7 +105,7 @@ libraryDependencies ++= Seq(
 
   "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.12.3" % Test,
   "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0" % Test,
-  "org.scalatestplus" %% "mockito-3-4" % "3.2.8.0" % Test,
+  "org.scalatestplus" %% "mockito-3-4" % "3.2.9.0" % Test,
   "org.mockito" % "mockito-all" % "1.10.19" % Test,
 )
 
