@@ -1,4 +1,5 @@
 -J-Xmx2G
 -J-Xss256M
+-J-XX:+IgnoreUnrecognizedVMOptions
 -J-XX:+UseConcMarkSweepGC
 -J-XX:+CMSClassUnloadingEnabled
