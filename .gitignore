@@ -2,6 +2,7 @@
 *.log
 .idea/
 *.iml
+.bsp
 target
 logs
 public/dist/

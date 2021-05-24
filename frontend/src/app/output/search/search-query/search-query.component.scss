@@ -2,15 +2,20 @@
 
 .searchContainer {
     display: inline-flex;
-    flex: 1 1 300px;
+    flex: 1 1 400px;
     position: relative;
-    border: 1px solid $color-border-lighter;
+    border: 1px solid #eef1f5;
     border-radius: 5px;
     overflow: hidden;
+    width:400px;
+    background: white;
+}
+
+.searchBox {
+  width: 400px;
+  border:none;
 }
 
 .searchIcon {
     padding: 0.5rem;
 }
-
-

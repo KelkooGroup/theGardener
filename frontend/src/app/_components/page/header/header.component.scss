@@ -14,7 +14,7 @@
   display: flex;
   align-items: flex-end;
   margin: 0;
-  padding: 3px 5px 0;
+  padding: 10px;
   list-style-type: none;
   flex-wrap: wrap;
 }
@@ -23,7 +23,10 @@
   flex: 1;
   margin-top: 0;
   margin-bottom: 0;
+}
 
+.header-search{
+  padding-bottom: 7px;
 }
 
 .header-logo-text {
@@ -36,7 +39,7 @@
 }
 
 .header-logo img {
-  height: 40px;
+  height: 30px;
 }
 
 
@@ -82,13 +85,14 @@
 }
 
 .header-navigation{
-  padding-bottom: 8px;
+  padding-bottom: 13px;
 }
 
 .header-navigation a {
   transition: all 0.3s ease; /* Add transition for hover effects */
   text-decoration: none;
   line-height: 18px;
+  font-size:18px;
   color: white;
   padding: 0 32px 5px;
 
@@ -109,8 +113,7 @@
 }
 
 .header-navigation .active {
-  font-weight: bold;
-  font-size: 22px;
+  font-weight: 600;
   border-bottom: 2px solid white;
 }
 
@@ -122,17 +125,39 @@
   background: white;
 }
 
-.mat-form-field {
-  margin-bottom: -1.25em;
+.mat-form-field-appearance-fill .mat-form-field-flex {
+  background-color: none;
 }
 
 .mat-select {
+  font-family: $font-family;
   font-size: $font-size-text-small;
   text-align: center;
 }
 
 .header-translate {
   margin-right: 20px;
+  margin-left: 20px;
   align-self: flex-end;
-  background-color: white;
+
+  mat-form-field{
+    margin-bottom: -0.7em;
+
+    ::ng-deep .mat-form-field-flex{
+      background:white;
+      border-radius: 5px;
+    }
+    ::ng-deep .mat-form-field-infix{
+      width: 120px;
+      border-top: none;
+      padding: 0.55em 0;
+    }
+    ::ng-deep .mat-form-field-wrapper{
+      padding-bottom: 1.2em;
+    }
+    ::ng-deep .mat-form-field-underline{
+      background:none;
+    }
+  } 
+
 }

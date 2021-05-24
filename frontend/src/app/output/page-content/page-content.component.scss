@@ -33,6 +33,11 @@
   word-wrap:break-word;
 }
 
+::ng-deep td {
+  vertical-align: top;
+}
+
+
 h1 {
   padding-left: $margin-left;
 }
