@@ -7,7 +7,7 @@ on:
     paths:
       - '.github/workflows/frontend.yml'
       - 'frontend/**'
-  pull_request_target:
+  pull_request:
     paths:
       - '.github/workflows/frontend.yml'
       - 'frontend/**'
@@ -17,6 +17,8 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    env:
+      HAVE_SONAR_TOKEN: ${{ secrets.SONAR_TOKEN != '' }}
 
     steps:
     - uses: actions/checkout@v2
@@ -64,6 +66,7 @@ jobs:
 
     - name: SonarCloud Scan
       uses: sonarsource/sonarcloud-github-action@master
+      if: ${{ env.HAVE_SONAR_TOKEN == 'true' }}
       with:
         projectBaseDir: /github/workspace/frontend
       env:
