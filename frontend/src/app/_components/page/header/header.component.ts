@@ -70,7 +70,7 @@ export class HeaderComponent implements OnInit {
               url: this.translateTemplate.replace('{{to}}', code).replace('{{encoded_url}}', encodeURIComponent(currentUrl))
             };
 
-            if (document.location.href.includes(code)) {
+            if (document.location.href === language.url) {
               this.selectedLanguageCode = code;
             }
 
