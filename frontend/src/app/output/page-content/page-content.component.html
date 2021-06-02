@@ -8,7 +8,7 @@
   <div *ngFor="let part of page.parts">
     <div [ngSwitch]="part.type">
       <div *ngSwitchCase="'markdown'" class="markdown">
-        <markdown [innerHTML]="getMarkdown(part) | internalLink | anchor | removehtmlsanitizer " katex></markdown>
+        <markdown [innerHTML]="getMarkdown(part) | markdown | internalLink | anchor | removehtmlsanitizer " katex></markdown>
       </div>
       <div *ngSwitchCase="'includeExternalPage'">
         <iframe [src]="getExternalLink(part) | safe" scrolling="yes" title="External Link"></iframe>
