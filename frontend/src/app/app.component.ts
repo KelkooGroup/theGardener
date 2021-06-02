@@ -15,19 +15,19 @@ export class AppComponent {
   translateTemplate?: string;
 
   constructor(private applicationService: ConfigService, private title: Title) {
-    this.applicationService.getConfigs().subscribe(result => {
-      this.title.setTitle(result.windowTitle);
-      this.appTitle = result.title;
-      this.logoSrc = result.logoSrc;
-      this.favIcon = result.faviconSrc;
-      this.baseUrl = result.baseUrl;
-      this.translateTo = result.translateTo;
-      this.translateTemplate = result.translateTemplate;
+    const config = this.applicationService.getConfig();
 
-      document.documentElement.style.setProperty('--custom-color-main', result.colorMain);
-      document.documentElement.style.setProperty('--custom-color-light', result.colorLight);
-      document.documentElement.style.setProperty('--custom-color-dark', result.colorDark);
-    });
+    this.title.setTitle(config.windowTitle);
+    this.appTitle = config.title;
+    this.logoSrc = config.logoSrc;
+    this.favIcon = config.faviconSrc;
+    this.baseUrl = config.baseUrl;
+    this.translateTo = config.translateTo;
+    this.translateTemplate = config.translateTemplate;
+
+    document.documentElement.style.setProperty('--custom-color-main', config.colorMain);
+    document.documentElement.style.setProperty('--custom-color-light', config.colorLight);
+    document.documentElement.style.setProperty('--custom-color-dark', config.colorDark);
   }
 
   set favIcon(faviconSrc: string) {

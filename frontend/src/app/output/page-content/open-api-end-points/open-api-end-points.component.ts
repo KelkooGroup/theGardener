@@ -1,3 +1,4 @@
+
 import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
 import { OpenApiPath } from '../../../_models/open-api';
 import { ConfigService } from '../../../_services/config.service';
@@ -19,9 +20,9 @@ export class OpenApiEndPointsComponent implements OnInit, AfterViewInit {
   constructor(private applicationService: ConfigService) {}
 
   ngOnInit(): void {
-    this.applicationService.getConfigs().subscribe(result => {
-      this.proxyUrl = result.baseUrl + '/api/proxy';
-    });
+    const config = this.applicationService.getConfig();
+    this.proxyUrl = config.baseUrl + '/api/proxy';
+
     this.id = 'swagger-ui-' + this.position;
   }
 

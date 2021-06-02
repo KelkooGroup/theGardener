@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, SecurityContext } from '@angular/core';
+import {APP_INITIALIZER, NgModule, SecurityContext} from '@angular/core';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { APIInterceptor } from './http-interceptor';
 import { AppComponent } from './app.component';
@@ -53,6 +53,7 @@ import { SearchPageComponent } from './output/search/search-page/search-page.com
 import { SearchResultsComponent } from './output/search/search-results/search-results.component';
 import { SearchResultItemComponent } from './output/search/search-result-item/search-result-item.component';
 import { SearchQueryComponent } from './output/search/search-query/search-query.component';
+import {ConfigService} from './_services/config.service';
 
 const nonProductionProviders = [
   {
@@ -61,6 +62,10 @@ const nonProductionProviders = [
     multi: true
   }
 ];
+
+export function initApp(config: ConfigService) {
+  return () => config.load();
+}
 
 @NgModule({
   declarations: [
@@ -119,7 +124,18 @@ const nonProductionProviders = [
       sanitize: SecurityContext.NONE
     })
   ],
-  providers: [...(!environment.production ? nonProductionProviders : []), MenuService, NotificationService],
+  providers: [
+    ...!environment.production ? nonProductionProviders : [],
+    MenuService,
+    NotificationService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initApp,
+      deps: [ConfigService],
+      multi: true,
+    },
+
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

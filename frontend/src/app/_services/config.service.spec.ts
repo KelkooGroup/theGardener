@@ -3,6 +3,7 @@ import { TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ConfigService } from './config.service';
 import { Config } from '../_models/config';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 
 describe('ConfigService', () => {
   let httpMock: HttpTestingController;
@@ -11,7 +12,7 @@ describe('ConfigService', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        imports: [HttpClientTestingModule],
+      imports: [HttpClientTestingModule, MatSnackBarModule],
         providers: [ConfigService]
       }).compileComponents();
     })
@@ -29,13 +30,10 @@ describe('ConfigService', () => {
   it('should be created', () => {
     const service: ConfigService = TestBed.inject(ConfigService);
     expect(service).toBeTruthy();
-    httpMock.expectOne('api/config');
   });
 
-  it(
-    'should parse service response',
-    waitForAsync(() => {
-      configService.getConfigs().subscribe(h => {
+  it('should parse service response', waitForAsync(() => {
+    configService.load().then(h => {
         expect(h.windowTitle).toBe('theGardener');
         expect(h.title).toBe('In our documentation we trust.');
         expect(h.logoSrc).toBe('assets/images/logo-white.png');
