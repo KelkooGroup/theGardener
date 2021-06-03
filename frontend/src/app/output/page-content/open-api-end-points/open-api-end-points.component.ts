@@ -1,4 +1,3 @@
-
 import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
 import { OpenApiPath } from '../../../_models/open-api';
 import { ConfigService } from '../../../_services/config.service';

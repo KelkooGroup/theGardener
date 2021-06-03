@@ -1,11 +1,11 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {MenuService} from '../../../_services/menu.service';
-import {NotificationService} from '../../../_services/notification.service';
-import {ActivatedRoute, Router} from '@angular/router';
-import {MenuHierarchy} from '../../../_models/menu';
-import {NAVIGATE_PATH, RouteService} from '../../../_services/route.service';
-import {NavigationParams, NavigationRoute} from '../../../_models/route';
-import {MobileMenuHelperService} from '../../../_services/mobile-menu-helper.service';
+import { Component, Input, OnInit } from '@angular/core';
+import { MenuService } from '../../../_services/menu.service';
+import { NotificationService } from '../../../_services/notification.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { MenuHierarchy } from '../../../_models/menu';
+import { NAVIGATE_PATH, RouteService } from '../../../_services/route.service';
+import { NavigationParams, NavigationRoute } from '../../../_models/route';
+import { MobileMenuHelperService } from '../../../_services/mobile-menu-helper.service';
 import ISO6391 from 'iso-639-1';
 
 interface Language {
@@ -36,13 +36,14 @@ export class HeaderComponent implements OnInit {
   translateLanguages: Array<Language> = [];
   selectedLanguageCode: string;
 
-  constructor(private menuService: MenuService,
-              private routeService: RouteService,
-              private notificationService: NotificationService,
-              private activatedRoute: ActivatedRoute,
-              private router: Router,
-              public mobileMenuHelper: MobileMenuHelperService) {
-  }
+  constructor(
+    private menuService: MenuService,
+    private routeService: RouteService,
+    private notificationService: NotificationService,
+    private activatedRoute: ActivatedRoute,
+    private router: Router,
+    public mobileMenuHelper: MobileMenuHelperService
+  ) {}
 
   ngOnInit() {
     this.menuService.getMenuHeader().subscribe(
@@ -58,12 +59,11 @@ export class HeaderComponent implements OnInit {
         }
 
         const currentUrl = this.baseUrl + '/' + this.url;
-        const languageNone = {code: 'none', name: 'English', url: currentUrl};
+        const languageNone = { code: 'none', name: 'English', url: currentUrl };
         this.selectedLanguageCode = languageNone.code;
 
         if (this.translateTo && this.translateTemplate) {
           this.translateLanguages = this.translateTo.split(',').map(code => {
-
             const language = {
               code,
               name: ISO6391.getName(code),
@@ -78,12 +78,12 @@ export class HeaderComponent implements OnInit {
           });
         }
 
-
         this.translateLanguages.unshift(languageNone);
-
-      }, error => {
+      },
+      error => {
         this.notificationService.showError('Error while getting first level of hierarchy', error);
-      });
+      }
+    );
   }
 
   getCurrentRoute(): NavigationRoute {
@@ -118,5 +118,4 @@ export class HeaderComponent implements OnInit {
       document.location.href = selectedLanguage.url;
     }
   }
-
 }

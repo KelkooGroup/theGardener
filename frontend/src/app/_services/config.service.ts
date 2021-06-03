@@ -1,21 +1,19 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Config } from '../_models/config';
-import {NotificationService} from './notification.service';
+import { NotificationService } from './notification.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ConfigService {
-
   config: Config;
 
-  constructor(private http: HttpClient, private notificationService: NotificationService) { }
+  constructor(private http: HttpClient, private notificationService: NotificationService) {}
 
   // This is the method you want to call at bootstrap
   // Important: It should return a Promise
   load(): Promise<Config> {
-
     this.config = null;
 
     return this.http
