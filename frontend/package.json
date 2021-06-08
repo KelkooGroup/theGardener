@@ -83,7 +83,7 @@
     "prettier": "2.3.1",
     "protractor": "7.0.0",
     "protractor-cucumber-framework": "8.1.0",
-    "puppeteer": "9.1.1",
+    "puppeteer": "10.0.0",
     "sass": "1.34.1",
     "ts-node": "10.0.0",
     "typescript": "4.2.4",
