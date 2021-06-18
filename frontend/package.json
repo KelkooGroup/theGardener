@@ -82,7 +82,7 @@
     "phantomjs-prebuilt": "2.1.16",
     "prettier": "2.3.1",
     "protractor": "7.0.0",
-    "protractor-cucumber-framework": "8.1.1",
+    "protractor-cucumber-framework": "8.2.0",
     "puppeteer": "10.0.0",
     "sass": "1.35.1",
     "ts-node": "10.0.0",
