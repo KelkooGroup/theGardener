@@ -80,7 +80,7 @@
     "karma-jasmine-html-reporter": "1.6.0",
     "karma-phantomjs-launcher": "1.0.4",
     "phantomjs-prebuilt": "2.1.16",
-    "prettier": "2.3.1",
+    "prettier": "2.3.2",
     "protractor": "7.0.0",
     "protractor-cucumber-framework": "8.2.0",
     "puppeteer": "10.0.0",
