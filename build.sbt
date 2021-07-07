@@ -103,7 +103,7 @@ libraryDependencies ++= Seq(
   "io.cucumber" % "cucumber-junit" % cucumberVersion % Test,
   "io.cucumber" % "cucumber-picocontainer" % cucumberVersion % Test,
 
-  "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.12.3" % Test,
+  "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.12.4" % Test,
   "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0" % Test,
   "org.scalatestplus" %% "mockito-3-4" % "3.2.9.0" % Test,
   "org.mockito" % "mockito-all" % "1.10.19" % Test,
