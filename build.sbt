@@ -82,13 +82,13 @@ libraryDependencies ++= Seq(
   evolutions,
   jdbc,
   caffeine,
-  "ch.qos.logback" % "logback-access" % "1.2.4",
+  "ch.qos.logback" % "logback-access" % "1.2.4-groovyless",
   "net.logstash.logback" % "logstash-logback-encoder" % "6.2",
   "com.typesafe.play" %% "play-json" % "2.9.2",
   "org.julienrf" %% "play-json-derived-codecs" % "10.0.2",
   "io.cucumber" % "gherkin" % "5.2.0",
   "org.playframework.anorm" %% "anorm" % "2.6.10",
-  "mysql" % "mysql-connector-java" % "8.0.25",
+  "mysql" % "mysql-connector-java" % "8.0.26",
   "org.eclipse.jgit" % "org.eclipse.jgit" % "5.12.0.202106070339-r",
   // Swagger
   "io.swagger" % "swagger-annotations" % "1.6.2", // do not upgrade beyond 1.x because of sbt-swagger-play compatibility
