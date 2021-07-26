@@ -82,7 +82,7 @@ libraryDependencies ++= Seq(
   evolutions,
   jdbc,
   caffeine,
-  "ch.qos.logback" % "logback-access" % "1.2.4-groovyless",
+  "ch.qos.logback" % "logback-access" % "1.2.5",
   "net.logstash.logback" % "logstash-logback-encoder" % "6.2",
   "com.typesafe.play" %% "play-json" % "2.9.2",
   "org.julienrf" %% "play-json-derived-codecs" % "10.0.2",
