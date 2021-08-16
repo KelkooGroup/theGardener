@@ -86,6 +86,12 @@ class PageRepository @Inject()(db: Database) {
     }
   }
 
+  def findAllByDirectoryIdWithContent(directoryId: Long): Seq[Page] = {
+    db.withConnection { implicit connection =>
+      SQL"SELECT id, name, label, description, `order`, markdown, relativePath, path, directoryId, dependOnOpenApi FROM page WHERE directoryId = $directoryId order by `order` ".as(fullParser.*)
+    }
+  }
+
   def findAll(): Seq[Page] = {
     db.withConnection { implicit connection =>
       SQL"SELECT id, name, label, description, `order`, relativePath, path, directoryId, dependOnOpenApi FROM page".as(parser.*)

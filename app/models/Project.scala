@@ -17,6 +17,7 @@ case class Project(
                     @ApiModelProperty(value = "path that lead to the feature files", example = "test/features") featuresRootPath: Option[String],
                     @ApiModelProperty(value = "path that lead to the documentation files", example = "documentation") documentationRootPath: Option[String] = None,
                     @ApiModelProperty(value = "variables defined for this project", example = "[{\"name\":\"${swagger.url}\",\"value\":\"http://dc1-pmbo-corp-srv-pp.corp.dc1.kelkoo.net:9001/docs\"}]") variables: Option[Seq[Variable]] = None,
+                    @ApiModelProperty(value = "id of the page in confluence where the project will be published", example = "64365") confluenceParentPageId: Option[String] = None,
                     @ApiModelProperty(value = "Hierarchy matching the project") hierarchy: Option[Seq[HierarchyNode]] = None,
                     @ApiModelProperty(value = "branches of the project") branches: Option[Seq[Branch]] = None)
 
