@@ -22,7 +22,7 @@ class ProjectRepository @Inject()(db: Database) {
     documentationRootPath <- str("documentationRootPath").?
     variables <-  str("variables").?
     confluenceParentPageId <-  str("confluenceParentPageId").?
-  } yield Project(id, name, repositoryUrl, sourceUrlTemplate, stableBranch, displayedBranches, featuresRootPath, documentationRootPath, variables.map(Json.parse(_).as[Seq[Variable]]),confluenceParentPageId)
+  } yield Project(id, name, repositoryUrl, sourceUrlTemplate, stableBranch, displayedBranches, featuresRootPath, documentationRootPath, variables.map(Json.parse(_).as[Seq[Variable]]), confluenceParentPageId)
 
   def count(): Long = {
     db.withConnection { implicit connection =>
@@ -88,7 +88,7 @@ class ProjectRepository @Inject()(db: Database) {
 
   def save(project: Project): Project = {
     db.withConnection { implicit connection =>
-      SQL"""REPLACE INTO project (id, name, repositoryUrl, sourceUrlTemplate, stableBranch, displayedBranches, featuresRootPath, documentationRootPath, variables,confluenceParentPageId)
+      SQL"""REPLACE INTO project (id, name, repositoryUrl, sourceUrlTemplate, stableBranch, displayedBranches, featuresRootPath, documentationRootPath, variables, confluenceParentPageId)
            VALUES (${project.id}, ${project.name}, ${project.repositoryUrl}, ${project.sourceUrlTemplate}, ${project.stableBranch}, ${project.displayedBranches}, ${project.featuresRootPath}, ${project.documentationRootPath}, ${project.variables.map(Json.toJson(_).toString())}, ${project.confluenceParentPageId})"""
         .executeUpdate()
 

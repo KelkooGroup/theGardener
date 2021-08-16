@@ -16,7 +16,7 @@ class ConfluenceService @Inject()(confluenceClient: ConfluenceClient,
                                   projectRepository: ProjectRepository, branchRepository: BranchRepository, directoryService: DirectoryService
                                  )(implicit ec: ExecutionContext) extends Logging {
 
-  def refreshProjectInConfluence(projectId: String): Future[Either[ConfluenceError, Seq[Seq[ConfluencePage]]]] = {
+  def refreshProjectInConfluence(projectId: String): Future[Either[ConfluenceError, Seq[Seq[ConfluencePage]]]] =
     projectRepository.findById(projectId) match {
       case None => Future.successful(Left(ConfluenceError(s"Project $projectId not found", ConfluenceError.PROJECT_NOT_FOUND)))
       case Some(project) => {
@@ -39,7 +39,6 @@ class ConfluenceService @Inject()(confluenceClient: ConfluenceClient,
         }
       }
     }
-  }
 
   def refreshDirectoryInConfluence(project: Project, confluenceProjectParentPageId: Long, directory: Directory): Future[Either[ConfluenceError, Seq[ConfluencePage]]] = {
     confluenceClient.getConfluencePage(confluenceProjectParentPageId).map {
@@ -60,16 +59,21 @@ class ConfluenceService @Inject()(confluenceClient: ConfluenceClient,
         confluenceClient.getChildrenConfluencePageTitle(confluenceProjectParentPageId).map {
           case Right(existingProjects) => {
             existingProjects.find(p => ConfluenceClient.sameTitles(p.title, project.name)) match {
+
+              // The project already exists on Confluence
               case Some(existingConfluenceProjectPage) => {
                 rootDirectory.externalId = Some(existingConfluenceProjectPage.id.toLong)
                 createOrUpdateDirectoryPagesAndPurge(confluenceProjectParentPage.space.key, rootDirectory)
               }
+
+              // The project do not exists on Confluence
               case None => {
                 confluenceClient.createConfluencePage(confluenceProjectParentPage.space.key, confluenceProjectParentPage.id.toLong, project.name, "project", "").map {
                   case Left(error) => {
                     logger.warn(s"Unable to create root page for project '${project.name}'")
                     Future.successful(Left(error))
                   }
+                  // Create pages at the root of the project
                   case Right(createdConfluenceProjectPage) => {
                     rootDirectory.externalId = Some(createdConfluenceProjectPage.id.toLong)
                     createOrUpdateDirectoryPagesAndPurge(confluenceProjectParentPage.space.key, rootDirectory)
@@ -140,7 +144,7 @@ class ConfluenceService @Inject()(confluenceClient: ConfluenceClient,
             Left(lefts.head.swap.getOrElse(ConfluenceError("")))
           } else {
             if (rights.nonEmpty) {
-              val pagesRemoved = rights.map(r =>  r.getOrElse(ConfluencePageTitle("","")).title).mkString("'",",","'")
+              val pagesRemoved = rights.map(r => r.getOrElse(ConfluencePageTitle("", "")).title).mkString("'", ",", "'")
               logger.info(s"Pages with titles $pagesRemoved ('${directory.path}') has been deleted.")
             }
             Right(Seq())
