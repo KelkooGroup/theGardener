@@ -11,6 +11,6 @@ addSbtPlugin("com.github.dwickern" % "sbt-swagger-play" % "0.5.0")
 
 addSbtPlugin("se.marcuslonnberg" % "sbt-docker" % "1.8.2")
 
-addSbtPlugin("ch.epfl.scala" % "sbt-scalafix" % "0.9.29")
+addSbtPlugin("ch.epfl.scala" % "sbt-scalafix" % "0.9.30")
 
 ThisBuild / evictionErrorLevel := Level.Info
