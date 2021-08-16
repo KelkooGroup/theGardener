@@ -41,9 +41,7 @@ class DirectoryService @Inject()(directoryRepository: DirectoryRepository, pageR
 
   def walkOnDirectoryTree[L, R](directory: Directory, action: Directory => Future[Either[L, R]], failure: (Throwable) => L): Future[Either[L, Seq[R]]] = {
     val actions = walkOnDirectoryTreeRecursive(directory, action, failure, List())
-    FutureExt.seq {
-      actions
-    }.map { results =>
+    FutureExt.seq(actions).map { results =>
       val (lefts, rights) = results.partition(_.isLeft)
       if (lefts.nonEmpty) {
         Left(lefts.head.swap.getOrElse(null.asInstanceOf[L]))

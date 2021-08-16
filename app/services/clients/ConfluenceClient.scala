@@ -144,25 +144,23 @@ class ConfluenceClient @Inject()(config: Configuration, wsClient: WSClient)(impl
 
   def updateConfluencePageContent(confluencePageId: Long, newTitle: String, newTitleContext: String, newBody: String, status: String): Future[Either[ConfluenceError, ConfluencePage]] = {
     getConfluencePage(confluencePageId).map {
-      _ match {
-        case Right(originalPage) => {
-          if (isUniqueTitle(newTitle, originalPage.title)) {
-            updateConfluencePageWithNotExistingTitle(originalPage, originalPage.title, newBody, status)
-          } else {
-            searchPagesByTitle(originalPage.space.key, newTitle).map {
-              case Left(error) => Future.successful(Left(error))
-              case Right(results) => {
-                if (results.isEmpty || results.nonEmpty && results.head.id.toLong == confluencePageId) {
-                  updateConfluencePageWithNotExistingTitle(originalPage, newTitle, newBody, status)
-                } else {
-                  updateConfluencePageWithNotExistingTitle(originalPage, buildUniqueTitle(newTitle, newTitleContext), newBody, status)
-                }
+      case Right(originalPage) => {
+        if (isUniqueTitle(newTitle, originalPage.title)) {
+          updateConfluencePageWithNotExistingTitle(originalPage, originalPage.title, newBody, status)
+        } else {
+          searchPagesByTitle(originalPage.space.key, newTitle).map {
+            case Left(error) => Future.successful(Left(error))
+            case Right(results) => {
+              if (results.isEmpty || results.nonEmpty && results.head.id.toLong == confluencePageId) {
+                updateConfluencePageWithNotExistingTitle(originalPage, newTitle, newBody, status)
+              } else {
+                updateConfluencePageWithNotExistingTitle(originalPage, buildUniqueTitle(newTitle, newTitleContext), newBody, status)
               }
             }
-          }.flatten
-        }
-        case Left(e) => Future.successful(Left(e))
+          }
+        }.flatten
       }
+      case Left(e) => Future.successful(Left(e))
     }.flatten
   }
 
