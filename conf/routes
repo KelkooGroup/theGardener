@@ -52,6 +52,7 @@ POST       /api/admin/projects/:id/synchronizeFromRemoteGitRepository        con
 POST       /api/admin/projects/:id/synchronizeAllFromSameRemoteGitRepository controllers.AdminController.synchronizeProjectFromRemoteWithSameGitRepository(id:String)
 POST       /api/admin/projects/:id/refreshFromRemoteGitRepository            controllers.AdminController.refreshProjectFromRemote(id:String)
 
+POST       /api/plugin/confluence/projects/:id/refreshConfluence             controllers.PluginConfluenceController.refreshProjectInConfluence(id:String)
 
 GET        /api/assets                                       controllers.PageAssetController.getImageFromPath(path: String)
 

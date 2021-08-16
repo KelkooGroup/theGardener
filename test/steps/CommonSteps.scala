@@ -54,10 +54,10 @@ object Injector {
   def inject[T: ClassTag]: T = injector.instanceOf[T]
 }
 
-case class ProjectTableRow(id: String, name: String, repositoryUrl: String, sourceUrlTemplate: String, stableBranch: String, displayedBranches: String, featuresRootPath: String, documentationRootPath: String, variables: String) {
+case class ProjectTableRow(id: String, name: String, repositoryUrl: String, sourceUrlTemplate: String, stableBranch: String, displayedBranches: String, featuresRootPath: String, documentationRootPath: String, variables: String, confluenceParentPageId: Option[String]) {
   def toProject(): Project = {
     implicit val variableFormat = Json.format[Variable]
-    Project(id, name, repositoryUrl, Option(sourceUrlTemplate).filter(_.nonEmpty), stableBranch, Option(displayedBranches), Option(featuresRootPath), Option(documentationRootPath), Option(variables).map(Json.parse(_).as[Seq[Variable]]))
+    Project(id, name, repositoryUrl, Option(sourceUrlTemplate).filter(_.nonEmpty), stableBranch, Option(displayedBranches), Option(featuresRootPath), Option(documentationRootPath), Option(variables).map(Json.parse(_).as[Seq[Variable]]),confluenceParentPageId)
   }
 }
 
