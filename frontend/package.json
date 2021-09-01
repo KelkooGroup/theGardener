@@ -27,7 +27,7 @@
     "@angular/router": "12.2.4",
     "@types/lodash": "4.14.172",
     "angular-super-validator": "2.0.0",
-    "core-js": "3.16.4",
+    "core-js": "3.17.1",
     "cucumber-pretty": "1.5.2",
     "font-awesome": "4.7.0",
     "iso-639-1": "2.1.9",
