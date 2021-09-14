@@ -11,7 +11,6 @@ module.exports = function (config) {
     plugins: [
       require('karma-jasmine'),
       require('karma-chrome-launcher'),
-      require('karma-phantomjs-launcher'),
       require('karma-jasmine-html-reporter'),
       require('karma-coverage'),
       require('@angular-devkit/build-angular/plugins/karma')
@@ -42,11 +41,11 @@ module.exports = function (config) {
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    browsers: process.env.CI === "true" ? ["ChromeHeadlessNoSandbox"] : ["Chrome"],
+    browsers: process.env.CI === 'true' ? ['ChromeHeadlessNoSandbox'] : ['Chrome'],
     customLaunchers: {
       ChromeHeadlessNoSandbox: {
-        base: "ChromeHeadless",
-        flags: ["--no-sandbox"] // required for Travis CI
+        base: 'ChromeHeadless',
+        flags: ["--no-sandbox"]
       }
     },
     singleRun: false,

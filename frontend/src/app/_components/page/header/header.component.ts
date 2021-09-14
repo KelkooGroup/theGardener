@@ -67,7 +67,7 @@ export class HeaderComponent implements OnInit {
             const language = {
               code,
               name: ISO6391.getName(code),
-              url: this.translateTemplate.replace('{{to}}', code).replace('{{encoded_url}}', encodeURIComponent(currentUrl))
+              url: this.translateTemplate.replace('[[to]]', code).replace('[[encoded_url]]', encodeURIComponent(currentUrl))
             };
 
             if (document.location.href === language.url) {

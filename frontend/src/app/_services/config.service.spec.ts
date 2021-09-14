@@ -44,7 +44,7 @@ describe('ConfigService', () => {
         expect(h.colorDark).toBe('#0f3438');
         expect(h.colorLight).toBe('#b4ced1');
         expect(h.translateTo).toBe('fr,de,es');
-        expect(h.translateTemplate).toBe('https://translate.google.com/translate?hl=en&sl=auto&tl={{to}}&u={{encoded_url}}');
+        expect(h.translateTemplate).toBe('https://translate.google.com/translate?hl=en&sl=auto&tl=[[to]]&u=[[encoded_url]]');
       });
       const req = httpMock.match('api/config')[0];
       expect(req.request.method).toBe('GET');
@@ -63,5 +63,5 @@ const SERVER_RESPONSE: Config = {
   colorDark: '#0f3438',
   colorLight: '#b4ced1',
   translateTo: 'fr,de,es',
-  translateTemplate: 'https://translate.google.com/translate?hl=en&sl=auto&tl={{to}}&u={{encoded_url}}'
+  translateTemplate: 'https://translate.google.com/translate?hl=en&sl=auto&tl=[[to]]&u=[[encoded_url]]'
 };

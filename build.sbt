@@ -1,13 +1,12 @@
 name := "the_gardener"
 maintainer := "florian.fauvarque@gmail.com"
 
-val jdkVersion = "1.8"
+val jdkVersion = "11"
 scalaVersion := "2.13.6"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala).settings(
   swaggerPlayValidate := false
 )
-
 
 // specify the source and target jdk for Java compiler
 javacOptions ++= Seq("-source", jdkVersion, "-target", jdkVersion)
@@ -23,7 +22,6 @@ scalacOptions ++= Seq(
   "-language:implicitConversions", // Allow definition of implicit functions called views
   "-unchecked", // Enable additional warnings where generated code depends on assumptions.
   "-Xcheckinit", // Wrap field accessors to throw an exception on uninitialized access.
-  "-Xfatal-warnings", // Fail the compilation if there are any warnings.
   "-Xlint:adapted-args", // Warn if an argument list is modified to match the receiver.
   "-Xlint:constant", // Evaluation of a constant arithmetic expression results in an error.
   "-Xlint:delayedinit-select", // Selecting member of DelayedInit.
@@ -52,16 +50,17 @@ scalacOptions ++= Seq(
   "-Ybackend-parallelism", "8", // Enable paralellisation — change to desired number!
   "-Ycache-plugin-class-loader:last-modified", // Enables caching of classloaders for compiler plugins
   "-Ycache-macro-class-loader:last-modified", // and macro definitions. This can lead to performance improvements.
-  "-Wconf:src=target/.*:silent" // Ignore everything in generated files (from Play routes)
 )
+
+scalacOptions ++= {
+  if (insideCI.value) Seq("-Wconf:any:error", "-Xfatal-warnings")
+  else Seq("-Wconf:any:warning")
+}
+scalacOptions += "-Wconf:src=target/.*:silent" // Ignore everything in generated files (from Play routes)
 
 
 // Add option to enable anorm stack traces
 javaOptions += "-Dscala.control.noTraceSuppression=true"
-
-// add directory for test configuration files
-Test / unmanagedClasspath += baseDirectory.value / "local-conf"
-Runtime / unmanagedClasspath+= baseDirectory.value / "local-conf"
 
 //*** dist packaging
 // do not generage API documentation when using dist task
@@ -88,7 +87,7 @@ libraryDependencies ++= Seq(
   "org.julienrf" %% "play-json-derived-codecs" % "10.0.2",
   "io.cucumber" % "gherkin" % "5.2.0",
   "org.playframework.anorm" %% "anorm" % "2.6.10",
-  "mysql" % "mysql-connector-java" % "8.0.26",
+  "org.mariadb.jdbc" % "mariadb-java-client" % "2.7.4",
   "org.eclipse.jgit" % "org.eclipse.jgit" % "5.13.0.202109080827-r",
   // Swagger
   "io.swagger" % "swagger-annotations" % "1.6.2", // do not upgrade beyond 1.x because of sbt-swagger-play compatibility
