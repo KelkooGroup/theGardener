@@ -39,7 +39,7 @@
     "ngx-markdown": "12.0.1",
     "ngx-moment": "5.0.0",
     "ngx-numeral": "0.0.1-beta.0",
-    "prismjs": "1.24.1",
+    "prismjs": "1.25.0",
     "rxjs": "6.6.7",
     "rxjs-compat": "6.6.7",
     "swagger-ui-dist": "3.52.2",
