@@ -2,7 +2,7 @@
 logLevel := Level.Warn
 
 // Use the Play sbt plugin for Play projects
-addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.8.8")
+addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.8.12")
 //addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.6.1")  // Broken from 2.12.13 and upwards (https://github.com/scoverage/sbt-scoverage/issues/319)
 addSbtPlugin("org.scalastyle" %% "scalastyle-sbt-plugin" % "1.0.0")
 //addSbtPlugin("com.sksamuel.scapegoat" %% "sbt-scapegoat" % "1.1.0")
