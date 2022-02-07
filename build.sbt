@@ -90,7 +90,7 @@ libraryDependencies ++= Seq(
   "org.mariadb.jdbc" % "mariadb-java-client" % "3.0.3",
   "org.eclipse.jgit" % "org.eclipse.jgit" % "5.13.0.202109080827-r",
   // Swagger
-  "io.swagger" % "swagger-annotations" % "1.6.4", // do not upgrade beyond 1.x because of sbt-swagger-play compatibility
+  "io.swagger" % "swagger-annotations" % "1.6.5", // do not upgrade beyond 1.x because of sbt-swagger-play compatibility
 
   "com.h2database" % "h2" % "1.4.199",
   "commons-io" % "commons-io" % "2.11.0",
