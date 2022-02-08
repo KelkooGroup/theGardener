@@ -9,7 +9,7 @@
       <td
         class="gherkinCellTable"
         *ngFor="let header of tableHeader; index as indexHeader"
-        [innerHTML]="row[indexHeader] | markdown | internalLink | anchor | removehtmlsanitizer  "
+        [innerHTML]="row[indexHeader]  | internalLink | anchor | markdown  "
       ></td>
     </tr>
   </tbody>
