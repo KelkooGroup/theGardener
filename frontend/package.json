@@ -37,7 +37,7 @@
     "moment": "2.24.0",
     "ngx-json-viewer": "3.0.2",
     "ngx-markdown": "13.1.0",
-    "ngx-moment": "5.0.0",
+    "ngx-moment": "6.0.2",
     "ngx-numeral": "0.0.1-beta.0",
     "prismjs": "1.26.0",
     "rxjs": "6.6.7",
