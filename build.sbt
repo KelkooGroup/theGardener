@@ -82,7 +82,7 @@ libraryDependencies ++= Seq(
   jdbc,
   caffeine,
   "ch.qos.logback" % "logback-access" % "1.2.10",
-  "net.logstash.logback" % "logstash-logback-encoder" % "6.2",
+  "net.logstash.logback" % "logstash-logback-encoder" % "7.0.1",
   "com.typesafe.play" %% "play-json" % "2.9.2",
   "org.julienrf" %% "play-json-derived-codecs" % "10.0.2",
   "io.cucumber" % "gherkin" % "5.2.0",
