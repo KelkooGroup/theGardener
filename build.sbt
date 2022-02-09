@@ -73,6 +73,7 @@ topLevelDirectory := None
 
 val silencerVersion = "1.5.0"
 val cucumberVersion = "6.10.4"
+val jacksonVersion = "2.13.1"
 
 libraryDependencies ++= Seq(
   ws,
@@ -82,7 +83,7 @@ libraryDependencies ++= Seq(
   jdbc,
   caffeine,
   "ch.qos.logback" % "logback-access" % "1.2.10",
-  "net.logstash.logback" % "logstash-logback-encoder" % "6.2",
+  "net.logstash.logback" % "logstash-logback-encoder" % "7.0.1",
   "com.typesafe.play" %% "play-json" % "2.9.2",
   "org.julienrf" %% "play-json-derived-codecs" % "10.0.2",
   "io.cucumber" % "gherkin" % "5.2.0",
@@ -106,6 +107,13 @@ libraryDependencies ++= Seq(
   "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0" % Test,
   "org.scalatestplus" %% "mockito-3-4" % "3.2.10.0" % Test,
   "org.mockito" % "mockito-all" % "1.10.19" % Test,
+)
+
+dependencyOverrides ++= Seq(
+  // Jackson conflict between logback and swagger
+  "com.fasterxml.jackson.core" % "jackson-core" % jacksonVersion,
+  "com.fasterxml.jackson.core" % "jackson-databind" % jacksonVersion,
+  "com.fasterxml.jackson.module" %% "jackson-module-scala" % jacksonVersion,
 )
 
 ThisBuild / evictionErrorLevel := Level.Info
