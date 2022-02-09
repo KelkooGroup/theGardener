@@ -5,6 +5,7 @@ import anorm._
 import javax.inject.Inject
 import models._
 import play.api.db.Database
+import repositories.MariaDBImplicits._
 
 
 class BranchRepository @Inject()(db: Database) {
