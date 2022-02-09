@@ -6,6 +6,7 @@ import javax.inject.Inject
 import models.{Branch, Directory, Page, PageJoinProject, Project, Variable}
 import play.api.db.Database
 import play.api.libs.json.Json
+import repositories.MariaDBImplicits._
 
 class PageRepository @Inject()(db: Database) {
   implicit val variableFormat = Json.format[Variable]
