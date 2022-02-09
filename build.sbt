@@ -73,6 +73,7 @@ topLevelDirectory := None
 
 val silencerVersion = "1.5.0"
 val cucumberVersion = "6.10.4"
+val jacksonVersion = "2.13.1"
 
 libraryDependencies ++= Seq(
   ws,
@@ -106,6 +107,13 @@ libraryDependencies ++= Seq(
   "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0" % Test,
   "org.scalatestplus" %% "mockito-3-4" % "3.2.10.0" % Test,
   "org.mockito" % "mockito-all" % "1.10.19" % Test,
+)
+
+dependencyOverrides ++= Seq(
+  // Jackson conflict between logback and swagger
+  "com.fasterxml.jackson.core" % "jackson-core" % jacksonVersion,
+  "com.fasterxml.jackson.core" % "jackson-databind" % jacksonVersion,
+  "com.fasterxml.jackson.module" %% "jackson-module-scala" % jacksonVersion,
 )
 
 ThisBuild / evictionErrorLevel := Level.Info
