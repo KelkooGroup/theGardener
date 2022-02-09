@@ -2,7 +2,7 @@ name := "the_gardener"
 maintainer := "florian.fauvarque@gmail.com"
 
 val jdkVersion = "11"
-scalaVersion := "2.13.6"
+scalaVersion := "2.13.8"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala).settings(
   swaggerPlayValidate := false
@@ -73,6 +73,7 @@ topLevelDirectory := None
 
 val silencerVersion = "1.5.0"
 val cucumberVersion = "6.10.4"
+val jacksonVersion = "2.13.1"
 
 libraryDependencies ++= Seq(
   ws,
@@ -81,16 +82,16 @@ libraryDependencies ++= Seq(
   evolutions,
   jdbc,
   caffeine,
-  "ch.qos.logback" % "logback-access" % "1.2.6",
-  "net.logstash.logback" % "logstash-logback-encoder" % "6.2",
+  "ch.qos.logback" % "logback-access" % "1.2.10",
+  "net.logstash.logback" % "logstash-logback-encoder" % "7.0.1",
   "com.typesafe.play" %% "play-json" % "2.9.2",
   "org.julienrf" %% "play-json-derived-codecs" % "10.0.2",
   "io.cucumber" % "gherkin" % "5.2.0",
   "org.playframework.anorm" %% "anorm" % "2.6.10",
-  "org.mariadb.jdbc" % "mariadb-java-client" % "2.7.4",
-  "org.eclipse.jgit" % "org.eclipse.jgit" % "5.13.0.202109080827-r",
+  "org.mariadb.jdbc" % "mariadb-java-client" % "3.0.3",
+  "org.eclipse.jgit" % "org.eclipse.jgit" % "6.0.0.202111291000-r",
   // Swagger
-  "io.swagger" % "swagger-annotations" % "1.6.3", // do not upgrade beyond 1.x because of sbt-swagger-play compatibility
+  "io.swagger" % "swagger-annotations" % "1.6.5", // do not upgrade beyond 1.x because of sbt-swagger-play compatibility
 
   "com.h2database" % "h2" % "1.4.199",
   "commons-io" % "commons-io" % "2.11.0",
@@ -102,10 +103,17 @@ libraryDependencies ++= Seq(
   "io.cucumber" % "cucumber-junit" % cucumberVersion % Test,
   "io.cucumber" % "cucumber-picocontainer" % cucumberVersion % Test,
 
-  "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.13.0" % Test,
+  "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.13.1" % Test,
   "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0" % Test,
   "org.scalatestplus" %% "mockito-3-4" % "3.2.10.0" % Test,
   "org.mockito" % "mockito-all" % "1.10.19" % Test,
+)
+
+dependencyOverrides ++= Seq(
+  // Jackson conflict between logback and swagger
+  "com.fasterxml.jackson.core" % "jackson-core" % jacksonVersion,
+  "com.fasterxml.jackson.core" % "jackson-databind" % jacksonVersion,
+  "com.fasterxml.jackson.module" %% "jackson-module-scala" % jacksonVersion,
 )
 
 ThisBuild / evictionErrorLevel := Level.Info

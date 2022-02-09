@@ -8,6 +8,7 @@ import models.Feature.{backgroundFormat, examplesFormat, stepFormat}
 import models._
 import play.api.db.Database
 import play.api.libs.json.Json
+import repositories.MariaDBImplicits._
 
 import scala.language.postfixOps
 
