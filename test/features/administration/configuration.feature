@@ -17,7 +17,7 @@ Feature: Provide configuration
     When I perform a "GET" on following URL "/api/config"
     Then I get a response with status "200"
     And  I get the following json response body
-"""
+"""json
 {
      "windowTitle":"theGardener",
      "title":"In our documentation we trust.",

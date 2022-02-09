@@ -34,7 +34,7 @@ Feature: As a user Tim, I want some book suggestions so that I can do some disco
     And the project "suggestionsWS" is synchronized
     When I perform a "GET" on following URL "/api/gherkin?project=_root_suggestion>suggestionsWS>master>provide_book_suggestions.feature"
     Then I get the following json response body
-"""
+"""json
 {
 	"id": ".",
 	"slugName": "root",
