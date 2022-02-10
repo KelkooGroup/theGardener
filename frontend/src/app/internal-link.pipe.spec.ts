@@ -1,15 +1,19 @@
 import { InternalLinkPipe } from './internal-link.pipe';
 import { ActivatedRouteStub } from './_testUtils/activated-route-stub.spec';
 import { RouteService } from './_services/route.service';
+import { DomSanitizer } from '@angular/platform-browser';
+import {TestBed} from "@angular/core/testing";
 
 describe('InternalLinkPipe', () => {
   let pipe: InternalLinkPipe;
+  let sanitizer: DomSanitizer;
   let activatedRoute;
 
   beforeEach(() => {
     activatedRoute = new ActivatedRouteStub() as any;
     const routeService = new RouteService();
     activatedRoute.testParams = { nodes: 'Tools', project: 'theGardener', branch: 'master', directories: '_Guide_Write', page: 'Basics' };
+    sanitizer = TestBed.inject(DomSanitizer);
     pipe = new InternalLinkPipe(activatedRoute, routeService);
   });
 
@@ -18,28 +22,24 @@ describe('InternalLinkPipe', () => {
   });
 
   it('replace occurences of internal legacy links', () => {
-    expect(pipe.transform(LEGACY_SIMPLE_HTML_INPUT)).toBe(LEGACY_SIMPLE_HTML_OUTPUT);
-    expect(pipe.transform(LEGACY_SIMPLE_HTML_INPUT_WITH_HIERARCHY)).toBe(LEGACY_SIMPLE_HTML_OUTPUT_WITH_HIERARCHY);
-    expect(pipe.transform(LEGACY_COMPLEX_HTML_INPUT)).toBe(LEGACY_COMPLEX_HTML_OUTPUT);
-    expect(pipe.transform(LEGACY_HTML_INPUT_WITH_OTHER_LINK)).toBe(LEGACY_HTML_OUTPUT_WITH_OTHER_LINK);
+    expect(pipe.transform(sanitizer.bypassSecurityTrustHtml(LEGACY_SIMPLE_HTML_INPUT))).toEqual(sanitizer.bypassSecurityTrustHtml(LEGACY_SIMPLE_HTML_OUTPUT));
+    expect(pipe.transform(sanitizer.bypassSecurityTrustHtml(LEGACY_SIMPLE_HTML_INPUT_WITH_HIERARCHY))).toEqual(sanitizer.bypassSecurityTrustHtml(LEGACY_SIMPLE_HTML_OUTPUT_WITH_HIERARCHY));
+    expect(pipe.transform(sanitizer.bypassSecurityTrustHtml(LEGACY_COMPLEX_HTML_INPUT))).toEqual(sanitizer.bypassSecurityTrustHtml(LEGACY_COMPLEX_HTML_OUTPUT));
+    expect(pipe.transform(sanitizer.bypassSecurityTrustHtml(LEGACY_HTML_INPUT_WITH_OTHER_LINK))).toEqual(sanitizer.bypassSecurityTrustHtml(LEGACY_HTML_OUTPUT_WITH_OTHER_LINK));
   });
 
   it('replace occurences of internal links', () => {
-    expect(pipe.transform(SIMPLE_HTML_INPUT)).toBe(SIMPLE_HTML_OUTPUT);
-    expect(pipe.transform(SIMPLE_HTML_INPUT_PARTIAL_PATH)).toBe(SIMPLE_HTML_OUTPUT_PARTIAL_PATH);
+    expect(pipe.transform(sanitizer.bypassSecurityTrustHtml(SIMPLE_HTML_INPUT))).toEqual(sanitizer.bypassSecurityTrustHtml(SIMPLE_HTML_OUTPUT));
+    expect(pipe.transform(sanitizer.bypassSecurityTrustHtml(SIMPLE_HTML_INPUT_PARTIAL_PATH))).toEqual(sanitizer.bypassSecurityTrustHtml(SIMPLE_HTML_OUTPUT_PARTIAL_PATH));
   });
 
   it('replace occurences of internal relative links', () => {
-    expect(pipe.transform(SIMPLE_HTML_INPUT_RELATIVE_SAME_DIRECTORY)).toBe(SIMPLE_HTML_OUTPUT_RELATIVE_SAME_DIRECTORY);
-    expect(pipe.transform(SIMPLE_HTML_INPUT_RELATIVE_SAME_DIRECTORY_2)).toBe(SIMPLE_HTML_OUTPUT_RELATIVE_SAME_DIRECTORY);
-    expect(pipe.transform(SIMPLE_HTML_INPUT_RELATIVE_PARENT_DIRECTORY)).toBe(SIMPLE_HTML_OUTPUT_RELATIVE_PARENT_DIRECTORY);
-    expect(pipe.transform(SIMPLE_HTML_INPUT_RELATIVE_CHILDREN_DIRECTORY)).toBe(SIMPLE_HTML_OUTPUT_RELATIVE_CHILDREN_DIRECTORY);
-    expect(pipe.transform(SIMPLE_HTML_INPUT_RELATIVE_PARENT_CHILDREN_DIRECTORY)).toBe(
-      SIMPLE_HTML_OUTPUT_RELATIVE_PARENT_CHILDREN_DIRECTORY
-    );
-    expect(pipe.transform(SIMPLE_HTML_INPUT_RELATIVE_SAME_DIRECTORY_WITH_ANCHOR)).toBe(
-      SIMPLE_HTML_OUTPUT_RELATIVE_SAME_DIRECTORY_WITH_ANCHOR
-    );
+    expect(pipe.transform(sanitizer.bypassSecurityTrustHtml(SIMPLE_HTML_INPUT_RELATIVE_SAME_DIRECTORY))).toEqual(sanitizer.bypassSecurityTrustHtml(SIMPLE_HTML_OUTPUT_RELATIVE_SAME_DIRECTORY));
+    expect(pipe.transform(sanitizer.bypassSecurityTrustHtml(SIMPLE_HTML_INPUT_RELATIVE_SAME_DIRECTORY_2))).toEqual(sanitizer.bypassSecurityTrustHtml(SIMPLE_HTML_OUTPUT_RELATIVE_SAME_DIRECTORY));
+    expect(pipe.transform(sanitizer.bypassSecurityTrustHtml(SIMPLE_HTML_INPUT_RELATIVE_PARENT_DIRECTORY))).toEqual(sanitizer.bypassSecurityTrustHtml(SIMPLE_HTML_OUTPUT_RELATIVE_PARENT_DIRECTORY));
+    expect(pipe.transform(sanitizer.bypassSecurityTrustHtml(SIMPLE_HTML_INPUT_RELATIVE_CHILDREN_DIRECTORY))).toEqual(sanitizer.bypassSecurityTrustHtml(SIMPLE_HTML_OUTPUT_RELATIVE_CHILDREN_DIRECTORY));
+    expect(pipe.transform(sanitizer.bypassSecurityTrustHtml(SIMPLE_HTML_INPUT_RELATIVE_PARENT_CHILDREN_DIRECTORY))).toEqual(sanitizer.bypassSecurityTrustHtml(SIMPLE_HTML_OUTPUT_RELATIVE_PARENT_CHILDREN_DIRECTORY));
+    expect(pipe.transform(sanitizer.bypassSecurityTrustHtml(SIMPLE_HTML_INPUT_RELATIVE_SAME_DIRECTORY_WITH_ANCHOR))).toEqual(sanitizer.bypassSecurityTrustHtml(SIMPLE_HTML_OUTPUT_RELATIVE_SAME_DIRECTORY_WITH_ANCHOR));
   });
 });
 

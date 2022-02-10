@@ -1,5 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import {SafeHtml} from "@angular/platform-browser";
 
 @Pipe({
   name: 'anchor'
@@ -7,9 +8,9 @@ import { ActivatedRoute } from '@angular/router';
 export class AnchorPipe implements PipeTransform {
   constructor(private activatedRoute: ActivatedRoute) {}
 
-  transform(value: string): string {
+  transform(safeHtml: SafeHtml): SafeHtml {
     const params = this.activatedRoute.snapshot.params;
-    const linkRegexString = '<h([0-9]) id="(\\S*)?">.*?<\\/h[0-9]>';
+    const linkRegexString = '<h(\\d) id="(\\S*)?">.*?<\\/h\\d>';
     const linkRegex = new RegExp(linkRegexString, 'g');
     const currentUrl = `app/documentation/navigate/${params.nodes}/${params.project}/${params.branch}/${params.directories}/${params.page}`;
 
@@ -20,6 +21,8 @@ export class AnchorPipe implements PipeTransform {
       )} <a class="linkToAnchorForTitleAndSubTitle" onclick="navigateTo('${currentUrl}#${titleId}')"> <i class="fas fa-link"></i> </a> </h${hNumber}>`;
     }
 
-    return value.replace(linkRegex, replacer);
+    safeHtml['changingThisBreaksApplicationSecurity'] = safeHtml['changingThisBreaksApplicationSecurity'].replace(linkRegex, replacer);
+
+    return safeHtml;
   }
 }

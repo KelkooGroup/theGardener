@@ -8,10 +8,10 @@
   <div *ngFor="let part of page.parts">
     <div [ngSwitch]="part.type">
       <div *ngSwitchCase="'markdown'">
-        <div class="markdown" [innerHTML]="getMarkdown(part)  | internalLink | anchor | markdown "></div>
+        <div class="markdown" [innerHTML]="getMarkdown(part) | markdown | internalLink | anchor "></div>
       </div>
       <div *ngSwitchCase="'includeExternalPage'">
-        <iframe [src]="getExternalLink(part) | safe" scrolling="yes" title="External Link"></iframe>
+        <iframe [src]="getExternalLink(part) | safe" style="overflow: auto;" title="External Link"></iframe>
       </div>
       <div *ngSwitchCase="'scenarios'">
         <div class="scenario">

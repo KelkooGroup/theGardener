@@ -1,13 +1,17 @@
 import { AnchorPipe } from './anchor.pipe';
 import { ActivatedRouteStub } from './_testUtils/activated-route-stub.spec';
+import { DomSanitizer } from '@angular/platform-browser';
+import {TestBed} from "@angular/core/testing";
 
 describe('AnchorPipe', () => {
   let pipe: AnchorPipe;
+  let sanitizer: DomSanitizer;
   let activatedRoute;
 
   beforeEach(() => {
     activatedRoute = new ActivatedRouteStub() as any;
     activatedRoute.testParams = { nodes: '_Tools', project: 'theGardener', branch: 'master', directories: '_Guide_Write', page: 'Basics' };
+    sanitizer = TestBed.inject(DomSanitizer);
     pipe = new AnchorPipe(activatedRoute);
   });
 
@@ -16,9 +20,12 @@ describe('AnchorPipe', () => {
   });
 
   it('place an anchor before each title', () => {
-    expect(pipe.transform(HTML_INPUT_WITH_SPACE_IN_TITLE)).toBe(HTML_OUTPUT_WITH_SPACE_IN_TITLE);
-    expect(pipe.transform(HTML_INPUT_WITHOUT_SPACE_IN_TITLE)).toBe(HTML_OUTPUT_WITHOUT_SPACE_IN_TITLE);
-    expect(pipe.transform(COMPLEX_HTML_INPUT)).toBe(COMPLEX_HTML_OUTPUT);
+    expect(pipe.transform(sanitizer.bypassSecurityTrustHtml(HTML_INPUT_WITH_SPACE_IN_TITLE))).toEqual(sanitizer.bypassSecurityTrustHtml(HTML_OUTPUT_WITH_SPACE_IN_TITLE));
+    expect(pipe.transform(sanitizer.bypassSecurityTrustHtml(HTML_INPUT_WITHOUT_SPACE_IN_TITLE))).toEqual(sanitizer.bypassSecurityTrustHtml(HTML_OUTPUT_WITHOUT_SPACE_IN_TITLE));
+
+    console.log(pipe.transform(sanitizer.bypassSecurityTrustHtml(COMPLEX_HTML_INPUT))['changingThisBreaksApplicationSecurity'])
+    console.log(pipe.transform(sanitizer.bypassSecurityTrustHtml(COMPLEX_HTML_OUTPUT))['changingThisBreaksApplicationSecurity'])
+    expect(pipe.transform(sanitizer.bypassSecurityTrustHtml(COMPLEX_HTML_INPUT))).toEqual(sanitizer.bypassSecurityTrustHtml(COMPLEX_HTML_OUTPUT));
   });
 });
 
