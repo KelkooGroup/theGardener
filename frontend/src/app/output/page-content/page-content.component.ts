@@ -1,7 +1,7 @@
 import { Component, NgZone, OnDestroy, OnInit, AfterViewChecked } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { catchError, map, switchMap } from 'rxjs/operators';
-import { combineLatest, of, Subscription } from 'rxjs';
+import { combineLatest, EMPTY, empty, of, Subscription } from 'rxjs';
 import { PageService } from '../../_services/page.service';
 import { IncludeExternalPagePart, MarkdownPart, OpenApiPart, OpenApiPathPart, Page, PagePart, ScenarioPart } from '../../_models/page';
 import { RouteService, SEARCH_PATH } from '../../_services/route.service';
@@ -52,7 +52,7 @@ export class PageContentComponent implements OnInit, OnDestroy, AfterViewChecked
         switchMap(params => {
           this.targetedRoute = this.routeService.navigationParamsToNavigationRoute(params);
           if (this.targetedRoute.page === undefined) {
-            return of<Page>();
+            return EMPTY;
           } else {
             const backEndPath = this.routeService.navigationRouteToBackEndPath(this.targetedRoute);
             return this.pageService.getPage(backEndPath.pathFromProject);
@@ -61,7 +61,7 @@ export class PageContentComponent implements OnInit, OnDestroy, AfterViewChecked
         catchError(() => {
           const keyword = this.routeService.extractKeyword(this.targetedRoute);
           this.router.navigateByUrl(SEARCH_PATH + `?keyword=${keyword.trim()}`);
-          return of<Page>();
+          return EMPTY;
         })
       )
       .subscribe(page => {

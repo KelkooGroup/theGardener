@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Config } from '../_models/config';
 import { NotificationService } from './notification.service';
+import { lastValueFrom } from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -16,9 +17,8 @@ export class ConfigService {
   load(): Promise<Config> {
     this.config = null;
 
-    return this.http
-      .get<Config>('api/config')
-      .toPromise()
+    return lastValueFrom(this.http
+      .get<Config>('api/config'))
       .then((data: any) => {
         this.config = data;
         return data;
