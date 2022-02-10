@@ -19,14 +19,14 @@ class IncrementingIdGenerator extends IdGenerator {
   private var next = 0
 
   override def newId: String = {
-    next +=1
+    next += 1
     Integer.toString(next)
   }
 }
 
 class FeatureService @Inject()(config: Config, featureRepository: FeatureRepository) {
   private val projectsRootDirectory = config.getString("projects.root.directory")
-  private val idGenerator= new IncrementingIdGenerator()
+  private val idGenerator = new IncrementingIdGenerator()
 
   def getLocalRepository(projectId: String, branch: String): String = s"$projectsRootDirectory$projectId/$branch/".fixPathSeparator
 
