@@ -133,7 +133,7 @@ docker / dockerfile := {
   val embeddedDbDir = "/data"
 
   new Dockerfile {
-    from("openjdk:8-jre")
+    from("openjdk:11-jre")
     runRaw(s"mkdir $confDir && mkdir $gitDataDir && mkdir $embeddedDbDir")
     expose(9000)
     entryPoint(s"$targetDir/bin/${executableScriptName.value}")
