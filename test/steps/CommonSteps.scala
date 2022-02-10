@@ -19,7 +19,7 @@ import models.Feature._
 import net.ruippeixotog.scalascraper.browser._
 import org.apache.commons.io._
 import org.eclipse.jgit.api._
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.mockito.invocation.InvocationOnMock
 import org.scalatest.matchers.must.Matchers

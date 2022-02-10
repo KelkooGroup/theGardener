@@ -3,7 +3,7 @@ package services
 import akka.actor.ActorSystem
 import models._
 import org.apache.commons.io.FileUtils._
-import org.mockito.Matchers._
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.mockito._
 import org.scalatest._
@@ -60,8 +60,8 @@ class ProjectServiceTest extends AnyWordSpec with Matchers with BeforeAndAfter w
     "checkout the remote branches of a project" in {
       when(gitService.getRemoteBranches(project.repositoryUrl)).thenReturn(Future.successful(Seq(project.stableBranch, featureBranch, bugfixBranch)))
 
-      when(gitService.clone(anyString(), anyString())).thenReturn(Future.failed(new Exception()))
-      when(gitService.checkout(anyString(), anyString())).thenReturn(Future.failed(new Exception()))
+      when(gitService.clone(any[String], any[String])).thenReturn(Future.failed(new Exception()))
+      when(gitService.checkout(any[String], any[String])).thenReturn(Future.failed(new Exception()))
 
       when(gitService.clone(project.repositoryUrl, masterDirectory)).thenReturn(Future.successful(()))
       when(gitService.checkout(project.stableBranch, masterDirectory)).thenReturn(Future.successful(()))
@@ -108,11 +108,11 @@ class ProjectServiceTest extends AnyWordSpec with Matchers with BeforeAndAfter w
 
       when(gitService.getRemoteBranches(project.repositoryUrl)).thenReturn(Future.successful(Seq(project.stableBranch, featureBranch)))
 
-      when(gitService.pull(anyString())).thenReturn(Future.failed(new Exception()))
+      when(gitService.pull(any[String])).thenReturn(Future.failed(new Exception()))
       when(gitService.pull(masterDirectory)).thenReturn(Future.successful((Seq(), Seq(), Seq())))
 
-      when(gitService.clone(anyString(), anyString())).thenReturn(Future.failed(new Exception()))
-      when(gitService.checkout(anyString(), anyString())).thenReturn(Future.failed(new Exception()))
+      when(gitService.clone(any[String], any[String])).thenReturn(Future.failed(new Exception()))
+      when(gitService.checkout(any[String], any[String])).thenReturn(Future.failed(new Exception()))
 
       when(gitService.clone(project.repositoryUrl, featureBranchDirectory)).thenReturn(Future.successful(()))
       when(gitService.checkout(featureBranch, featureBranchDirectory)).thenReturn(Future.successful(()))
