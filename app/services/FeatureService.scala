@@ -42,9 +42,7 @@ class FeatureService @Inject()(config: Config, featureRepository: FeatureReposit
     else {
       Seq()
     }
-
   }
-
 
   def parseFeatureFile(projectId: String, branch: Branch, filePath: String): Try[Feature] = {
     Try {
@@ -67,12 +65,7 @@ class FeatureService @Inject()(config: Config, featureRepository: FeatureReposit
 
           val scenarios = feature.getChildren.asScala.toSeq.flatMap { child =>
 
-            val background = Option(child.getBackground)
-            val scenario = Option(child.getScenario)
-
-            (background, scenario) match {
-
-
+            (Option(child.getBackground), Option(child.getScenario)) match {
               case (Some(background), _) =>
                 backgroundOption = Some(Background(0, background.getKeyword, background.getName, trim(background.getDescription), mapGherkinSteps(background.getSteps)))
                 backgroundOption
@@ -100,10 +93,7 @@ class FeatureService @Inject()(config: Config, featureRepository: FeatureReposit
     gherkinSteps.asScala.toSeq.zipWithIndex.map {
       case (step, id) =>
 
-        val datatable = Option(step.getDataTable)
-        val docString = Option(step.getDocString)
-
-        val (argument, argumentTextType) = (datatable, docString) match {
+        val (argument, argumentTextType) = (Option(step.getDataTable), Option(step.getDocString)) match {
           case (Some(dataTable), _) => (dataTable.getRows.asScala.toSeq.map(_.getCells.asScala.toSeq.map(_.getValue)), None)
           case (_, Some(docString)) => (Seq(Seq(docString.getContent)), Some(docString.getMediaType))
           case _ => (Seq(), None)

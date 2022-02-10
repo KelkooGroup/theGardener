@@ -2,7 +2,7 @@ package services
 
 import com.typesafe.config.ConfigFactory
 import models.{Branch, Scenario, ScenarioOutline}
-import org.mockito.Matchers._
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
