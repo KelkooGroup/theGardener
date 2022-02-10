@@ -72,7 +72,7 @@ Compile / packageDoc / publishArtifact := false
 topLevelDirectory := None
 
 val silencerVersion = "1.5.0"
-val cucumberVersion = "6.10.4"
+val cucumberVersion = "7.2.3"
 val jacksonVersion = "2.13.1"
 
 libraryDependencies ++= Seq(
@@ -86,7 +86,7 @@ libraryDependencies ++= Seq(
   "net.logstash.logback" % "logstash-logback-encoder" % "7.0.1",
   "com.typesafe.play" %% "play-json" % "2.9.2",
   "org.julienrf" %% "play-json-derived-codecs" % "10.0.2",
-  "io.cucumber" % "gherkin" % "5.2.0",
+  "io.cucumber" % "gherkin" % "22.0.0",
   "org.playframework.anorm" %% "anorm" % "2.6.10",
   "org.mariadb.jdbc" % "mariadb-java-client" % "3.0.3",
   "org.eclipse.jgit" % "org.eclipse.jgit" % "6.0.0.202111291000-r",
@@ -99,7 +99,7 @@ libraryDependencies ++= Seq(
   "net.ruippeixotog" %% "scala-scraper" % "2.2.1" % Test,
 
   // Cucumber
-  "io.cucumber" %% "cucumber-scala" % cucumberVersion % Test,
+  "io.cucumber" %% "cucumber-scala" % "8.2.2" % Test,
   "io.cucumber" % "cucumber-junit" % cucumberVersion % Test,
   "io.cucumber" % "cucumber-picocontainer" % cucumberVersion % Test,
 
