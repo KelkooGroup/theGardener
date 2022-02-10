@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { MenuService } from '../../../_services/menu.service';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { MenuHierarchy } from '../../../_models/menu';
-import { EMPTY, of, Subscription } from 'rxjs';
+import { EMPTY, Subscription } from 'rxjs';
 import { NotificationService } from '../../../_services/notification.service';
 
 @Component({

@@ -1,7 +1,7 @@
 import { Component, NgZone, OnDestroy, OnInit, AfterViewChecked } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { catchError, map, switchMap } from 'rxjs/operators';
-import { combineLatest, EMPTY, empty, of, Subscription } from 'rxjs';
+import { combineLatest, EMPTY, Subscription } from 'rxjs';
 import { PageService } from '../../_services/page.service';
 import { IncludeExternalPagePart, MarkdownPart, OpenApiPart, OpenApiPathPart, Page, PagePart, ScenarioPart } from '../../_models/page';
 import { RouteService, SEARCH_PATH } from '../../_services/route.service';
