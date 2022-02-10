@@ -46,8 +46,8 @@ export class HeaderComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.menuService.getMenuHeader().subscribe(
-      result => {
+    this.menuService.getMenuHeader().subscribe({
+      next: (result) => {
         this.items = result;
         if (this.items.length > 0) {
           const currentRoute = this.getCurrentRoute();
@@ -80,10 +80,10 @@ export class HeaderComponent implements OnInit {
 
         this.translateLanguages.unshift(languageNone);
       },
-      error => {
+      error: (error) => {
         this.notificationService.showError('Error while getting first level of hierarchy', error);
       }
-    );
+    });
   }
 
   getCurrentRoute(): NavigationRoute {
