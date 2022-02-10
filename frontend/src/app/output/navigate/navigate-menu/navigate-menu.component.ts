@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { MenuService } from '../../../_services/menu.service';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { MenuHierarchy } from '../../../_models/menu';
-import { of, Subscription } from 'rxjs';
+import { EMPTY, of, Subscription } from 'rxjs';
 import { NotificationService } from '../../../_services/notification.service';
 
 @Component({
@@ -26,7 +26,7 @@ export class NavigateMenuComponent implements OnInit, OnDestroy {
         switchMap((nodeNames: string) => this.menuService.getSubMenuForNode(nodeNames)),
         catchError(error => {
           this.notificationService.showError(`Unable to load navigation hierarchy`, error);
-          return of<Array<MenuHierarchy>>();
+          return EMPTY;
         })
       )
       .subscribe(res => {
