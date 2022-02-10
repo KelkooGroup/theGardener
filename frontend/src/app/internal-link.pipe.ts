@@ -1,6 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { RouteService } from './_services/route.service';
+import {SafeHtml} from "@angular/platform-browser";
 
 @Pipe({
   name: 'internalLink'
@@ -13,17 +14,20 @@ export class InternalLinkPipe implements PipeTransform {
 
   constructor(private activatedRoute: ActivatedRoute, private routeService: RouteService) {}
 
-  transform(value: string): string {
+  transform(value: SafeHtml): SafeHtml {
     this.nodes = this.activatedRoute.snapshot.params.nodes;
     this.project = this.activatedRoute.snapshot.params.project;
     this.branch = this.activatedRoute.snapshot.params.branch;
     this.directories = this.activatedRoute.snapshot.params.directories;
 
-    let transformedValue = this.transformLegacy(value);
+    let transformedValue = this.transformLegacy(value['changingThisBreaksApplicationSecurity']);
     transformedValue = this.transformInternalLinks(transformedValue);
     transformedValue = this.transformInternalRelativeLinks(transformedValue);
     transformedValue = this.transformInternalRelativeLinksWithAnchor(transformedValue);
-    return transformedValue;
+
+    value['changingThisBreaksApplicationSecurity'] = transformedValue;
+
+    return value;
   }
 
   transformInternalRelativeLinks(value: string): string {
