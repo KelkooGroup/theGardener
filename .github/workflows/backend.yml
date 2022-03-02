@@ -38,7 +38,7 @@ jobs:
       HAVE_SONAR_TOKEN: ${{ secrets.SONAR_TOKEN != '' }}
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Sbt build cache
       uses: actions/cache@v2
