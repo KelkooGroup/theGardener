@@ -84,7 +84,7 @@
     "sass": "1.51.0",
     "ts-node": "10.7.0",
     "typescript": "4.6.4",
-    "webdriver": "7.19.5"
+    "webdriver": "7.19.7"
   },
   "optionalDependencies": {
     "fsevents": "*"
