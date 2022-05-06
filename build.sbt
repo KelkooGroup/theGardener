@@ -72,7 +72,7 @@ Compile / packageDoc / publishArtifact := false
 topLevelDirectory := None
 
 val silencerVersion = "1.5.0"
-val cucumberVersion = "7.2.3"
+val cucumberVersion = "7.3.4"
 val jacksonVersion = "2.13.2"
 
 libraryDependencies ++= Seq(
@@ -86,7 +86,7 @@ libraryDependencies ++= Seq(
   "net.logstash.logback" % "logstash-logback-encoder" % "7.1.1",
   "com.typesafe.play" %% "play-json" % "2.9.2",
   "org.julienrf" %% "play-json-derived-codecs" % "10.0.2",
-  "io.cucumber" % "gherkin" % "22.0.0",
+  "io.cucumber" % "gherkin" % "23.0.1",
   "org.playframework.anorm" %% "anorm" % "2.6.10",
   "org.mariadb.jdbc" % "mariadb-java-client" % "3.0.4",
   "org.eclipse.jgit" % "org.eclipse.jgit" % "6.1.0.202203080745-r",
@@ -99,11 +99,11 @@ libraryDependencies ++= Seq(
   "net.ruippeixotog" %% "scala-scraper" % "2.2.1" % Test,
 
   // Cucumber
-  "io.cucumber" %% "cucumber-scala" % "8.2.8" % Test,
+  "io.cucumber" %% "cucumber-scala" % "8.3.3" % Test,
   "io.cucumber" % "cucumber-junit" % cucumberVersion % Test,
   "io.cucumber" % "cucumber-picocontainer" % cucumberVersion % Test,
 
-  "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.13.2" % Test,
+  "com.fasterxml.jackson.module" %% "jackson-module-scala" % jacksonVersion % Test,
   "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0" % Test,
   "org.scalatestplus" %% "mockito-3-12" % "3.2.10.0" % Test,
 )

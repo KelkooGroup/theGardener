@@ -1,19 +1,20 @@
 package services
 
 import com.typesafe.config.Config
-import io.cucumber.gherkin.{GherkinDocumentBuilder, Parser}
+import io.cucumber.gherkin.GherkinParser
+import io.cucumber.messages.types.SourceMediaType.TEXT_X_CUCUMBER_GHERKIN_PLAIN
+import io.cucumber.messages.types.{Envelope, Source}
 import io.cucumber.messages.{IdGenerator, types}
-import io.cucumber.messages.types.GherkinDocument
 import models._
 import repositories.FeatureRepository
-import resource._
 import utils._
 
-import java.io.{File, FileReader}
+import java.io.File
 import java.util.{List => JList}
 import javax.inject._
 import scala.jdk.CollectionConverters._
-import scala.util.Try
+import scala.jdk.OptionConverters.RichOptional
+import scala.util.{Try, Using}
 
 class IncrementingIdGenerator extends IdGenerator {
   private var next = 0
@@ -45,47 +46,46 @@ class FeatureService @Inject()(config: Config, featureRepository: FeatureReposit
   }
 
   def parseFeatureFile(projectId: String, branch: Branch, filePath: String): Try[Feature] = {
-    Try {
-      val featureFile = new File(filePath)
+    val relativeFilePath = filePath.replace(getLocalRepository(projectId, branch.name), "")
 
-      val relativeFilePath = filePath.replace(getLocalRepository(projectId, branch.name), "")
+    val featureId = featureRepository.findByBranchIdAndPath(branch.id, relativeFilePath).map(_.id).getOrElse(0L)
 
-      val featureId = featureRepository.findByBranchIdAndPath(branch.id, relativeFilePath).map(_.id).getOrElse(0L)
-      val parser = new Parser[GherkinDocument](new GherkinDocumentBuilder(idGenerator))
+    Using(scala.io.Source.fromFile(filePath)) { source =>
+      val parser = GherkinParser.builder().includeSource(false).includePickles(false).idGenerator(idGenerator).build()
 
-      managed(new FileReader(featureFile)).acquireAndGet {
-        featureReader =>
-          val gherkinDocument = parser.parse(featureReader)
+      val gherkinDocument = parser
+        .parse(Envelope.of(new Source(filePath, source.mkString, TEXT_X_CUCUMBER_GHERKIN_PLAIN)))
+        .findFirst().get()
+        .getGherkinDocument.get()
 
-          val comments = gherkinDocument.getComments.asScala.toSeq.map(_.getText)
-          val feature = gherkinDocument.getFeature
+      val comments = gherkinDocument.getComments.asScala.toSeq.map(_.getText)
+      val feature = gherkinDocument.getFeature.get()
 
-          val (tags, _, _, _) = mapGherkinTags(feature.getTags)
-          var backgroundOption: Option[Background] = None
+      val (tags, _, _, _) = mapGherkinTags(feature.getTags)
+      var backgroundOption: Option[Background] = None
 
-          val scenarios = feature.getChildren.asScala.toSeq.flatMap { child =>
+      val scenarios = feature.getChildren.asScala.toSeq.flatMap { child =>
 
-            (Option(child.getBackground), Option(child.getScenario)) match {
-              case (Some(background), _) =>
-                backgroundOption = Some(Background(0, background.getKeyword, background.getName, trim(background.getDescription), mapGherkinSteps(background.getSteps)))
-                backgroundOption
+        (child.getBackground.toScala, child.getScenario.toScala) match {
+          case (Some(background), _) =>
+            backgroundOption = Some(Background(0, background.getKeyword, background.getName, trim(background.getDescription), mapGherkinSteps(background.getSteps)))
+            backgroundOption
 
-              case (_, Some(scenario)) =>
+          case (_, Some(scenario)) =>
 
-                val (tags, abstractionLevel, caseType, workflowStep) = mapGherkinTags(scenario.getTags)
+            val (tags, abstractionLevel, caseType, workflowStep) = mapGherkinTags(scenario.getTags)
 
-                if (scenario.getExamples.isEmpty) {
-                  Some(Scenario(0, tags, abstractionLevel, caseType, workflowStep, scenario.getKeyword, scenario.getName, trim(scenario.getDescription), mapGherkinSteps(scenario.getSteps)))
-                } else {
-                  Some(ScenarioOutline(0, tags, abstractionLevel, caseType, workflowStep, scenario.getKeyword, scenario.getName, trim(scenario.getDescription), mapGherkinSteps(scenario.getSteps), mapGherkinExamples(scenario.getExamples)))
-                }
-
-              case _ => None
+            if (scenario.getExamples.isEmpty) {
+              Some(Scenario(0, tags, abstractionLevel, caseType, workflowStep, scenario.getKeyword, scenario.getName, trim(scenario.getDescription), mapGherkinSteps(scenario.getSteps)))
+            } else {
+              Some(ScenarioOutline(0, tags, abstractionLevel, caseType, workflowStep, scenario.getKeyword, scenario.getName, trim(scenario.getDescription), mapGherkinSteps(scenario.getSteps), mapGherkinExamples(scenario.getExamples)))
             }
-          }
 
-          Feature(featureId, branch.id, relativeFilePath, backgroundOption, tags, Option(feature.getLanguage), feature.getKeyword, feature.getName, trim(feature.getDescription), scenarios, comments)
+          case _ => None
+        }
       }
+
+      Feature(featureId, branch.id, relativeFilePath, backgroundOption, tags, Option(feature.getLanguage), feature.getKeyword, feature.getName, trim(feature.getDescription), scenarios, comments)
     }.logError(s"Error while parsing file $filePath")
   }
 
@@ -93,9 +93,9 @@ class FeatureService @Inject()(config: Config, featureRepository: FeatureReposit
     gherkinSteps.asScala.toSeq.zipWithIndex.map {
       case (step, id) =>
 
-        val (argument, argumentTextType) = (Option(step.getDataTable), Option(step.getDocString)) match {
+        val (argument, argumentTextType) = (step.getDataTable.toScala, step.getDocString.toScala) match {
           case (Some(dataTable), _) => (dataTable.getRows.asScala.toSeq.map(_.getCells.asScala.toSeq.map(_.getValue)), None)
-          case (_, Some(docString)) => (Seq(Seq(docString.getContent)), Some(docString.getMediaType))
+          case (_, Some(docString)) => (Seq(Seq(docString.getContent)), docString.getMediaType.toScala)
           case _ => (Seq(), None)
         }
 
@@ -123,7 +123,7 @@ class FeatureService @Inject()(config: Config, featureRepository: FeatureReposit
       case (examples, id) =>
 
         val (tags, _, _, _) = mapGherkinTags(examples.getTags)
-        val tableHeader = examples.getTableHeader.getCells.asScala.toSeq.map(_.getValue)
+        val tableHeader = examples.getTableHeader.toScala.map(_.getCells.asScala.toSeq.map(_.getValue)).getOrElse(Seq())
         val tableBody = examples.getTableBody.asScala.toSeq.map(_.getCells.asScala.toSeq.map(_.getValue))
 
         Examples(id.toLong, tags, examples.getKeyword, trim(examples.getDescription), tableHeader, tableBody)
