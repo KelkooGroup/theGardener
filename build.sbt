@@ -73,7 +73,7 @@ topLevelDirectory := None
 
 val silencerVersion = "1.5.0"
 val cucumberVersion = "7.2.3"
-val jacksonVersion = "2.13.2"
+val jacksonVersion = "2.13.2.2"
 
 libraryDependencies ++= Seq(
   ws,
