@@ -42,7 +42,7 @@
     "prismjs": "1.28.0",
     "rxjs": "7.5.5",
     "rxjs-compat": "6.6.7",
-    "swagger-ui-dist": "4.11.0",
+    "swagger-ui-dist": "4.11.1",
     "ts-option": "2.1.0",
     "tslib": "2.4.0",
     "zone.js": "0.11.5"
