@@ -79,7 +79,7 @@
     "karma-jasmine-html-reporter": "2.0.0",
     "prettier": "2.6.2",
     "protractor": "7.0.0",
-    "protractor-cucumber-framework": "8.4.2",
+    "protractor-cucumber-framework": "8.4.3",
     "puppeteer": "14.2.1",
     "sass": "1.52.3",
     "ts-node": "10.8.1",
