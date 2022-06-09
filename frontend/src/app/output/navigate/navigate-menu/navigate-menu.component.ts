@@ -22,7 +22,7 @@ export class NavigateMenuComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.subscription = this.activatedRoute.params
       .pipe(
-        map(params => params.nodes),
+        map(params => params['nodes']),
         switchMap((nodeNames: string) => this.menuService.getSubMenuForNode(nodeNames)),
         catchError(error => {
           this.notificationService.showError(`Unable to load navigation hierarchy`, error);

@@ -15,10 +15,10 @@ export class InternalLinkPipe implements PipeTransform {
   constructor(private activatedRoute: ActivatedRoute, private routeService: RouteService) {}
 
   transform(value: SafeHtml): SafeHtml {
-    this.nodes = this.activatedRoute.snapshot.params.nodes;
-    this.project = this.activatedRoute.snapshot.params.project;
-    this.branch = this.activatedRoute.snapshot.params.branch;
-    this.directories = this.activatedRoute.snapshot.params.directories;
+    this.nodes = this.activatedRoute.snapshot.params['nodes'];
+    this.project = this.activatedRoute.snapshot.params['project'];
+    this.branch = this.activatedRoute.snapshot.params['branch'];
+    this.directories = this.activatedRoute.snapshot.params['directories'];
 
     let transformedValue = this.transformLegacy(value['changingThisBreaksApplicationSecurity']);
     transformedValue = this.transformInternalLinks(transformedValue);

@@ -12,7 +12,7 @@ export class AnchorPipe implements PipeTransform {
     const params = this.activatedRoute.snapshot.params;
     const linkRegexString = '<h(\\d) id="(\\S*)?">.*?<\\/h\\d>';
     const linkRegex = new RegExp(linkRegexString, 'g');
-    const currentUrl = `app/documentation/navigate/${params.nodes}/${params.project}/${params.branch}/${params.directories}/${params.page}`;
+    const currentUrl = `app/documentation/navigate/${params['nodes']}/${params['project']}/${params['branch']}/${params['directories']}/${params['page']}`;
 
     function replacer(fullMatch: string, hNumber: string, titleId: string) {
       return `${fullMatch.replace(

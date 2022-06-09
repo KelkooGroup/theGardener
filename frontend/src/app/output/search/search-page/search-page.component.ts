@@ -17,7 +17,7 @@ export class SearchPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.activatedRoute.queryParams.subscribe(queryParams => {
-      this.keyword = queryParams.keyword;
+      this.keyword = queryParams['keyword'];
       this.search();
     });
   }
