@@ -66,7 +66,7 @@ export class HeaderComponent implements OnInit {
           this.translateLanguages = this.translateTo.split(',').map(code => {
             const language = {
               code,
-              name: ISO6391.getName(code),
+              name: ISO6391.getName(ISO6391.getCode(code)),
               url: this.translateTemplate.replace('[[to]]', code).replace('[[encoded_url]]', encodeURIComponent(currentUrl))
             };
 
