@@ -34,7 +34,7 @@ export class NavigateMenuComponent implements OnInit, OnDestroy {
       });
   }
 
-  trackItem(index: number, item: MenuHierarchy) {
+  trackItem(_index: number, item: MenuHierarchy) {
     return item.name;
   }
 

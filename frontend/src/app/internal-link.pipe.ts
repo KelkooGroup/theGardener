@@ -40,7 +40,7 @@ export class InternalLinkPipe implements PipeTransform {
     const directories = this.directories;
     const routeService = this.routeService;
 
-    function replacer(p1: string, p2: string, relativePath: string) {
+    function replacer(_p1: string, _p2: string, relativePath: string) {
       const targetUrl = routeService.relativeUrlToFullFrontEndUrl(relativePath, { nodes, project, branch, directories });
       return `onclick="navigateTo('${targetUrl}')"`;
     }
@@ -58,7 +58,7 @@ export class InternalLinkPipe implements PipeTransform {
     const directories = this.directories;
     const routeService = this.routeService;
 
-    function replacer(p1: string, p2: string, relativePath: string, anchor: string) {
+    function replacer(_p1: string, _p2: string, relativePath: string, anchor: string) {
       const relativePathWithAnchor = `${relativePath}#${anchor}`;
       const targetUrl = routeService.relativeUrlToFullFrontEndUrl(relativePathWithAnchor, { nodes, project, branch, directories });
       return `onclick="navigateTo('${targetUrl}')"`;
@@ -71,7 +71,7 @@ export class InternalLinkPipe implements PipeTransform {
     const linkRegexString = '(href=)["\'](thegardener:\\/\\/navigate\\/)(.*?)["\']';
     const linkRegex = new RegExp(linkRegexString, 'g');
 
-    function replacer(p1: string, p2: string, p3: string, navigationPath: string) {
+    function replacer(_p1: string, _p2: string, _p3: string, navigationPath: string) {
       const targetUrl = `app/documentation/navigate/${navigationPath}`;
       return `onclick="navigateTo('${targetUrl}')"`;
     }
@@ -84,7 +84,7 @@ export class InternalLinkPipe implements PipeTransform {
     const linkRegex = new RegExp(linkRegexString, 'g');
     const nodes = this.nodes;
 
-    function replacer(p1: string, p2: string, p3: string, firstString: string, hierarchyIdGiven: string, path: string) {
+    function replacer(_p1: string, _p2: string, _p3: string, firstString: string, hierarchyIdGiven: string, path: string) {
       const targetLegacyUrl = `app/documentation/navigate/${firstString !== 'navigate' ? nodes : hierarchyIdGiven};path=${path}`;
       const targetUrl = RouteService.legacyFullFrontEndUrlToFullFrontEndUrl(targetLegacyUrl);
       return `onclick="navigateTo('${targetUrl}')"`;

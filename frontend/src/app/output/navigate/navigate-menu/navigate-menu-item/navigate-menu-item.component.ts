@@ -116,7 +116,7 @@ export class NavigateMenuItemComponent implements OnInit, OnDestroy {
     return 2 + this.menuItem.depth * this.paddingByDepth;
   }
 
-  trackMenuItem(index: number, item: MenuHierarchy) {
+  trackMenuItem(_index: number, item: MenuHierarchy) {
     return item.name;
   }
 
