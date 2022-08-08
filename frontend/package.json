@@ -56,7 +56,7 @@
     "@angular/cli": "14.1.1",
     "@angular/compiler-cli": "14.1.1",
     "@angular/language-service": "14.1.1",
-    "@types/chai": "4.3.2",
+    "@types/chai": "4.3.3",
     "@types/chai-as-promised": "7.1.5",
     "@types/jasmine": "4.0.3",
     "@types/jasminewd2": "2.0.10",
