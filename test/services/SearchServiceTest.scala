@@ -59,7 +59,6 @@ class SearchServiceTest extends AnyWordSpec with Matchers with BeforeAndAfter wi
       items(2).page.id must equal("id4")
     }
 
-
     "insert or update in lucene" in {
       var result = searchService.searchForPage("Superstore").items
 
@@ -67,9 +66,8 @@ class SearchServiceTest extends AnyWordSpec with Matchers with BeforeAndAfter wi
       result.head.page.id must equal("id2")
       result.head.page.description must equal("page two")
 
-
-      for(pageNumber <- 1 to 10){
-        pageIndex.insertOrUpdateDocument(PageIndexDocument("id2", "hierarchy2", "path2", "breadcrum2", "branch2", "project2", "Superstore", s"page ${pageNumber}", ""))
+      for (pageNumber <- 1 to 10) {
+        pageIndex.insertOrUpdateDocument(PageIndexDocument("id2", "hierarchy2", "path2", "breadcrum2", "branch2", "project2", "Superstore", s"page $pageNumber", ""))
       }
 
       result = searchService.searchForPage("Superstore").items
@@ -79,8 +77,6 @@ class SearchServiceTest extends AnyWordSpec with Matchers with BeforeAndAfter wi
       result.head.page.description must equal(s"page 10")
     }
 
-
   }
-
 
 }

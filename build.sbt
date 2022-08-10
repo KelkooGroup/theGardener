@@ -56,8 +56,9 @@ scalacOptions ++= {
   if (insideCI.value) Seq("-Wconf:any:error", "-Xfatal-warnings")
   else Seq("-Wconf:any:warning")
 }
-scalacOptions += "-Wconf:src=target/.*:silent" // Ignore everything in generated files (from Play routes)
-
+// Ignore everything in generated files (from Play routes)
+// See https://github.com/scala/bug/issues/12631 for context of why rootdir is necessary
+scalacOptions ++= Seq("-rootdir", ".", "-Wconf:src=target/.*:silent")
 
 // Add option to enable anorm stack traces
 javaOptions += "-Dscala.control.noTraceSuppression=true"
