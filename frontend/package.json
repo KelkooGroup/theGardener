@@ -45,7 +45,7 @@
     "swagger-ui-dist": "4.13.2",
     "ts-option": "2.1.0",
     "tslib": "2.4.0",
-    "zone.js": "0.11.7"
+    "zone.js": "0.11.8"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "14.1.2",
