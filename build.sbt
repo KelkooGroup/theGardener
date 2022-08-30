@@ -84,7 +84,7 @@ libraryDependencies ++= Seq(
   caffeine,
   "ch.qos.logback" % "logback-access" % "1.2.11",
   "net.logstash.logback" % "logstash-logback-encoder" % "7.2",
-  "com.typesafe.play" %% "play-json" % "2.9.2",
+  "com.typesafe.play" %% "play-json" % "2.9.3",
   "org.julienrf" %% "play-json-derived-codecs" % "10.1.0",
   "io.cucumber" % "gherkin" % "24.0.0",
   "org.playframework.anorm" %% "anorm" % "2.7.0",
