@@ -273,9 +273,9 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
     }
   }
 
-  private def insertOrUpdateIndex(pageJoinProject: PageJoinProject) = {
+  private def insertOrUpdateIndex(pageJoinProject: PageJoinProject): Unit = {
 
-    hierarchyService.getHierarchyPath(pageJoinProject).map { hierarchy =>
+    hierarchyService.getHierarchyPath(pageJoinProject).foreach { hierarchy =>
       val document = PageIndexDocument(id = hierarchy + "/" + pageJoinProject.page.path,
         hierarchy = hierarchy,
         path = pageJoinProject.page.path,
@@ -285,7 +285,12 @@ class PageService @Inject()(config: Configuration, projectRepository: ProjectRep
         label = pageJoinProject.page.label,
         description = pageJoinProject.page.description,
         pageContent = pageJoinProject.page.markdown.getOrElse(""))
-      indexService.insertOrUpdateDocument(document)
+      indexService
+        .insertOrUpdateDocument(document)
+        .recover { case ex: Throwable =>
+          logger.error("An error occured while indexing document in Lucene", ex)
+          ()
+        }
     }
 
   }
