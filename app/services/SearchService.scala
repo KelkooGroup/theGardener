@@ -2,8 +2,11 @@ package services
 
 import com.outr.lucene4s.query.{Sort, TermSearchTerm}
 import com.outr.lucene4s.{DirectLucene, parse}
+
 import javax.inject.{Inject, Singleton}
 import play.api.libs.json.Json
+
+import scala.util.Try
 
 case class SearchResult(items: Seq[SearchResultItem])
 
@@ -45,27 +48,30 @@ class IndexService {
   private val description = luceneSearchIndex.create.field[String]("description")
   private val pageContent = luceneSearchIndex.create.field[String]("pageContent", sortable = false)
 
-  def insertOrUpdateDocument(document: PageIndexDocument): Unit = {
+  def insertOrUpdateDocument(document: PageIndexDocument): Try[Unit] = {
+    Try {
+      var i = 0
+      while (exists(document) && i < 10) {
+        luceneSearchIndex.delete(new TermSearchTerm(Some(id), document.id))
+        luceneSearchIndex.commit()
+        i = i + 1
+      }
 
-    var i = 0
-    while (exists(document) && i < 10) {
-      luceneSearchIndex.delete(new TermSearchTerm(Some(id), document.id))
+    luceneSearchIndex
+      .doc().fields(
+        id(document.id),
+          hierarchy(document.hierarchy.trim),
+          path(document.path.trim),
+          breadcrumb(document.breadcrumb.trim),
+          project(document.project.trim),
+          branch(document.branch.trim),
+          label(document.label.trim),
+          description(document.description.trim),
+          pageContent(document.pageContent.trim)
+        ).index()
       luceneSearchIndex.commit()
-      i = i + 1
+      ()
     }
-
-    luceneSearchIndex.doc().fields(id(document.id),
-      hierarchy(document.hierarchy.trim),
-      path(document.path.trim),
-      breadcrumb(document.breadcrumb.trim),
-      project(document.project.trim),
-      branch(document.branch.trim),
-      label(document.label.trim),
-      description(document.description.trim),
-      pageContent(document.pageContent.trim)
-    ).index()
-    luceneSearchIndex.commit()
-    ()
   }
 
   private def exists(document: PageIndexDocument) = {
@@ -91,8 +97,10 @@ class IndexService {
     })
   }
 
-  def reset(): Unit = {
-    luceneSearchIndex.deleteAll()
+  def reset(): Try[Unit] = {
+    Try {
+      luceneSearchIndex.deleteAll()
+    }
   }
 
 }

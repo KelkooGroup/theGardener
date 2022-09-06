@@ -288,7 +288,12 @@ class ProjectService @Inject()(projectRepository: ProjectRepository, gitService:
   def refreshAllPagesFromAllProjects(): Unit = {
     val startTime = System.currentTimeMillis()
     logger.info("Start refreshing pages not in cache")
-    indexService.reset()
+    indexService
+      .reset()
+      .recover { case ex: Throwable =>
+        logger.error("An error occured while resetting the Lucence index, ignoring it...", ex)
+        ()
+      }
     projectRepository.findAll().foreach(p => refreshAllPages(p, forceRefresh = false))
     val endTime = System.currentTimeMillis()
     val duration = DurationUtil.durationFromMillisToHumanReadable( endTime-startTime   )
