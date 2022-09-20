@@ -89,7 +89,7 @@ libraryDependencies ++= Seq(
   "org.julienrf" %% "play-json-derived-codecs" % "10.1.0",
   "io.cucumber" % "gherkin" % "24.0.0",
   "org.playframework.anorm" %% "anorm" % "2.7.0",
-  "org.mariadb.jdbc" % "mariadb-java-client" % "3.0.7",
+  "org.mariadb.jdbc" % "mariadb-java-client" % "3.0.8",
   "org.eclipse.jgit" % "org.eclipse.jgit" % "6.3.0.202209071007-r",
   // Swagger
   "io.swagger" % "swagger-annotations" % "1.6.6", // do not upgrade beyond 1.x because of sbt-swagger-play compatibility
