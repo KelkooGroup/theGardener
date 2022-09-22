@@ -102,7 +102,8 @@ class ProjectServiceTest extends AnyWordSpec with Matchers with BeforeAndAfter w
       forceMkdir(new File(bugfixBranchDirectory))
 
 
-      Mockito.reset(gitService, projectRepository)
+      Mockito.reset(gitService)
+      Mockito.reset(projectRepository)
 
       when(projectRepository.findAll()).thenReturn(Seq(project))
 
