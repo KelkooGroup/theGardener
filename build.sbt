@@ -100,7 +100,7 @@ libraryDependencies ++= Seq(
   "net.ruippeixotog" %% "scala-scraper" % "3.0.0" % Test,
 
   // Cucumber
-  "io.cucumber" %% "cucumber-scala" % "8.11.0" % Test,
+  "io.cucumber" %% "cucumber-scala" % "8.13.0" % Test,
   "io.cucumber" % "cucumber-junit" % cucumberVersion % Test,
   "io.cucumber" % "cucumber-picocontainer" % cucumberVersion % Test,
 
