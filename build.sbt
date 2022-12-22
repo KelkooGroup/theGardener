@@ -2,7 +2,7 @@ name := "the_gardener"
 maintainer := "florian.fauvarque@gmail.com"
 
 val jdkVersion = "11"
-scalaVersion := "2.13.9"
+scalaVersion := "2.13.10"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala).settings(
   swaggerPlayValidate := false
@@ -74,7 +74,7 @@ topLevelDirectory := None
 
 val silencerVersion = "1.5.0"
 val cucumberVersion = "7.9.0"
-val jacksonVersion = "2.14.0"
+val jacksonVersion = "2.14.1"
 
 libraryDependencies ++= Seq(
   ws,
@@ -87,20 +87,20 @@ libraryDependencies ++= Seq(
   "net.logstash.logback" % "logstash-logback-encoder" % "7.2",
   "com.typesafe.play" %% "play-json" % "2.9.3",
   "org.julienrf" %% "play-json-derived-codecs" % "10.1.0",
-  "io.cucumber" % "gherkin" % "24.0.0",
+  "io.cucumber" % "gherkin" % "24.1.0",
   "org.playframework.anorm" %% "anorm" % "2.7.0",
   "org.mariadb.jdbc" % "mariadb-java-client" % "3.0.9",
-  "org.eclipse.jgit" % "org.eclipse.jgit" % "6.3.0.202209071007-r",
+  "org.eclipse.jgit" % "org.eclipse.jgit" % "6.4.0.202211300538-r",
   // Swagger
-  "io.swagger" % "swagger-annotations" % "1.6.7", // do not upgrade beyond 1.x because of sbt-swagger-play compatibility
+  "io.swagger" % "swagger-annotations" % "1.6.9", // do not upgrade beyond 1.x because of sbt-swagger-play compatibility
 
-  "com.h2database" % "h2" % "1.4.200",
+  "com.h2database" % "h2" % "1.4.199",
   "commons-io" % "commons-io" % "2.11.0",
   "com.outr" %% "lucene4s" % "1.11.1",
   "net.ruippeixotog" %% "scala-scraper" % "3.0.0" % Test,
 
   // Cucumber
-  "io.cucumber" %% "cucumber-scala" % "8.11.0" % Test,
+  "io.cucumber" %% "cucumber-scala" % "8.13.1" % Test,
   "io.cucumber" % "cucumber-junit" % cucumberVersion % Test,
   "io.cucumber" % "cucumber-picocontainer" % cucumberVersion % Test,
 
