@@ -87,7 +87,7 @@ libraryDependencies ++= Seq(
   "net.logstash.logback" % "logstash-logback-encoder" % "7.2",
   "com.typesafe.play" %% "play-json" % "2.9.3",
   "org.julienrf" %% "play-json-derived-codecs" % "10.1.0",
-  "io.cucumber" % "gherkin" % "24.0.0",
+  "io.cucumber" % "gherkin" % "24.1.0",
   "org.playframework.anorm" %% "anorm" % "2.7.0",
   "org.mariadb.jdbc" % "mariadb-java-client" % "3.0.8",
   "org.eclipse.jgit" % "org.eclipse.jgit" % "6.3.0.202209071007-r",
