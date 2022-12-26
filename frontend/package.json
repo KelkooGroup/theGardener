@@ -36,7 +36,7 @@
     "lodash": "4.17.21",
     "moment": "2.29.4",
     "ngx-json-viewer": "3.2.1",
-    "ngx-markdown": "14.0.1",
+    "ngx-markdown": "15.0.0",
     "ngx-moment": "6.0.2",
     "ngx-numeral": "1.0.0",
     "prismjs": "1.29.0",
