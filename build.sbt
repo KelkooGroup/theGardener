@@ -93,10 +93,12 @@ libraryDependencies ++= Seq(
   "org.eclipse.jgit" % "org.eclipse.jgit" % "6.4.0.202211300538-r",
   // Swagger
   "io.swagger" % "swagger-annotations" % "1.6.9", // do not upgrade beyond 1.x because of sbt-swagger-play compatibility
+  "org.webjars" % "swagger-ui" % "4.15.5",
 
   "com.h2database" % "h2" % "1.4.199",
   "commons-io" % "commons-io" % "2.11.0",
   "com.outr" %% "lucene4s" % "1.11.1",
+
   "net.ruippeixotog" %% "scala-scraper" % "3.0.0" % Test,
 
   // Cucumber
