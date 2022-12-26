@@ -19,28 +19,26 @@ describe('NavigateMenuItemComponent', () => {
   let page: Page;
   let activatedRoute: ActivatedRouteStub;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [NavigateMenuItemComponent],
-        imports: [
-          MatIconModule,
-          MatFormFieldModule,
-          MatSelectModule,
-          MatSnackBarModule,
-          FormsModule,
-          RouterTestingModule,
-          NoopAnimationsModule
-        ],
-        providers: [
-          {
-            provide: ActivatedRoute,
-            useClass: ActivatedRouteStub
-          }
-        ]
-      }).compileComponents();
-    })
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [NavigateMenuItemComponent],
+      imports: [
+        MatIconModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatSnackBarModule,
+        FormsModule,
+        RouterTestingModule,
+        NoopAnimationsModule
+      ],
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useClass: ActivatedRouteStub
+        }
+      ]
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(NavigateMenuItemComponent);
@@ -149,47 +147,44 @@ describe('NavigateMenuItemComponent', () => {
     expect(router.navigateByUrl).toHaveBeenCalledWith('app/documentation/navigate/_publisher/ecs/_/_/Meta');
   });
 
-  it(
-    'should show branches in a select if node is a project',
-    waitForAsync(() => {
-      activatedRoute.testParams = { nodes: '_eng', project: 'suggestionWS' };
-      const projectItem: MenuProjectHierarchy = {
-        name: 'suggestionWS',
-        label: 'Suggestion Webservice',
-        type: 'Project' as MenuType,
-        stableBranch: 'qa',
-        depth: 2,
-        route: {},
-        children: [
-          {
-            name: 'qa',
-            label: 'qa',
-            type: 'Branch' as MenuType,
-            depth: 3,
-            children: [],
-            route: {}
-          },
-          {
-            name: 'branch1',
-            label: 'Branch 1',
-            type: 'Branch' as MenuType,
-            depth: 3,
-            children: [],
-            route: {}
-          }
-        ]
-      };
-      component.menuItem = projectItem;
-      fixture.detectChanges();
+  it('should show branches in a select if node is a project', waitForAsync(() => {
+    activatedRoute.testParams = { nodes: '_eng', project: 'suggestionWS' };
+    const projectItem: MenuProjectHierarchy = {
+      name: 'suggestionWS',
+      label: 'Suggestion Webservice',
+      type: 'Project' as MenuType,
+      stableBranch: 'qa',
+      depth: 2,
+      route: {},
+      children: [
+        {
+          name: 'qa',
+          label: 'qa',
+          type: 'Branch' as MenuType,
+          depth: 3,
+          children: [],
+          route: {}
+        },
+        {
+          name: 'branch1',
+          label: 'Branch 1',
+          type: 'Branch' as MenuType,
+          depth: 3,
+          children: [],
+          route: {}
+        }
+      ]
+    };
+    component.menuItem = projectItem;
+    fixture.detectChanges();
 
-      expect(component.selectedBranch).toBeTruthy();
-      expect(component.selectedBranch.name).toEqual(projectItem.stableBranch);
-      expect(page.branchSelect).toBeTruthy();
-      expect(page.availableBranches.length).toBe(2);
-      expect(page.availableBranches[0].textContent).toMatch('qa');
-      expect(page.availableBranches[1].textContent).toMatch('branch1');
-    })
-  );
+    expect(component.selectedBranch).toBeTruthy();
+    expect(component.selectedBranch.name).toEqual(projectItem.stableBranch);
+    expect(page.branchSelect).toBeTruthy();
+    expect(page.availableBranches.length).toBe(2);
+    expect(page.availableBranches[0].textContent).toMatch('qa');
+    expect(page.availableBranches[1].textContent).toMatch('branch1');
+  }));
 
   it('should select stable branch by default', () => {
     activatedRoute.testParams = { nodes: '_eng', project: 'suggestionWS' };

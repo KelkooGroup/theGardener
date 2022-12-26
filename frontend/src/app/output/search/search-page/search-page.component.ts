@@ -24,10 +24,10 @@ export class SearchPageComponent implements OnInit {
 
   private search() {
     this.pageService.searchPages(this.keyword).subscribe({
-      next: (result) => {
+      next: result => {
         this.searchResult = result;
       },
-      error: (error) => {
+      error: error => {
         this.notificationService.showError('Error while searching in the page index', error);
       }
     });

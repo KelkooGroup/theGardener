@@ -9,14 +9,12 @@ describe('ConfigService', () => {
   let httpMock: HttpTestingController;
   let configService: ConfigService;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [HttpClientTestingModule, MatSnackBarModule],
-        providers: [ConfigService]
-      }).compileComponents();
-    })
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule, MatSnackBarModule],
+      providers: [ConfigService]
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     httpMock = TestBed.inject(HttpTestingController);
@@ -32,25 +30,22 @@ describe('ConfigService', () => {
     expect(service).toBeTruthy();
   });
 
-  it(
-    'should parse service response',
-    waitForAsync(() => {
-      configService.load().then(h => {
-        expect(h.windowTitle).toBe('theGardener');
-        expect(h.title).toBe('In our documentation we trust.');
-        expect(h.logoSrc).toBe('assets/images/logo-white.png');
-        expect(h.faviconSrc).toBe('assets/images/favicon.png');
-        expect(h.colorMain).toBe('#1F7079');
-        expect(h.colorDark).toBe('#0f3438');
-        expect(h.colorLight).toBe('#b4ced1');
-        expect(h.translateTo).toBe('fr,de,es');
-        expect(h.translateTemplate).toBe('https://translate.google.com/translate?hl=en&sl=auto&tl=[[to]]&u=[[encoded_url]]');
-      });
-      const req = httpMock.match('api/config')[0];
-      expect(req.request.method).toBe('GET');
-      req.flush(SERVER_RESPONSE);
-    })
-  );
+  it('should parse service response', waitForAsync(() => {
+    configService.load().then(h => {
+      expect(h.windowTitle).toBe('theGardener');
+      expect(h.title).toBe('In our documentation we trust.');
+      expect(h.logoSrc).toBe('assets/images/logo-white.png');
+      expect(h.faviconSrc).toBe('assets/images/favicon.png');
+      expect(h.colorMain).toBe('#1F7079');
+      expect(h.colorDark).toBe('#0f3438');
+      expect(h.colorLight).toBe('#b4ced1');
+      expect(h.translateTo).toBe('fr,de,es');
+      expect(h.translateTemplate).toBe('https://translate.google.com/translate?hl=en&sl=auto&tl=[[to]]&u=[[encoded_url]]');
+    });
+    const req = httpMock.match('api/config')[0];
+    expect(req.request.method).toBe('GET');
+    req.flush(SERVER_RESPONSE);
+  }));
 });
 
 const SERVER_RESPONSE: Config = {

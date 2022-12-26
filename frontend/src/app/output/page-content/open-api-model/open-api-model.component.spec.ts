@@ -10,14 +10,12 @@ describe('OpenApiModelComponent', () => {
   let component: OpenApiModelComponent;
   let fixture: ComponentFixture<OpenApiModelComponent>;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [OpenApiModelComponent],
-        imports: [MatTableModule, MatSnackBarModule, NoopAnimationsModule]
-      }).compileComponents();
-    })
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [OpenApiModelComponent],
+      imports: [MatTableModule, MatSnackBarModule, NoopAnimationsModule]
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(OpenApiModelComponent);

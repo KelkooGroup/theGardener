@@ -27,33 +27,31 @@ describe('HeaderComponent', () => {
   let router: Router;
   let activatedRoute: ActivatedRouteStub;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [HeaderComponent, NavigateMobileMenuComponent, NavigateMenuItemComponent, SearchQueryComponent],
-        imports: [
-          MatTabsModule,
-          MatSnackBarModule,
-          MatFormFieldModule,
-          MatSelectModule,
-          MatIconModule,
-          MatProgressSpinnerModule,
-          MatSnackBarModule,
-          FormsModule,
-          NoopAnimationsModule,
-          HttpClientTestingModule,
-          RouterTestingModule
-        ],
-        providers: [
-          MenuService,
-          {
-            provide: ActivatedRoute,
-            useClass: ActivatedRouteStub
-          }
-        ]
-      }).compileComponents();
-    })
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [HeaderComponent, NavigateMobileMenuComponent, NavigateMenuItemComponent, SearchQueryComponent],
+      imports: [
+        MatTabsModule,
+        MatSnackBarModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatIconModule,
+        MatProgressSpinnerModule,
+        MatSnackBarModule,
+        FormsModule,
+        NoopAnimationsModule,
+        HttpClientTestingModule,
+        RouterTestingModule
+      ],
+      providers: [
+        MenuService,
+        {
+          provide: ActivatedRoute,
+          useClass: ActivatedRouteStub
+        }
+      ]
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(HeaderComponent);
@@ -72,27 +70,21 @@ describe('HeaderComponent', () => {
   /*
     In this test, we need to rely on ng-reflect-router-link as href value is `/` or `localhost:9876` when using fake ActivatedRoute
    */
-  it(
-    'should show the first level of hierarchy as elements of menu with navigation',
-    waitForAsync(() => {
-      fixture.detectChanges();
-      expect(component).toBeTruthy();
-      expect(page.navigationItems.length).toBe(2);
-      expect(page.navigationItems[0].textContent).toBe('Publisher');
-      // ng-reflect---- properties are for debugging / devtime only, and they're truncated so they don't dump huge amounts of data into the DOM.
-      expect(page.navigationItems[1].textContent).toBe('Tools');
-    })
-  );
+  it('should show the first level of hierarchy as elements of menu with navigation', waitForAsync(() => {
+    fixture.detectChanges();
+    expect(component).toBeTruthy();
+    expect(page.navigationItems.length).toBe(2);
+    expect(page.navigationItems[0].textContent).toBe('Publisher');
+    // ng-reflect---- properties are for debugging / devtime only, and they're truncated so they don't dump huge amounts of data into the DOM.
+    expect(page.navigationItems[1].textContent).toBe('Tools');
+  }));
 
-  it(
-    'should navigate to first element if no route is set',
-    waitForAsync(() => {
-      activatedRoute.testParams = {};
-      fixture.detectChanges();
+  it('should navigate to first element if no route is set', waitForAsync(() => {
+    activatedRoute.testParams = {};
+    fixture.detectChanges();
 
-      expect(router.navigateByUrl).toHaveBeenCalledWith('app/documentation/navigate/_publisher/_/_/_');
-    })
-  );
+    expect(router.navigateByUrl).toHaveBeenCalledWith('app/documentation/navigate/_publisher/_/_/_');
+  }));
 });
 
 class Page {

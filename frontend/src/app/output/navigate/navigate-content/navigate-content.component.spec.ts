@@ -37,55 +37,53 @@ describe('NavigateContentComponent', () => {
   let fixture: ComponentFixture<NavigateContentComponent>;
   let router: Router;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [
-          NavigateContentComponent,
-          PageContentComponent,
-          MatProgressSpinner,
-          RemoveHtmlSanitizerPipe,
-          SafePipe,
-          InternalLinkPipe,
-          AnchorPipe,
-          GherkinTableComponent,
-          GherkinComponent,
-          GherkinLongTextComponent,
-          GherkinStepComponent,
-          OpenApiEndPointsComponent,
-          OpenApiModelComponent,
-          FooterComponent,
-          NavigateMobileMenuComponent,
-          NavigateMenuItemComponent
-        ],
-        imports: [
-          HttpClientTestingModule,
-          MatSnackBarModule,
-          MatTabsModule,
-          NoopAnimationsModule,
-          MarkdownModule.forRoot({
-            sanitize: SecurityContext.NONE
-          }),
-          NgxJsonViewerModule,
-          MatTableModule,
-          RouterTestingModule,
-          HttpClientTestingModule,
-          NoopAnimationsModule,
-          RouterTestingModule,
-          MatTabsModule,
-          MatSnackBarModule,
-          MatSelectModule,
-          FormsModule
-        ],
-        providers: [
-          {
-            provide: ActivatedRoute,
-            useClass: ActivatedRouteStub
-          }
-        ]
-      }).compileComponents();
-    })
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [
+        NavigateContentComponent,
+        PageContentComponent,
+        MatProgressSpinner,
+        RemoveHtmlSanitizerPipe,
+        SafePipe,
+        InternalLinkPipe,
+        AnchorPipe,
+        GherkinTableComponent,
+        GherkinComponent,
+        GherkinLongTextComponent,
+        GherkinStepComponent,
+        OpenApiEndPointsComponent,
+        OpenApiModelComponent,
+        FooterComponent,
+        NavigateMobileMenuComponent,
+        NavigateMenuItemComponent
+      ],
+      imports: [
+        HttpClientTestingModule,
+        MatSnackBarModule,
+        MatTabsModule,
+        NoopAnimationsModule,
+        MarkdownModule.forRoot({
+          sanitize: SecurityContext.NONE
+        }),
+        NgxJsonViewerModule,
+        MatTableModule,
+        RouterTestingModule,
+        HttpClientTestingModule,
+        NoopAnimationsModule,
+        RouterTestingModule,
+        MatTabsModule,
+        MatSnackBarModule,
+        MatSelectModule,
+        FormsModule
+      ],
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useClass: ActivatedRouteStub
+        }
+      ]
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(NavigateContentComponent);

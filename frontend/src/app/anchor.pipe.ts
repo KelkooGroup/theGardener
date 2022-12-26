@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import {SafeHtml} from "@angular/platform-browser";
+import { SafeHtml } from '@angular/platform-browser';
 
 @Pipe({
   name: 'anchor'

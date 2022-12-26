@@ -20,31 +20,29 @@ describe('GherkinComponent', () => {
   let fixture: ComponentFixture<GherkinComponent>;
   let page: Page;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [
-          GherkinComponent,
-          GherkinStepComponent,
-          GherkinTableComponent,
-          GherkinLongTextComponent,
-          SafePipe,
-          InternalLinkPipe,
-          AnchorPipe,
-          RemoveHtmlSanitizerPipe
-        ],
-        imports: [
-          MatTableModule,
-          NoopAnimationsModule,
-          NgxJsonViewerModule,
-          MatTabsModule,
-          MarkdownModule.forRoot({
-            sanitize: SecurityContext.NONE
-          })
-        ]
-      }).compileComponents();
-    })
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [
+        GherkinComponent,
+        GherkinStepComponent,
+        GherkinTableComponent,
+        GherkinLongTextComponent,
+        SafePipe,
+        InternalLinkPipe,
+        AnchorPipe,
+        RemoveHtmlSanitizerPipe
+      ],
+      imports: [
+        MatTableModule,
+        NoopAnimationsModule,
+        NgxJsonViewerModule,
+        MatTabsModule,
+        MarkdownModule.forRoot({
+          sanitize: SecurityContext.NONE
+        })
+      ]
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(GherkinComponent);

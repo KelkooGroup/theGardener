@@ -24,33 +24,31 @@ describe('GherkinStepComponent', () => {
   let fixture: ComponentFixture<GherkinStepComponent>;
   let page: Page;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [
-          GherkinStepComponent,
-          GherkinTableComponent,
-          GherkinLongTextComponent,
-          SafePipe,
-          InternalLinkPipe,
-          AnchorPipe,
-          RemoveHtmlSanitizerPipe
-        ],
-        imports: [
-          MatExpansionModule,
-          MatTableModule,
-          MatTabsModule,
-          NgxJsonViewerModule,
-          NoopAnimationsModule,
-          MarkdownModule.forRoot({
-            sanitize: SecurityContext.NONE
-          }),
-          HttpClientTestingModule,
-          RouterTestingModule
-        ]
-      }).compileComponents();
-    })
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [
+        GherkinStepComponent,
+        GherkinTableComponent,
+        GherkinLongTextComponent,
+        SafePipe,
+        InternalLinkPipe,
+        AnchorPipe,
+        RemoveHtmlSanitizerPipe
+      ],
+      imports: [
+        MatExpansionModule,
+        MatTableModule,
+        MatTabsModule,
+        NgxJsonViewerModule,
+        NoopAnimationsModule,
+        MarkdownModule.forRoot({
+          sanitize: SecurityContext.NONE
+        }),
+        HttpClientTestingModule,
+        RouterTestingModule
+      ]
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(GherkinStepComponent);
