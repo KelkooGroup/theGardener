@@ -121,15 +121,15 @@
   text-align: left;
 }
 
-.mat-select-panel {
+.mat-mdc-select-panel {
   background: white;
 }
 
 .mat-form-field-appearance-fill .mat-form-field-flex {
-  background-color: none;
+  background-color: transparent;
 }
 
-.mat-select {
+.mat-mdc-select {
   font-family: $font-family;
   font-size: $font-size-text-small;
   text-align: center;
@@ -142,22 +142,25 @@
 
   mat-form-field{
     margin-bottom: -0.7em;
-
+    /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
     ::ng-deep .mat-form-field-flex{
       background:white;
       border-radius: 5px;
     }
+    /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
     ::ng-deep .mat-form-field-infix{
       width: 120px;
       border-top: none;
       padding: 0.55em 0;
     }
+    /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
     ::ng-deep .mat-form-field-wrapper{
       padding-bottom: 1.2em;
     }
+    /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
     ::ng-deep .mat-form-field-underline{
       background:none;
     }
-  } 
+  }
 
 }

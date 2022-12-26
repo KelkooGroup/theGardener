@@ -1,7 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { RouteService } from './_services/route.service';
-import {SafeHtml} from "@angular/platform-browser";
+import { SafeHtml } from '@angular/platform-browser';
 
 @Pipe({
   name: 'internalLink'

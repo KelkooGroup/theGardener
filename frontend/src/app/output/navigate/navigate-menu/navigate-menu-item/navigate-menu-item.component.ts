@@ -39,7 +39,7 @@ export class NavigateMenuItemComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.subscription = this.activatedRoute.params.subscribe({
-      next: (params) => {
+      next: params => {
         this.currentPath = this.routeService.navigationParamsToFrontEndPath(params);
         this.currentNavigationRoute = this.routeService.navigationParamsToNavigationRoute(params);
         this.active = this.isActive(this.menuItem);
@@ -59,7 +59,7 @@ export class NavigateMenuItemComponent implements OnInit, OnDestroy {
           }
         }
       },
-      error: (error) => {
+      error: error => {
         this.notificationService.showError(`Error while showing menu item ${this.menuItem.name}`, error);
       }
     });

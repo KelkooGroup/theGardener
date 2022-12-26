@@ -18,13 +18,13 @@ $app-theme: mat.define-light-theme($app-primary, $app-accent, $app-warn);
   outline: none;
   width: 100%;
 
-  .mat-list-item.active {
+  .mat-mdc-list-item.active {
     background-color: mat.get-color-from-palette($app-primary, 50);
   }
 
   &:hover,
   &:focus {
-    > .mat-list-item:not(.expanded) {
+    > .mat-mdc-list-item:not(.expanded) {
       background-color: mat.get-color-from-palette($app-primary, 100) !important;
     }
   }

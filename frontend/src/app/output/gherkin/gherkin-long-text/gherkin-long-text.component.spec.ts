@@ -9,14 +9,12 @@ describe('GherkinLongTextComponent', () => {
   let fixture: ComponentFixture<GherkinLongTextComponent>;
   let page: Page;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [GherkinLongTextComponent],
-        imports: [NgxJsonViewerModule, NoopAnimationsModule, MatTabsModule]
-      }).compileComponents();
-    })
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [GherkinLongTextComponent],
+      imports: [NgxJsonViewerModule, NoopAnimationsModule, MatTabsModule]
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(GherkinLongTextComponent);

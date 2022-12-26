@@ -17,32 +17,30 @@ describe('NavigateMenuComponent', () => {
   let component: NavigateMenuComponent;
   let fixture: ComponentFixture<NavigateMenuComponent>;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [NavigateMenuComponent, NavigateMenuItemComponent],
-        imports: [
-          MatFormFieldModule,
-          MatSelectModule,
-          MatIconModule,
-          MatProgressSpinnerModule,
-          MatSnackBarModule,
-          FormsModule,
-          NoopAnimationsModule,
-          HttpClientTestingModule,
-          RouterTestingModule
-        ],
-        providers: [
-          {
-            provide: ActivatedRoute,
-            useValue: {
-              params: of({ name: 'eng' })
-            }
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [NavigateMenuComponent, NavigateMenuItemComponent],
+      imports: [
+        MatFormFieldModule,
+        MatSelectModule,
+        MatIconModule,
+        MatProgressSpinnerModule,
+        MatSnackBarModule,
+        FormsModule,
+        NoopAnimationsModule,
+        HttpClientTestingModule,
+        RouterTestingModule
+      ],
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            params: of({ name: 'eng' })
           }
-        ]
-      }).compileComponents();
-    })
-  );
+        }
+      ]
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(NavigateMenuComponent);

@@ -1,7 +1,7 @@
 import { AnchorPipe } from './anchor.pipe';
 import { ActivatedRouteStub } from './_testUtils/activated-route-stub.spec';
 import { DomSanitizer } from '@angular/platform-browser';
-import {TestBed} from "@angular/core/testing";
+import { TestBed } from '@angular/core/testing';
 
 describe('AnchorPipe', () => {
   let pipe: AnchorPipe;
@@ -20,12 +20,18 @@ describe('AnchorPipe', () => {
   });
 
   it('place an anchor before each title', () => {
-    expect(pipe.transform(sanitizer.bypassSecurityTrustHtml(HTML_INPUT_WITH_SPACE_IN_TITLE))).toEqual(sanitizer.bypassSecurityTrustHtml(HTML_OUTPUT_WITH_SPACE_IN_TITLE));
-    expect(pipe.transform(sanitizer.bypassSecurityTrustHtml(HTML_INPUT_WITHOUT_SPACE_IN_TITLE))).toEqual(sanitizer.bypassSecurityTrustHtml(HTML_OUTPUT_WITHOUT_SPACE_IN_TITLE));
+    expect(pipe.transform(sanitizer.bypassSecurityTrustHtml(HTML_INPUT_WITH_SPACE_IN_TITLE))).toEqual(
+      sanitizer.bypassSecurityTrustHtml(HTML_OUTPUT_WITH_SPACE_IN_TITLE)
+    );
+    expect(pipe.transform(sanitizer.bypassSecurityTrustHtml(HTML_INPUT_WITHOUT_SPACE_IN_TITLE))).toEqual(
+      sanitizer.bypassSecurityTrustHtml(HTML_OUTPUT_WITHOUT_SPACE_IN_TITLE)
+    );
 
-    console.log(pipe.transform(sanitizer.bypassSecurityTrustHtml(COMPLEX_HTML_INPUT))['changingThisBreaksApplicationSecurity'])
-    console.log(pipe.transform(sanitizer.bypassSecurityTrustHtml(COMPLEX_HTML_OUTPUT))['changingThisBreaksApplicationSecurity'])
-    expect(pipe.transform(sanitizer.bypassSecurityTrustHtml(COMPLEX_HTML_INPUT))).toEqual(sanitizer.bypassSecurityTrustHtml(COMPLEX_HTML_OUTPUT));
+    console.log(pipe.transform(sanitizer.bypassSecurityTrustHtml(COMPLEX_HTML_INPUT))['changingThisBreaksApplicationSecurity']);
+    console.log(pipe.transform(sanitizer.bypassSecurityTrustHtml(COMPLEX_HTML_OUTPUT))['changingThisBreaksApplicationSecurity']);
+    expect(pipe.transform(sanitizer.bypassSecurityTrustHtml(COMPLEX_HTML_INPUT))).toEqual(
+      sanitizer.bypassSecurityTrustHtml(COMPLEX_HTML_OUTPUT)
+    );
   });
 });
 

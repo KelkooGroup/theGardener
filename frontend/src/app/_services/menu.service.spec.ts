@@ -8,14 +8,12 @@ describe('MenuService', () => {
   let httpMock: HttpTestingController;
   let menuService: MenuService;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [HttpClientTestingModule],
-        providers: [MenuService]
-      }).compileComponents();
-    })
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
+      providers: [MenuService]
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     httpMock = TestBed.inject(HttpTestingController);
@@ -27,69 +25,57 @@ describe('MenuService', () => {
     httpMock.verify();
   });
 
-  it(
-    'should return a hierarchy node',
-    waitForAsync(() => {
-      menuService.hierarchy().subscribe(h => {
-        expect(h.name).toBe('Hierarchy root');
-        expect(h.projects.length).toBe(0);
-        expect(h.children.length).toBe(2);
-      });
-      const req = httpMock.expectOne('api/menu');
-      expect(req.request.method).toBe('GET');
-      req.flush(MENU_SERVICE_RESPONSE);
-    })
-  );
+  it('should return a hierarchy node', waitForAsync(() => {
+    menuService.hierarchy().subscribe(h => {
+      expect(h.name).toBe('Hierarchy root');
+      expect(h.projects.length).toBe(0);
+      expect(h.children.length).toBe(2);
+    });
+    const req = httpMock.expectOne('api/menu');
+    expect(req.request.method).toBe('GET');
+    req.flush(MENU_SERVICE_RESPONSE);
+  }));
 
-  it(
-    'should provide menu header',
-    waitForAsync(() => {
-      menuService.getMenuHeader().subscribe(menuItems => {
-        expect(menuItems.length).toBe(2);
-        expect(menuItems[0].label).toBe('publisher');
-        expect(menuItems[1].label).toBe('tools');
-      });
-      const req = httpMock.expectOne('api/menu/header');
-      expect(req.request.method).toBe('GET');
-      req.flush(MENU_HEADER_SERVICE_RESPONSE);
-    })
-  );
+  it('should provide menu header', waitForAsync(() => {
+    menuService.getMenuHeader().subscribe(menuItems => {
+      expect(menuItems.length).toBe(2);
+      expect(menuItems[0].label).toBe('publisher');
+      expect(menuItems[1].label).toBe('tools');
+    });
+    const req = httpMock.expectOne('api/menu/header');
+    expect(req.request.method).toBe('GET');
+    req.flush(MENU_HEADER_SERVICE_RESPONSE);
+  }));
 
-  it(
-    'should provide submenu for selected node',
-    waitForAsync(() => {
-      menuService.getSubMenuForNode('_eng').subscribe(submenu => {
-        expect(submenu).toEqual(EXPECTED_MENU_FOR_ENGINEERING_VIEW);
-      });
-      const req = httpMock.expectOne('api/menu/submenu/_eng');
-      expect(req.request.method).toBe('GET');
-      req.flush(MENU_SUBMENU_SERVICE_RESPONSE);
-    })
-  );
+  it('should provide submenu for selected node', waitForAsync(() => {
+    menuService.getSubMenuForNode('_eng').subscribe(submenu => {
+      expect(submenu).toEqual(EXPECTED_MENU_FOR_ENGINEERING_VIEW);
+    });
+    const req = httpMock.expectOne('api/menu/submenu/_eng');
+    expect(req.request.method).toBe('GET');
+    req.flush(MENU_SUBMENU_SERVICE_RESPONSE);
+  }));
 
-  it(
-    'should return the partial hierarchy for the selected node',
-    waitForAsync(() => {
-      menuService.getMenuHierarchyForSelectedNode('_eng').subscribe(h => {
-        expect(h.length).toBe(1);
-        expect(h[0].label).toBe('Library system group');
-        expect(h[0].children.length).toBe(3);
-      });
-      const req = httpMock.expectOne('api/menu');
-      expect(req.request.method).toBe('GET');
-      req.flush(MENU_SERVICE_RESPONSE);
+  it('should return the partial hierarchy for the selected node', waitForAsync(() => {
+    menuService.getMenuHierarchyForSelectedNode('_eng').subscribe(h => {
+      expect(h.length).toBe(1);
+      expect(h[0].label).toBe('Library system group');
+      expect(h[0].children.length).toBe(3);
+    });
+    const req = httpMock.expectOne('api/menu');
+    expect(req.request.method).toBe('GET');
+    req.flush(MENU_SERVICE_RESPONSE);
 
-      menuService.getMenuHierarchyForSelectedNode('_biz').subscribe(h => {
-        expect(h.length).toBe(1);
-        expect(h[0].name).toBe('suggestionsWS');
-        expect(h[0].type).toBe('Project');
-        expect(h[0].children.length).toBe(2);
-      });
-      const req2 = httpMock.expectOne('api/menu');
-      expect(req2.request.method).toBe('GET');
-      req2.flush(MENU_SERVICE_RESPONSE);
-    })
-  );
+    menuService.getMenuHierarchyForSelectedNode('_biz').subscribe(h => {
+      expect(h.length).toBe(1);
+      expect(h[0].name).toBe('suggestionsWS');
+      expect(h[0].type).toBe('Project');
+      expect(h[0].children.length).toBe(2);
+    });
+    const req2 = httpMock.expectOne('api/menu');
+    expect(req2.request.method).toBe('GET');
+    req2.flush(MENU_SERVICE_RESPONSE);
+  }));
 });
 
 const EXPECTED_MENU_FOR_ENGINEERING_VIEW: Array<MenuHierarchy> = [

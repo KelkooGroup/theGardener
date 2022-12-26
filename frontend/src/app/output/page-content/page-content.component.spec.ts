@@ -34,45 +34,43 @@ describe('PageContentComponent', () => {
   let page: PageObject;
   let activatedRoute: ActivatedRouteStub;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [
-          PageContentComponent,
-          GherkinComponent,
-          GherkinStepComponent,
-          GherkinLongTextComponent,
-          GherkinTableComponent,
-          OpenApiModelComponent,
-          OpenApiEndPointsComponent,
-          SafePipe,
-          InternalLinkPipe,
-          AnchorPipe,
-          RemoveHtmlSanitizerPipe,
-          FooterComponent
-        ],
-        imports: [
-          HttpClientTestingModule,
-          MatProgressSpinnerModule,
-          MatSnackBarModule,
-          MatTableModule,
-          MatTabsModule,
-          NoopAnimationsModule,
-          MarkdownModule.forRoot({
-            sanitize: SecurityContext.NONE
-          }),
-          NgxJsonViewerModule,
-          RouterTestingModule
-        ],
-        providers: [
-          {
-            provide: ActivatedRoute,
-            useClass: ActivatedRouteStub
-          }
-        ]
-      }).compileComponents();
-    })
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [
+        PageContentComponent,
+        GherkinComponent,
+        GherkinStepComponent,
+        GherkinLongTextComponent,
+        GherkinTableComponent,
+        OpenApiModelComponent,
+        OpenApiEndPointsComponent,
+        SafePipe,
+        InternalLinkPipe,
+        AnchorPipe,
+        RemoveHtmlSanitizerPipe,
+        FooterComponent
+      ],
+      imports: [
+        HttpClientTestingModule,
+        MatProgressSpinnerModule,
+        MatSnackBarModule,
+        MatTableModule,
+        MatTabsModule,
+        NoopAnimationsModule,
+        MarkdownModule.forRoot({
+          sanitize: SecurityContext.NONE
+        }),
+        NgxJsonViewerModule,
+        RouterTestingModule
+      ],
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useClass: ActivatedRouteStub
+        }
+      ]
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(PageContentComponent);
@@ -85,113 +83,92 @@ describe('PageContentComponent', () => {
     activatedRoute.fragment = of('');
   });
 
-  it(
-    'should get page content from backend and show markdown',
-    waitForAsync(() => {
-      const pageService: PageService = TestBed.inject(PageService);
-      spyOn(pageService, 'getPage').and.returnValue(of(PAGE_SERVICE_RESPONSE));
+  it('should get page content from backend and show markdown', waitForAsync(() => {
+    const pageService: PageService = TestBed.inject(PageService);
+    spyOn(pageService, 'getPage').and.returnValue(of(PAGE_SERVICE_RESPONSE));
 
-      fixture.detectChanges();
-      expect(component).toBeTruthy();
-      expect(pageService.getPage).toHaveBeenCalledWith('suggestionsWS>qa>/overview');
+    fixture.detectChanges();
+    expect(component).toBeTruthy();
+    expect(pageService.getPage).toHaveBeenCalledWith('suggestionsWS>qa>/overview');
 
-      expect(page.title).toMatch('overview');
-      expect(page.pageContent.startsWith('For various reasons'))
-        .withContext(`Page content should start with "For various reasons" but was ${fixture.nativeElement.textContent}`)
-        .toBeTruthy();
-    })
-  );
+    expect(page.title).toMatch('overview');
+    expect(page.pageContent.startsWith('For various reasons'))
+      .withContext(`Page content should start with "For various reasons" but was ${fixture.nativeElement.textContent}`)
+      .toBeTruthy();
+  }));
 
-  it(
-    'should get page content from backend and show markdown',
-    waitForAsync(() => {
-      const pageService: PageService = TestBed.inject(PageService);
-      spyOn(pageService, 'getPage').and.returnValue(of(PAGE_WITH_INTERNAL_LINK_SERVICE_RESPONSE));
+  it('should get page content from backend and show markdown', waitForAsync(() => {
+    const pageService: PageService = TestBed.inject(PageService);
+    spyOn(pageService, 'getPage').and.returnValue(of(PAGE_WITH_INTERNAL_LINK_SERVICE_RESPONSE));
 
-      fixture.detectChanges();
-      expect(component).toBeTruthy();
+    fixture.detectChanges();
+    expect(component).toBeTruthy();
 
-      expect(pageService.getPage).toHaveBeenCalledWith('suggestionsWS>qa>/overview');
-    })
-  );
+    expect(pageService.getPage).toHaveBeenCalledWith('suggestionsWS>qa>/overview');
+  }));
 
-  it(
-    'should show an iframe if page is an external link',
-    waitForAsync(() => {
-      const pageService: PageService = TestBed.inject(PageService);
-      spyOn(pageService, 'getPage').and.returnValue(of(PAGE_WITH_EXTERNAL_LINK_RESPONSE));
+  it('should show an iframe if page is an external link', waitForAsync(() => {
+    const pageService: PageService = TestBed.inject(PageService);
+    spyOn(pageService, 'getPage').and.returnValue(of(PAGE_WITH_EXTERNAL_LINK_RESPONSE));
 
-      fixture.detectChanges();
+    fixture.detectChanges();
 
-      expect(component).toBeTruthy();
-      expect(page.iframe).toBeTruthy();
-      expect(page.iframe.src).toEqual('http://publisher.corp.kelkoo.net/docs/#/Contact%20Management/getContact');
-    })
-  );
+    expect(component).toBeTruthy();
+    expect(page.iframe).toBeTruthy();
+    expect(page.iframe.src).toEqual('http://publisher.corp.kelkoo.net/docs/#/Contact%20Management/getContact');
+  }));
 
-  it(
-    'should show scenario settings if page contains a scenario',
-    waitForAsync(() => {
-      const pageService: PageService = TestBed.inject(PageService);
-      spyOn(pageService, 'getPage').and.returnValue(of(PAGE_WITH_SCENARIO));
+  it('should show scenario settings if page contains a scenario', waitForAsync(() => {
+    const pageService: PageService = TestBed.inject(PageService);
+    spyOn(pageService, 'getPage').and.returnValue(of(PAGE_WITH_SCENARIO));
 
-      fixture.detectChanges();
+    fixture.detectChanges();
 
-      expect(component).toBeTruthy();
-      expect(page.iframe).toBeFalsy();
-      expect(page.scenario).toBeTruthy();
-    })
-  );
+    expect(component).toBeTruthy();
+    expect(page.iframe).toBeFalsy();
+    expect(page.scenario).toBeTruthy();
+  }));
 
-  it(
-    'should not crash when bad path in internal link',
-    waitForAsync(() => {
-      const path: string = null;
-      const path2 = '';
-      const path3 = ' ';
-      const path4 = ';';
-      const router: Router = TestBed.inject(Router);
-      spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
+  it('should not crash when bad path in internal link', waitForAsync(() => {
+    const path: string = null;
+    const path2 = '';
+    const path3 = ' ';
+    const path4 = ';';
+    const router: Router = TestBed.inject(Router);
+    spyOn(router, 'navigate').and.returnValue(Promise.resolve(true));
 
-      PageContentComponentTools.navigate(router, path);
-      expect(router.navigate).not.toHaveBeenCalled();
+    PageContentComponentTools.navigate(router, path);
+    expect(router.navigate).not.toHaveBeenCalled();
 
-      PageContentComponentTools.navigate(router, path2);
-      expect(router.navigate).not.toHaveBeenCalled();
+    PageContentComponentTools.navigate(router, path2);
+    expect(router.navigate).not.toHaveBeenCalled();
 
-      PageContentComponentTools.navigate(router, path3);
-      expect(router.navigate).not.toHaveBeenCalled();
+    PageContentComponentTools.navigate(router, path3);
+    expect(router.navigate).not.toHaveBeenCalled();
 
-      PageContentComponentTools.navigate(router, path4);
-      expect(router.navigate).not.toHaveBeenCalled();
-    })
-  );
+    PageContentComponentTools.navigate(router, path4);
+    expect(router.navigate).not.toHaveBeenCalled();
+  }));
 
-  it(
-    'should show a link to view source if provided',
-    waitForAsync(() => {
-      const pageService: PageService = TestBed.inject(PageService);
-      spyOn(pageService, 'getPage').and.returnValue(of(PAGE_WITH_SOURCE_URL));
+  it('should show a link to view source if provided', waitForAsync(() => {
+    const pageService: PageService = TestBed.inject(PageService);
+    spyOn(pageService, 'getPage').and.returnValue(of(PAGE_WITH_SOURCE_URL));
 
-      fixture.detectChanges();
+    fixture.detectChanges();
 
-      expect(component).toBeTruthy();
-      expect(page.viewSource).toBeTruthy();
-    })
-  );
+    expect(component).toBeTruthy();
+    expect(page.viewSource).toBeTruthy();
+  }));
 
-  it(
-    'should not show a link to view source if not provided',
-    waitForAsync(() => {
-      const pageService: PageService = TestBed.inject(PageService);
-      spyOn(pageService, 'getPage').and.returnValue(of(PAGE_SERVICE_RESPONSE));
+  it('should not show a link to view source if not provided', waitForAsync(() => {
+    const pageService: PageService = TestBed.inject(PageService);
+    spyOn(pageService, 'getPage').and.returnValue(of(PAGE_SERVICE_RESPONSE));
 
-      fixture.detectChanges();
+    fixture.detectChanges();
 
-      expect(component).toBeTruthy();
-      expect(page.viewSource).toBeFalsy();
-    })
-  );
+    expect(component).toBeTruthy();
+    expect(page.viewSource).toBeFalsy();
+  }));
 });
 
 class PageObject {

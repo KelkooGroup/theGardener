@@ -17,7 +17,7 @@ export class MatSelectHelper {
 
   triggerMenu() {
     this._fixture.detectChanges();
-    this._trigger = this._fixture.nativeElement.querySelector(this._selectId + ' .mat-select-trigger');
+    this._trigger = this._fixture.nativeElement.querySelector(this._selectId + ' .mat-mdc-select-trigger');
     this._trigger.click();
     this._fixture.detectChanges();
   }
