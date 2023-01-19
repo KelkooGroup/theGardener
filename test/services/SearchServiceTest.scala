@@ -1,19 +1,24 @@
 package services
 
 import org.mockito.Mockito
+import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfter
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito.MockitoSugar
+import play.api.Configuration
 import repositories.{HierarchyRepository, PageRepository}
 
 class SearchServiceTest extends AnyWordSpec with Matchers with BeforeAndAfter with MockitoSugar with ScalaFutures {
 
+  val config = mock[Configuration]
+  when(config.getOptional[String]("lucene.index.path")).thenReturn(None)
+
   val pageRepository = mock[PageRepository]
   val hierarchyRepository = mock[HierarchyRepository]
 
-  val pageIndex = new IndexService()
+  val pageIndex = new IndexService(config)
   val searchService = new SearchService(pageIndex)
 
   val pageIndex1 = PageIndexDocument("id1", "hierarchy1", "path1", "breadcrum1", "project1", "branch1", "Doeco", "this is a test for markdown", "")

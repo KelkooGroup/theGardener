@@ -2,10 +2,11 @@ package services
 
 import com.outr.lucene4s.query.{Sort, TermSearchTerm}
 import com.outr.lucene4s.{DirectLucene, parse}
-
-import javax.inject.{Inject, Singleton}
+import play.api.Configuration
 import play.api.libs.json.Json
 
+import java.nio.file.Paths
+import javax.inject.{Inject, Singleton}
 import scala.util.Try
 
 case class SearchResult(items: Seq[SearchResultItem])
@@ -34,9 +35,11 @@ object SearchResult {
 
 
 @Singleton
-class IndexService {
+class IndexService @Inject()(configuration: Configuration) {
 
-  val luceneSearchIndex = new DirectLucene(uniqueFields = List("id"), defaultFullTextSearchable = true, appendIfExists = false, autoCommit = false)
+  private val luceneIndexPath = configuration.getOptional[String]("lucene.index.path")
+
+  val luceneSearchIndex = new DirectLucene(uniqueFields = List("id"), directory = luceneIndexPath.map(Paths.get(_)), defaultFullTextSearchable = true, appendIfExists = false, autoCommit = false)
 
   private val id = luceneSearchIndex.create.field[String]("id")
   private val hierarchy = luceneSearchIndex.create.field[String]("hierarchy")

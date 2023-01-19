@@ -104,7 +104,7 @@ object CommonSteps extends MockitoSugar with Matchers {
   val cache = new DefaultSyncCacheApi(asyncCache)
   val pageServiceCache = new PageServiceCache(cache)
   val spyPageServiceCache = spy(pageServiceCache)
-  val pageIndex = new IndexService
+  val pageIndex = new IndexService(conf)
   val searchService = new SearchService(pageIndex)
   val spySearchService = spy(searchService)
   val pageService = new PageService(conf, projectRepository, directoryRepository, pageRepository, gherkinRepository, fakeOpenApiClient, pageServiceCache, pageIndex, hierarchyService)

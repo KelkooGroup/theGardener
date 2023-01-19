@@ -35,8 +35,9 @@ class PageServiceTest extends AnyWordSpec with Matchers with BeforeAndAfter with
 
 
   when(config.getOptional[String]("application.baseUrl")).thenReturn(None)
+  when(config.getOptional[String]("lucene.index.path")).thenReturn(None)
 
-  val pageIndex = new IndexService()
+  val pageIndex = new IndexService(config)
   val pageService = new PageService(config, projectRepository, directoryRepository, pageRepository, gherkinRepository, openApiClient, cache, pageIndex, hierarchyService)
 
 
