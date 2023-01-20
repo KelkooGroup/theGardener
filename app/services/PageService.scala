@@ -1,9 +1,9 @@
 package services
 
 import java.io.{File, FileInputStream}
-
 import scala.annotation.nowarn
 import controllers.dto.{PageDTO, PageFragment, PageFragmentContent}
+
 import javax.inject._
 import models.{PageJoinProject, _}
 import org.apache.commons.io.FileUtils
@@ -15,6 +15,7 @@ import utils._
 import services.MenuService.getCorrectedPath
 import services.clients.OpenApiClient
 
+import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
@@ -68,11 +69,13 @@ case class PageFragmentUnderProcessing(status: PageFragmentUnderProcessingStatus
 case class PageWithContent(page: Page, content: Seq[PageFragment])
 
 @Singleton
-class PageServiceCache @Inject()(cache: SyncCacheApi) extends Logging {
+class PageServiceCache @Inject()(configuration: Configuration, cache: SyncCacheApi) extends Logging {
+
+  private val cacheTtl: Duration = configuration.getOptional[Long]("cache.ttl").map(_.minutes).getOrElse(Duration.Inf)
 
   def store(key: String, page: PageWithContent): Unit = {
     put(key)
-    cache.set(key, page)
+    cache.set(key, page, cacheTtl)
   }
 
   def put(key: String): Unit = {
