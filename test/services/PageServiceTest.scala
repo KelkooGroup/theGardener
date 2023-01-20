@@ -20,22 +20,23 @@ import scala.concurrent.ExecutionContext
 class PageServiceTest extends AnyWordSpec with Matchers with BeforeAndAfter with MockitoSugar with ScalaFutures {
 
 
+  val config = mock[Configuration]
   val projectRepository = mock[ProjectRepository]
   val directoryRepository = mock[DirectoryRepository]
   val pageRepository = mock[PageRepository]
   val featureService = mock[FeatureService]
-  val cache = new PageServiceCache(mock[SyncCacheApi])
   val gherkinRepository = mock[GherkinRepository]
-  val config = mock[Configuration]
   val openApiClient = mock[OpenApiClient]
   val hierarchyRepository = mock[HierarchyRepository]
   val searchService = mock[SearchService]
   val hierarchyService = mock[HierarchyService]
   implicit val ec = mock[ExecutionContext]
 
-
   when(config.getOptional[String]("application.baseUrl")).thenReturn(None)
   when(config.getOptional[String]("lucene.index.path")).thenReturn(None)
+  when(config.getOptional[Long]("cache.ttl")).thenReturn(Some(5L))
+
+  val cache = new PageServiceCache(config, mock[SyncCacheApi])
 
   val pageIndex = new IndexService(config)
   val pageService = new PageService(config, projectRepository, directoryRepository, pageRepository, gherkinRepository, openApiClient, cache, pageIndex, hierarchyService)

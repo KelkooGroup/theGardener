@@ -102,14 +102,14 @@ object CommonSteps extends MockitoSugar with Matchers {
   val hierarchyService = inject[HierarchyService]
   val asyncCache = inject[AsyncCacheApi]
   val cache = new DefaultSyncCacheApi(asyncCache)
-  val pageServiceCache = new PageServiceCache(cache)
+  val pageServiceCache = new PageServiceCache(conf, cache)
   val spyPageServiceCache = spy(pageServiceCache)
   val pageIndex = new IndexService(conf)
   val searchService = new SearchService(pageIndex)
   val spySearchService = spy(searchService)
   val pageService = new PageService(conf, projectRepository, directoryRepository, pageRepository, gherkinRepository, fakeOpenApiClient, pageServiceCache, pageIndex, hierarchyService)
   val spyPageService = spy(pageService)
-  val menuService = new MenuService(hierarchyRepository, projectRepository, branchRepository, featureRepository, directoryRepository, pageRepository, cache)
+  val menuService = new MenuService(conf, hierarchyRepository, projectRepository, branchRepository, featureRepository, directoryRepository, pageRepository, cache)
   val spyMenuService = spy(menuService)
   val replicaService = new ReplicaClient(conf, wsClient)
   val spyReplicaService = spy(replicaService)

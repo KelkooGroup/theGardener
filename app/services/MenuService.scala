@@ -3,22 +3,35 @@ package services
 import javax.inject._
 import models.HierarchyNode._
 import models._
-import play.api.cache._
+import play.api.Configuration
+import play.api.cache.SyncCacheApi
 import repositories._
 import services.MenuService._
 import utils._
 
+import scala.concurrent.duration._
 import scala.util.Try
 
 
-class MenuService @Inject()(hierarchyRepository: HierarchyRepository, projectRepository: ProjectRepository, branchRepository: BranchRepository, featureRepository: FeatureRepository, directoryRepository: DirectoryRepository, pageRepository: PageRepository, cache: SyncCacheApi) {
+class MenuService @Inject()(
+  configuration: Configuration,
+  hierarchyRepository: HierarchyRepository,
+  projectRepository: ProjectRepository,
+  branchRepository: BranchRepository,
+  featureRepository: FeatureRepository,
+  directoryRepository: DirectoryRepository,
+  pageRepository: PageRepository,
+  cache: SyncCacheApi
+) {
+
+  private val cacheTtl: Duration = configuration.getOptional[Long]("cache.ttl").map(_.minutes).getOrElse(Duration.Inf)
 
   def refreshCache(): Try[Menu] = Try(getMenuTree(true))
 
   def getMenuListWithShortcut(refresh: Boolean = false): Seq[Menu] = {
     if (refresh) cache.remove(menuListCacheKey)
 
-    cache.getOrElseUpdate(menuListCacheKey) {
+    cache.getOrElseUpdate(menuListCacheKey, cacheTtl) {
 
       val mapProjectIdProject = projectRepository.findAll().map(p => p.id -> p).toMap
 
@@ -75,7 +88,7 @@ class MenuService @Inject()(hierarchyRepository: HierarchyRepository, projectRep
   def getMenuTree(refresh: Boolean = false): Menu = {
     if (refresh) cache.remove(menuTreeCacheKey)
 
-    cache.getOrElseUpdate(menuTreeCacheKey) {
+    cache.getOrElseUpdate(menuTreeCacheKey, cacheTtl) {
 
       val menuWithShortcutsList = getMenuListWithShortcut(refresh)
 
