@@ -57,7 +57,7 @@
     "@angular/cli": "15.2.2",
     "@angular/compiler-cli": "15.2.1",
     "@angular/language-service": "15.2.1",
-    "@cucumber/cucumber": "8.11.1",
+    "@cucumber/cucumber": "9.0.0",
     "@types/chai": "4.3.4",
     "@types/chai-as-promised": "7.1.5",
     "@types/jasmine": "4.3.1",
