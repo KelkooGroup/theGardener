@@ -73,7 +73,7 @@ Compile / packageDoc / publishArtifact := false
 topLevelDirectory := None
 
 val silencerVersion = "1.5.0"
-val cucumberVersion = "7.11.1"
+val cucumberVersion = "7.11.2"
 val jacksonVersion = "2.14.2"
 
 libraryDependencies ++= Seq(
@@ -83,26 +83,26 @@ libraryDependencies ++= Seq(
   evolutions,
   jdbc,
   caffeine,
-  "ch.qos.logback" % "logback-access" % "1.2.11",
+  "ch.qos.logback" % "logback-access" % "1.2.12",
   "net.logstash.logback" % "logstash-logback-encoder" % "7.3",
   "com.typesafe.play" %% "play-json" % "2.9.4",
   "org.julienrf" %% "play-json-derived-codecs" % "10.1.0",
   "io.cucumber" % "gherkin" % "26.0.3",
   "org.playframework.anorm" %% "anorm" % "2.7.0",
-  "org.mariadb.jdbc" % "mariadb-java-client" % "3.1.2",
+  "org.mariadb.jdbc" % "mariadb-java-client" % "3.1.3",
   "org.eclipse.jgit" % "org.eclipse.jgit" % "6.5.0.202303070854-r",
   // Swagger
-  "io.swagger" % "swagger-annotations" % "1.6.9", // do not upgrade beyond 1.x because of sbt-swagger-play compatibility
+  "io.swagger" % "swagger-annotations" % "1.6.10", // do not upgrade beyond 1.x because of sbt-swagger-play compatibility
   "org.webjars" % "swagger-ui" % "4.18.2",
 
   "com.h2database" % "h2" % "1.4.199",
   "commons-io" % "commons-io" % "2.11.0",
   "com.outr" %% "lucene4s" % "1.11.1",
 
-  "net.ruippeixotog" %% "scala-scraper" % "3.0.0" % Test,
+  "net.ruippeixotog" %% "scala-scraper" % "3.1.0" % Test,
 
   // Cucumber
-  "io.cucumber" %% "cucumber-scala" % "8.14.1" % Test,
+  "io.cucumber" %% "cucumber-scala" % "8.14.2" % Test,
   "io.cucumber" % "cucumber-junit" % cucumberVersion % Test,
   "io.cucumber" % "cucumber-picocontainer" % cucumberVersion % Test,
 
