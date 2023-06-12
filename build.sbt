@@ -2,7 +2,7 @@ name := "the_gardener"
 maintainer := "florian.fauvarque@gmail.com"
 
 val jdkVersion = "11"
-scalaVersion := "2.13.10"
+scalaVersion := "2.13.11"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala).settings(
   swaggerPlayValidate := false
