@@ -9,7 +9,7 @@ addSbtPlugin("org.scalastyle" %% "scalastyle-sbt-plugin" % "1.0.0")
 
 addSbtPlugin("com.github.dwickern" % "sbt-swagger-play" % "0.5.0")
 
-addSbtPlugin("se.marcuslonnberg" % "sbt-docker" % "1.10.0")
+addSbtPlugin("se.marcuslonnberg" % "sbt-docker" % "1.11.0")
 
 addSbtPlugin("ch.epfl.scala" % "sbt-scalafix" % "0.10.4")
 
