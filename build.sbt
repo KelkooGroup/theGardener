@@ -96,7 +96,7 @@ libraryDependencies ++= Seq(
   "org.webjars" % "swagger-ui" % "4.18.2",
 
   "com.h2database" % "h2" % "1.4.199",
-  "commons-io" % "commons-io" % "2.11.0",
+  "commons-io" % "commons-io" % "2.15.0",
   "com.outr" %% "lucene4s" % "1.11.1",
 
   "net.ruippeixotog" %% "scala-scraper" % "3.1.0" % Test,
