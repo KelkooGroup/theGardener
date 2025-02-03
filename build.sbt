@@ -97,7 +97,7 @@ libraryDependencies ++= Seq(
 
   "com.h2database" % "h2" % "1.4.199",
   "commons-io" % "commons-io" % "2.11.0",
-  "com.outr" %% "lucene4s" % "1.11.1",
+  "com.outr" %% "lucene4s" % "1.12.0",
 
   "net.ruippeixotog" %% "scala-scraper" % "3.1.0" % Test,
 
